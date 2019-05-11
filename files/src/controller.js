@@ -43,6 +43,7 @@ class Controller {
         if (event.detail >= 2) {
             if (this.hovered_element instanceof ConnectionNode) {
                 this.hovered_element.invert();
+                return;
             }
         }
 
@@ -232,11 +233,6 @@ class Controller {
                 const input = new InputNode(gate);
                 gate.inputs.push(input);
 
-                // for (const next_node of inner_gate.outputs[0].next_nodes) {
-                //     model.connect_nodes(input, next_node);
-                // }
-                // inner_gate.outputs[0].clear();
-
                 input.next_nodes = inner_gate.outputs[0].next_nodes;
                 inner_gate.outputs[0].next_nodes = [];
             }
@@ -244,19 +240,10 @@ class Controller {
                 const output = new OutputNode(gate);
                 gate.outputs.push(output);
 
-                // model.connect_nodes(inner_gate.inputs[0], output);
-                // inner_gate.inputs[0].clear();
-
-                // debugger
                 const prev_node = inner_gate.inputs[0].previous_node();
-
-                // if (!prev_node) continue;
 
                 prev_node.next_nodes.remove(inner_gate.inputs[0]);
                 prev_node.next_nodes.push(output);
-
-                // input.next_nodes = inner_gate.next_nodes;
-                // inner_gate.next_nodes = [];
             }
         }
     }

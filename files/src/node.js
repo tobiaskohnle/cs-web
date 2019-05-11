@@ -107,12 +107,12 @@ class InputNode extends ConnectionNode {
 
     eval_state() {
         if (this.previous_node()) {
-            return this.previous_node().state != this.is_inverted;
+            return this.previous_node().state != this.is_inverted != this.is_invisible_inverted;
         }
 
         console.assert(this.is_empty());
 
-        return this.is_inverted;
+        return this.is_inverted != this.is_invisible_inverted;
     }
 
     is_empty() {
@@ -143,33 +143,12 @@ class OutputNode extends ConnectionNode {
     }
 
     eval_state() {
-        // if (!parent) {
-        //     // if the parent is deleted while the node is queued for a tick
-        //     return false;
-        // }
-
         if (this.previous_node()) {
-            return this.previous_node().state != this.is_inverted;
+            return this.previous_node().state != this.is_inverted != this.is_invisible_inverted;
         }
 
-        return this.parent.eval_state() != this.is_inverted;
+        return this.parent.eval_state() != this.is_inverted != this.is_invisible_inverted;
     }
-
-    // eval_state() {
-    //     const parent = this.parent();
-
-    //     if (!parent) {
-    //         // if the parent is deleted while the node is queued for a tick
-    //         return false;
-    //     }
-
-    //     try {
-
-    //         return parent.eval_state() != this.is_inverted;
-
-    //     }
-    //     catch {debugger}
-    // }
 
     is_empty() {
         return this.next_nodes.length == 0;
@@ -181,10 +160,6 @@ class OutputNode extends ConnectionNode {
         }
         this.next_nodes = [];
     }
-
-    // parent() {
-    //     return model.main_gate.inner_gates.find(gate => gate instanceof Gate && gate.outputs.includes(this));
-    // }
 
     draw() {
         super.draw(true);
