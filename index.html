@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<meta charset='utf-8'>
+<title>cs &ndash; web</title>
+
+<link rel='stylesheet' href='files/css/main.css'>
+<link rel='stylesheet' href='files/css/menu.css'>
+
+<script src='files/js/util.js'></script>
+
+<script src='files/js/element.js'></script>
+
+<script src='files/js/actions.js'></script>
+<script src='files/js/camera.js'></script>
+<script src='files/js/menu.js'></script>
+<script src='files/js/model.js'></script>
+<script src='files/js/node.js'></script>
+<script src='files/js/vec.js'></script>
+<script src='files/js/view.js'></script>
+<script src='files/js/cs.js'></script>
+
+<script src='files/js/gate.js'></script>
+
+<script src='files/js/controller.js'></script>
+
+<script src='files/js/main.js'></script>
+
+<body>
+    <div class='window'>
+        <div class='menu-bar'>
+            <div class='menu-bar-item' menu='file'>
+                <span>File</span>
+            </div>
+            <div class='menu-bar-item' menu='edit'>
+                <span>Edit</span>
+            </div>
+            <div class='menu-bar-item' menu='view'>
+                <span>View</span>
+            </div>
+            <div class='menu-bar-item' menu='tools'>
+                <span>Tools</span>
+            </div>
+        </div>
+        <div class='tabs'></div>
+        <div class='sidebar'></div>
+        <canvas></canvas>
+    </div>
+
+    <div class='menu' menu='context-menu'>
+        <div class='menu-item' menu='context-menu-add-component'>
+            <span>Add Component</span>
+        </div>
+        <div class='menu-item' menu='context-menu-add-custom-gate'>
+            <span>Add Custom Gate</span>
+        </div>
+        <div class='menu-item' menu=''>
+            <span>Change Type</span>
+        </div>
+        <div class='menu-separator'></div>
+        <div class='menu-item' action='copy'>
+            <span>Copy</span>
+        </div>
+        <div class='menu-item' action='cut'>
+            <span>Cut</span>
+        </div>
+        <div class='menu-item' action='paste'>
+            <span>Paste</span>
+        </div>
+        <div class='menu-item' action='delete'>
+            <span>Delete</span>
+        </div>
+        <div class='menu-item' action='invert'>
+            <span>Invert Connection Node</span>
+        </div>
+    </div>
+    <div class='menu' menu='context-menu-add-component'>
+        <div class='menu-item' action='add-input-switch'>
+            <span>Input Switch</span>
+        </div>
+        <div class='menu-item' action='add-output-light'>
+            <span>Output Light</span>
+        </div>
+        <div class='menu-separator'></div>
+        <div class='menu-item' action='add-and-gate'>
+            <span>And Gate</span>
+        </div>
+        <div class='menu-item' action='add-or-gate'>
+            <span>Or Gate</span>
+        </div>
+        <div class='menu-item' action='add-not-gate'>
+            <span>Not Gate</span>
+        </div>
+        <div class='menu-separator'></div>
+        <div class='menu-item' action='add-text-label'>
+            <span>Label</span>
+        </div>
+        <div class='menu-item' action='add-segment-display'>
+            <span>Segment Display</span>
+        </div>
+    </div>
+    <div class='menu' menu='context-menu-add-custom-gate'>
+        <div class='menu-item' action='import'>
+            <span>Import From File</span>
+        </div>
+        <div class='menu-separator'></div>
+        <div class='menu-item' menu='context-menu-add-custom-gate-recently-imported'>
+            <span>Recently Imported</span>
+        </div>
+    </div>
+
+    <div class='menu' menu='context-menu-add-custom-gate-recently-imported'>
+        <div class='menu-item' action='clear-recently-imported-list'>
+            <span>Clear List</span>
+        </div>
+    </div>
+
+    <div class='menu' menu='file'>
+        <div class='menu-item' action='new'>
+            <span>New File</span>
+        </div>
+        <div class='menu-item' action='open-file'>
+            <span>Open File...</span>
+        </div>
+        <div class='menu-item' action='open-folder'>
+            <span>Open Folder...</span>
+        </div>
+        <div class='menu-item' menu='file-open-recent'>
+            <span>Open Recent</span>
+        </div>
+        <div class='menu-item' action='import'>
+            <span>Import...</span>
+        </div>
+        <div class='menu-separator'></div>
+        <div class='menu-item' action='save'>
+            <span>Save</span>
+        </div>
+        <div class='menu-item' action='save-as'>
+            <span>Save As...</span>
+        </div>
+        <div class='menu-separator'></div>
+        <div class='menu-item' action='exit'>
+            <span>Exit</span>
+        </div>
+    </div>
+    <div class='menu' menu='file-open-recent'>
+        <div class='menu-item' action='reopen-last-file'>
+            <span>Reopen Closed File</span>
+        </div>
+        <div class='menu-separator'></div>
+        <div class='menu-item' action='clear-recent-file-list'>
+            <span>Clear List</span>
+        </div>
+    </div>
+
+    <div class='menu' menu='edit'>
+        <div class='menu-item' action='undo'>
+            <span>Undo</span>
+        </div>
+        <div class='menu-item' action='redo'>
+            <span>Redo</span>
+        </div>
+        <div class='menu-item' action='copy'>
+            <span>Copy</span>
+        </div>
+        <div class='menu-item' action='cut'>
+            <span>Cut</span>
+        </div>
+        <div class='menu-item' action='delete'>
+            <span>Delete</span>
+        </div>
+        <div class='menu-item' action='paste'>
+            <span>Paste</span>
+        </div>
+        <div class='menu-item' action='select-all'>
+            <span>Select All</span>
+        </div>
+    </div>
+
+    <div class='menu' menu='view'>
+        <div class='menu-item' action='reset-view'>
+            <span>Reset View</span>
+        </div>
+        <div class='menu-item' action='zoom-in'>
+            <span>Zoom In</span>
+        </div>
+        <div class='menu-item' action='zoom-out'>
+            <span>Zoom Out</span>
+        </div>
+        <div class='menu-item' menu='theme'>
+            <span>Theme</span>
+        </div>
+        <div class='menu-item' menu='grid'>
+            <span>Grid</span>
+        </div>
+    </div>
+
+    <div class='menu' menu='theme'>
+        <div class='menu-item' action='theme-light'>
+            <span>Light</span>
+        </div>
+        <div class='menu-item' action='theme-dark'>
+            <span>Dark</span>
+        </div>
+    </div>
+
+    <div class='menu' menu='grid'>
+        <div class='menu-item' action='grid-none'>
+            <span>None</span>
+        </div>
+        <div class='menu-item' action='grid-solid'>
+            <span>Solid</span>
+        </div>
+        <div class='menu-item' action='grid-dots'>
+            <span>Dots</span>
+        </div>
+    </div>
+
+    <div class='menu' menu='tools'>
+        <div class='menu-item' action='invert'>
+            <span>Invert Connection Node</span>
+        </div>
+        <div class='menu-item' action='add-input-node'>
+            <span>Add Input Node</span>
+        </div>
+    </div>
+</body>
+
+</html>

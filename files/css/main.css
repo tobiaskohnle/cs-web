@@ -1,0 +1,61 @@
+
+* {
+    box-sizing: inherit;
+}
+
+:root {
+    box-sizing: border-box;
+    background: #eee;
+    font: 14px segoe ui;
+
+    overflow: hidden;
+}
+
+body {
+    margin: 0;
+}
+
+.window {
+    width: 100vw;
+    height: 100vh;
+
+    display: grid;
+    grid-template-columns: 200px auto;
+    grid-template-rows: 23px 40px auto;
+    grid-template-areas: 'menu-bar menu-bar' 'tabs tabs' 'sidebar canvas';
+}
+
+.menu-bar {
+    width: 100%;
+    height: 100%;
+    grid-area: menu-bar;
+
+    display: flex;
+    flex-direction: row;
+
+    padding: 2px;
+}
+
+.tabs {
+    width: 100%;
+    height: 100%;
+    grid-area: tabs;
+
+    box-shadow: 0 0 7px 1px #0003;
+}
+
+.sidebar {
+    width: 100%;
+    height: 100%;
+    grid-area: sidebar;
+
+    box-shadow: 0 0 4px 1px #0002;
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+    grid-area: canvas;
+
+    image-rendering: pixelated;
+}
