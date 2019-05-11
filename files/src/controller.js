@@ -233,12 +233,16 @@ class Controller {
                 const input = new InputNode(gate);
                 gate.inputs.push(input);
 
+                input.is_invisible_inverted = inner_gate.outputs[0].is_inverted;
+
                 input.next_nodes = inner_gate.outputs[0].next_nodes;
                 inner_gate.outputs[0].next_nodes = [];
             }
             if (inner_gate instanceof OutputLight) {
                 const output = new OutputNode(gate);
                 gate.outputs.push(output);
+
+                output.is_invisible_inverted = inner_gate.inputs[0].is_inverted;
 
                 const prev_node = inner_gate.inputs[0].previous_node();
 

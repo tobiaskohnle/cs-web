@@ -60,7 +60,7 @@ class ConnectionNode extends Element {
         context.moveTo(this.anim_pos.x+this.dir*off, this.anim_pos.y);
         context.lineTo(this.anim_pos.x+this.dir, this.anim_pos.y);
 
-        const draw_line_active = this.is_inverted ? this.state ^ is_output ^ 1 : this.state;
+        const draw_line_active = this.is_inverted != this.is_invisible_inverted ? this.state == is_output : this.state;
 
         context.strokeStyle = draw_line_active ? config.colors.wire_active : config.colors.wire_inactive;
 
