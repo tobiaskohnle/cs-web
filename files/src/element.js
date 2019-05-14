@@ -5,8 +5,6 @@ class Element {
         console.assert(new.target != Element, 'illegal constructor @Element');
 
         this.pos = Vec.copy(pos);
-        // this.anim_pos = Vec.copy(pos);
-        // this.last_pos = Vec.copy(pos);
     }
 
     is_selected() {

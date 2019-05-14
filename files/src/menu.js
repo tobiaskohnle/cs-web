@@ -70,11 +70,6 @@ function add_menu_event_listeners() {
             ? open_menu_next_to
             : open_menu_under;
 
-        // menu_button.onmouseover = function() {
-        //     if (controller.open_menu_stack.length && controller.open_menu_stack.last() != menu_element) {
-        //         open_menu_function(menu, menu_button);
-        //     }
-        // }
         menu_button.onmousedown = function() {
             open_menu_function(menu, menu_button);
         }
@@ -162,8 +157,6 @@ function set_menu_element_enabled(menu_element, enabled, x, y) {
 
         update_menu();
         move_on_screen(menu_element, menu_button);
-        // update_menu();
-        // move_on_screen(menu_element, menu_button);
     }
     else {
         menu_element.style.display = 'none';
@@ -174,22 +167,6 @@ function set_menu_element_enabled(menu_element, enabled, x, y) {
     }
 }
 function close_menu() {
-    // while (controller.open_menu_stack.length) {
-    //     const menu_element = controller.open_menu_stack.last();
-    //     const menu_attribute = menu_element.getAttribute('menu');
-
-    //     if (menu_attribute == menu) {
-    //         break;
-    //     }
-
-    //     controller.open_menu_stack.pop().style.display = 'none';
-
-    //     const menu_button = document.querySelector(`:not(.menu)[menu=${menu_attribute}]`);
-    //     if (menu_button) {
-    //         menu_button.classList.remove('active');
-    //     }
-    // }
-
     for (const menu_element of controller.open_menu_stack) {
         set_menu_element_enabled(menu_element, false);
     }

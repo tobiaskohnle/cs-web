@@ -4,8 +4,6 @@ class ConnectionNode extends Element {
     constructor(dir, parent) {
         super();
 
-        // console.assert(parent);
-
         this.dir = dir;
 
         this.parent = parent;
@@ -25,8 +23,7 @@ class ConnectionNode extends Element {
     move(vec) {}
 
     previous_node() {
-        return get_all_inner_gates(model.main_gate)//.inner_gates
-            // .filter(element => element instanceof Gate)
+        return get_all_inner_gates(model.main_gate)
             .flatMap(gate => [...gate.inputs, ...gate.outputs])
             .find(node => node.next_nodes && node.next_nodes.includes(this));
     }
@@ -70,16 +67,10 @@ class ConnectionNode extends Element {
             context.strokeStyle = config.colors.hovered;
         }
         if (this.is_selected()) {
-            // context.strokeStyle = '#24ce';
             context.strokeStyle = config.colors.selected;
 
             if (is_hovered) {
-                // context.strokeStyle = '#26ee';
                 context.strokeStyle = config.colors.hovered_selected;
-
-                // if (controller.mouse_down) {
-                //     context.strokeStyle = config.colors.hovered_selected_pressed;
-                // }
             }
         }
 
@@ -91,10 +82,6 @@ class ConnectionNode extends Element {
             context.arc(this.anim_pos.x+this.dir/4+this.dir*.1/2, this.anim_pos.y, 1/4, 0, Math.PI*2);
 
             context.strokeStyle = !draw_line_active ? config.colors.wire_active : config.colors.wire_inactive;
-
-            // context.closePath();
-
-            // context.strokeStyle = this.state ? '#f33e' : '#000e';
             context.stroke();
         }
     }
@@ -125,10 +112,6 @@ class InputNode extends ConnectionNode {
         }
         model.queue_tick(this);
     }
-
-    // parent() {
-    //     return model.main_gate.inner_gates.find(gate => gate instanceof Gate && gate.inputs.includes(this));
-    // }
 
     draw() {
         super.draw(false);

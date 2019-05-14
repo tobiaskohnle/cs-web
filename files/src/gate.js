@@ -71,10 +71,6 @@ class Gate extends Element {
     }
 
     draw() {
-        // context.lineWidth = 1;
-        // context.lineWidth = .125;
-        // context.lineWidth = .25;
-
         for (const input of this.inputs) {
             input.draw();
         }
@@ -92,15 +88,12 @@ class Gate extends Element {
             context.strokeStyle = config.colors.hovered;
         }
         if (this.is_selected()) {
-            // context.strokeStyle = '#24ce';
             context.strokeStyle = config.colors.selected;
-            // context.strokeRect(this.anim_pos.x, this.anim_pos.y, this.size.x, this.size.y);
 
             // context.strokeStyle = '#117e';
             // context.setLineDash([1]);
             // context.lineDashOffset = Date.now()/700 % 2;
             if (is_hovered) {
-                // context.strokeStyle = '#26ee';
                 context.strokeStyle = config.colors.hovered_selected;
 
                 if (controller.mouse_down) {
@@ -140,7 +133,6 @@ class Gate extends Element {
     }
 
     move(vec, total_vec) {
-        // this.pos.add(vec);
         this.pos.set(this.last_pos).add(total_vec).round();
     }
 }

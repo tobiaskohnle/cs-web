@@ -35,11 +35,6 @@ function draw() {
     }
 
     if (controller.mouse_move_state == mouse_move_state.creating_wire) {
-        // draw_selection_rect(
-        //     camera.to_screenspace(controller.mousedown_mouse_world_pos),
-        //     camera.to_screenspace(controller.mouse_world_pos),
-        // );
-
         console.assert(controller.wire_start_node);
 
         draw_wire(
@@ -51,10 +46,6 @@ function draw() {
     context.restore();
 
     if (controller.mouse_move_state == mouse_move_state.creating_selection_box) {
-        // draw_selection_rect(
-        //     camera.to_screenspace(controller.mousedown_mouse_world_pos),
-        //     camera.to_screenspace(controller.mouse_world_pos),
-        // );
         draw_selection_rect(
             controller.mousedown_mouse_pos,
             controller.mouse_pos,
@@ -158,12 +149,6 @@ function grid_alpha() {
 function screen_center() {
     return new Vec(canvas.width/2, canvas.height/2);
 }
-
-// function distribute_nodes(length, amount_of_nodes) {
-//     const unit = length / amount_of_nodes / 2;
-
-//     const length
-// }
 
 function anim_interpolate(value, target) {
     return Vec.add(value, Vec.mult(Vec.sub(target, value), config.anim_factor));

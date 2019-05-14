@@ -129,10 +129,6 @@ function deep_copy(element) {
 
         references.push(element);
 
-        // const result = Array.isArray(element) ? []
-        //     : !element ? element
-        //     : element.constructor ? new element.constructor()
-        //     : {};
         const result = new element.constructor();
 
         cached_results.push(result);

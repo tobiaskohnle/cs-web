@@ -52,11 +52,6 @@ class Camera {
     transform_canvas() {
         context.translate(this.anim_pos.x, this.anim_pos.y);
         context.scale(this.anim_scale, this.anim_scale);
-
-        // context.scale(64,64);
-        // context.translate(Math.round(this.anim_pos.x), Math.round(this.anim_pos.y));
-        // context.scale(Math.round(this.anim_scale), Math.round(this.anim_scale));
-        // context.scale(this.anim_scale, this.anim_scale);
     }
 
     to_screenspace(vec) {

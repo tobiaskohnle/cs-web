@@ -133,8 +133,6 @@ class Controller {
         this.previous_main_gate = deep_copy(model.main_gate);
 
         switch (this.mouse_move_state) {
-            // case mouse_move_state.creating_wire:
-            //     break;
             case mouse_move_state.move_screen:
                 if (!controller.mouse_moved()) {
                     model.deselect_all();
