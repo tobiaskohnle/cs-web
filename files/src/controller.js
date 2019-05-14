@@ -18,10 +18,10 @@ class Controller {
     }
 
     event_key_down(event) {
-        for (const action of actions) {
-            for (const shortcut of action.shortcuts) {
+        for (const command of commands) {
+            for (const shortcut of command.shortcuts) {
                 if (shortcut.matches_event(event)) {
-                    action.action();
+                    command.command();
                     return false;
                 }
             }
@@ -40,7 +40,7 @@ class Controller {
             model.queue_tick(this.hovered_element.outputs[0]);
         }
 
-        if (event.detail >= 2) {
+        if ((event.detail-1) & 1) {
             if (this.hovered_element instanceof ConnectionNode) {
                 this.hovered_element.invert();
                 return;

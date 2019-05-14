@@ -12,7 +12,7 @@
 
 <script src='files/src/element.js'></script>
 
-<script src='files/src/actions.js'></script>
+<script src='files/src/commands.js'></script>
 <script src='files/src/camera.js'></script>
 <script src='files/src/menu.js'></script>
 <script src='files/src/model.js'></script>
@@ -59,49 +59,49 @@
             <span>Change Type</span>
         </div>
         <div class='menu-separator'></div>
-        <div class='menu-item' action='copy'>
+        <div class='menu-item' command='copy'>
             <span>Copy</span>
         </div>
-        <div class='menu-item' action='cut'>
+        <div class='menu-item' command='cut'>
             <span>Cut</span>
         </div>
-        <div class='menu-item' action='paste'>
+        <div class='menu-item' command='paste'>
             <span>Paste</span>
         </div>
-        <div class='menu-item' action='delete'>
+        <div class='menu-item' command='delete'>
             <span>Delete</span>
         </div>
-        <div class='menu-item' action='invert'>
+        <div class='menu-item' command='invert'>
             <span>Invert Connection Node</span>
         </div>
     </div>
     <div class='menu' menu='context-menu-add-component'>
-        <div class='menu-item' action='add-input-switch'>
+        <div class='menu-item' command='add-input-switch'>
             <span>Input Switch</span>
         </div>
-        <div class='menu-item' action='add-output-light'>
+        <div class='menu-item' command='add-output-light'>
             <span>Output Light</span>
         </div>
         <div class='menu-separator'></div>
-        <div class='menu-item' action='add-and-gate'>
+        <div class='menu-item' command='add-and-gate'>
             <span>And Gate</span>
         </div>
-        <div class='menu-item' action='add-or-gate'>
+        <div class='menu-item' command='add-or-gate'>
             <span>Or Gate</span>
         </div>
-        <div class='menu-item' action='add-not-gate'>
+        <div class='menu-item' command='add-not-gate'>
             <span>Not Gate</span>
         </div>
         <div class='menu-separator'></div>
-        <div class='menu-item' action='add-text-label'>
+        <div class='menu-item' command='add-text-label'>
             <span>Label</span>
         </div>
-        <div class='menu-item' action='add-segment-display'>
+        <div class='menu-item' command='add-segment-display'>
             <span>Segment Display</span>
         </div>
     </div>
     <div class='menu' menu='context-menu-add-custom-gate'>
-        <div class='menu-item' action='import'>
+        <div class='menu-item' command='import'>
             <span>Import From File</span>
         </div>
         <div class='menu-separator'></div>
@@ -111,81 +111,81 @@
     </div>
 
     <div class='menu' menu='context-menu-add-custom-gate-recently-imported'>
-        <div class='menu-item' action='clear-recently-imported-list'>
+        <div class='menu-item' command='clear-recently-imported-list'>
             <span>Clear List</span>
         </div>
     </div>
 
     <div class='menu' menu='file'>
-        <div class='menu-item' action='new'>
+        <div class='menu-item' command='new'>
             <span>New File</span>
         </div>
-        <div class='menu-item' action='open-file'>
+        <div class='menu-item' command='open-file'>
             <span>Open File...</span>
         </div>
-        <div class='menu-item' action='open-folder'>
+        <div class='menu-item' command='open-folder'>
             <span>Open Folder...</span>
         </div>
         <div class='menu-item' menu='file-open-recent'>
             <span>Open Recent</span>
         </div>
-        <div class='menu-item' action='import'>
+        <div class='menu-item' command='import'>
             <span>Import...</span>
         </div>
         <div class='menu-separator'></div>
-        <div class='menu-item' action='save'>
+        <div class='menu-item' command='save'>
             <span>Save</span>
         </div>
-        <div class='menu-item' action='save-as'>
+        <div class='menu-item' command='save-as'>
             <span>Save As...</span>
         </div>
         <div class='menu-separator'></div>
-        <div class='menu-item' action='exit'>
+        <div class='menu-item' command='exit'>
             <span>Exit</span>
         </div>
     </div>
     <div class='menu' menu='file-open-recent'>
-        <div class='menu-item' action='reopen-last-file'>
+        <div class='menu-item' command='reopen-last-file'>
             <span>Reopen Closed File</span>
         </div>
         <div class='menu-separator'></div>
-        <div class='menu-item' action='clear-recent-file-list'>
+        <div class='menu-item' command='clear-recent-file-list'>
             <span>Clear List</span>
         </div>
     </div>
 
     <div class='menu' menu='edit'>
-        <div class='menu-item' action='undo'>
+        <div class='menu-item' command='undo'>
             <span>Undo</span>
         </div>
-        <div class='menu-item' action='redo'>
+        <div class='menu-item' command='redo'>
             <span>Redo</span>
         </div>
-        <div class='menu-item' action='copy'>
+        <div class='menu-item' command='copy'>
             <span>Copy</span>
         </div>
-        <div class='menu-item' action='cut'>
+        <div class='menu-item' command='cut'>
             <span>Cut</span>
         </div>
-        <div class='menu-item' action='delete'>
+        <div class='menu-item' command='delete'>
             <span>Delete</span>
         </div>
-        <div class='menu-item' action='paste'>
+        <div class='menu-item' command='paste'>
             <span>Paste</span>
         </div>
-        <div class='menu-item' action='select-all'>
+        <div class='menu-item' command='select-all'>
             <span>Select All</span>
         </div>
     </div>
 
     <div class='menu' menu='view'>
-        <div class='menu-item' action='reset-view'>
+        <div class='menu-item' command='reset-view'>
             <span>Reset View</span>
         </div>
-        <div class='menu-item' action='zoom-in'>
+        <div class='menu-item' command='zoom-in'>
             <span>Zoom In</span>
         </div>
-        <div class='menu-item' action='zoom-out'>
+        <div class='menu-item' command='zoom-out'>
             <span>Zoom Out</span>
         </div>
         <div class='menu-item' menu='theme'>
@@ -197,31 +197,31 @@
     </div>
 
     <div class='menu' menu='theme'>
-        <div class='menu-item' action='theme-light'>
+        <div class='menu-item' command='theme-light'>
             <span>Light</span>
         </div>
-        <div class='menu-item' action='theme-dark'>
+        <div class='menu-item' command='theme-dark'>
             <span>Dark</span>
         </div>
     </div>
 
     <div class='menu' menu='grid'>
-        <div class='menu-item' action='grid-none'>
+        <div class='menu-item' command='grid-none'>
             <span>None</span>
         </div>
-        <div class='menu-item' action='grid-solid'>
+        <div class='menu-item' command='grid-solid'>
             <span>Solid</span>
         </div>
-        <div class='menu-item' action='grid-dots'>
+        <div class='menu-item' command='grid-dots'>
             <span>Dots</span>
         </div>
     </div>
 
     <div class='menu' menu='tools'>
-        <div class='menu-item' action='invert'>
+        <div class='menu-item' command='invert'>
             <span>Invert Connection Node</span>
         </div>
-        <div class='menu-item' action='add-input-node'>
+        <div class='menu-item' command='add-input-node'>
             <span>Add Input Node</span>
         </div>
     </div>

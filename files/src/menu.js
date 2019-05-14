@@ -30,19 +30,19 @@ function update_menu() {
 }
 
 function update_shortcut_string(menu_item) {
-    const action_name = menu_item.getAttribute('action');
+    const command_name = menu_item.getAttribute('command');
 
-    if (action_name) {
-        const action = actions.find(action => action.name == action_name);
+    if (command_name) {
+        const command = commands.find(command => command.name == command_name);
 
-        if (action) {
-            if (action.shortcuts.length) {
+        if (command) {
+            if (command.shortcuts.length) {
                 while (menu_item.childElementCount < 2) {
                     const span = document.createElement('span');
                     menu_item.appendChild(span);
                 }
 
-                menu_item.children[1].innerText = action.shortcuts[0].get_string();
+                menu_item.children[1].innerText = command.shortcuts[0].get_string();
             }
             else {
                 while (menu_item.childElementCount >= 2) {
@@ -50,7 +50,7 @@ function update_shortcut_string(menu_item) {
                 }
             }
 
-            menu_item.onclick = action.action;
+            menu_item.onclick = command.command;
         }
         else {
         }
