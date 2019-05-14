@@ -20,7 +20,8 @@ body {
     height: 100vh;
 
     display: grid;
-    grid-template-columns: 200px auto;
+    /*grid-template-columns: 200px auto;*/
+    grid-template-columns: 0px auto;
     grid-template-rows: 23px 40px auto;
     grid-template-areas: 'menu-bar menu-bar' 'tabs tabs' 'sidebar canvas';
 }
