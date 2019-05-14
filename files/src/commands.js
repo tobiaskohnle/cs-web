@@ -44,7 +44,7 @@ const commands = [
         name: 'add-and-gate',
         shortcuts: [],
         command: function() {
-            controller.create_gate(new AndGate);
+            controller.init_element(new AndGate);
         },
     },
     {
@@ -62,7 +62,7 @@ const commands = [
         name: 'add-input-switch',
         shortcuts: [],
         command: function() {
-            controller.create_gate(new InputSwitch);
+            controller.init_element(new InputSwitch);
         },
     },
     {
@@ -70,7 +70,7 @@ const commands = [
         shortcuts: [],
         command: function() {
             let nop_gate = new NopGate;
-            controller.create_gate(nop_gate);
+            controller.init_element(nop_gate);
 
             nop_gate.outputs[0].is_inverted = true;
         },
@@ -79,21 +79,21 @@ const commands = [
         name: 'add-or-gate',
         shortcuts: [],
         command: function() {
-            controller.create_gate(new OrGate);
+            controller.init_element(new OrGate);
         },
     },
     {
         name: 'add-output-light',
         shortcuts: [],
         command: function() {
-            controller.create_gate(new OutputLight);
+            controller.init_element(new OutputLight);
         },
     },
     {
         name: 'add-segment-display',
         shortcuts: [],
         command: function() {
-            // controller.create_gate(new SegmentDisplay);
+            // controller.init_element(new SegmentDisplay);
         },
     },
     {
@@ -267,7 +267,9 @@ const commands = [
         name: 'save-as',
         shortcuts: [new KeyCombination(83, 's', KeyCombination.Modifier_Ctrl|KeyCombination.Modifier_Shift)],
         command: function() {
-            download_string(controller.get_file_string(), 'file.circ');
+            let file_name = prompt('Save file as...', 'file.circ');
+            file_name = file_name.endsWith('.circ') ? file_name : `${file_name}.circ`;
+            download_string(controller.get_file_string(), file_name);
         },
     },
     {
