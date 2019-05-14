@@ -33,12 +33,9 @@ class Controller {
     event_mouse_down(event) {
         this.mouse_down = true;
 
-        this.previous_main_gate = deep_copy(model.main_gate);
+        this.element_moved = false;
 
-        if (this.hovered_element instanceof InputSwitch) {
-            this.hovered_element.toggle();
-            model.queue_tick(this.hovered_element.outputs[0]);
-        }
+        this.previous_main_gate = deep_copy(model.main_gate);
 
         if ((event.detail-1) & 1) {
             if (this.hovered_element instanceof ConnectionNode) {
@@ -87,6 +84,9 @@ class Controller {
 
         this.hovered_element = model.get_element_at(this.mouse_world_pos);
 
+        this.element_moved = this.element_moved
+            || !Vec.sub(this.mouse_world_pos, this.mousedown_mouse_world_pos).round().equals(new Vec);
+
         const move_vec = new Vec(event.movementX, event.movementY);
         const world_move_vec = Vec.div(move_vec, camera.anim_scale);
 
@@ -131,6 +131,11 @@ class Controller {
         this.mouse_down = false;
 
         this.previous_main_gate = deep_copy(model.main_gate);
+
+        if (!this.element_moved && this.hovered_element instanceof InputSwitch) {
+            this.hovered_element.toggle();
+            model.queue_tick(this.hovered_element.outputs[0]);
+        }
 
         switch (this.mouse_move_state) {
             case mouse_move_state.move_screen:
