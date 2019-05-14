@@ -5,17 +5,13 @@ class ConnectionNode extends Element {
         super();
 
         this.dir = dir;
-
         this.parent = parent;
-
-        this.is_inverted = false;
-
-        this.is_invisible_inverted = false;
 
         this.label = null;
         this.tag = null;
 
         this.state = false;
+        this.is_inverted = false;
     }
 
     update() {}
@@ -57,7 +53,7 @@ class ConnectionNode extends Element {
         context.moveTo(this.anim_pos.x+this.dir*off, this.anim_pos.y);
         context.lineTo(this.anim_pos.x+this.dir, this.anim_pos.y);
 
-        const draw_line_active = this.is_inverted != this.is_invisible_inverted ? this.state == is_output : this.state;
+        const draw_line_active = this.is_inverted ? this.state == is_output : this.state;
 
         context.strokeStyle = draw_line_active ? config.colors.wire_active : config.colors.wire_inactive;
 
@@ -94,12 +90,12 @@ class InputNode extends ConnectionNode {
 
     eval_state() {
         if (this.previous_node()) {
-            return this.previous_node().state != this.is_inverted != this.is_invisible_inverted;
+            return this.previous_node().state != this.is_inverted;
         }
 
         console.assert(this.is_empty());
 
-        return this.is_inverted != this.is_invisible_inverted;
+        return this.is_inverted;
     }
 
     is_empty() {
@@ -127,10 +123,10 @@ class OutputNode extends ConnectionNode {
 
     eval_state() {
         if (this.previous_node()) {
-            return this.previous_node().state != this.is_inverted != this.is_invisible_inverted;
+            return this.previous_node().state != this.is_inverted;
         }
 
-        return this.parent.eval_state() != this.is_inverted != this.is_invisible_inverted;
+        return this.parent.eval_state() != this.is_inverted;
     }
 
     is_empty() {
