@@ -217,14 +217,14 @@ class Controller {
         return Vec.sub(this.mousedown_mouse_world_pos, this.mouse_world_pos);
     }
 
-    create_gate(gate) {
+    init_element(gate) {
         gate.pos.set(this.mousedown_mouse_world_pos).round();
         gate.cancel_animation();
         model.add(gate);
     }
 
     create_custom_gate(gate) {
-        this.create_gate(gate);
+        this.init_element(gate);
 
         for (const inner_gate of gate.inner_gates) {
             if (inner_gate instanceof InputSwitch) {
