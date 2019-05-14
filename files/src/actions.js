@@ -178,6 +178,7 @@ const actions = [
         action: function() {
             controller.read_files(function(result) {
                 controller.create_custom_gate(edit_after_parse(JSON.parse(result)));
+                model.tick_all();
             });
         },
     },
@@ -204,6 +205,7 @@ const actions = [
         action: function() {
             controller.read_files(function(result) {
                 model.main_gate = edit_after_parse(JSON.parse(result));
+                model.tick_all();
             });
         },
     },
