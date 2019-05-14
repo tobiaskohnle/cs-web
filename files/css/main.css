@@ -6,7 +6,7 @@
 :root {
     box-sizing: border-box;
     background: #eee;
-    font: 14px segoe ui;
+    font: 14px segoe ui, sans-serif;
 
     overflow: hidden;
 }
