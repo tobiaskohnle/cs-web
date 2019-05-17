@@ -37,7 +37,7 @@ function string_to_type(string) {
         case 'cs:or_gate':         return OrGate         .prototype;
         case 'cs:output_light':    return OutputLight    .prototype;
         case 'cs:output_node':     return OutputNode     .prototype;
-        // case 'cs:segment_display': return SegmentDisplay .prototype;
+        case 'cs:segment_display': return SegmentDisplay .prototype;
         case 'cs:vector':          return Vec            .prototype;
     }
 }
@@ -50,7 +50,7 @@ function type_to_string(prototype) {
     if (prototype instanceof OrGate)         return 'cs:or_gate';
     if (prototype instanceof OutputLight)    return 'cs:output_light';
     if (prototype instanceof OutputNode)     return 'cs:output_node';
-    // if (prototype instanceof SegmentDisplay) return 'cs:segment_display';
+    if (prototype instanceof SegmentDisplay) return 'cs:segment_display';
     if (prototype instanceof Vec)            return 'cs:vector';
 }
 

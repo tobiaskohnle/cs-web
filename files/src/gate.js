@@ -241,3 +241,88 @@ class OutputLight extends ModelGate {
         super.draw();
     }
 }
+
+class SegmentDisplay extends ModelGate {
+    constructor(pos) {
+        super(pos, new Vec(5,7));
+        this.inputs.push(new InputNode(this));
+        this.inputs.push(new InputNode(this));
+        this.inputs.push(new InputNode(this));
+        this.inputs.push(new InputNode(this));
+        this.inputs.push(new InputNode(this));
+        this.inputs.push(new InputNode(this));
+        this.inputs.push(new InputNode(this));
+    }
+
+    draw() {
+        super.draw();
+
+        const center = Vec.add(this.anim_pos, Vec.mult(this.anim_size, .5));
+
+        context.beginPath();
+        context.moveTo(center.x+1.10060587, center.y-2.35815000);
+        context.lineTo(center.x+1.64585493, center.y-3.09285000);
+        context.lineTo(center.x-1.17900964, center.y-3.09285000);
+        context.lineTo(center.x-0.74465870, center.y-2.35815000);
+        context.fillStyle = this.inputs[0].state ? config.colors.segment_active : config.colors.segment_inactive;
+        context.fill();
+
+        context.beginPath();
+        context.moveTo(center.x+1.02849056, center.y-0.43845000);
+        context.lineTo(center.x+1.52037735, center.y-0.04740000);
+        context.lineTo(center.x+1.73367735, center.y-0.04740000);
+        context.lineTo(center.x+1.94598649, center.y-2.86049605);
+        context.lineTo(center.x+1.74090353, center.y-3.06740081);
+        context.lineTo(center.x+1.16871308, center.y-2.29639843);
+        context.fillStyle = this.inputs[1].state ? config.colors.segment_active : config.colors.segment_inactive;
+        context.fill();
+
+        context.beginPath();
+        context.moveTo(center.x+0.96230943, center.y+0.43845000);
+        context.lineTo(center.x+1.51322264, center.y+0.04740000);
+        context.lineTo(center.x+1.72652264, center.y+0.04740000);
+        context.lineTo(center.x+1.51421350, center.y+2.86049605);
+        context.lineTo(center.x+1.27789963, center.y+3.06740081);
+        context.lineTo(center.x+0.82208691, center.y+2.29639843);
+        context.fillStyle = this.inputs[2].state ? config.colors.segment_active : config.colors.segment_inactive;
+        context.fill();
+
+        context.beginPath();
+        context.moveTo(center.x+0.74465870, center.y+2.35815000);
+        context.lineTo(center.x+1.17900964, center.y+3.09285000);
+        context.lineTo(center.x-1.64585493, center.y+3.09285000);
+        context.lineTo(center.x-1.10060587, center.y+2.35815000);
+        context.fillStyle = this.inputs[3].state ? config.colors.segment_active : config.colors.segment_inactive;
+        context.fill();
+
+        context.beginPath();
+        context.moveTo(center.x-1.02849056, center.y+0.43845000);
+        context.lineTo(center.x-1.52037735, center.y+0.04740000);
+        context.lineTo(center.x-1.73367735, center.y+0.04740000);
+        context.lineTo(center.x-1.94598649, center.y+2.86049605);
+        context.lineTo(center.x-1.74090353, center.y+3.06740081);
+        context.lineTo(center.x-1.16871308, center.y+2.29639843);
+        context.fillStyle = this.inputs[4].state ? config.colors.segment_active : config.colors.segment_inactive;
+        context.fill();
+
+        context.beginPath();
+        context.moveTo(center.x-0.96230943, center.y-0.43845000);
+        context.lineTo(center.x-1.51322264, center.y-0.04740000);
+        context.lineTo(center.x-1.72652264, center.y-0.04740000);
+        context.lineTo(center.x-1.51421350, center.y-2.86049605);
+        context.lineTo(center.x-1.27789963, center.y-3.06740081);
+        context.lineTo(center.x-0.82208691, center.y-2.29639843);
+        context.fillStyle = this.inputs[5].state ? config.colors.segment_active : config.colors.segment_inactive;
+        context.fill();
+
+        context.beginPath();
+        context.moveTo(center.x+1.42200000, center.y+0.00000000);
+        context.lineTo(center.x+0.90447547, center.y+0.36735000);
+        context.lineTo(center.x-0.95992452, center.y+0.36735000);
+        context.lineTo(center.x-1.42200000, center.y+0.00000000);
+        context.lineTo(center.x-0.90447547, center.y-0.36735000);
+        context.lineTo(center.x+0.95992452, center.y-0.36735000);
+        context.fillStyle = this.inputs[6].state ? config.colors.segment_active : config.colors.segment_inactive;
+        context.fill();
+    }
+}

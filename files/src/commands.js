@@ -93,7 +93,7 @@ const commands = [
         name: 'add-segment-display',
         shortcuts: [],
         command: function() {
-            // controller.init_element(new SegmentDisplay);
+            controller.init_element(new SegmentDisplay);
         },
     },
     {
