@@ -23,16 +23,8 @@ let global = {
     Y: 0b10,
 };
 
-let config = {
-    scale_factor: 1.14,
-    camera_anim_factor: .3574,
-    camera_motion_anim_factor: .0571,
-    camera_motion_falloff_factor: .9125,
-    anim_factor: .39,
-    ticks_per_iteration: 1+1e2,
-    block_unused_key_combinations: false,
-
-    colors_light: {
+let theme = {
+    light: {
         background: '#0000',
         grid: '#aaa7',
         light_inactive: '#fff4',
@@ -48,7 +40,7 @@ let config = {
         selection_fill: '#17d3',
         selection_outline: '#39fa',
     },
-    colors_dark: {
+    dark: {
         background: '#000',
         grid: '#aff3',
         light_inactive: '#0007',
@@ -64,6 +56,17 @@ let config = {
         selection_fill: '#17d3',
         selection_outline: '#39fa',
     },
+};
+
+let config = {
+    scale_factor: 1.14,
+    camera_anim_factor: .3574,
+    camera_motion_anim_factor: .0571,
+    camera_motion_falloff_factor: .9125,
+    anim_factor: .39,
+    ticks_per_iteration: 1+1e2,
+    block_unused_key_combinations: false,
+
     colors: null,
     grid_style: grid_style.dots,
 };
