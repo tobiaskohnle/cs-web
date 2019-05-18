@@ -29,7 +29,7 @@ class Camera {
         this.anim_abs_pos.add(Vec.sub(this.abs_pos, this.anim_abs_pos).mult(config.camera_anim_factor));
 
         this.anim_pos.add(Vec.sub(this.pos, this.anim_pos).mult(config.camera_anim_factor));
-        this.anim_scale += (this.scale-this.anim_scale) * config.camera_anim_factor;
+        this.anim_scale = anim_interpolate(this.anim_scale, this.scale, config.camera_anim_factor);
     }
 
     move(vec) {

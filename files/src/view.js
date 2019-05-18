@@ -150,9 +150,9 @@ function screen_center() {
     return new Vec(canvas.width/2, canvas.height/2);
 }
 
-function anim_interpolate(value, target) {
-    return value + (target-value) * config.anim_factor;
+function anim_interpolate(value, target, factor=config.anim_factor) {
+    return value + (target-value) * factor;
 }
-function anim_interpolate_vec(value, target) {
-    return Vec.add(value, Vec.mult(Vec.sub(target, value), config.anim_factor));
+function anim_interpolate_vec(value, target, factor=config.anim_factor) {
+    return Vec.add(value, Vec.mult(Vec.sub(target, value), factor));
 }
