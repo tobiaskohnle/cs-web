@@ -46,6 +46,9 @@ class Model {
     selected_elements_array() {
         return Array.from(this.selected_elements);
     }
+    first_selected_element() {
+        return this.selected_elements_array()[0] || null;
+    }
     // /TEMP
 
     elements() {
@@ -73,7 +76,9 @@ class Model {
 
     update_all_last_pos() {
         for (const element of this.elements()) {
-            element.update_last_pos();
+            if (element instanceof Gate) {
+                element.update_last_pos();
+            }
         }
     }
 

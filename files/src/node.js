@@ -4,6 +4,9 @@ class ConnectionNode extends Element {
     constructor(dir, parent) {
         super();
 
+        this.pos = new Vec;
+        this.anim_pos = new Vec;
+
         this.dir = dir;
         this.parent = parent;
 
@@ -14,12 +17,15 @@ class ConnectionNode extends Element {
         this.is_inverted = false;
     }
 
-    update() {}
+    update() {
+        this.anim_pos = anim_interpolate_vec(this.anim_pos, this.pos);
+    }
 
     move(vec) {}
 
     previous_node() {
         return get_all_inner_elements(model.main_gate)
+            .filter(element => element instanceof Gate)
             .flatMap(gate => [...gate.inputs, ...gate.outputs])
             .find(node => node.next_nodes && node.next_nodes.includes(this));
     }

@@ -10,9 +10,11 @@ class Controller {
         this.mouse_movement = new Vec;
         this.mouse_world_movement = new Vec;
         this.abs_mouse_movement = new Vec;
-        this.mouse_move_state = mouse_move_state.update_hovered_element;
+        this.current_action = current_action.update_hovered_element;
         this.hovered_element = null;
+
         this.wire_start_node = null;
+        this.new_wire_segments = [];
 
         this.previous_main_gate = null;
     }
@@ -63,18 +65,18 @@ class Controller {
             model.select(this.current_hovered_element);
 
             if (this.hovered_element == null) {
-                this.mouse_move_state = mouse_move_state.creating_selection_box;
+                this.current_action = current_action.creating_selection_box;
             }
             else if (this.hovered_element instanceof ConnectionNode) {
-                this.mouse_move_state = mouse_move_state.creating_wire;
+                this.current_action = current_action.creating_wire;
                 this.wire_start_node = this.hovered_element;
             }
             else {
-                this.mouse_move_state = mouse_move_state.moving_elements;
+                this.current_action = current_action.moving_elements;
             }
         }
         else {
-            this.mouse_move_state = mouse_move_state.move_screen;
+            this.current_action = current_action.move_screen;
         }
     }
 
@@ -95,14 +97,14 @@ class Controller {
 
         this.mouse_world_movement.add(Vec.div(move_vec, camera.anim_scale));
 
-        switch (this.mouse_move_state) {
-            case mouse_move_state.update_hovered_element:
+        switch (this.current_action) {
+            case current_action.update_hovered_element:
                 this.current_hovered_element = this.hovered_element;
                 break;
-            case mouse_move_state.move_screen:
+            case current_action.move_screen:
                 camera.move(move_vec);
                 break;
-            case mouse_move_state.creating_wire:
+            case current_action.creating_wire:
                 model.main_gate = deep_copy(this.previous_main_gate);
                 this.wire_start_node = model.get_element_at(this.wire_start_node.pos);
                 this.hovered_element = this.hovered_element ? model.get_element_at(this.hovered_element.pos) : null;
@@ -111,7 +113,7 @@ class Controller {
                     model.connect_nodes(this.wire_start_node, this.hovered_element);
                 }
                 break;
-            case mouse_move_state.creating_selection_box:
+            case current_action.creating_selection_box:
                 // TEMP
                 if (!(event.ctrlKey || event.shiftKey)) {
                     model.deselect_all();
@@ -121,7 +123,7 @@ class Controller {
                     model.select(element);
                 }
                 break;
-            case mouse_move_state.moving_elements:
+            case current_action.moving_elements:
                 model.move_selected_elements(world_move_vec, this.mouse_world_movement);
                 break;
         }
@@ -137,8 +139,8 @@ class Controller {
             model.queue_tick(this.hovered_element.outputs[0]);
         }
 
-        switch (this.mouse_move_state) {
-            case mouse_move_state.move_screen:
+        switch (this.current_action) {
+            case current_action.move_screen:
                 if (!controller.mouse_moved()) {
                     model.deselect_all();
                     model.select(this.hovered_element);
@@ -146,7 +148,7 @@ class Controller {
                 break;
         }
 
-        this.mouse_move_state = mouse_move_state.update_hovered_element;
+        this.current_action = current_action.update_hovered_element;
 
         this.mouse_movement = new Vec;
         this.mouse_world_movement = new Vec;

@@ -34,7 +34,7 @@ function draw() {
         gate.draw();
     }
 
-    if (controller.mouse_move_state == mouse_move_state.creating_wire) {
+    if (controller.current_action == current_action.creating_wire) {
         console.assert(controller.wire_start_node);
 
         draw_wire(
@@ -45,7 +45,7 @@ function draw() {
 
     context.restore();
 
-    if (controller.mouse_move_state == mouse_move_state.creating_selection_box) {
+    if (controller.current_action == current_action.creating_selection_box) {
         draw_selection_rect(
             controller.mousedown_mouse_pos,
             controller.mouse_pos,
@@ -151,5 +151,8 @@ function screen_center() {
 }
 
 function anim_interpolate(value, target) {
+    return value + (target-value) * config.anim_factor;
+}
+function anim_interpolate_vec(value, target) {
     return Vec.add(value, Vec.mult(Vec.sub(target, value), config.anim_factor));
 }

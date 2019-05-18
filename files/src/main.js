@@ -5,12 +5,13 @@ let context;
 
 let camera;
 
-let mouse_move_state = {
-    update_hovered_element: Symbol('mouse_move_state_update_hovered_element'),
-    move_screen:            Symbol('mouse_move_state_move_screen'),
-    creating_wire:          Symbol('mouse_move_state_creating_wire'),
-    creating_selection_box: Symbol('mouse_move_state_creating_selection_box'),
-    moving_elements:        Symbol('mouse_move_state_moving_elements'),
+let current_action = {
+    update_hovered_element: Symbol('current_action_update_hovered_element'),
+    move_screen:            Symbol('current_action_move_screen'),
+    creating_wire:          Symbol('current_action_creating_wire'),
+    creating_wire_segment:  Symbol('current_action_creating_wire_segment'),
+    creating_selection_box: Symbol('current_action_creating_selection_box'),
+    moving_elements:        Symbol('current_action_moving_elements'),
 };
 let grid_style = {
     none:   Symbol('grid_style_none'),

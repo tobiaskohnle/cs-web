@@ -1,11 +1,16 @@
 'use strict';
 
 class Gate extends Element {
-    constructor(pos, size=new Vec(3,4), tag=null) {
-        console.assert(new.target != Gate, 'illegal constructor @Gate');
+    constructor(pos=new Vec, size=new Vec(3,4), tag=null) {
+        console.assert(new.target != Gate, 'illegal constructor @Gate.constructor');
 
-        super(pos);
+        super();
+        this.pos = pos;
         this.size = size;
+        this.anim_pos = Vec.copy(pos);
+        this.anim_size = Vec.copy(size);
+
+        this.last_pos = Vec.copy(pos);
 
         this.label = null;
         this.tag = tag;
@@ -14,15 +19,6 @@ class Gate extends Element {
         this.outputs = [];
 
         this.update();
-
-        this.cancel_animation();
-
-        for (const input of this.inputs) {
-            input.cancel_animation();
-        }
-        for (const output of this.outputs) {
-            output.cancel_animation();
-        }
     }
 
     clear_nodes() {
@@ -34,33 +30,29 @@ class Gate extends Element {
         }
     }
 
+    update_last_pos() {
+        this.last_pos.set(this.pos);
+    }
+
     update_nodes(nodes, offset) {
         let i = 0;
 
         for (const node of nodes) {
             const unit = this.size.y / nodes.length / 2;
-            const y = this.pos.y + unit*(1 + i++*2);
+            const y = this.pos.y + unit * (1 + i++*2);
 
             node.pos = new Vec(this.pos.x+offset, y);
-
-            // temp
-            // node.update();
-            Element.prototype.update.call(node);
         }
     }
 
     update() {
-        super.update();
+        super.update_pos();
+        super.update_size();
 
         this.update_nodes(this.inputs, 0);
         this.update_nodes(this.outputs, this.size.x);
 
-        if (!this.anim_size) {
-            this.anim_size = new Vec();
-            this.anim_size.set(this.size);
-            return;
-        }
-        this.anim_size = anim_interpolate(this.anim_size, this.size);
+        this.anim_size = anim_interpolate_vec(this.anim_size, this.size);
     }
 
     hitbox_rect() {
