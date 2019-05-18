@@ -283,14 +283,14 @@ const commands = [
         name: 'theme-dark',
         shortcuts: [],
         command: function() {
-            select_theme(config.colors_dark);
+            select_theme(theme.dark);
         },
     },
     {
         name: 'theme-light',
         shortcuts: [],
         command: function() {
-            select_theme(config.colors_light);
+            select_theme(theme.light);
         },
     },
     {
