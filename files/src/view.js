@@ -3,13 +3,13 @@
 function update() {
     requestAnimationFrame(update);
 
-    camera.update();
+    current_tab.camera.update();
 
     for (let i = 0; i < config.ticks_per_iteration; i++) {
-        model.tick();
+        current_tab.model.tick();
     }
 
-    model.update();
+    current_tab.model.update();
 
     draw();
 }
@@ -28,27 +28,27 @@ function draw() {
             break;
     }
 
-    camera.transform_canvas();
+    current_tab.camera.transform_canvas();
 
-    for (const gate of model.main_gate.inner_elements) {
+    for (const gate of current_tab.model.main_gate.inner_elements) {
         gate.draw();
     }
 
-    if (controller.current_action == current_action.create_wire) {
-        console.assert(controller.wire_start_node);
+    if (current_tab.controller.current_action == current_action.create_wire) {
+        console.assert(current_tab.controller.wire_start_node);
 
         draw_wire(
-            Vec.add(controller.wire_start_node.pos, new Vec(controller.wire_start_node.dir,0)),
-            controller.mouse_world_pos,
+            Vec.add(current_tab.controller.wire_start_node.pos, new Vec(current_tab.controller.wire_start_node.dir,0)),
+            current_tab.controller.mouse_world_pos,
         );
     }
 
     context.restore();
 
-    if (controller.current_action == current_action.create_selection_box) {
+    if (current_tab.controller.current_action == current_action.create_selection_box) {
         draw_selection_rect(
-            controller.mousedown_mouse_pos,
-            controller.mouse_pos,
+            current_tab.controller.mousedown_mouse_pos,
+            current_tab.controller.mouse_pos,
         );
     }
 }
@@ -78,8 +78,8 @@ function draw_dot_grid() {
     context.globalAlpha = alpha;
     context.fillStyle = config.colors.grid;
 
-    for (let x = mod(camera.anim_pos.x, camera.anim_scale); x < canvas.width; x += camera.anim_scale) {
-        for (let y = mod(camera.anim_pos.y, camera.anim_scale); y < canvas.height; y += camera.anim_scale) {
+    for (let x = mod(current_tab.camera.anim_pos.x, current_tab.camera.anim_scale); x < canvas.width; x += current_tab.camera.anim_scale) {
+        for (let y = mod(current_tab.camera.anim_pos.y, current_tab.camera.anim_scale); y < canvas.height; y += current_tab.camera.anim_scale) {
             context.fillRect(x-1|0, y-1|0, 2, 2);
         }
     }
@@ -98,11 +98,11 @@ function draw_lines_grid() {
     context.strokeStyle = config.colors.grid;
     context.globalAlpha = alpha;
 
-    for (let x = mod(camera.anim_pos.x, camera.anim_scale); x < canvas.width; x += camera.anim_scale) {
+    for (let x = mod(current_tab.camera.anim_pos.x, current_tab.camera.anim_scale); x < canvas.width; x += current_tab.camera.anim_scale) {
         context.moveTo(x|0, 0);
         context.lineTo(x|0, canvas.height);
     }
-    for (let y = mod(camera.anim_pos.y, camera.anim_scale); y < canvas.height; y += camera.anim_scale) {
+    for (let y = mod(current_tab.camera.anim_pos.y, current_tab.camera.anim_scale); y < canvas.height; y += current_tab.camera.anim_scale) {
         context.moveTo(0, y|0);
         context.lineTo(canvas.width, y|0);
     }
@@ -143,7 +143,7 @@ function draw_wire(start_pos, end_pos, is_active=false) {
 }
 
 function grid_alpha() {
-    return map(camera.anim_scale, 10, 4, 1, 0);
+    return map(current_tab.camera.anim_scale, 10, 4, 1, 0);
 }
 
 function screen_center() {

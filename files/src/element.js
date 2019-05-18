@@ -6,7 +6,7 @@ class Element {
     }
 
     is_selected() {
-        return model.selected_elements.has(this);
+        return current_tab.model.selected_elements.has(this);
     }
 
     cancel_animation() {

@@ -24,7 +24,7 @@ class ConnectionNode extends Element {
     move(vec) {}
 
     previous_node() {
-        return get_all_inner_elements(model.main_gate)
+        return get_all_inner_elements(current_tab.model.main_gate)
             .filter(element => element instanceof Gate)
             .flatMap(gate => [...gate.inputs, ...gate.outputs])
             .find(node => node.next_nodes && node.next_nodes.includes(this));
@@ -32,7 +32,7 @@ class ConnectionNode extends Element {
 
     invert() {
         this.is_inverted = !this.is_inverted;
-        model.queue_tick(this);
+        current_tab.model.queue_tick(this);
     }
 
     distance(pos) {
@@ -63,7 +63,7 @@ class ConnectionNode extends Element {
 
         context.strokeStyle = draw_line_active ? config.colors.wire_active : config.colors.wire_inactive;
 
-        const is_hovered = this == controller.current_hovered_element;
+        const is_hovered = this == current_tab.controller.current_hovered_element;
 
         if (is_hovered) {
             context.strokeStyle = config.colors.hovered;
@@ -112,7 +112,7 @@ class InputNode extends ConnectionNode {
         if (!this.is_empty()) {
             this.previous_node().next_nodes.remove(this);
         }
-        model.queue_tick(this);
+        current_tab.model.queue_tick(this);
     }
 
     draw() {
@@ -141,7 +141,7 @@ class OutputNode extends ConnectionNode {
 
     clear() {
         for (const next_node of this.next_nodes) {
-            model.queue_tick(next_node);
+            current_tab.model.queue_tick(next_node);
         }
         this.next_nodes = [];
     }

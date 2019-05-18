@@ -44,14 +44,14 @@ const commands = [
         name: 'add-and-gate',
         shortcuts: [],
         command: function() {
-            controller.init_element(new AndGate);
+            current_tab.controller.init_element(new AndGate);
         },
     },
     {
         name: 'add-input-node',
         shortcuts: [new KeyCombination(187, '+', KeyCombination.Modifier_Ctrl|KeyCombination.Modifier_Shift)],
         command: function() {
-            for (const element of model.selected_elements) {
+            for (const element of current_tab.model.selected_elements) {
                 if (element instanceof Gate) {
                     element.inputs.push(new InputNode(element));
                 }
@@ -62,7 +62,7 @@ const commands = [
         name: 'add-input-switch',
         shortcuts: [],
         command: function() {
-            controller.init_element(new InputSwitch);
+            current_tab.controller.init_element(new InputSwitch);
         },
     },
     {
@@ -70,7 +70,7 @@ const commands = [
         shortcuts: [],
         command: function() {
             let nop_gate = new NopGate;
-            controller.init_element(nop_gate);
+            current_tab.controller.init_element(nop_gate);
 
             nop_gate.outputs[0].is_inverted = true;
         },
@@ -79,21 +79,21 @@ const commands = [
         name: 'add-or-gate',
         shortcuts: [],
         command: function() {
-            controller.init_element(new OrGate);
+            current_tab.controller.init_element(new OrGate);
         },
     },
     {
         name: 'add-output-light',
         shortcuts: [],
         command: function() {
-            controller.init_element(new OutputLight);
+            current_tab.controller.init_element(new OutputLight);
         },
     },
     {
         name: 'add-segment-display',
         shortcuts: [],
         command: function() {
-            controller.init_element(new SegmentDisplay);
+            current_tab.controller.init_element(new SegmentDisplay);
         },
     },
     {
@@ -118,22 +118,22 @@ const commands = [
         name: 'copy',
         shortcuts: [new KeyCombination(67, 'c', KeyCombination.Modifier_Ctrl)],
         command: function() {
-            controller.copy_selected_elements();
+            current_tab.controller.copy_selected_elements();
         },
     },
     {
         name: 'cut',
         shortcuts: [new KeyCombination(88, 'x', KeyCombination.Modifier_Ctrl)],
         command: function() {
-            controller.copy_selected_elements();
-            model.delete_selected_elements();
+            current_tab.controller.copy_selected_elements();
+            current_tab.model.delete_selected_elements();
         },
     },
     {
         name: 'delete',
         shortcuts: [new KeyCombination(46, 'delete', KeyCombination.Modifier_None)],
         command: function() {
-            model.delete_selected_elements();
+            current_tab.model.delete_selected_elements();
         },
     },
     {
@@ -141,7 +141,7 @@ const commands = [
         shortcuts: [new KeyCombination(27, 'escape', KeyCombination.Modifier_None)],
         command: function() {
             close_menu();
-            model.deselect_all();
+            current_tab.model.deselect_all();
         },
     },
     {
@@ -176,9 +176,9 @@ const commands = [
         name: 'import',
         shortcuts: [new KeyCombination(73, 'i', KeyCombination.Modifier_Ctrl)],
         command: function() {
-            controller.read_files(function(result) {
-                controller.create_custom_gate(edit_after_parse(JSON.parse(result)));
-                model.tick_all();
+            current_tab.controller.read_files(function(result) {
+                current_tab.controller.create_custom_gate(edit_after_parse(JSON.parse(result)));
+                current_tab.model.tick_all();
             });
         },
     },
@@ -186,26 +186,26 @@ const commands = [
         name: 'invert',
         shortcuts: [new KeyCombination(73, 'i', KeyCombination.Modifier_Ctrl|KeyCombination.Modifier_Shift)],
         command: function() {
-            model.invert_selected_connection_nodes();
+            current_tab.model.invert_selected_connection_nodes();
         },
     },
     {
         name: 'new',
         shortcuts: [new KeyCombination(78, 'n', KeyCombination.Modifier_Ctrl|KeyCombination.Modifier_Shift)],
         command: function() {
-            controller = new Controller();
-            model = new Model();
+            current_tab.controller = new Controller();
+            current_tab.model = new Model();
 
-            controller.reset_view();
+            current_tab.controller.reset_view();
         },
     },
     {
         name: 'open-file',
         shortcuts: [new KeyCombination(79, 'o', KeyCombination.Modifier_Ctrl)],
         command: function() {
-            controller.read_files(function(result) {
-                model.main_gate = edit_after_parse(JSON.parse(result));
-                model.tick_all();
+            current_tab.controller.read_files(function(result) {
+                current_tab.model.main_gate = edit_after_parse(JSON.parse(result));
+                current_tab.model.tick_all();
             });
         },
     },
@@ -219,7 +219,7 @@ const commands = [
         name: 'paste',
         shortcuts: [new KeyCombination(86, 'v', KeyCombination.Modifier_Ctrl)],
         command: function() {
-            controller.paste_copied_elements();
+            current_tab.controller.paste_copied_elements();
         },
     },
     {
@@ -235,12 +235,12 @@ const commands = [
         name: 'reload',
         shortcuts: [new KeyCombination(82, 'r', KeyCombination.Modifier_Ctrl)],
         command: function() {
-            const file_string = controller.get_file_string();
+            const file_string = current_tab.controller.get_file_string();
 
-            controller = new Controller;
-            model = new Model;
+            current_tab.controller = new Controller;
+            current_tab.model = new Model;
 
-            model.main_gate = edit_after_parse(JSON.parse(file_string));
+            current_tab.model.main_gate = edit_after_parse(JSON.parse(file_string));
         },
     },
     {
@@ -253,14 +253,14 @@ const commands = [
         name: 'reset-view',
         shortcuts: [],
         command: function() {
-            controller.reset_view();
+            current_tab.controller.reset_view();
         },
     },
     {
         name: 'save',
         shortcuts: [new KeyCombination(83, 's', KeyCombination.Modifier_Ctrl)],
         command: function() {
-            download_string(controller.get_file_string(), 'file.circ');
+            download_string(current_tab.controller.get_file_string(), 'file.circ');
         },
     },
     {
@@ -269,14 +269,14 @@ const commands = [
         command: function() {
             let file_name = prompt('Save file as...', 'file.circ');
             file_name = file_name.endsWith('.circ') ? file_name : `${file_name}.circ`;
-            download_string(controller.get_file_string(), file_name);
+            download_string(current_tab.controller.get_file_string(), file_name);
         },
     },
     {
         name: 'select-all',
         shortcuts: [new KeyCombination(65, 'a', KeyCombination.Modifier_Ctrl)],
         command: function() {
-            model.select_all();
+            current_tab.model.select_all();
         },
     },
     {

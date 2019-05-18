@@ -3,7 +3,7 @@
 let canvas;
 let context;
 
-let camera;
+let current_tab;
 
 let current_action = {
     update_hovered_element: Symbol('current_action_update_hovered_element'),
@@ -80,9 +80,6 @@ function select_theme(colors) {
     document.querySelector('.sidebar').style.background = colors.background;
 }
 
-let controller;
-let model;
-
 onload = function() {
     canvas = document.querySelector('canvas');
     context = canvas.getContext('2d');
@@ -90,10 +87,7 @@ onload = function() {
 
     select_theme(theme.dark);
 
-    camera = new Camera(new Vec, 30);
-
-    controller = new Controller;
-    model = new Model;
+    current_tab = new Tab;
 
     add_menu_event_listeners();
 
@@ -110,23 +104,23 @@ onresize = function() {
 onkeydown = function(event) {
     if (event.key.match(/F([1-9]|1[0-2])/)) return;
 
-    return controller.event_key_down(event);
+    return current_tab.controller.event_key_down(event);
 }
 
 onmousedown = function(event) {
     menu_click(event.path || event.composedPath());
 
     if (event.target == canvas) {
-        controller.event_mouse_down(event);
+        current_tab.controller.event_mouse_down(event);
     }
 }
 
 onmousemove = function(event) {
-    controller.event_mouse_move(event);
+    current_tab.controller.event_mouse_move(event);
 }
 
 onmouseup = function(event) {
-    controller.event_mouse_up(event);
+    current_tab.controller.event_mouse_up(event);
 }
 
 document.documentElement.addEventListener(
@@ -135,7 +129,7 @@ document.documentElement.addEventListener(
         close_menu();
 
         const scale_factor = event.deltaY < 0 ? config.scale_factor : 1/config.scale_factor;
-        camera.scale_at(controller.mouse_pos, scale_factor);
+        current_tab.camera.scale_at(current_tab.controller.mouse_pos, scale_factor);
 
         event.preventDefault();
         return false;
@@ -144,7 +138,7 @@ document.documentElement.addEventListener(
 );
 
 oncontextmenu = function(event) {
-    if (!controller.mouse_moved()) {
+    if (!current_tab.controller.mouse_moved()) {
         open_menu('context-menu', event.x, event.y);
     }
     return false;

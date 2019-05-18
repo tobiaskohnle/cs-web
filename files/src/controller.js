@@ -1,7 +1,9 @@
 'use strict';
 
 class Controller {
-    constructor() {
+    constructor(model) {
+        this.model = model;
+
         this.open_menu_stack = [];
         this.mousedown_mouse_pos = new Vec;
         this.mousedown_mouse_world_pos = new Vec;
@@ -38,7 +40,7 @@ class Controller {
 
         this.element_moved = false;
 
-        this.previous_main_gate = deep_copy(model.main_gate);
+        this.previous_main_gate = deep_copy(this.model.main_gate);
 
         if ((event.detail-1) & 1) {
             if (this.hovered_element instanceof ConnectionNode) {
@@ -47,10 +49,10 @@ class Controller {
             }
         }
 
-        model.update_all_last_pos();
+        this.model.update_all_last_pos();
 
         this.mousedown_mouse_pos = new Vec(event.x-canvas.offsetLeft, event.y-canvas.offsetTop);
-        this.mousedown_mouse_world_pos = camera.to_worldspace(this.mousedown_mouse_pos);
+        this.mousedown_mouse_world_pos = current_tab.camera.to_worldspace(this.mousedown_mouse_pos);
 
         this.mouse_movement = new Vec;
         this.mouse_world_movement = new Vec;
@@ -59,11 +61,11 @@ class Controller {
         if (event.buttons == 1) {
             if (!(event.ctrlKey || event.shiftKey)) {
                 if (!this.hovered_element || !this.hovered_element.is_selected()) {
-                    model.deselect_all();
+                    this.model.deselect_all();
                 }
             }
 
-            model.select(this.current_hovered_element);
+            this.model.select(this.current_hovered_element);
 
             if (this.hovered_element == null) {
                 this.current_action = current_action.create_selection_box;
@@ -83,50 +85,50 @@ class Controller {
 
     event_mouse_move(event) {
         this.mouse_pos = new Vec(event.x-canvas.offsetLeft, event.y-canvas.offsetTop);
-        this.mouse_world_pos = camera.to_worldspace(this.mouse_pos);
+        this.mouse_world_pos = current_tab.camera.to_worldspace(this.mouse_pos);
 
-        this.hovered_element = model.get_element_at(this.mouse_world_pos);
+        this.hovered_element = this.model.get_element_at(this.mouse_world_pos);
 
         this.element_moved = this.element_moved
             || !Vec.sub(this.mouse_world_pos, this.mousedown_mouse_world_pos).round().equals(new Vec);
 
         const move_vec = new Vec(event.movementX, event.movementY);
-        const world_move_vec = Vec.div(move_vec, camera.anim_scale);
+        const world_move_vec = Vec.div(move_vec, current_tab.camera.anim_scale);
 
         this.mouse_movement.add(move_vec);
         this.abs_mouse_movement.add(Vec.abs(move_vec));
 
-        this.mouse_world_movement.add(Vec.div(move_vec, camera.anim_scale));
+        this.mouse_world_movement.add(Vec.div(move_vec, current_tab.camera.anim_scale));
 
         switch (this.current_action) {
             case current_action.update_hovered_element:
                 this.current_hovered_element = this.hovered_element;
                 break;
             case current_action.move_screen:
-                camera.move(move_vec);
+                current_tab.camera.move(move_vec);
                 break;
             case current_action.create_wire:
-                // model.main_gate = deep_copy(this.previous_main_gate);
+                // this.model.main_gate = deep_copy(this.previous_main_gate);
                 // !!!
-                this.wire_start_node = model.get_element_at(this.wire_start_node.pos);
-                this.hovered_element = this.hovered_element ? model.get_element_at(this.hovered_element.pos) : null;
+                this.wire_start_node = this.model.get_element_at(this.wire_start_node.pos);
+                this.hovered_element = this.hovered_element ? this.model.get_element_at(this.hovered_element.pos) : null;
 
                 if (this.hovered_element instanceof ConnectionNode) {
-                    model.connect_nodes(this.wire_start_node, this.hovered_element);
+                    this.model.connect_nodes(this.wire_start_node, this.hovered_element);
                 }
                 break;
             case current_action.create_selection_box:
                 // TEMP
                 if (!(event.ctrlKey || event.shiftKey)) {
-                    model.deselect_all();
+                    this.model.deselect_all();
                 }
                 // /TEMP
-                for (const element of model.get_elements_in_selection_box()) {
-                    model.select(element);
+                for (const element of this.get_elements_in_selection_rect()) {
+                    this.model.select(element);
                 }
                 break;
             case current_action.move_elements:
-                model.move_selected_elements(world_move_vec, this.mouse_world_movement);
+                this.model.move_selected_elements(world_move_vec, this.mouse_world_movement);
                 break;
         }
     }
@@ -134,18 +136,18 @@ class Controller {
     event_mouse_up(e) {
         this.mouse_down = false;
 
-        this.previous_main_gate = deep_copy(model.main_gate);
+        this.previous_main_gate = deep_copy(this.model.main_gate);
 
         if (!this.element_moved && this.hovered_element instanceof InputSwitch) {
             this.hovered_element.toggle();
-            model.queue_tick(this.hovered_element.outputs[0]);
+            this.model.queue_tick(this.hovered_element.outputs[0]);
         }
 
         switch (this.current_action) {
             case current_action.move_screen:
-                if (!controller.mouse_moved()) {
-                    model.deselect_all();
-                    model.select(this.hovered_element);
+                if (!this.mouse_moved()) {
+                    this.model.deselect_all();
+                    this.model.select(this.hovered_element);
                 }
                 this.current_action = current_action.update_hovered_element;
                 break;
@@ -162,7 +164,11 @@ class Controller {
         this.mouse_movement = new Vec;
         this.mouse_world_movement = new Vec;
 
-        model.update_all_last_pos();
+        this.model.update_all_last_pos();
+    }
+
+    get_elements_in_selection_rect() {
+        return this.model.get_elements_in_rect(this.mouse_world_pos, this.selection_size());
     }
 
     read_files(onload) {
@@ -190,35 +196,35 @@ class Controller {
     }
 
     copy_selected_elements() {
-        controller.clipboard = JSON.stringify(
-            prepare_for_stringify(deep_copy(Array.from(model.selected_elements)))
+        this.clipboard = JSON.stringify(
+            prepare_for_stringify(deep_copy(Array.from(this.model.selected_elements)))
         );
     }
     paste_copied_elements() {
-        if (!controller.clipboard) {
+        if (!this.clipboard) {
             return;
         }
 
-        model.deselect_all();
+        this.model.deselect_all();
 
-        const copied_elements = edit_after_parse(JSON.parse(controller.clipboard));
+        const copied_elements = edit_after_parse(JSON.parse(this.clipboard));
         remove_loose_connections(copied_elements);
 
         const top_left_pos = get_bounding_rect(copied_elements).pos;
 
         for (const copied_element of copied_elements) {
-            model.add(copied_element);
+            this.model.add(copied_element);
 
             const relative_pos = Vec.sub(copied_element.pos, top_left_pos);
             copied_element.pos.set(Vec.add(relative_pos, this.mouse_world_pos)).round();
 
-            model.select(copied_element);
+            this.model.select(copied_element);
         }
     }
 
     get_file_string() {
         return JSON.stringify(
-            prepare_for_stringify(deep_copy(model.main_gate)),
+            prepare_for_stringify(deep_copy(this.model.main_gate)),
             function(key, value) {
                 if (key == 'anim_pos' || key == 'last_pos') {
                     return;
@@ -236,7 +242,7 @@ class Controller {
     init_element(gate) {
         gate.pos.set(this.mousedown_mouse_world_pos).round();
         gate.cancel_animation();
-        model.add(gate);
+        this.model.add(gate);
     }
 
     create_custom_gate(gate) {
@@ -267,7 +273,7 @@ class Controller {
     }
 
     reset_view() {
-        camera.reset();
+        current_tab.camera.reset();
     }
 
     mouse_moved() {

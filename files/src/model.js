@@ -121,7 +121,7 @@ class Model {
     }
 
     select_all() {
-        for (const element of model.elements()) {
+        for (const element of this.elements()) {
             this.selected_elements.add(element);
         }
     }
@@ -188,10 +188,6 @@ class Model {
         }
 
         return elements_in_rect;
-    }
-
-    get_elements_in_selection_box() {
-        return this.get_elements_in_rect(controller.mouse_world_pos, controller.selection_size());
     }
 
     connect_nodes(start_node, end_node) {

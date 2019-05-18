@@ -96,25 +96,25 @@ function open_menu(menu, x, y) {
 
     let menu_is_enabled = false;
 
-    while (controller.open_menu_stack.length) {
-        if (controller.open_menu_stack.last() == menu_element) {
+    while (current_tab.controller.open_menu_stack.length) {
+        if (current_tab.controller.open_menu_stack.last() == menu_element) {
             menu_is_enabled = true;
         }
 
-        if (controller.open_menu_stack.last() == parent_element) {
+        if (current_tab.controller.open_menu_stack.last() == parent_element) {
             break;
         }
 
-        set_menu_element_enabled(controller.open_menu_stack.last(), false);
-        controller.open_menu_stack.pop();
+        set_menu_element_enabled(current_tab.controller.open_menu_stack.last(), false);
+        current_tab.controller.open_menu_stack.pop();
     }
 
     set_menu_element_enabled(menu_element, !menu_is_enabled, x, y);
     if (!menu_is_enabled) {
-        controller.open_menu_stack.push(menu_element);
+        current_tab.controller.open_menu_stack.push(menu_element);
     }
     else {
-        controller.open_menu_stack.remove(menu_element);
+        current_tab.controller.open_menu_stack.remove(menu_element);
     }
 }
 
@@ -167,11 +167,11 @@ function set_menu_element_enabled(menu_element, enabled, x, y) {
     }
 }
 function close_menu() {
-    for (const menu_element of controller.open_menu_stack) {
+    for (const menu_element of current_tab.controller.open_menu_stack) {
         set_menu_element_enabled(menu_element, false);
     }
 
-    controller.open_menu_stack = [];
+    current_tab.controller.open_menu_stack = [];
 }
 
 function menu_click(path) {

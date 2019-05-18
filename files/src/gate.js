@@ -72,7 +72,7 @@ class Gate extends Element {
 
         context.strokeStyle = config.colors.outline;
 
-        const is_hovered = this == controller.current_hovered_element;
+        const is_hovered = this == current_tab.controller.current_hovered_element;
 
         let pressed = false;
 
@@ -88,7 +88,7 @@ class Gate extends Element {
             if (is_hovered) {
                 context.strokeStyle = config.colors.hovered_selected;
 
-                if (controller.mouse_down) {
+                if (current_tab.controller.mouse_down) {
                     pressed = true;
                 }
             }
