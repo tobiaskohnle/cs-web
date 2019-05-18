@@ -84,7 +84,7 @@ onload = function() {
     context = canvas.getContext('2d');
     onresize();
 
-    select_theme(config.colors_light);
+    select_theme(config.colors_dark);
 
     camera = new Camera(new Vec, 30);
 

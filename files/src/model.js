@@ -51,7 +51,7 @@ class Model {
     elements() {
         const elements = [];
 
-        for (const element of this.main_gate.inner_gates) {
+        for (const element of this.main_gate.inner_elements) {
             elements.push(element);
 
             if (element instanceof Gate) {
@@ -142,7 +142,7 @@ class Model {
             return;
         }
 
-        this.main_gate.inner_gates.push(element);
+        this.main_gate.inner_elements.push(element);
     }
 
     delete_selected_elements() {
@@ -168,7 +168,7 @@ class Model {
 
         this.deselect(element);
 
-        this.main_gate.inner_gates.remove(element);
+        this.main_gate.inner_elements.remove(element);
     }
 
     get_elements_in_rect(pos, size) {

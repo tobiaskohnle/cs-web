@@ -30,7 +30,7 @@ function draw() {
 
     camera.transform_canvas();
 
-    for (const gate of model.main_gate.inner_gates) {
+    for (const gate of model.main_gate.inner_elements) {
         gate.draw();
     }
 

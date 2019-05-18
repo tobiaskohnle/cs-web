@@ -196,7 +196,7 @@ class CustomGate extends Gate {
     constructor(pos, size) {
         super(pos, size, '');
 
-        this.inner_gates = [];
+        this.inner_elements = [];
     }
 }
 

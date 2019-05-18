@@ -18,12 +18,12 @@ function map(d, s0,s1, d0,d1) {
     return (d0-d1) / (s0-s1) * (d-s0) + d0;
 }
 
-function get_all_inner_gates(custom_gate) {
+function get_all_inner_elements(custom_gate) {
     return [
-        ...custom_gate.inner_gates,
-        ...custom_gate.inner_gates
+        ...custom_gate.inner_elements,
+        ...custom_gate.inner_elements
             .filter(element => element instanceof CustomGate)
-            .flatMap(custom_gate => get_all_inner_gates(custom_gate))
+            .flatMap(custom_gate => get_all_inner_elements(custom_gate))
     ];
 }
 

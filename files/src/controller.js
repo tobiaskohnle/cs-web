@@ -231,25 +231,25 @@ class Controller {
     create_custom_gate(gate) {
         this.init_element(gate);
 
-        for (const inner_gate of gate.inner_gates) {
-            if (inner_gate instanceof InputSwitch) {
+        for (const inner_element of gate.inner_elements) {
+            if (inner_element instanceof InputSwitch) {
                 const input = new InputNode(gate);
                 gate.inputs.push(input);
 
-                input.is_inverted = inner_gate.outputs[0].is_inverted;
+                input.is_inverted = inner_element.outputs[0].is_inverted;
 
-                input.next_nodes = inner_gate.outputs[0].next_nodes;
-                inner_gate.outputs[0].next_nodes = [];
+                input.next_nodes = inner_element.outputs[0].next_nodes;
+                inner_element.outputs[0].next_nodes = [];
             }
-            if (inner_gate instanceof OutputLight) {
+            if (inner_element instanceof OutputLight) {
                 const output = new OutputNode(gate);
                 gate.outputs.push(output);
 
-                output.is_inverted = inner_gate.inputs[0].is_inverted;
+                output.is_inverted = inner_element.inputs[0].is_inverted;
 
-                const prev_node = inner_gate.inputs[0].previous_node();
+                const prev_node = inner_element.inputs[0].previous_node();
 
-                prev_node.next_nodes.remove(inner_gate.inputs[0]);
+                prev_node.next_nodes.remove(inner_element.inputs[0]);
                 prev_node.next_nodes.push(output);
             }
         }

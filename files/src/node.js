@@ -19,7 +19,7 @@ class ConnectionNode extends Element {
     move(vec) {}
 
     previous_node() {
-        return get_all_inner_gates(model.main_gate)
+        return get_all_inner_elements(model.main_gate)
             .flatMap(gate => [...gate.inputs, ...gate.outputs])
             .find(node => node.next_nodes && node.next_nodes.includes(this));
     }
