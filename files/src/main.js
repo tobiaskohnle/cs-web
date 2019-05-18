@@ -18,6 +18,11 @@ let grid_style = {
     dots:   Symbol('grid_style_dots'),
 };
 
+let global = {
+    X: 0b1,
+    Y: 0b10,
+};
+
 let config = {
     scale_factor: 1.14,
     camera_anim_factor: .3574,
