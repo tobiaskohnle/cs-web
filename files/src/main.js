@@ -8,14 +8,14 @@ let camera;
 let current_action = {
     update_hovered_element: Symbol('current_action_update_hovered_element'),
     move_screen:            Symbol('current_action_move_screen'),
-    creating_wire:          Symbol('current_action_creating_wire'),
-    creating_wire_segment:  Symbol('current_action_creating_wire_segment'),
-    creating_selection_box: Symbol('current_action_creating_selection_box'),
-    moving_elements:        Symbol('current_action_moving_elements'),
+    create_wire:            Symbol('current_action_create_wire'),
+    create_wire_segment:    Symbol('current_action_create_wire_segment'),
+    create_selection_box:   Symbol('current_action_create_selection_box'),
+    move_elements:          Symbol('current_action_move_elements'),
 };
 let grid_style = {
     none:   Symbol('grid_style_none'),
-    solid:  Symbol('grid_style_solid'),
+    lines:  Symbol('grid_style_lines'),
     dots:   Symbol('grid_style_dots'),
 };
 

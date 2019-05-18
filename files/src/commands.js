@@ -166,10 +166,10 @@ const commands = [
         },
     },
     {
-        name: 'grid-solid',
+        name: 'grid-lines',
         shortcuts: [],
         command: function() {
-            config.grid_style = grid_style.solid;
+            config.grid_style = grid_style.lines;
         },
     },
     {

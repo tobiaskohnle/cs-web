@@ -20,8 +20,8 @@ function draw() {
     clear_screen();
 
     switch (config.grid_style) {
-        case grid_style.solid:
-            draw_solid_grid();
+        case grid_style.lines:
+            draw_lines_grid();
             break;
         case grid_style.dots:
             draw_dot_grid();
@@ -34,7 +34,7 @@ function draw() {
         gate.draw();
     }
 
-    if (controller.current_action == current_action.creating_wire) {
+    if (controller.current_action == current_action.create_wire) {
         console.assert(controller.wire_start_node);
 
         draw_wire(
@@ -45,7 +45,7 @@ function draw() {
 
     context.restore();
 
-    if (controller.current_action == current_action.creating_selection_box) {
+    if (controller.current_action == current_action.create_selection_box) {
         draw_selection_rect(
             controller.mousedown_mouse_pos,
             controller.mouse_pos,
@@ -86,7 +86,7 @@ function draw_dot_grid() {
 
     context.globalAlpha = 1;
 }
-function draw_solid_grid() {
+function draw_lines_grid() {
     const alpha = grid_alpha();
 
     if (alpha <= 0) {
