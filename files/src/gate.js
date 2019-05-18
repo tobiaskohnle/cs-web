@@ -257,72 +257,96 @@ class SegmentDisplay extends ModelGate {
     draw() {
         super.draw();
 
+        const X = global.X;
+        const Y = global.Y;
+
+        const scale                 = .0026 * Math.min(this.anim_size.x/5, this.anim_size.y/7);
+        const skew_x                = -30;
+        const width                 = 450;
+        const segment_width         = 105;
+        const segment_distance      = 12;
+        const segment_center_length = 70;
+
         const center = Vec.add(this.anim_pos, Vec.mult(this.anim_size, .5));
 
-        context.beginPath();
-        context.moveTo(center.x+1.10060587, center.y-2.35815000);
-        context.lineTo(center.x+1.64585493, center.y-3.09285000);
-        context.lineTo(center.x-1.17900964, center.y-3.09285000);
-        context.lineTo(center.x-0.74465870, center.y-2.35815000);
-        context.fillStyle = this.inputs[0].state ? config.colors.segment_active : config.colors.segment_inactive;
-        context.fill();
+        const inner_width = width - segment_width*2;
+        const height = width*2 - segment_width;
 
-        context.beginPath();
-        context.moveTo(center.x+1.02849056, center.y-0.43845000);
-        context.lineTo(center.x+1.52037735, center.y-0.04740000);
-        context.lineTo(center.x+1.73367735, center.y-0.04740000);
-        context.lineTo(center.x+1.94598649, center.y-2.86049605);
-        context.lineTo(center.x+1.74090353, center.y-3.06740081);
-        context.lineTo(center.x+1.16871308, center.y-2.29639843);
-        context.fillStyle = this.inputs[1].state ? config.colors.segment_active : config.colors.segment_inactive;
-        context.fill();
+        const C0 = new Vec(inner_width/2 + segment_center_length, 0                            );
+        const M0 = new Vec(width/2,                               0                            );
+        const M1 = new Vec(width/2,                               height/2                     );
+        const I0 = new Vec(inner_width/2,                         segment_width/2              );
+        const I1 = new Vec(inner_width/2,                         segment_width/2 + inner_width);
+        const A0 = new Vec(inner_width/2 + segment_center_length, height/2                     );
+        const A1 = new Vec(width/2,                               height/2 - segment_width/3.2 );
 
-        context.beginPath();
-        context.moveTo(center.x+0.96230943, center.y+0.43845000);
-        context.lineTo(center.x+1.51322264, center.y+0.04740000);
-        context.lineTo(center.x+1.72652264, center.y+0.04740000);
-        context.lineTo(center.x+1.51421350, center.y+2.86049605);
-        context.lineTo(center.x+1.27789963, center.y+3.06740081);
-        context.lineTo(center.x+0.82208691, center.y+2.29639843);
-        context.fillStyle = this.inputs[2].state ? config.colors.segment_active : config.colors.segment_inactive;
-        context.fill();
+        const points_corner = [
+            I0, C0, M0, A1, A0, I1,
+        ];
+        const points_side = [
+            I1, A0,
+            Vec.mirror(A0, Y),
+            Vec.mirror(I1, Y),
+        ];
+        const points_center = [
+            C0, I0,
+            Vec.mirror(I0, Y),
+            Vec.mirror(C0, Y),
+            Vec.mirror(I0, X|Y),
+            Vec.mirror(I0, X),
+        ];
 
-        context.beginPath();
-        context.moveTo(center.x+0.74465870, center.y+2.35815000);
-        context.lineTo(center.x+1.17900964, center.y+3.09285000);
-        context.lineTo(center.x-1.64585493, center.y+3.09285000);
-        context.lineTo(center.x-1.10060587, center.y+2.35815000);
-        context.fillStyle = this.inputs[3].state ? config.colors.segment_active : config.colors.segment_inactive;
-        context.fill();
+        add_path(points_corner, 0  , -1, this.inputs[2].state);
+        add_path(points_corner, Y  ,  1, this.inputs[4].state);
+        add_path(points_corner, X  ,  1, this.inputs[1].state);
+        add_path(points_corner, X|Y, -1, this.inputs[5].state);
 
-        context.beginPath();
-        context.moveTo(center.x-1.02849056, center.y+0.43845000);
-        context.lineTo(center.x-1.52037735, center.y+0.04740000);
-        context.lineTo(center.x-1.73367735, center.y+0.04740000);
-        context.lineTo(center.x-1.94598649, center.y+2.86049605);
-        context.lineTo(center.x-1.74090353, center.y+3.06740081);
-        context.lineTo(center.x-1.16871308, center.y+2.29639843);
-        context.fillStyle = this.inputs[4].state ? config.colors.segment_active : config.colors.segment_inactive;
-        context.fill();
+        add_path(points_side  , 0  , -1, this.inputs[3].state);
+        add_path(points_side  , X  ,  1, this.inputs[0].state);
+        add_path(points_center, 0  , -1, this.inputs[6].state);
 
-        context.beginPath();
-        context.moveTo(center.x-0.96230943, center.y-0.43845000);
-        context.lineTo(center.x-1.51322264, center.y-0.04740000);
-        context.lineTo(center.x-1.72652264, center.y-0.04740000);
-        context.lineTo(center.x-1.51421350, center.y-2.86049605);
-        context.lineTo(center.x-1.27789963, center.y-3.06740081);
-        context.lineTo(center.x-0.82208691, center.y-2.29639843);
-        context.fillStyle = this.inputs[5].state ? config.colors.segment_active : config.colors.segment_inactive;
-        context.fill();
+        function add_path(points, mirror_flags, scalar, state) {
+            points = points.map((vec, i) => Vec.mirror(vec, mirror_flags));
 
-        context.beginPath();
-        context.moveTo(center.x+1.42200000, center.y+0.00000000);
-        context.lineTo(center.x+0.90447547, center.y+0.36735000);
-        context.lineTo(center.x-0.95992452, center.y+0.36735000);
-        context.lineTo(center.x-1.42200000, center.y+0.00000000);
-        context.lineTo(center.x-0.90447547, center.y-0.36735000);
-        context.lineTo(center.x+0.95992452, center.y-0.36735000);
-        context.fillStyle = this.inputs[6].state ? config.colors.segment_active : config.colors.segment_inactive;
-        context.fill();
+            context.beginPath();
+
+            for (let i = 0; i < points.length; i++) {
+                const last_i = mod(i-1, points.length);
+                const next_i = mod(i+1, points.length);
+
+                const transformed_point = transform_point(intersection_point(
+                    points[last_i],
+                    points[next_i],
+                    points[i],
+                    scalar,
+                ));
+
+                if (i == 0) context.moveTo(transformed_point.x, transformed_point.y);
+                else        context.lineTo(transformed_point.x, transformed_point.y);
+            }
+
+            context.fillStyle = state ? config.colors.segment_active : config.colors.segment_inactive;
+            context.fill();
+        }
+
+        function intersection_point(prev, next, point, scalar=1) {
+            const prev_vector = Vec.sub(prev, point);
+            const next_vector = Vec.sub(next, point);
+            const angle = Math.atan2(prev_vector.y, prev_vector.x) - Math.atan2(next_vector.y, next_vector.x);
+
+            const d = segment_distance/2 / Math.sin((Math.PI-angle) * scalar);
+            const prev_normalized = Vec.mult(prev_vector, d / Vec.length(prev_vector));
+            const next_normalized = Vec.mult(next_vector, d / Vec.length(next_vector));
+
+            const center = Vec.mult(Vec.add(prev_normalized, next_normalized), .5);
+            return Vec.add(Vec.mult(Vec.sub(point, center), 2), point);
+        }
+
+        function transform_point(vec) {
+            return {
+                x: center.x + (vec.x + vec.y*skew_x/(width-segment_width/2)) * scale,
+                y: center.y + (vec.y                                       ) * scale,
+            };
+        }
     }
 }

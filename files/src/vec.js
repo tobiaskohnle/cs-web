@@ -55,6 +55,11 @@ class Vec {
         this.y = Math.round(this.y / factor) * factor;
         return this;
     }
+    mirror(flags) {
+        if (flags & global.Y) this.x = -this.x;
+        if (flags & global.X) this.y = -this.y;
+        return this;
+    }
     equals(vec) {
         return this.x==vec.x && this.y==vec.y;
     }
@@ -89,7 +94,13 @@ class Vec {
     static round(a) {
         return a.copy().round();
     }
+    static mirror(a, flags) {
+        return a.copy().mirror(flags);
+    }
     static equals(a, b) {
         return a.equals(b);
+    }
+    static length(a) {
+        return a.length();
     }
 }
