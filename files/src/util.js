@@ -143,13 +143,10 @@ function deep_copy(element) {
     })(element);
 }
 
-/// {'@ref': 4}: reference to element with id 4
-/// {'@id': 1, ...}: element with id 1
-/// {'@type': 'Vec', ...}: 'Vec' is the prototype of this element
-function prepare_for_stringify(value) {
+function extended_stringify(value, replacer=null, space=null) {
     const references = [];
 
-    return (function prepare(value) {
+    return JSON.stringify(function prepare(value) {
         const index = references.indexOf(value);
 
         if (index >= 0) {
@@ -172,18 +169,16 @@ function prepare_for_stringify(value) {
                 value[key] = prepare(value[key]);
             }
 
-            // const constructor_name = value.constructor.name;
-
-            if (!['Object', 'Array', 'String', 'Number'].includes(/*constructor_name*/value.constructor.name)) {
+            if (!['Object', 'Array', 'String', 'Number'].includes(value.constructor.name)) {
                 value['@type'] = type_to_string(value);
             }
         }
 
         return value;
-    })(value);
+    })(deep_copy(value), replacer, space);
 }
 
-function edit_after_parse(value) {
+function extended_parse(value, reviver=null) {
     const references = [];
 
     return (function edit(value) {
@@ -221,5 +216,5 @@ function edit_after_parse(value) {
         }
 
         return value;
-    })(value);
+    })(JSON.parse(value, reviver));
 }

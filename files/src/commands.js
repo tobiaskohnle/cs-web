@@ -177,7 +177,7 @@ const commands = [
         shortcuts: [new KeyCombination(73, 'i', KeyCombination.Modifier_Ctrl)],
         command: function() {
             current_tab.controller.read_files(function(result) {
-                current_tab.controller.create_custom_gate(edit_after_parse(JSON.parse(result)));
+                current_tab.controller.create_custom_gate(extended_parse(result));
                 current_tab.model.tick_all();
             });
         },
@@ -201,7 +201,7 @@ const commands = [
         shortcuts: [new KeyCombination(79, 'o', KeyCombination.Modifier_Ctrl)],
         command: function() {
             current_tab.controller.read_files(function(result) {
-                current_tab.model.main_gate = edit_after_parse(JSON.parse(result));
+                current_tab.model.main_gate = extended_parse(result);
                 current_tab.model.tick_all();
             });
         },
@@ -237,7 +237,7 @@ const commands = [
             current_tab.controller = new Controller;
             current_tab.model = new Model;
 
-            current_tab.model.main_gate = edit_after_parse(JSON.parse(file_string));
+            current_tab.model.main_gate = extended_parse(file_string);
         },
     },
     {
