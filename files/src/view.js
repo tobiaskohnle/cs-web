@@ -151,8 +151,10 @@ function screen_center() {
 }
 
 function anim_interpolate(value, target, factor=config.anim_factor) {
+    if (!value) return target;
     return value + (target-value) * factor;
 }
 function anim_interpolate_vec(value, target, factor=config.anim_factor) {
+    if (!value) return Vec.copy(target);
     return Vec.add(value, Vec.mult(Vec.sub(target, value), factor));
 }

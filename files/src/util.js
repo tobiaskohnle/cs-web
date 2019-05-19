@@ -27,33 +27,6 @@ function get_all_inner_elements(custom_gate) {
     ];
 }
 
-function string_to_type(string) {
-    switch (string) {
-        case 'cs:and_gate':        return AndGate        .prototype;
-        case 'cs:custom_gate':     return CustomGate     .prototype;
-        case 'cs:input_node':      return InputNode      .prototype;
-        case 'cs:input_switch':    return InputSwitch    .prototype;
-        case 'cs:nop_gate':        return NopGate        .prototype;
-        case 'cs:or_gate':         return OrGate         .prototype;
-        case 'cs:output_light':    return OutputLight    .prototype;
-        case 'cs:output_node':     return OutputNode     .prototype;
-        case 'cs:segment_display': return SegmentDisplay .prototype;
-        case 'cs:vector':          return Vec            .prototype;
-    }
-}
-function type_to_string(prototype) {
-    if (prototype instanceof AndGate)        return 'cs:and_gate';
-    if (prototype instanceof CustomGate)     return 'cs:custom_gate';
-    if (prototype instanceof InputNode)      return 'cs:input_node';
-    if (prototype instanceof InputSwitch)    return 'cs:input_switch';
-    if (prototype instanceof NopGate)        return 'cs:nop_gate';
-    if (prototype instanceof OrGate)         return 'cs:or_gate';
-    if (prototype instanceof OutputLight)    return 'cs:output_light';
-    if (prototype instanceof OutputNode)     return 'cs:output_node';
-    if (prototype instanceof SegmentDisplay) return 'cs:segment_display';
-    if (prototype instanceof Vec)            return 'cs:vector';
-}
-
 function rects_overlap(pos_a, size_a, pos_b, size_b) {
     return Math.min(pos_a.x, pos_a.x+size_a.x) <= Math.max(pos_b.x, pos_b.x+size_b.x)
         && Math.max(pos_a.x, pos_a.x+size_a.x) >= Math.min(pos_b.x, pos_b.x+size_b.x)
@@ -143,6 +116,18 @@ function deep_copy(element) {
     })(element);
 }
 
+function type_to_string(prototype) {
+    if (prototype instanceof AndGate)        return 'cs:and_gate';
+    if (prototype instanceof CustomGate)     return 'cs:custom_gate';
+    if (prototype instanceof InputNode)      return 'cs:input_node';
+    if (prototype instanceof InputSwitch)    return 'cs:input_switch';
+    if (prototype instanceof NopGate)        return 'cs:nop_gate';
+    if (prototype instanceof OrGate)         return 'cs:or_gate';
+    if (prototype instanceof OutputLight)    return 'cs:output_light';
+    if (prototype instanceof OutputNode)     return 'cs:output_node';
+    if (prototype instanceof SegmentDisplay) return 'cs:segment_display';
+    if (prototype instanceof Vec)            return 'cs:vector';
+}
 function extended_stringify(value, replacer=null, space=null) {
     const references = [];
 
@@ -175,9 +160,23 @@ function extended_stringify(value, replacer=null, space=null) {
         }
 
         return value;
-    })(deep_copy(value), replacer, space);
+    }(deep_copy(value)), replacer, space);
 }
 
+function string_to_type(string) {
+    switch (string) {
+        case 'cs:and_gate':        return AndGate        .prototype;
+        case 'cs:custom_gate':     return CustomGate     .prototype;
+        case 'cs:input_node':      return InputNode      .prototype;
+        case 'cs:input_switch':    return InputSwitch    .prototype;
+        case 'cs:nop_gate':        return NopGate        .prototype;
+        case 'cs:or_gate':         return OrGate         .prototype;
+        case 'cs:output_light':    return OutputLight    .prototype;
+        case 'cs:output_node':     return OutputNode     .prototype;
+        case 'cs:segment_display': return SegmentDisplay .prototype;
+        case 'cs:vector':          return Vec            .prototype;
+    }
+}
 function extended_parse(value, reviver=null) {
     const references = [];
 

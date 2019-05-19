@@ -9,6 +9,5 @@ class Tab {
     reset() {
         this.model = new Model;
         this.controller = new Controller(this.model);
-        this.camera.reset();
     }
 }
