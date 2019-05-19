@@ -268,8 +268,10 @@ const commands = [
         shortcuts: [new KeyCombination(83, 's', KeyCombination.Modifier_Ctrl|KeyCombination.Modifier_Shift)],
         command: function() {
             let file_name = prompt('Save file as...', 'file.circ');
-            file_name = file_name.endsWith('.circ') ? file_name : `${file_name}.circ`;
-            download_string(current_tab.controller.get_file_string(), file_name);
+            if (file_name) {
+                file_name = file_name.endsWith('.circ') ? file_name : `${file_name}.circ`;
+                download_string(current_tab.controller.get_file_string(), file_name);
+            }
         },
     },
     {
@@ -303,14 +305,14 @@ const commands = [
         name: 'zoom-in',
         shortcuts: [new KeyCombination(187, '+', KeyCombination.Modifier_Ctrl)],
         command: function() {
-            camera.scale_at(screen_center(), config.scale_factor);
+            current_tab.camera.scale_at(screen_center(), config.scale_factor);
         },
     },
     {
         name: 'zoom-out',
         shortcuts: [new KeyCombination(189, '-', KeyCombination.Modifier_Ctrl)],
         command: function() {
-            camera.scale_at(screen_center(), 1/config.scale_factor);
+            current_tab.camera.scale_at(screen_center(), 1/config.scale_factor);
         },
     },
 ];
