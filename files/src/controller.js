@@ -12,7 +12,7 @@ class Controller {
         this.mouse_movement = new Vec;
         this.mouse_world_movement = new Vec;
         this.abs_mouse_movement = new Vec;
-        this.current_action = current_action.update_hovered_element;
+        this.current_action = Enum.current_action.update_hovered_element;
         this.hovered_element = null;
 
         this.wire_start_node = null;
@@ -68,18 +68,18 @@ class Controller {
             this.model.select(this.current_hovered_element);
 
             if (this.hovered_element == null) {
-                this.current_action = current_action.create_selection_box;
+                this.current_action = Enum.current_action.create_selection_box;
             }
             else if (this.hovered_element instanceof ConnectionNode) {
-                this.current_action = current_action.create_wire;
+                this.current_action = Enum.current_action.create_wire;
                 this.wire_start_node = this.hovered_element;
             }
             else {
-                this.current_action = current_action.move_elements;
+                this.current_action = Enum.current_action.move_elements;
             }
         }
         else {
-            this.current_action = current_action.move_screen;
+            this.current_action = Enum.current_action.move_screen;
         }
     }
 
@@ -102,29 +102,28 @@ class Controller {
         this.mouse_world_movement.add(Vec.div(move_vec, current_tab.camera.anim_scale));
 
         switch (this.current_action) {
-            case current_action.update_hovered_element:
+            case Enum.current_action.update_hovered_element:
                 this.current_hovered_element = this.hovered_element;
                 break;
-            case current_action.move_screen:
+            case Enum.current_action.move_screen:
                 current_tab.camera.move(move_vec);
                 break;
-            case current_action.create_wire:
-                if (this.hovered_element != previous_hovered_element) {
-                    if (this.hovered_element instanceof ConnectionNode) {
-                        if (!previous_hovered_element) {
-                            this.model_controller_snapshot = deep_copy({controller:this, model:this.model});
-                            this.model.connect_nodes(this.wire_start_node, this.hovered_element);
-                        }
-                    }
-                    else {
-                        if (previous_hovered_element && this.model_controller_snapshot) {
-                            current_tab.controller = this.model_controller_snapshot.controller;
-                            current_tab.model      = this.model_controller_snapshot.model;
-                        }
-                    }
-                }
+            case Enum.current_action.create_wire:
+                // if (this.hovered_element != previous_hovered_element) {
+                //     if (this.hovered_element instanceof ConnectionNode) {
+                //         if (!previous_hovered_element) {
+                //             this.model.connect_nodes(this.wire_start_node, this.hovered_element);
+                //         }
+                //     }
+                //     else {
+                //         if (previous_hovered_element && this.model_controller_snapshot) {
+                //             current_tab.controller = this.model_controller_snapshot.controller;
+                //             current_tab.model      = this.model_controller_snapshot.model;
+                //         }
+                //     }
+                // }
                 break;
-            case current_action.create_selection_box:
+            case Enum.current_action.create_selection_box:
                 // TEMP
                 if (!(event.ctrlKey || event.shiftKey)) {
                     this.model.deselect_all();
@@ -134,7 +133,7 @@ class Controller {
                     this.model.select(element);
                 }
                 break;
-            case current_action.move_elements:
+            case Enum.current_action.move_elements:
                 this.model.move_selected_elements(world_move_vec, this.mouse_world_movement);
                 break;
         }
@@ -151,20 +150,20 @@ class Controller {
         }
 
         switch (this.current_action) {
-            case current_action.move_screen:
+            case Enum.current_action.move_screen:
                 if (!this.mouse_moved()) {
                     this.model.deselect_all();
                     this.model.select(this.hovered_element);
                 }
-                this.current_action = current_action.update_hovered_element;
+                this.current_action = Enum.current_action.update_hovered_element;
                 break;
 
-            case current_action.create_wire:
-                this.current_action = current_action.update_hovered_element;
+            case Enum.current_action.create_wire:
+                this.current_action = Enum.current_action.update_hovered_element;
                 break;
 
             default:
-                this.current_action = current_action.update_hovered_element;
+                this.current_action = Enum.current_action.update_hovered_element;
                 break;
         }
 

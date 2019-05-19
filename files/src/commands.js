@@ -155,21 +155,21 @@ const commands = [
         name: 'grid-dots',
         shortcuts: [],
         command: function() {
-            config.grid_style = grid_style.dots;
+            config.grid_style = Enum.grid_style.dots;
         },
     },
     {
         name: 'grid-none',
         shortcuts: [],
         command: function() {
-            config.grid_style = grid_style.none;
+            config.grid_style = Enum.grid_style.none;
         },
     },
     {
         name: 'grid-lines',
         shortcuts: [],
         command: function() {
-            config.grid_style = grid_style.lines;
+            config.grid_style = Enum.grid_style.lines;
         },
     },
     {

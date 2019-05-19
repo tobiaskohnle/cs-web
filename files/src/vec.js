@@ -56,8 +56,8 @@ class Vec {
         return this;
     }
     mirror(flags) {
-        if (flags & global.Y) this.x = -this.x;
-        if (flags & global.X) this.y = -this.y;
+        if (flags & 2) this.x = -this.x;
+        if (flags & 1) this.y = -this.y;
         return this;
     }
     equals(vec) {

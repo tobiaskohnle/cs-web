@@ -249,8 +249,8 @@ class SegmentDisplay extends ModelGate {
     draw() {
         super.draw();
 
-        const X = global.X;
-        const Y = global.Y;
+        const X = 1;
+        const Y = 2;
 
         const scale                 = .0026 * Math.min(this.anim_size.x/5, this.anim_size.y/7);
         const skew_x                = -30;

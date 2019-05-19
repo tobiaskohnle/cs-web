@@ -5,7 +5,7 @@ function update() {
 
     current_tab.camera.update();
 
-    for (let i = 0; i < config.ticks_per_iteration; i++) {
+    for (let i = 0; i < config.ticks_per_frame; i++) {
         current_tab.model.tick();
     }
 
@@ -20,10 +20,10 @@ function draw() {
     clear_screen();
 
     switch (config.grid_style) {
-        case grid_style.lines:
+        case Enum.grid_style.lines:
             draw_lines_grid();
             break;
-        case grid_style.dots:
+        case Enum.grid_style.dots:
             draw_dot_grid();
             break;
     }
@@ -34,7 +34,7 @@ function draw() {
         gate.draw();
     }
 
-    if (current_tab.controller.current_action == current_action.create_wire) {
+    if (current_tab.controller.current_action == Enum.current_action.create_wire) {
         console.assert(current_tab.controller.wire_start_node);
 
         draw_wire(
@@ -45,7 +45,7 @@ function draw() {
 
     context.restore();
 
-    if (current_tab.controller.current_action == current_action.create_selection_box) {
+    if (current_tab.controller.current_action == Enum.current_action.create_selection_box) {
         draw_selection_rect(
             current_tab.controller.mousedown_mouse_pos,
             current_tab.controller.mouse_pos,
