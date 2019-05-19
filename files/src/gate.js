@@ -31,7 +31,7 @@ class Gate extends Element {
     }
 
     update_last_pos() {
-        this.last_pos.set(this.pos);
+        this.last_pos = Vec.copy(this.pos);
     }
 
     update_nodes(nodes, offset) {

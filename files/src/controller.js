@@ -87,6 +87,7 @@ class Controller {
         this.mouse_pos = new Vec(event.x-canvas.offsetLeft, event.y-canvas.offsetTop);
         this.mouse_world_pos = current_tab.camera.to_worldspace(this.mouse_pos);
 
+        const previous_hovered_element = this.hovered_element;
         this.hovered_element = this.model.get_element_at(this.mouse_world_pos);
 
         this.element_moved = this.element_moved
@@ -202,9 +203,7 @@ class Controller {
     }
 
     copy_selected_elements() {
-        this.clipboard = JSON.stringify(
-            prepare_for_stringify(deep_copy(Array.from(this.model.selected_elements)))
-        );
+        this.clipboard = extended_stringify(Array.from(this.model.selected_elements));
     }
     paste_copied_elements() {
         if (!this.clipboard) {
@@ -213,7 +212,7 @@ class Controller {
 
         this.model.deselect_all();
 
-        const copied_elements = edit_after_parse(JSON.parse(this.clipboard));
+        const copied_elements = extended_parse(this.clipboard);
         remove_loose_connections(copied_elements);
 
         const top_left_pos = get_bounding_rect(copied_elements).pos;
@@ -229,8 +228,8 @@ class Controller {
     }
 
     get_file_string() {
-        return JSON.stringify(
-            prepare_for_stringify(deep_copy(this.model.main_gate)),
+        return extended_stringify(
+            this.model.main_gate,
             function(key, value) {
                 if (key == 'anim_pos' || key == 'last_pos') {
                     return;
