@@ -108,13 +108,19 @@ class Controller {
                 current_tab.camera.move(move_vec);
                 break;
             case current_action.create_wire:
-                // this.model.main_gate = deep_copy(this.previous_main_gate);
-                // !!!
-                this.wire_start_node = this.model.get_element_at(this.wire_start_node.pos);
-                this.hovered_element = this.hovered_element ? this.model.get_element_at(this.hovered_element.pos) : null;
-
-                if (this.hovered_element instanceof ConnectionNode) {
-                    this.model.connect_nodes(this.wire_start_node, this.hovered_element);
+                if (this.hovered_element != previous_hovered_element) {
+                    if (this.hovered_element instanceof ConnectionNode) {
+                        if (!previous_hovered_element) {
+                            this.model_controller_snapshot = deep_copy({controller:this, model:this.model});
+                            this.model.connect_nodes(this.wire_start_node, this.hovered_element);
+                        }
+                    }
+                    else {
+                        if (previous_hovered_element && this.model_controller_snapshot) {
+                            current_tab.controller = this.model_controller_snapshot.controller;
+                            current_tab.model      = this.model_controller_snapshot.model;
+                        }
+                    }
                 }
                 break;
             case current_action.create_selection_box:
