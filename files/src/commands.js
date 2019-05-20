@@ -194,7 +194,7 @@ const commands = [
         shortcuts: [new KeyCombination(78, 'n', KeyCombination.Modifier_Ctrl|KeyCombination.Modifier_Shift)],
         command: function() {
             current_tab.reset();
-            current_tab.reset_view();
+            current_tab.camera.reset();
         },
     },
     {

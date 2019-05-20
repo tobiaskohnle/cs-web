@@ -16,10 +16,7 @@ class Controller {
         this.hovered_element = null;
 
         this.wire_start_node = null;
-        this.wire_end_node = null;
         this.new_wire_segments = [];
-
-        this.previous_main_gate = null;
     }
 
     event_key_down(event) {
@@ -73,6 +70,7 @@ class Controller {
             else if (this.hovered_element instanceof ConnectionNode) {
                 this.current_action = Enum.current_action.create_wire;
                 this.wire_start_node = this.hovered_element;
+                current_tab.create_snapshot();
             }
             else {
                 this.current_action = Enum.current_action.move_elements;
@@ -109,19 +107,13 @@ class Controller {
                 current_tab.camera.move(move_vec);
                 break;
             case Enum.current_action.create_wire:
-                // if (this.hovered_element != previous_hovered_element) {
-                //     if (this.hovered_element instanceof ConnectionNode) {
-                //         if (!previous_hovered_element) {
-                //             this.model.connect_nodes(this.wire_start_node, this.hovered_element);
-                //         }
-                //     }
-                //     else {
-                //         if (previous_hovered_element && this.model_controller_snapshot) {
-                //             current_tab.controller = this.model_controller_snapshot.controller;
-                //             current_tab.model      = this.model_controller_snapshot.model;
-                //         }
-                //     }
-                // }
+                if (
+                    this.model.nodes_connectable(this.wire_start_node, this.hovered_element)
+                    && !this.model.nodes_connected(this.wire_start_node, this.hovered_element)
+                ) {
+                    current_tab.load_snapshot();
+                    this.model.connect_nodes(this.wire_start_node, this.hovered_element);
+                }
                 break;
             case Enum.current_action.create_selection_box:
                 // TEMP

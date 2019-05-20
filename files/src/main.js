@@ -64,6 +64,7 @@ const config = {
     anim_factor: .39,
     ticks_per_frame: 101,
     block_unused_key_combinations: false,
+    default_grid_size: 30,
 
     colors: null,
     grid_style: Enum.grid_style.dots,

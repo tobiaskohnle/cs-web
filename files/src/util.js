@@ -135,10 +135,10 @@ function extended_stringify(value, replacer=null, space=null) {
         const index = references.indexOf(value);
 
         if (index >= 0) {
-            return {['@ref']: index};
+            return {['$ref']: index};
         }
         else if (value instanceof Object) {
-            value['@id'] = references.length;
+            value['$id'] = references.length;
             references.push(value);
         }
 
@@ -155,7 +155,7 @@ function extended_stringify(value, replacer=null, space=null) {
             }
 
             if (!['Object', 'Array', 'String', 'Number'].includes(value.constructor.name)) {
-                value['@type'] = type_to_string(value);
+                value['$type'] = type_to_string(value);
             }
         }
 
@@ -182,14 +182,14 @@ function extended_parse(value, reviver=null) {
 
     return (function edit(value) {
         if (value != undefined) {
-            if (value.hasOwnProperty('@ref')) {
-                const return_value = references[value['@ref']];
-                delete value['@ref'];
+            if (value.hasOwnProperty('$ref')) {
+                const return_value = references[value['$ref']];
+                delete value['$ref'];
                 return return_value;
             }
-            else if (value.hasOwnProperty('@id')) {
-                references[value['@id']] = value;
-                delete value['@id'];
+            else if (value.hasOwnProperty('$id')) {
+                references[value['$id']] = value;
+                delete value['$id'];
             }
         }
 
@@ -200,7 +200,7 @@ function extended_parse(value, reviver=null) {
             let constructor_name;
 
             for (const key in value) {
-                if (key == '@type') {
+                if (key == '$type') {
                     constructor_name = value[key];
                     delete value[key];
                     continue;

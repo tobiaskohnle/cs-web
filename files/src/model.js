@@ -190,15 +190,18 @@ class Model {
         return elements_in_rect;
     }
 
+    nodes_connectable(start_node, end_node) {
+        return start_node instanceof ConnectionNode
+            && end_node instanceof ConnectionNode
+            && (start_node instanceof OutputNode) != (end_node instanceof OutputNode);
+    }
+    nodes_connected(start_node, end_node) {
+        return this.nodes_connectable(start_node, end_node)
+            && (start_node.next_nodes && start_node.next_nodes.includes(end_node)
+            || end_node.next_nodes && end_node.next_nodes.includes(start_node));
+    }
     connect_nodes(start_node, end_node) {
-        if (!(start_node instanceof ConnectionNode)) {
-            return;
-        }
-        if (!(end_node instanceof ConnectionNode)) {
-            return;
-        }
-
-        if ((start_node instanceof OutputNode) == (end_node instanceof OutputNode)) {
+        if (!this.nodes_connectable(start_node, end_node)) {
             return;
         }
 
