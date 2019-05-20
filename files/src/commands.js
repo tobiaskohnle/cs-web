@@ -142,6 +142,7 @@ const commands = [
         command: function() {
             close_menu();
             current_tab.model.deselect_all();
+            current_tab.controller.current_action = Enum.action.none;
         },
     },
     {

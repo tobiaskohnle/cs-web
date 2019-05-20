@@ -61,20 +61,7 @@ class ConnectionNode extends Element {
 
         const draw_line_active = this.is_inverted ? this.state == is_output : this.state;
 
-        context.strokeStyle = draw_line_active ? config.colors.wire_active : config.colors.wire_inactive;
-
-        const is_hovered = this == current_tab.controller.current_hovered_element;
-
-        if (is_hovered) {
-            context.strokeStyle = config.colors.hovered;
-        }
-        if (this.is_selected()) {
-            context.strokeStyle = config.colors.selected;
-
-            if (is_hovered) {
-                context.strokeStyle = config.colors.hovered_selected;
-            }
-        }
+        context.strokeStyle = this.color(draw_line_active ? config.colors.wire_active : config.colors.wire_inactive);
 
         context.lineWidth = .1;
         context.stroke();
@@ -149,8 +136,8 @@ class OutputNode extends ConnectionNode {
     draw() {
         super.draw(true);
 
-        for (const next_node of this.next_nodes) {
-            draw_wire(Vec.add(this.anim_pos, new Vec(1,0)), Vec.sub(next_node.anim_pos, new Vec(1,0)), this.state);
-        }
+        // for (const next_node of this.next_nodes) {
+        //     draw_wire(Vec.add(this.anim_pos, new Vec(1,0)), Vec.sub(next_node.anim_pos, new Vec(1,0)), this.state);
+        // }
     }
 }

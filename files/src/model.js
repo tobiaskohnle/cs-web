@@ -40,13 +40,17 @@ class Model {
         for (const element of this.elements()) {
             element.update();
         }
+
+        for (const segment of current_tab.controller.new_wire_segments) {
+            segment.update();
+        }
     }
 
     // TEMP
     selected_elements_array() {
         return Array.from(this.selected_elements);
     }
-    first_selected_element() {
+    selected_element() {
         return this.selected_elements_array()[0] || null;
     }
     // /TEMP
@@ -76,7 +80,7 @@ class Model {
 
     update_all_last_pos() {
         for (const element of this.elements()) {
-            if (element instanceof Gate) {
+            if (element.update_last_pos) {
                 element.update_last_pos();
             }
         }

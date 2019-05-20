@@ -34,7 +34,7 @@ function draw() {
         gate.draw();
     }
 
-    if (current_tab.controller.current_action == Enum.current_action.create_wire) {
+    if (current_tab.controller.current_action == Enum.action.create_wire) {
         console.assert(current_tab.controller.wire_start_node);
 
         draw_wire(
@@ -43,9 +43,15 @@ function draw() {
         );
     }
 
+    if (current_tab.controller.current_action == Enum.action.create_wire_segment) {
+        for (const segment of current_tab.controller.new_wire_segments) {
+            segment.draw();
+        }
+    }
+
     context.restore();
 
-    if (current_tab.controller.current_action == Enum.current_action.create_selection_box) {
+    if (current_tab.controller.current_action == Enum.action.create_selection_box) {
         draw_selection_rect(
             current_tab.controller.mousedown_mouse_pos,
             current_tab.controller.mouse_pos,
@@ -156,5 +162,5 @@ function anim_interpolate(value, target, factor=config.anim_factor) {
 }
 function anim_interpolate_vec(value, target, factor=config.anim_factor) {
     if (!value) return Vec.copy(target);
-    return Vec.add(value, Vec.mult(Vec.sub(target, value), factor));
+    return value.set(Vec.add(value, Vec.mult(Vec.sub(target, value), factor)));
 }

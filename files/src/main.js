@@ -6,18 +6,18 @@ let context;
 let current_tab;
 
 const Enum = {
-    current_action: {
-        update_hovered_element: Symbol('current_action_update_hovered_element'),
-        move_screen:            Symbol('current_action_move_screen'),
-        create_wire:            Symbol('current_action_create_wire'),
-        create_wire_segment:    Symbol('current_action_create_wire_segment'),
-        create_selection_box:   Symbol('current_action_create_selection_box'),
-        move_elements:          Symbol('current_action_move_elements'),
+    action: {
+        none:                 Symbol('action_none'),
+        move_screen:          Symbol('action_move_screen'),
+        create_wire:          Symbol('action_create_wire'),
+        create_wire_segment:  Symbol('action_create_wire_segment'),
+        create_selection_box: Symbol('action_create_selection_box'),
+        move_elements:        Symbol('action_move_elements'),
     },
     grid_style: {
-        none:   Symbol('grid_style_none'),
-        lines:  Symbol('grid_style_lines'),
-        dots:   Symbol('grid_style_dots'),
+        none:  Symbol('grid_style_none'),
+        lines: Symbol('grid_style_lines'),
+        dots:  Symbol('grid_style_dots'),
     },
 };
 

@@ -10,7 +10,7 @@ class Gate extends Element {
         this.anim_pos = Vec.copy(pos);
         this.anim_size = Vec.copy(size);
 
-        this.last_pos = Vec.copy(pos);
+        this.last_pos = new Vec;
 
         this.label = null;
         this.tag = tag;
@@ -30,10 +30,6 @@ class Gate extends Element {
         }
     }
 
-    update_last_pos() {
-        this.last_pos = Vec.copy(this.pos);
-    }
-
     update_nodes(nodes, offset) {
         let i = 0;
 
@@ -41,7 +37,7 @@ class Gate extends Element {
             const unit = this.size.y / nodes.length / 2;
             const y = this.pos.y + unit * (1 + i++*2);
 
-            node.pos = new Vec(this.pos.x+offset, y);
+            node.pos.set(new Vec(this.pos.x+offset, y));
         }
     }
 
@@ -53,6 +49,10 @@ class Gate extends Element {
         this.update_nodes(this.outputs, this.size.x);
 
         this.anim_size = anim_interpolate_vec(this.anim_size, this.size);
+    }
+
+    update_last_pos() {
+        this.last_pos = Vec.copy(this.pos);
     }
 
     hitbox_rect() {
@@ -70,32 +70,10 @@ class Gate extends Element {
             output.draw();
         }
 
-        context.strokeStyle = config.colors.outline;
-
-        const is_hovered = this == current_tab.controller.current_hovered_element;
-
-        let pressed = false;
-
-        if (is_hovered) {
-            context.strokeStyle = config.colors.hovered;
-        }
-        if (this.is_selected()) {
-            context.strokeStyle = config.colors.selected;
-
-            // context.strokeStyle = '#117e';
-            // context.setLineDash([1]);
-            // context.lineDashOffset = Date.now()/700 % 2;
-            if (is_hovered) {
-                context.strokeStyle = config.colors.hovered_selected;
-
-                if (current_tab.controller.mouse_down) {
-                    pressed = true;
-                }
-            }
-        }
+        context.strokeStyle = this.color();
 
         context.lineWidth = .1;
-        if (pressed) {
+        if (this.is_hovered() && current_tab.controller.mouse_down) {
             context.lineWidth = .12;
             context.strokeRect(this.anim_pos.x+.1/2, this.anim_pos.y+.1/2, this.anim_size.x-.2/2, this.anim_size.y-.2/2);
         }
