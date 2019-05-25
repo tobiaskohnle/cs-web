@@ -15,7 +15,7 @@ class Element {
     }
 
     cancel_animation() {
-        this.anim_pos.set(this.pos);
+        this.anim_pos_.set(this.pos);
     }
 
     color(default_color=config.colors.outline) {
@@ -34,10 +34,10 @@ class Element {
     }
 
     update_pos() {
-        this.anim_pos = anim_interpolate_vec(this.anim_pos, this.pos);
+        this.anim_pos_ = anim_interpolate_vec(this.anim_pos_, this.pos);
     }
     update_size() {
-        this.anim_size = anim_interpolate_vec(this.anim_size, this.size);
+        this.anim_size_ = anim_interpolate_vec(this.anim_size_, this.size);
     }
 
     draw() {

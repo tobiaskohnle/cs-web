@@ -23,44 +23,45 @@ const Enum = {
 
 const theme = {
     light: {
-        background: '#0000',
-        grid: '#aaa7',
-        light_inactive: '#fff4',
-        light_active: '#f334',
-        wire_inactive: '#000e',
-        wire_active: '#f33e',
-        segment_inactive: '#f334',
-        segment_active: '#f33e',
-        outline: '#000e',
-        hovered: '#39de',
-        selected: '#24ce',
-        hovered_selected: '#26ee',
-        selection_fill: '#17d3',
-        selection_outline: '#39fa',
+        background:        new Color(0,0,0,0)              , // '#0000'
+        grid:              new Color(0,0,.67,7/16)         , // '#aaa7'
+        light_inactive:    new Color(0,0,1,4/16)           , // '#fff4'
+        light_active:      new Color(0,.8,1,4/16)          , // '#f334'
+        wire_inactive:     new Color(0,0,0)                , // '#000e'
+        wire_active:       new Color(0,.8,1)               , // '#f33e'
+        segment_inactive:  new Color(0,.8,1)               , // '#f334'
+        segment_active:    new Color(0,.8,1)               , // '#f33e'
+        outline:           new Color(200/360,0,0)          , // '#000e'
+        hovered:           new Color(204/360,.77,.87)      , // '#39de'
+        selected:          new Color(228/360,.83,.8)       , // '#24ce'
+        hovered_selected:  new Color(220/360,.86,.93)      , // '#26ee'
+        selection_fill:    new Color(210/360,.92,.87,3/16) , // '#17d3'
+        selection_outline: new Color(210/360,.8,1,10/16)   , // '#39fa'
     },
     dark: {
-        background: '#000',
-        grid: '#aff3',
-        light_inactive: '#0007',
-        light_active: '#f337',
-        wire_inactive: '#fffe',
-        wire_active: '#f33e',
-        segment_inactive: '#1473',
-        segment_active: '#1afe',
-        outline: '#fffe',
-        hovered: '#39de',
-        selected: '#24ce',
-        hovered_selected: '#26ee',
-        selection_fill: '#17d3',
-        selection_outline: '#39fa',
+        background:        new Color(0,0,0)                , // '#000'
+        grid:              new Color(180/360,.33,1,3/16)   , // '#aff3'
+        light_inactive:    new Color(0,0,0,7/16)           , // '#0007'
+        light_active:      new Color(0,.8,1,7/16)          , // '#f337'
+        wire_inactive:     new Color(0,0,1)                , // '#fffe'
+        wire_active:       new Color(0,.8,1)               , // '#f33e'
+        segment_inactive:  new Color(210/360,.86,.47,3/16) , // '#1473'
+        segment_active:    new Color(201/360,.93,1)        , // '#1afe'
+        outline:           new Color(200/360,0,1)          , // '#fffe'
+        hovered:           new Color(204/360,.77,.87)      , // '#39de'
+        selected:          new Color(228/360,.83,.8)       , // '#24ce'
+        hovered_selected:  new Color(220/360,.86,.93)      , // '#26ee'
+        selection_fill:    new Color(210/360,.92,.87,3/16) , // '#17d3'
+        selection_outline: new Color(210/360,.8,1)         , // '#39fa'
     },
 };
 
 const config = {
     scale_factor: 1.14,
-    camera_anim_factor: .3574,
-    camera_motion_anim_factor: .0571,
-    camera_motion_falloff_factor: .9125,
+    color_anim_factor: .22,
+    camera_anim_factor: .36,
+    camera_motion_anim_factor: .06,
+    camera_motion_falloff_factor: .91,
     anim_factor: .39,
     ticks_per_frame: 101,
     block_unused_key_combinations: false,
@@ -74,9 +75,11 @@ const config = {
 function select_theme(colors) {
     config.colors = colors;
 
-    canvas.style.background = colors.background;
-    document.querySelector('.tabs').style.background = colors.background;
-    document.querySelector('.sidebar').style.background = colors.background;
+    const background_color = colors.background.get_string();
+
+    canvas.style.background = background_color;
+    document.querySelector('.tabs').style.background = background_color;
+    document.querySelector('.sidebar').style.background = background_color;
 }
 
 onload = function() {

@@ -12,7 +12,7 @@ class Camera {
         this.abs_pos = pos.copy();
         this.anim_abs_pos = pos.copy();
 
-        this.anim_pos = pos.copy();
+        this.anim_pos_ = pos.copy();
         this.anim_scale = scale;
     }
 
@@ -28,7 +28,7 @@ class Camera {
 
         this.anim_abs_pos.add(Vec.sub(this.abs_pos, this.anim_abs_pos).mult(config.camera_anim_factor));
 
-        this.anim_pos.add(Vec.sub(this.pos, this.anim_pos).mult(config.camera_anim_factor));
+        this.anim_pos_.add(Vec.sub(this.pos, this.anim_pos_).mult(config.camera_anim_factor));
         this.anim_scale = anim_interpolate(this.anim_scale, this.scale, config.camera_anim_factor);
     }
 
@@ -50,12 +50,12 @@ class Camera {
     }
 
     transform_canvas() {
-        context.translate(this.anim_pos.x, this.anim_pos.y);
+        context.translate(this.anim_pos_.x, this.anim_pos_.y);
         context.scale(this.anim_scale, this.anim_scale);
     }
 
     to_screenspace(vec) {
-        return Vec.mult(vec, this.anim_scale).add(this.anim_pos);
+        return Vec.mult(vec, this.anim_scale).add(this.anim_pos_);
     }
 
     to_worldspace(vec) {

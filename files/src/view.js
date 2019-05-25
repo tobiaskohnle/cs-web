@@ -5,9 +5,9 @@ function update() {
 
     current_tab.camera.update();
 
-    // for (let i = 0; i < config.ticks_per_frame; i++) {
-    //     current_tab.model.tick();
-    // }
+    for (let i = 0; i < config.ticks_per_frame; i++) {
+        current_tab.model.tick();
+    }
 
     current_tab.model.update();
 
@@ -38,7 +38,7 @@ function draw() {
         console.assert(current_tab.controller.wire_start_node);
 
         draw_wire(
-            Vec.add(current_tab.controller.wire_start_node.pos, new Vec(current_tab.controller.wire_start_node.dir,0)),
+            Vec.add(current_tab.controller.wire_start_node.pos, new Vec(current_tab.controller.wire_start_node.dir_x,0)),
             current_tab.controller.mouse_world_pos,
         );
     }
@@ -66,11 +66,11 @@ function clear_screen() {
 function draw_selection_rect(pos_start, pos_end) {
     const size = Vec.sub(pos_end, pos_start);
 
-    context.fillStyle = config.colors.selection_fill;
+    context.fillStyle = config.colors.selection_fill.get_string();
     context.fillRect(pos_start.x, pos_start.y, size.x, size.y);
 
     context.lineWidth = 2;
-    context.strokeStyle = config.colors.selection_outline;
+    context.strokeStyle = config.colors.selection_outline.get_string();
     context.strokeRect(pos_start.x|0, pos_start.y|0, size.x|0, size.y|0);
 }
 
@@ -82,10 +82,10 @@ function draw_dot_grid() {
     }
 
     context.globalAlpha = alpha;
-    context.fillStyle = config.colors.grid;
+    context.fillStyle = config.colors.grid.get_string();
 
-    for (let x = mod(current_tab.camera.anim_pos.x, current_tab.camera.anim_scale); x < canvas.width; x += current_tab.camera.anim_scale) {
-        for (let y = mod(current_tab.camera.anim_pos.y, current_tab.camera.anim_scale); y < canvas.height; y += current_tab.camera.anim_scale) {
+    for (let x = mod(current_tab.camera.anim_pos_.x, current_tab.camera.anim_scale); x < canvas.width; x += current_tab.camera.anim_scale) {
+        for (let y = mod(current_tab.camera.anim_pos_.y, current_tab.camera.anim_scale); y < canvas.height; y += current_tab.camera.anim_scale) {
             context.fillRect(x-1|0, y-1|0, 2, 2);
         }
     }
@@ -104,11 +104,11 @@ function draw_lines_grid() {
     context.strokeStyle = config.colors.grid;
     context.globalAlpha = alpha;
 
-    for (let x = mod(current_tab.camera.anim_pos.x, current_tab.camera.anim_scale); x < canvas.width; x += current_tab.camera.anim_scale) {
+    for (let x = mod(current_tab.camera.anim_pos_.x, current_tab.camera.anim_scale); x < canvas.width; x += current_tab.camera.anim_scale) {
         context.moveTo(x|0, 0);
         context.lineTo(x|0, canvas.height);
     }
-    for (let y = mod(current_tab.camera.anim_pos.y, current_tab.camera.anim_scale); y < canvas.height; y += current_tab.camera.anim_scale) {
+    for (let y = mod(current_tab.camera.anim_pos_.y, current_tab.camera.anim_scale); y < canvas.height; y += current_tab.camera.anim_scale) {
         context.moveTo(0, y|0);
         context.lineTo(canvas.width, y|0);
     }
@@ -160,9 +160,13 @@ function anim_interpolate(value, target, factor=config.anim_factor) {
     if (!value) return target;
     return value + (target-value) * factor;
 }
-function anim_interpolate_mod(value, target) {
+function anim_interpolate_mod(value, target, factor=config.anim_factor) {
     const offset = mod(target-value-.5, 1)-.5;
-    return value + offset * config.anim_factor;
+
+    if (offset * (1-factor) > .1)  factor = 1 - .1/offset;
+    if (offset * (1-factor) < -.1) factor = 1 + .1/offset;
+
+    return value + offset * factor;
 }
 function anim_interpolate_vec(value, target, factor=config.anim_factor) {
     if (!value) return Vec.copy(target);

@@ -1,13 +1,14 @@
 'use strict';
 
 class ConnectionNode extends Element {
-    constructor(dir, parent) {
+    constructor(parent) {
         super();
 
         this.pos = new Vec;
-        this.anim_pos = new Vec;
+        this.anim_pos_ = new Vec;
 
-        this.dir = dir;
+        this.dir_x = this instanceof OutputNode ? 1 : -1;
+        this.dir_y = 0;
         this.parent = parent;
 
         this.label = null;
@@ -15,10 +16,22 @@ class ConnectionNode extends Element {
 
         this.state = false;
         this.is_inverted = false;
+
+        this.color_line_ = Color.new(config.colors.wire_inactive);
+        this.color_dot_  = Color.new(config.colors.wire_inactive);
     }
 
     update() {
-        this.anim_pos = anim_interpolate_vec(this.anim_pos, this.pos);
+        this.anim_pos_ = anim_interpolate_vec(this.anim_pos_, this.pos);
+
+        const draw_line_active = this.is_inverted ? this.state == (this instanceof OutputNode) : this.state;
+        const color = this.color(draw_line_active ? config.colors.wire_active : config.colors.wire_inactive);
+
+        this.color_line_.set_hsva(color);
+        this.color_dot_.set_hsva(color);
+
+        this.color_line_.update();
+        this.color_dot_.update();
     }
 
     move(vec) {}
@@ -48,29 +61,28 @@ class ConnectionNode extends Element {
     hitbox_rect() {
         return {
             pos: this.pos,
-            size: new Vec(this.dir, 0),
+            size: new Vec(this.dir_x, 0),
         };
     }
 
-    draw(is_output) {
+    draw() {
         const off = this.is_inverted ? 1/2+.1/2 : 0;
 
         context.beginPath();
-        context.moveTo(this.anim_pos.x+this.dir*off, this.anim_pos.y);
-        context.lineTo(this.anim_pos.x+this.dir, this.anim_pos.y);
+        context.moveTo(this.anim_pos_.x+this.dir_x*off, this.anim_pos_.y);
+        context.lineTo(this.anim_pos_.x+this.dir_x, this.anim_pos_.y);
 
-        const draw_line_active = this.is_inverted ? this.state == is_output : this.state;
-
-        context.strokeStyle = this.color(draw_line_active ? config.colors.wire_active : config.colors.wire_inactive);
+        context.strokeStyle = this.color_line_.get_string();
 
         context.lineWidth = .1;
         context.stroke();
 
         if (this.is_inverted) {
             context.beginPath();
-            context.arc(this.anim_pos.x+this.dir/4+this.dir*.1/2, this.anim_pos.y, 1/4, 0, Math.PI*2);
+            context.arc(this.anim_pos_.x+this.dir_x/4+this.dir_x*.1/2, this.anim_pos_.y, 1/4, 0, Math.PI*2);
 
-            context.strokeStyle = !draw_line_active ? config.colors.wire_active : config.colors.wire_inactive;
+            // context.strokeStyle = !draw_line_active ? config.colors.wire_active : config.colors.wire_inactive;
+            context.strokeStyle = this.color_dot_.get_string();
             context.stroke();
         }
     }
@@ -78,7 +90,7 @@ class ConnectionNode extends Element {
 
 class InputNode extends ConnectionNode {
     constructor(parent) {
-        super(-1, parent);
+        super(parent);
 
         this.is_rising_edge = false;
         this.rising_edge_pulse_length = config.default_rising_edge_pulse_length;
@@ -128,9 +140,9 @@ class InputNode extends ConnectionNode {
         if (this.is_rising_edge) {
             context.beginPath();
 
-            context.moveTo(this.anim_pos.x, this.anim_pos.y-.3);
-            context.lineTo(this.anim_pos.x+.5, this.anim_pos.y);
-            context.lineTo(this.anim_pos.x, this.anim_pos.y+.3);
+            context.moveTo(this.anim_pos_.x, this.anim_pos_.y-.3);
+            context.lineTo(this.anim_pos_.x+.5, this.anim_pos_.y);
+            context.lineTo(this.anim_pos_.x, this.anim_pos_.y+.3);
 
             context.strokeStyle = this.color();
             context.lineWidth = .1;
@@ -141,7 +153,7 @@ class InputNode extends ConnectionNode {
 
 class OutputNode extends ConnectionNode {
     constructor(parent) {
-        super(1, parent);
+        super(parent);
 
         this.next_nodes = [];
     }
@@ -169,7 +181,7 @@ class OutputNode extends ConnectionNode {
         super.draw(true);
 
         // for (const next_node of this.next_nodes) {
-        //     draw_wire(Vec.add(this.anim_pos, new Vec(1,0)), Vec.sub(next_node.anim_pos, new Vec(1,0)), this.state);
+        //     draw_wire(Vec.add(this.anim_pos_, new Vec(1,0)), Vec.sub(next_node.anim_pos_, new Vec(1,0)), this.state);
         // }
     }
 }

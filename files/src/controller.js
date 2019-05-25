@@ -178,7 +178,7 @@ class Controller {
     event_mouse_up(event) {
         this.mouse_down = false;
 
-        this.previous_main_gate = deep_copy(this.model.main_gate);
+        // this.previous_main_gate = deep_copy(this.model.main_gate);
 
         if (!this.element_moved && this.hovered_element instanceof InputSwitch) {
             this.hovered_element.toggle();
@@ -290,9 +290,7 @@ class Controller {
         return extended_stringify(
             this.model.main_gate,
             function(key, value) {
-                if (key == 'anim_pos' || key == 'last_pos') {
-                    return;
-                }
+                // if (key.endsWith('_')) return;
                 return value;
             },
             2,

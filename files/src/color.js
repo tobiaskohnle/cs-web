@@ -6,31 +6,32 @@ class Color {
         this.set_hsva({h, s, v, a});
     }
 
-    set_anim_hsva({h, s, v, a}) {
+    static new(color) {
+        const new_color = new Color;
+        new_color.set_anim_hsva(color);
+        new_color.set_hsva(color);
+
+        return new_color;
+    }
+
+    set_anim_hsva({h=0, s=0, v=0, a=1}) {
         this.anim_h = h;
         this.anim_s = s;
         this.anim_v = v;
         this.anim_a = a;
     }
-    set_hsva({h, s, v, a}) {
+    set_hsva({h=0, s=0, v=0, a=1}) {
         this.h = h;
         this.s = s;
         this.v = v;
         this.a = a;
     }
 
-    copy_hsva(color) {
-        this.h = color.h;
-        this.s = color.s;
-        this.v = color.v;
-        this.a = color.a;
-    }
-
     update() {
-        this.anim_h = anim_interpolate_mod(this.anim_h, this.h);
-        this.anim_s = anim_interpolate(this.anim_s, this.s);
-        this.anim_v = anim_interpolate(this.anim_v, this.v);
-        this.anim_a = anim_interpolate(this.anim_a, this.a);
+        this.anim_h = anim_interpolate_mod(this.anim_h, this.h, config.color_anim_factor);
+        this.anim_s = anim_interpolate    (this.anim_s, this.s, config.color_anim_factor);
+        this.anim_v = anim_interpolate    (this.anim_v, this.v, config.color_anim_factor);
+        this.anim_a = anim_interpolate    (this.anim_a, this.a, config.color_anim_factor);
     }
 
     get_string() {

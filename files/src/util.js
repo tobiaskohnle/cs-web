@@ -14,8 +14,11 @@ Array.prototype.remove = function(element) {
 function mod(a, n) {
     return a - n * Math.floor(a / n);
 }
-function map(d, s0,s1, d0,d1) {
-    return (d0-d1) / (s0-s1) * (d-s0) + d0;
+function map(v, s0,s1, d0,d1) {
+    return (d0-d1) / (s0-s1) * (v-s0) + d0;
+}
+function clamp(v, min,max) {
+    return Math.min(max, Math.max(min, v));
 }
 
 function get_all_inner_elements(custom_gate) {
@@ -128,6 +131,7 @@ function type_to_string(prototype) {
     if (prototype instanceof SegmentDisplay) return 'cs:segment_display';
     if (prototype instanceof WireSegment)    return 'cs:wire_segment';
     if (prototype instanceof Vec)            return 'cs:vector';
+    if (prototype instanceof Color)          return 'color';
 }
 function extended_stringify(value, replacer=null, space=null) {
     const references = [];
@@ -177,6 +181,7 @@ function string_to_type(string) {
         case 'cs:segment_display': return SegmentDisplay .prototype;
         case 'cs:wire_segment':    return WireSegment    .prototype;
         case 'cs:vector':          return Vec            .prototype;
+        case 'color':              return Color          .prototype;
     }
 }
 function extended_parse(value, reviver=null) {

@@ -8,11 +8,13 @@ class WireSegment extends Element {
         this.anim_offset = 0;
         this.vertical = false;
 
-        this.last_pos = 0;
+        this.last_pos_ = 0;
 
         this.neighbor_segments = [];
 
         this.connected_pos = null;
+
+        this.color_outline_ = Color.new(config.colors.outline);
     }
 
     update() {
@@ -25,12 +27,12 @@ class WireSegment extends Element {
     }
 
     update_last_pos() {
-        this.last_pos = this.offset;
+        this.last_pos_ = this.offset;
     }
 
     move(vec, total_vec) {
-        if (this.vertical) this.offset = Math.round((this.last_pos + total_vec.x) / .5) * .5;
-        else               this.offset = Math.round((this.last_pos + total_vec.y) / .5) * .5;
+        if (this.vertical) this.offset = Math.round((this.last_pos_ + total_vec.x) / .5) * .5;
+        else               this.offset = Math.round((this.last_pos_ + total_vec.y) / .5) * .5;
     }
 
     distance(pos) {
@@ -122,7 +124,7 @@ class WireSegment extends Element {
     draw() {
         const {min, max} = this.get_normal_offset();
 
-        context.fillStyle = this.color();
+        context.fillStyle = this.color_outline_.get_string();
 
         if (this.vertical) context.fillRect(this.anim_offset - .1/2, min - .1/2, .1, max - min);
         else               context.fillRect(min - .1/2, this.anim_offset - .1/2, max - min, .1);
