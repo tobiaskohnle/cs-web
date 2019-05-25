@@ -160,6 +160,10 @@ function anim_interpolate(value, target, factor=config.anim_factor) {
     if (!value) return target;
     return value + (target-value) * factor;
 }
+function anim_interpolate_mod(value, target) {
+    const offset = mod(target-value-.5, 1)-.5;
+    return value + offset * config.anim_factor;
+}
 function anim_interpolate_vec(value, target, factor=config.anim_factor) {
     if (!value) return Vec.copy(target);
     return value.set(Vec.add(value, Vec.mult(Vec.sub(target, value), factor)));
