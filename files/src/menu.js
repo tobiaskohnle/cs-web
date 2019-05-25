@@ -42,7 +42,7 @@ function update_shortcut_string(menu_item) {
                     menu_item.appendChild(span);
                 }
 
-                menu_item.children[1].innerText = command.shortcuts[0].get_string();
+                menu_item.children[1].innerText = command.shortcuts[0].to_string();
             }
             else {
                 while (menu_item.childElementCount >= 2) {

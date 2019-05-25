@@ -2,7 +2,7 @@
 
 class Tab {
     constructor() {
-        this.camera = new Camera(new Vec, config.default_grid_size);
+        this.camera = new Camera;
         this.reset();
     }
 

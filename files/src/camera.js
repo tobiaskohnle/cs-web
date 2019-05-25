@@ -1,61 +1,45 @@
 'use strict';
 
 class Camera {
-    constructor(pos=new Vec, scale=1) {
-        this.init_pos = pos.copy();
-        this.init_scale = scale;
-
-        this.pos = pos.copy();
-        this.motion = new Vec;
+    constructor(pos=new Vec, scale=config.default_grid_size) {
+        this.pos = Vec.copy(pos);
         this.scale = scale;
 
-        this.abs_pos = pos.copy();
-        this.anim_abs_pos = pos.copy();
+        this.anim_pos_ = Vec.copy(pos);
+        this.anim_scale_ = scale;
 
-        this.anim_pos_ = pos.copy();
-        this.anim_scale = scale;
+        this.motion_ = new Vec;
     }
 
     reset() {
-        this.pos.set(this.init_pos);
-        this.scale = this.init_scale;
+        this.pos.set(new Vec);
+        this.scale = config.default_grid_size;
     }
 
     update() {
-        this.pos.add(Vec.mult(this.motion, config.camera_motion_anim_factor));
-        this.abs_pos.add(Vec.mult(this.motion, config.camera_motion_anim_factor));
-        this.motion.mult(config.camera_motion_falloff_factor);
+        this.pos.add(Vec.mult(this.motion_, config.camera_motion_anim_factor));
+        this.motion_.mult(config.camera_motion_falloff_factor);
 
-        this.anim_abs_pos.add(Vec.sub(this.abs_pos, this.anim_abs_pos).mult(config.camera_anim_factor));
-
-        this.anim_pos_.add(Vec.sub(this.pos, this.anim_pos_).mult(config.camera_anim_factor));
-        this.anim_scale = anim_interpolate(this.anim_scale, this.scale, config.camera_anim_factor);
+        this.anim_pos_ = anim_interpolate_vec(this.anim_pos_, this.pos, config.camera_anim_factor);
+        this.anim_scale_ = anim_interpolate(this.anim_scale_, this.scale, config.camera_anim_factor);
     }
 
     move(vec) {
         this.pos.add(vec);
-        this.abs_pos.add(vec);
     }
 
-    move_to(vec) {
-        this.pos.set(vec);
-        this.abs_pos.set(vec);
-    }
-
-    scale_at(pos, val) {
-        this.scale *= val;
-        this.pos.sub(
-            Vec.sub(pos, this.pos).mult(val).add(this.pos).sub(pos),
-        );
+    scale_at(pos, factor) {
+        this.scale *= factor;
+        this.pos.sub(Vec.sub(pos, this.pos).mult(factor).add(this.pos).sub(pos));
     }
 
     transform_canvas() {
         context.translate(this.anim_pos_.x, this.anim_pos_.y);
-        context.scale(this.anim_scale, this.anim_scale);
+        context.scale(this.anim_scale_, this.anim_scale_);
     }
 
     to_screenspace(vec) {
-        return Vec.mult(vec, this.anim_scale).add(this.anim_pos_);
+        return Vec.mult(vec, this.anim_scale_).add(this.anim_pos_);
     }
 
     to_worldspace(vec) {

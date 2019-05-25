@@ -45,9 +45,11 @@ class Model {
             element.update();
         }
 
+        // TEMP
         for (const segment of current_tab.controller.new_wire_segments) {
             segment.update();
         }
+        // /TEMP
     }
 
     // TEMP
@@ -196,6 +198,19 @@ class Model {
         }
 
         return elements_in_rect;
+    }
+
+    add_wire_segment(wire_segments) {
+        const segment = new WireSegment;
+
+        if (wire_segments.length) {
+            segment.vertical = !wire_segments.last().vertical;
+
+            this.connected_wire_segments(wire_segments.last(), segment);
+        }
+
+        wire_segments.push(segment);
+        return segment;
     }
 
     connected_wire_segments(segment_a, segment_b) {

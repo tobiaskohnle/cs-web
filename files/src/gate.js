@@ -28,37 +28,47 @@ class Gate extends Element {
     }
 
     cancel_animation() {
-        this.update_nodes(this.inputs, 0);
-        this.update_nodes(this.outputs, this.size.x);
-
         for (const node of this.inputs)  node.cancel_animation();
         for (const node of this.outputs) node.cancel_animation();
 
         super.cancel_animation();
+    }
 
-        for (const node of this.inputs)  node.anim_pos_.add(new Vec(node.dir_x, 0));
-        for (const node of this.outputs) node.anim_pos_.add(new Vec(node.dir_x, 0));
+    nodes_init_animation() {
+        this.update_all_nodes()
+
+        let input_index = 0;
+        for (const node of this.inputs)  {
+            node.anim_pos_.add(new Vec(node.dir_x + node.dir_x * input_index++/2, 0));
+        }
+
+        let output_index = 0;
+        for (const node of this.outputs) {
+            node.anim_pos_.add(new Vec(node.dir_x + node.dir_x * output_index++/2, 0));
+        }
     }
 
     update_nodes(nodes, offset) {
-        let i = 0;
+        const unit = this.size.y / nodes.length / 2;
 
+        let i = 0;
         for (const node of nodes) {
-            const unit = this.size.y / nodes.length / 2;
             const y = this.pos.y + unit * (1 + i++*2);
 
             node.pos.set(new Vec(this.pos.x+offset, y));
         }
     }
 
+    update_all_nodes() {
+        this.update_nodes(this.inputs, 0);
+        this.update_nodes(this.outputs, this.size.x);
+    }
+
     update() {
         super.update_pos();
         super.update_size();
 
-        this.update_nodes(this.inputs, 0);
-        this.update_nodes(this.outputs, this.size.x);
-
-        this.anim_size_ = anim_interpolate_vec(this.anim_size_, this.size);
+        this.update_all_nodes();
 
         this.color_outline_.set_hsva(this.color());
         this.color_outline_.update();
@@ -83,7 +93,7 @@ class Gate extends Element {
             output.draw();
         }
 
-        context.strokeStyle = this.color_outline_.get_string();
+        context.strokeStyle = this.color_outline_.to_string();
         context.lineWidth = .1;
 
         if (this.is_hovered() && current_tab.controller.mouse_down) {
@@ -97,7 +107,7 @@ class Gate extends Element {
         // context.setLineDash([]);
 
         context.font = '2px consolas, monospace';
-        context.fillStyle = config.colors.wire_inactive.get_string();
+        context.fillStyle = config.colors.wire_inactive.to_string();
         context.textAlign = 'center';
         context.textBaseline = 'middle';
         context.fillText(this.tag, this.anim_pos_.x+this.anim_size_.x/2, this.anim_pos_.y+this.anim_size_.y/2, this.anim_size_.y);
@@ -214,7 +224,7 @@ class InputSwitch extends ModelGate {
     }
 
     draw() {
-        context.fillStyle = this.color_fill_.get_string();
+        context.fillStyle = this.color_fill_.to_string();
         context.fillRect(this.anim_pos_.x, this.anim_pos_.y, this.size.x, this.size.y);
 
         super.draw();
@@ -247,7 +257,7 @@ class OutputLight extends ModelGate {
     }
 
     draw() {
-        context.fillStyle = this.color_fill_.get_string();
+        context.fillStyle = this.color_fill_.to_string();
         context.fillRect(this.anim_pos_.x, this.anim_pos_.y, this.size.x, this.size.y);
 
         super.draw();
@@ -301,7 +311,7 @@ class SegmentDisplay extends ModelGate {
         const skew_x                = -30;
         const width                 = 450;
         const segment_width         = 105;
-        const segment_distance      = 12;
+        const segment_distance      = 21;
         const segment_center_length = 70;
 
         const center = Vec.add(this.anim_pos_, Vec.div(this.anim_size_, 2));
@@ -362,7 +372,7 @@ class SegmentDisplay extends ModelGate {
                 else        context.lineTo(transformed_point.x, transformed_point.y);
             }
 
-            context.fillStyle = color.get_string();
+            context.fillStyle = color.to_string();
             context.fill();
         }
 

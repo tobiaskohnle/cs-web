@@ -34,7 +34,7 @@ class Color {
         this.anim_a = anim_interpolate    (this.anim_a, this.a, config.color_anim_factor);
     }
 
-    get_string() {
+    to_string() {
         let [h, s, v, a] = [this.anim_h, this.anim_s, this.anim_v, this.anim_a];
 
         let l = (2-s) * v/2;

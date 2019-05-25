@@ -15,7 +15,7 @@ class KeyCombination {
         return this.key_code == event.keyCode;
     }
 
-    get_string() {
+    to_string() {
         let modifier_string = '';
 
         if (this.modifier_keys & KeyCombination.Modifier_Ctrl)  modifier_string += 'Ctrl+';
@@ -53,7 +53,14 @@ const commands = [
         command: function() {
             for (const element of current_tab.model.selected_elements) {
                 if (element instanceof Gate) {
-                    element.inputs.push(new InputNode(element));
+                    const node = new InputNode(element);
+
+                    element.inputs.push(node);
+                    element.update_all_nodes();
+
+                    node.cancel_animation();
+                    node.anim_pos_.add(new Vec(node.dir_x, 0));
+                    node.color_line_.set_anim_hsva(new Color(.5,0,0,.1));
                 }
             }
         },

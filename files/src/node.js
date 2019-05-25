@@ -14,6 +14,8 @@ class ConnectionNode extends Element {
         this.label = null;
         this.tag = null;
 
+        this.index = 0;
+
         this.state = false;
         this.is_inverted = false;
 
@@ -35,6 +37,10 @@ class ConnectionNode extends Element {
     }
 
     move(vec) {}
+
+    is_vertical() {
+        return !this.dir_x;
+    }
 
     previous_node() {
         return get_all_inner_elements(current_tab.model.main_gate)
@@ -72,7 +78,7 @@ class ConnectionNode extends Element {
         context.moveTo(this.anim_pos_.x+this.dir_x*off, this.anim_pos_.y);
         context.lineTo(this.anim_pos_.x+this.dir_x, this.anim_pos_.y);
 
-        context.strokeStyle = this.color_line_.get_string();
+        context.strokeStyle = this.color_line_.to_string();
 
         context.lineWidth = .1;
         context.stroke();
@@ -82,7 +88,7 @@ class ConnectionNode extends Element {
             context.arc(this.anim_pos_.x+this.dir_x/4+this.dir_x*.1/2, this.anim_pos_.y, 1/4, 0, Math.PI*2);
 
             // context.strokeStyle = !draw_line_active ? config.colors.wire_active : config.colors.wire_inactive;
-            context.strokeStyle = this.color_dot_.get_string();
+            context.strokeStyle = this.color_dot_.to_string();
             context.stroke();
         }
     }
@@ -179,9 +185,5 @@ class OutputNode extends ConnectionNode {
 
     draw() {
         super.draw(true);
-
-        // for (const next_node of this.next_nodes) {
-        //     draw_wire(Vec.add(this.anim_pos_, new Vec(1,0)), Vec.sub(next_node.anim_pos_, new Vec(1,0)), this.state);
-        // }
     }
 }

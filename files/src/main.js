@@ -23,36 +23,40 @@ const Enum = {
 
 const theme = {
     light: {
-        background:        new Color(0,0,0,0)              , // '#0000'
-        grid:              new Color(0,0,.67,7/16)         , // '#aaa7'
-        light_inactive:    new Color(0,0,1,4/16)           , // '#fff4'
-        light_active:      new Color(0,.8,1,4/16)          , // '#f334'
-        wire_inactive:     new Color(0,0,0)                , // '#000e'
-        wire_active:       new Color(0,.8,1)               , // '#f33e'
-        segment_inactive:  new Color(0,.8,1)               , // '#f334'
-        segment_active:    new Color(0,.8,1)               , // '#f33e'
-        outline:           new Color(200/360,0,0)          , // '#000e'
-        hovered:           new Color(204/360,.77,.87)      , // '#39de'
-        selected:          new Color(228/360,.83,.8)       , // '#24ce'
-        hovered_selected:  new Color(220/360,.86,.93)      , // '#26ee'
-        selection_fill:    new Color(210/360,.92,.87,3/16) , // '#17d3'
-        selection_outline: new Color(210/360,.8,1,10/16)   , // '#39fa'
+        background:        new Color(0,0,0,0)              , // #0000
+        grid:              new Color(0,0,.67,7/16)         , // #aaa7
+        light_inactive:    new Color(0,0,1,4/16)           , // #fff4
+        light_active:      new Color(0,.8,1,4/16)          , // #f334
+        wire_inactive:     new Color(0,0,0)                , // #000
+        wire_active:       new Color(0,.8,1)               , // #f33
+        segment_inactive:  new Color(0,.8,1)               , // #f334
+        segment_active:    new Color(0,.8,1)               , // #f33
+        outline:           new Color(200/360,0,0)          , // #000
+        hovered:           new Color(204/360,.77,.87)      , // #39d
+        selected:          new Color(228/360,.83,.8)       , // #24c
+        hovered_selected:  new Color(220/360,.86,.93)      , // #26e
+        selection_fill:    new Color(210/360,.92,.87,3/16) , // #17d3
+        selection_outline: new Color(210/360,.8,1,10/16)   , // #39fa
+        node_init:         new Color(.5,1,1,0)             ,
+        gate_init:         new Color(.5,1,1,0)             ,
     },
     dark: {
-        background:        new Color(0,0,0)                , // '#000'
-        grid:              new Color(180/360,.33,1,3/16)   , // '#aff3'
-        light_inactive:    new Color(0,0,0,7/16)           , // '#0007'
-        light_active:      new Color(0,.8,1,7/16)          , // '#f337'
-        wire_inactive:     new Color(0,0,1)                , // '#fffe'
-        wire_active:       new Color(0,.8,1)               , // '#f33e'
-        segment_inactive:  new Color(210/360,.86,.47,3/16) , // '#1473'
-        segment_active:    new Color(201/360,.93,1)        , // '#1afe'
-        outline:           new Color(200/360,0,1)          , // '#fffe'
-        hovered:           new Color(204/360,.77,.87)      , // '#39de'
-        selected:          new Color(228/360,.83,.8)       , // '#24ce'
-        hovered_selected:  new Color(220/360,.86,.93)      , // '#26ee'
-        selection_fill:    new Color(210/360,.92,.87,3/16) , // '#17d3'
-        selection_outline: new Color(210/360,.8,1)         , // '#39fa'
+        background:        new Color(240/360,.22,.03)      , // #070709
+        grid:              new Color(180/360,.33,1,3/16)   , // #aff3
+        light_inactive:    new Color(0,0,0,7/16)           , // #0007
+        light_active:      new Color(0,.8,1,7/16)          , // #f337
+        wire_inactive:     new Color(0,0,1)                , // #fff
+        wire_active:       new Color(0,.8,1)               , // #f33
+        segment_inactive:  new Color(210/360,.86,.47,3/16) , // #1473
+        segment_active:    new Color(201/360,.93,1)        , // #1af
+        outline:           new Color(200/360,0,1)          , // #fff
+        hovered:           new Color(204/360,.77,.87)      , // #39d
+        selected:          new Color(228/360,.83,.8)       , // #24c
+        hovered_selected:  new Color(220/360,.86,.93)      , // #26e
+        selection_fill:    new Color(210/360,.92,.87,3/16) , // #17d3
+        selection_outline: new Color(210/360,.8,1)         , // #39fa
+        node_init:         new Color(.5,1,1,0)             ,
+        gate_init:         new Color(.5,1,1,0)             ,
     },
 };
 
@@ -75,7 +79,7 @@ const config = {
 function select_theme(colors) {
     config.colors = colors;
 
-    const background_color = colors.background.get_string();
+    const background_color = config.colors.background.to_string();
 
     canvas.style.background = background_color;
     document.querySelector('.tabs').style.background = background_color;
@@ -104,7 +108,7 @@ onresize = function() {
 }
 
 onkeydown = function(event) {
-    if (event.key.match(/F([1-9]|1[0-2])/)) return;
+    if (event.key.match(/F\d{1,2}/)) return;
 
     return current_tab.controller.event_key_down(event);
 }

@@ -55,15 +55,15 @@ class Controller {
 
         switch (this.current_action) {
             case Enum.action.create_wire_segment:
-                // if (this.model.connect_new_wire_to(
-                //     this.new_wire_segments,
-                //     this.wire_start_node,
-                //     this.hovered_element,
-                // ))
-                // {
-                //     this.current_action = Enum.action.none;
-                //     break;
-                // }
+                if (this.model.connect_new_wire_to(
+                    this.new_wire_segments,
+                    this.wire_start_node,
+                    this.hovered_element,
+                ))
+                {
+                    this.current_action = Enum.action.none;
+                    break;
+                }
 
                 // this.wire_end_node = null;
 
@@ -123,12 +123,12 @@ class Controller {
             || !Vec.sub(this.mouse_world_pos, this.mousedown_mouse_world_pos).round().equals(new Vec);
 
         const move_vec = new Vec(event.movementX, event.movementY);
-        const world_move_vec = Vec.div(move_vec, current_tab.camera.anim_scale);
+        const world_move_vec = Vec.div(move_vec, current_tab.camera.anim_scale_);
 
         this.mouse_movement.add(move_vec);
         this.abs_mouse_movement.add(Vec.abs(move_vec));
 
-        this.mouse_world_movement.add(Vec.div(move_vec, current_tab.camera.anim_scale));
+        this.mouse_world_movement.add(Vec.div(move_vec, current_tab.camera.anim_scale_));
 
         switch (this.current_action) {
             case Enum.action.none:
@@ -151,11 +151,6 @@ class Controller {
                 else {
                     this.wire_end_node = null;
                 }
-                break;
-
-            case Enum.action.create_wire_segment:
-                // this.new_wire_segments[0].offset = this.mouse_world_pos.y;
-                // this.new_wire_segments[1].offset = this.mouse_world_pos.x;
                 break;
 
             case Enum.action.create_selection_box:
@@ -204,24 +199,22 @@ class Controller {
 
                     this.new_wire_segments = [];
 
-                    const first_segment = new WireSegment;
-                    this.new_wire_segments.push(first_segment);
+                    const segment_a = current_tab.model.add_wire_segment(this.new_wire_segments);
+                    segment_a.vertical = this.wire_start_node.is_vertical();
 
-                    first_segment.connected_pos = this.wire_start_node.pos;
-                    first_segment.vertical = false;
+                    const segment_b = current_tab.model.add_wire_segment(this.new_wire_segments);
 
-                    const second_segment = new WireSegment;
-                    this.new_wire_segments.push(second_segment);
+                    segment_a.connected_pos = this.wire_start_node.pos;
+                    segment_b.connected_pos = this.mouse_world_pos;
 
-                    second_segment.connected_pos = this.mouse_world_pos
-                    second_segment.vertical = true;
+                    segment_a.update();
+                    segment_b.update();
 
-                    first_segment.neighbor_segments.push(second_segment);
-                    second_segment.neighbor_segments.push(first_segment);
+                    segment_a.cancel_animation();
+                    segment_b.cancel_animation();
+
+                    current_tab.model.connected_wire_segments(segment_a, segment_b);
                 }
-                break;
-
-            case Enum.action.create_wire_segment:
                 break;
 
             default:
@@ -234,7 +227,8 @@ class Controller {
     }
 
     get_elements_in_selection_rect() {
-        return this.model.get_elements_in_rect(this.mouse_world_pos, this.selection_size());
+        const selection_size = Vec.sub(this.mousedown_mouse_world_pos, this.mouse_world_pos);
+        return this.model.get_elements_in_rect(this.mouse_world_pos, selection_size);
     }
 
     read_files(onload) {
@@ -297,14 +291,16 @@ class Controller {
         );
     }
 
-    selection_size() {
-        return Vec.sub(this.mousedown_mouse_world_pos, this.mouse_world_pos);
-    }
+    init_element(element) {
+        element.pos.set(this.mousedown_mouse_world_pos).round();
 
-    init_element(gate) {
-        gate.pos.set(this.mousedown_mouse_world_pos).round();
-        gate.cancel_animation();
-        this.model.add(gate);
+        if (element instanceof Gate) {
+            element.update_all_nodes();
+            element.cancel_animation();
+            element.nodes_init_animation();
+        }
+
+        this.model.add(element);
     }
 
     create_custom_gate(gate) {
