@@ -65,6 +65,7 @@ const config = {
     ticks_per_frame: 101,
     block_unused_key_combinations: false,
     default_grid_size: 30,
+    default_rising_edge_pulse_length: 3,
 
     colors: null,
     grid_style: Enum.grid_style.dots,

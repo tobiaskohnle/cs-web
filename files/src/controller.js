@@ -37,8 +37,6 @@ class Controller {
 
         this.element_moved = false;
 
-        this.previous_main_gate = deep_copy(this.model.main_gate);
-
         if ((event.detail-1) & 1) {
             if (this.hovered_element instanceof ConnectionNode) {
                 this.hovered_element.invert();
@@ -57,59 +55,31 @@ class Controller {
 
         switch (this.current_action) {
             case Enum.action.create_wire_segment:
-                // TEMP
-                if (
-                    this.model.nodes_connectable(this.wire_start_node, this.hovered_element)
-                    && !this.model.nodes_connected(this.wire_start_node, this.hovered_element)
-                ) {
-                    this.wire_end_node = this.hovered_element;
-                    this.model.connect_nodes(this.wire_start_node, this.wire_end_node);
+                // if (this.model.connect_new_wire_to(
+                //     this.new_wire_segments,
+                //     this.wire_start_node,
+                //     this.hovered_element,
+                // ))
+                // {
+                //     this.current_action = Enum.action.none;
+                //     break;
+                // }
 
-                    this.model.main_gate.inner_elements.push(...this.new_wire_segments);
-                    this.new_wire_segments.last().connected_pos = this.wire_end_node.pos;
+                // this.wire_end_node = null;
 
-                    this.current_action = Enum.action.none;
+                // const last_segment = this.new_wire_segments.last();
 
-                    break;
-                }
-                else if (this.hovered_element instanceof WireSegment) {
-                    const mouse_segment = this.new_wire_segments.pop();
-                    this.new_wire_segments.last().neighbor_segments.remove(mouse_segment);
+                // const new_segment = new WireSegment;
 
-                    if (this.new_wire_segments.last().vertical == this.hovered_element.vertical) {
-                        const new_segment = new WireSegment;
-                        this.new_wire_segments.push(new_segment);
+                // new_segment.vertical = !!(this.new_wire_segments.length & 1);
+                // new_segment.connected_pos = last_segment.connected_pos; // mouse_world_pos
 
-                        new_segment.vertical = !!(this.new_wire_segments.length & 1);
-                    }
+                // last_segment.connected_pos = null;
 
-                    this.model.main_gate.inner_elements.push(...this.new_wire_segments);
+                // last_segment.neighbor_segments.push(new_segment);
+                // new_segment.neighbor_segments.push(last_segment);
 
-                    this.new_wire_segments.last().neighbor_segments.push(this.hovered_element);
-                    this.hovered_element.neighbor_segments.push(this.new_wire_segments.last());
-
-                    this.current_action = Enum.action.none;
-
-                    break;
-                }
-                else {
-                    this.wire_end_node = null;
-                }
-                // TEMP
-
-                const last_segment = this.new_wire_segments.last();
-
-                const new_segment = new WireSegment;
-
-                new_segment.vertical = !!(this.new_wire_segments.length & 1);
-                new_segment.connected_pos = last_segment.connected_pos; // mouse_world_pos
-
-                last_segment.connected_pos = null;
-
-                last_segment.neighbor_segments.push(new_segment);
-                new_segment.neighbor_segments.push(last_segment);
-
-                this.new_wire_segments.push(new_segment);
+                // this.new_wire_segments.push(new_segment);
 
                 break;
 

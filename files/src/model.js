@@ -14,6 +14,10 @@ class Model {
         for (const node of this.ticked_nodes) {
             const eval_node_state = node.eval_state();
 
+            if (node.is_rising_edge && node.rising_edge_ticks_active <= node.rising_edge_pulse_length) {
+                next_ticked_nodes.add(node);
+            }
+
             if (eval_node_state == node.state) {
                 continue;
             }
@@ -192,6 +196,45 @@ class Model {
         }
 
         return elements_in_rect;
+    }
+
+    connected_wire_segments(segment_a, segment_b) {
+        segment_a.neighbor_segments.push(segment_b);
+        segment_b.neighbor_segments.push(segment_a);
+    }
+
+    connect_new_wire_to(new_wire_segments, start_node, element) {
+        if (
+            this.nodes_connectable(start_node, element)
+            && !this.nodes_connected(start_node, element)
+        ) {
+            this.wire_end_node = element;
+            this.connect_nodes(start_node, this.wire_end_node);
+
+            this.main_gate.inner_elements.push(...new_wire_segments);
+            new_wire_segments.last().connected_pos = this.wire_end_node.pos;
+
+            return true;
+        }
+        else if (element instanceof WireSegment) {
+            const mouse_segment = new_wire_segments.pop();
+            new_wire_segments.last().neighbor_segments.remove(mouse_segment);
+
+            if (new_wire_segments.last().vertical == element.vertical) {
+                const new_segment = new WireSegment;
+                new_segment.vertical = !!(new_wire_segments.length & 1);
+
+                new_wire_segments.push(new_segment);
+            }
+
+            this.main_gate.inner_elements.push(...new_wire_segments);
+
+            this.connected_wire_segments(new_wire_segments.last(), element);
+
+            return true;
+        }
+
+        return false;
     }
 
     nodes_connectable(start_node, end_node) {

@@ -79,16 +79,36 @@ class ConnectionNode extends Element {
 class InputNode extends ConnectionNode {
     constructor(parent) {
         super(-1, parent);
+
+        this.is_rising_edge = false;
+        this.rising_edge_pulse_length = config.default_rising_edge_pulse_length;
+        this.rising_edge_ticks_active = 0;
     }
 
     eval_state() {
-        if (this.previous_node()) {
-            return this.previous_node().state != this.is_inverted;
+        const previous_node = this.previous_node();
+
+        let state;
+
+        if (previous_node) {
+            state = previous_node.state != this.is_inverted;
+        }
+        else {
+            console.assert(this.is_empty());
+            state = this.is_inverted;
         }
 
-        console.assert(this.is_empty());
+        if (this.is_rising_edge) {
+            if (state) {
+                return this.rising_edge_ticks_active++ < this.rising_edge_pulse_length;
+            }
 
-        return this.is_inverted;
+            this.rising_edge_ticks_active = 0;
+            return false;
+        }
+        else {
+            return state;
+        }
     }
 
     is_empty() {
@@ -104,6 +124,18 @@ class InputNode extends ConnectionNode {
 
     draw() {
         super.draw(false);
+
+        if (this.is_rising_edge) {
+            context.beginPath();
+
+            context.moveTo(this.anim_pos.x, this.anim_pos.y-.3);
+            context.lineTo(this.anim_pos.x+.5, this.anim_pos.y);
+            context.lineTo(this.anim_pos.x, this.anim_pos.y+.3);
+
+            context.strokeStyle = this.color();
+            context.lineWidth = .1;
+            context.stroke();
+        }
     }
 }
 

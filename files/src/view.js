@@ -5,9 +5,9 @@ function update() {
 
     current_tab.camera.update();
 
-    for (let i = 0; i < config.ticks_per_frame; i++) {
-        current_tab.model.tick();
-    }
+    // for (let i = 0; i < config.ticks_per_frame; i++) {
+    //     current_tab.model.tick();
+    // }
 
     current_tab.model.update();
 

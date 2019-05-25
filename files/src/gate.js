@@ -237,7 +237,7 @@ class SegmentDisplay extends ModelGate {
         const segment_distance      = 12;
         const segment_center_length = 70;
 
-        const center = Vec.add(this.anim_pos, Vec.mult(this.anim_size, .5));
+        const center = Vec.add(this.anim_pos, Vec.div(this.anim_size, 2));
 
         const inner_width = width - segment_width*2;
         const height = width*2 - segment_width;
