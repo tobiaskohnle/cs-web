@@ -34,7 +34,7 @@ class Camera {
     }
 
     transform_canvas() {
-        context.translate(this.anim_pos_.x, this.anim_pos_.y);
+        context.translate(...this.anim_pos_.xy);
         context.scale(this.anim_scale_, this.anim_scale_);
     }
 

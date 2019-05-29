@@ -28,12 +28,12 @@ function between(v, min,max) {
     return min <= v && v < max;
 }
 
-function get_all_inner_elements(custom_gate) {
+function all_inner_elements(custom_gate) {
     return [
         ...custom_gate.inner_elements,
         ...custom_gate.inner_elements
             .filter(element => element instanceof CustomGate)
-            .flatMap(custom_gate => get_all_inner_elements(custom_gate))
+            .flatMap(custom_gate => all_inner_elements(custom_gate))
     ];
 }
 
@@ -76,7 +76,7 @@ function remove_loose_connections(elements) {
     }
 }
 
-function get_bounding_rect(elements) {
+function bounding_rect(elements) {
     const min_pos = new Vec(Math.min());
     const max_pos = new Vec(Math.max());
 

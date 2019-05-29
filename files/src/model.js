@@ -92,7 +92,7 @@ class Model {
         }
     }
 
-    get_element_at(pos) {
+    element_at(pos) {
         let nearest_element = null;
         let min_dist = Infinity;
 
@@ -117,7 +117,7 @@ class Model {
                 element.set_all_nodes_pos();
 
                 node.cancel_animation();
-                node.anim_pos_.add(new Vec(node.dir_x, 0));
+                node.anim_pos_.add(node.dir);
                 node.color_line_.set_anim_hsva(new Color(.5,0,0,.1));
             }
         }
@@ -201,7 +201,7 @@ class Model {
         this.main_gate.inner_elements.remove(element);
     }
 
-    get_elements_in_rect(pos, size) {
+    elements_in_rect(pos, size) {
         const elements_in_rect = [];
 
         for (const element of this.elements()) {
@@ -255,7 +255,7 @@ class Model {
 
             // this.main_gate.inner_elements.push(...new_wire_segments);
             start_node.wire_segments = [...new_wire_segments];
-            new_wire_segments.last().connected_pos = this.wire_end_node.pos;
+            new_wire_segments.last().connected_pos = this.wire_end_node.anchor_pos_;
 
             return true;
         }

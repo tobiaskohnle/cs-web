@@ -7,9 +7,11 @@ class ConnectionNode extends Element {
         this.pos = new Vec;
         this.anim_pos_ = new Vec;
 
-        this.dir_x = this instanceof OutputNode ? 1 : -1;
-        this.dir_y = 0;
+        this.dir = new Vec(this instanceof OutputNode ? 1 : -1, 0);
         this.parent = parent;
+
+        this.anchor_pos_ = new Vec;
+        this.anchor_anim_pos_ = new Vec;
 
         this.label = null;
         this.tag = null;
@@ -26,6 +28,9 @@ class ConnectionNode extends Element {
     update() {
         this.anim_pos_ = anim_interpolate_vec(this.anim_pos_, this.pos);
 
+        this.anchor_pos_.set(Vec.add(this.pos, this.dir));
+        this.anchor_anim_pos_.set(Vec.add(this.anim_pos_, this.dir));
+
         const draw_line_active = this.is_inverted ? this.state == (this instanceof OutputNode) : this.state;
         const color = this.color(draw_line_active ? config.colors.wire_active : config.colors.wire_inactive);
 
@@ -39,11 +44,11 @@ class ConnectionNode extends Element {
     move(vec) {}
 
     is_vertical() {
-        return !this.dir_x;
+        return !this.dir.x;
     }
 
     previous_node() {
-        return get_all_inner_elements(current_tab.model.main_gate)
+        return all_inner_elements(current_tab.model.main_gate)
             .filter(element => element instanceof Gate)
             .flatMap(gate => [...gate.inputs, ...gate.outputs])
             .find(node => node.next_nodes && node.next_nodes.includes(this));
@@ -67,7 +72,7 @@ class ConnectionNode extends Element {
     hitbox_rect() {
         return {
             pos: this.pos,
-            size: new Vec(this.dir_x, 0),
+            size: this.dir,
         };
     }
 
@@ -75,8 +80,8 @@ class ConnectionNode extends Element {
         const off = this.is_inverted ? 1/2+.1/2 : 0;
 
         context.beginPath();
-        context.moveTo(this.anim_pos_.x+this.dir_x*off, this.anim_pos_.y);
-        context.lineTo(this.anim_pos_.x+this.dir_x, this.anim_pos_.y);
+        context.moveTo(...Vec.add(this.anim_pos_, Vec.mult(this.dir, off)).xy);
+        context.lineTo(...Vec.add(this.anim_pos_, this.dir).xy);
 
         context.strokeStyle = this.color_line_.to_string();
 
@@ -85,7 +90,8 @@ class ConnectionNode extends Element {
 
         if (this.is_inverted) {
             context.beginPath();
-            context.arc(this.anim_pos_.x+this.dir_x/4+this.dir_x*.1/2, this.anim_pos_.y, 1/4, 0, Math.PI*2);
+            // context.arc(this.anim_pos_.x+this.dir.x/4+this.dir.x*.1/2, this.anim_pos_.y, 1/4, 0, Math.PI*2);
+            context.arc(...Vec.add(this.anim_pos_, Vec.mult(this.dir, 1/4+.1/2)).xy, 1/4, 0, Math.PI*2);
 
             // context.strokeStyle = !draw_line_active ? config.colors.wire_active : config.colors.wire_inactive;
             context.strokeStyle = this.color_dot_.to_string();

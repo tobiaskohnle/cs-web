@@ -183,7 +183,7 @@ const commands = [
         name: 'instant-import',
         shortcuts: [new KeyCombination(76, 'l', KeyCombination.Modifier_Ctrl)],
         command: function() {
-            const file_string = current_tab.controller.get_file_string();
+            const file_string = current_tab.controller.file_string();
             current_tab.controller.create_custom_gate(extended_parse(file_string));
             current_tab.model.tick_all();
         },
@@ -239,7 +239,7 @@ const commands = [
         name: 'reload',
         shortcuts: [new KeyCombination(82, 'r', KeyCombination.Modifier_Ctrl)],
         command: function() {
-            const file_string = current_tab.controller.get_file_string();
+            const file_string = current_tab.controller.file_string();
             current_tab.reset();
             current_tab.model.main_gate = extended_parse(file_string);
         },
@@ -261,7 +261,7 @@ const commands = [
         name: 'save',
         shortcuts: [new KeyCombination(83, 's', KeyCombination.Modifier_Ctrl)],
         command: function() {
-            download_string(current_tab.controller.get_file_string(), 'file.circ');
+            download_string(current_tab.controller.file_string(), 'file.circ');
         },
     },
     {
@@ -271,7 +271,7 @@ const commands = [
             let file_name = prompt('Save file as...', 'file.circ');
             if (file_name) {
                 file_name = file_name.endsWith('.circ') ? file_name : `${file_name}.circ`;
-                download_string(current_tab.controller.get_file_string(), file_name);
+                download_string(current_tab.controller.file_string(), file_name);
             }
         },
     },

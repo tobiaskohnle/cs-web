@@ -66,6 +66,9 @@ class Vec {
     length() {
         return Math.sqrt(this.x*this.x + this.y*this.y);
     }
+    get xy() {
+        return [this.x, this.y];
+    }
 
     static copy(a) {
         return new Vec(a.x, a.y);

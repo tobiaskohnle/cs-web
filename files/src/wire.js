@@ -52,12 +52,13 @@ class WireSegment extends Element {
             return Infinity;
         }
 
-        const pos_offset = this.vertical ? pos.x : pos.y;
+        const pos_offset        = this.vertical ? pos.x : pos.y;
+        const pos_normal_offset = this.vertical ? pos.y : pos.x;
 
         const distance = Math.abs(pos_offset - this.offset);
-        const normal_offset = this.get_normal_offset();
+        const normal_offset = this.normal_offset();
 
-        if (between(pos_offset, normal_offset.min, normal_offset.max)) {
+        if (between(pos_normal_offset, normal_offset.min, normal_offset.max)) {
             const dist = distance - 1e-9;
 
             if (dist > 1) return Infinity;
@@ -117,7 +118,7 @@ class WireSegment extends Element {
         */
     }
 
-    get_anim_normal_offset() {
+    anim_normal_offset() {
         if (this.neighbor_segments.length == 0) {
             return {min: 0, max: 0};
         }
@@ -139,7 +140,7 @@ class WireSegment extends Element {
 
         return {min, max};
     }
-    get_normal_offset() {
+    normal_offset() {
         if (this.neighbor_segments.length == 0) {
             return {min: 0, max: 0};
         }
@@ -163,7 +164,7 @@ class WireSegment extends Element {
     }
 
     hitbox_rect() {
-        const {min, max} = this.get_normal_offset();
+        const {min, max} = this.normal_offset();
 
         if (this.vertical) {
             return {
@@ -179,7 +180,7 @@ class WireSegment extends Element {
     }
 
     draw() {
-        const {min, max} = this.get_anim_normal_offset();
+        const {min, max} = this.anim_normal_offset();
 
         context.fillStyle = this.color_outline_.to_string();
 

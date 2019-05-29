@@ -39,12 +39,12 @@ class Gate extends Element {
 
         let input_index = 0;
         for (const node of this.inputs)  {
-            node.anim_pos_.add(new Vec(node.dir_x + node.dir_x * input_index++/2, 0));
+            node.anim_pos_.add(new Vec(node.dir.x + node.dir.x * input_index++/2, 0));
         }
 
         let output_index = 0;
         for (const node of this.outputs) {
-            node.anim_pos_.add(new Vec(node.dir_x + node.dir_x * output_index++/2, 0));
+            node.anim_pos_.add(new Vec(node.dir.x + node.dir.x * output_index++/2, 0));
         }
     }
 
@@ -105,10 +105,10 @@ class Gate extends Element {
 
         if (this.is_hovered() && current_tab.controller.mouse_down) {
             context.lineWidth = .12;
-            context.strokeRect(this.anim_pos_.x+.1/2, this.anim_pos_.y+.1/2, this.anim_size_.x-.2/2, this.anim_size_.y-.2/2);
+            context.strokeRect(...Vec.add(this.anim_pos_, new Vec(.1/2)).xy, ...Vec.sub(this.anim_size_, new Vec(.2/2)).xy);
         }
         else {
-            context.strokeRect(this.anim_pos_.x, this.anim_pos_.y, this.anim_size_.x, this.anim_size_.y);
+            context.strokeRect(...this.anim_pos_.xy, ...this.anim_size_.xy);
         }
 
         // context.setLineDash([]);
@@ -117,7 +117,8 @@ class Gate extends Element {
         context.fillStyle = config.colors.wire_inactive.to_string();
         context.textAlign = 'center';
         context.textBaseline = 'middle';
-        context.fillText(this.tag, this.anim_pos_.x+this.anim_size_.x/2, this.anim_pos_.y+this.anim_size_.y/2, this.anim_size_.y);
+        // context.fillText(this.tag, this.anim_pos_.x+this.anim_size_.x/2, this.anim_pos_.y+this.anim_size_.y/2, this.anim_size_.y);
+        context.fillText(this.tag, ...Vec.add(this.anim_pos_, Vec.div(this.anim_size_, 2)).xy);
     }
 
     distance(pos) {
@@ -230,7 +231,7 @@ class InputSwitch extends ModelGate {
 
     draw() {
         context.fillStyle = this.color_fill_.to_string();
-        context.fillRect(this.anim_pos_.x, this.anim_pos_.y, this.size.x, this.size.y);
+        context.fillRect(...this.anim_pos_.xy, ...this.anim_size_.xy);
 
         super.draw();
     }
@@ -263,7 +264,7 @@ class OutputLight extends ModelGate {
 
     draw() {
         context.fillStyle = this.color_fill_.to_string();
-        context.fillRect(this.anim_pos_.x, this.anim_pos_.y, this.size.x, this.size.y);
+        context.fillRect(...this.anim_pos_.xy, ...this.anim_size_.xy);
 
         super.draw();
     }
@@ -373,8 +374,8 @@ class SegmentDisplay extends ModelGate {
                     scalar,
                 ));
 
-                if (i == 0) context.moveTo(transformed_point.x, transformed_point.y);
-                else        context.lineTo(transformed_point.x, transformed_point.y);
+                if (i == 0) context.moveTo(...transformed_point.xy);
+                else        context.lineTo(...transformed_point.xy);
             }
 
             context.fillStyle = color.to_string();
@@ -395,10 +396,10 @@ class SegmentDisplay extends ModelGate {
         }
 
         function transform_point(vec) {
-            return {
-                x: center.x + (vec.x + vec.y*skew_x/(width-segment_width/2)) * scale,
-                y: center.y + (vec.y                                       ) * scale,
-            };
+            return new Vec(
+                center.x + (vec.x + vec.y*skew_x/(width-segment_width/2)) * scale,
+                center.y + (vec.y                                       ) * scale,
+            );
         }
     }
 }

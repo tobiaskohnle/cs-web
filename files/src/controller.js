@@ -61,8 +61,6 @@ class Controller {
                     this.hovered_element,
                 ))
                 {
-                    console.log('CREATE WIRE');
-
                     this.current_action = Enum.action.none;
                     break;
                 }
@@ -106,7 +104,7 @@ class Controller {
         this.mouse_world_pos.set(current_tab.camera.to_worldspace(this.mouse_pos));
 
         const previous_hovered_element = this.hovered_element;
-        this.hovered_element = this.model.get_element_at(this.mouse_world_pos);
+        this.hovered_element = this.model.element_at(this.mouse_world_pos);
 
         this.element_moved = this.element_moved
             || !Vec.sub(this.mouse_world_pos, this.mousedown_mouse_world_pos).round().equals(new Vec);
@@ -156,7 +154,7 @@ class Controller {
                 }
 
                 if (this.wire_end_node) {
-                    this.new_wire_segments.last().connected_pos = this.wire_end_node.pos;
+                    this.new_wire_segments.last().connected_pos = this.wire_end_node.anchor_pos_;
                 }
                 else {
                     this.new_wire_segments.last().connected_pos = this.mouse_world_pos;
@@ -169,7 +167,7 @@ class Controller {
                     this.model.deselect_all();
                 }
                 // /TEMP
-                for (const element of this.get_elements_in_selection_rect()) {
+                for (const element of this.elements_in_selection_rect()) {
                     this.model.select(element);
                 }
                 break;
@@ -211,7 +209,7 @@ class Controller {
 
                     const segment_b = current_tab.model.add_wire_segment(this.new_wire_segments);
 
-                    segment_a.connected_pos = this.wire_start_node.pos;
+                    segment_a.connected_pos = this.wire_start_node.anchor_pos_;
                     segment_b.connected_pos = this.mouse_world_pos;
 
                     segment_a.update();
@@ -234,9 +232,9 @@ class Controller {
         this.mouse_world_movement = new Vec;
     }
 
-    get_elements_in_selection_rect() {
+    elements_in_selection_rect() {
         const selection_size = Vec.sub(this.mousedown_mouse_world_pos, this.mouse_world_pos);
-        return this.model.get_elements_in_rect(this.mouse_world_pos, selection_size);
+        return this.model.elements_in_rect(this.mouse_world_pos, selection_size);
     }
 
     read_files(onload) {
@@ -252,7 +250,7 @@ class Controller {
             const files = input.files;
 
             for (const file of files) {
-                const reader = new FileReader();
+                const reader = new FileReader;
 
                 reader.onload = function() {
                     onload(reader.result);
@@ -276,7 +274,7 @@ class Controller {
         const copied_elements = extended_parse(this.clipboard);
         remove_loose_connections(copied_elements);
 
-        const top_left_pos = get_bounding_rect(copied_elements).pos;
+        const top_left_pos = bounding_rect(copied_elements).pos;
 
         for (const copied_element of copied_elements) {
             this.model.add(copied_element);
@@ -288,7 +286,7 @@ class Controller {
         }
     }
 
-    get_file_string() {
+    file_string() {
         return extended_stringify(
             this.model.main_gate,
             function(key, value) {

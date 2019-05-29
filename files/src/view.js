@@ -1,3 +1,5 @@
+assert = 0
+
 'use strict';
 
 function update() {
@@ -10,6 +12,18 @@ function update() {
     }
 
     current_tab.model.update();
+
+    if (assert) console.assert(
+        current_tab.model.main_gate.inner_elements.find(g => g instanceof AndGate).outputs[0].anim_pos_.y
+        ==
+        current_tab.model.main_gate.inner_elements.find(g => g instanceof AndGate).outputs[0].wire_segments[0].anim_offset_
+    )
+
+    // if (assert) console.assert(
+    //     current_tab.model.main_gate.inner_elements.find(g => g instanceof OrGate).anim_pos_.y+1
+    //     ==
+    //     current_tab.model.main_gate.inner_elements.find(g => g instanceof OrGate).inputs[0].anim_pos_.y
+    // )
 
     draw();
 }
@@ -38,7 +52,7 @@ function draw() {
         console.assert(current_tab.controller.wire_start_node);
 
         // draw_wire(
-        //     Vec.add(current_tab.controller.wire_start_node.pos, new Vec(current_tab.controller.wire_start_node.dir_x,0)),
+        //     Vec.add(current_tab.controller.wire_start_node.pos, new Vec(current_tab.controller.wire_start_node.dir.x,0)),
         //     current_tab.controller.mouse_world_pos,
         // );
     }
@@ -67,11 +81,11 @@ function draw_selection_rect(pos_start, pos_end) {
     const size = Vec.sub(pos_end, pos_start);
 
     context.fillStyle = config.colors.selection_fill.to_string();
-    context.fillRect(pos_start.x, pos_start.y, size.x, size.y);
+    context.fillRect(...pos_start.xy, ...size.xy);
 
     context.lineWidth = 2;
     context.strokeStyle = config.colors.selection_outline.to_string();
-    context.strokeRect(pos_start.x|0, pos_start.y|0, size.x|0, size.y|0);
+    context.strokeRect(...Vec.floor(pos_start).xy, ...Vec.floor(size).xy);
 }
 
 function draw_grid_dots() {
