@@ -2,8 +2,8 @@
 
 class Model {
     constructor() {
-        this.ticked_nodes = new Set;
-        this.selected_elements = new Set;
+        this.ticked_nodes_ = new Set;
+        this.selected_elements_ = new Set;
 
         this.main_gate = new CustomGate;
     }
@@ -11,7 +11,7 @@ class Model {
     tick() {
         const next_ticked_nodes = new Set;
 
-        for (const node of this.ticked_nodes) {
+        for (const node of this.ticked_nodes_) {
             const eval_node_state = node.eval_state();
 
             if (node.is_rising_edge && node.rising_edge_ticks_active <= node.rising_edge_pulse_length) {
@@ -29,7 +29,7 @@ class Model {
             }
         }
 
-        this.ticked_nodes = next_ticked_nodes;
+        this.ticked_nodes_ = next_ticked_nodes;
     }
 
     tick_all() {
@@ -41,7 +41,7 @@ class Model {
     }
 
     update() {
-        for (const element of this.elements()) {
+        for (const element of this.main_gate.inner_elements) {
             element.update();
         }
 
@@ -54,7 +54,7 @@ class Model {
 
     // TEMP
     selected_elements_array() {
-        return Array.from(this.selected_elements);
+        return Array.from(this.selected_elements_);
     }
     selected_element() {
         return this.selected_elements_array()[0] || null;
@@ -68,11 +68,11 @@ class Model {
             elements.push(element);
 
             if (element instanceof Gate) {
-                for (const input of element.inputs) {
-                    elements.push(input);
-                }
-                for (const output of element.outputs) {
-                    elements.push(output);
+                elements.push(...element.inputs);
+                elements.push(...element.outputs);
+
+                for (const node of element.outputs) {
+                    elements.push(...node.wire_segments);
                 }
             }
         }
@@ -81,7 +81,7 @@ class Model {
     }
 
     queue_tick(node) {
-        this.ticked_nodes.add(node);
+        this.ticked_nodes_.add(node);
     }
 
     update_all_last_pos() {
@@ -108,14 +108,29 @@ class Model {
         return nearest_element;
     }
 
+    add_input_node_to_selected_gates() {
+        for (const element of this.selected_elements_) {
+            if (element instanceof Gate) {
+                const node = new InputNode(element);
+
+                element.inputs.push(node);
+                element.set_all_nodes_pos();
+
+                node.cancel_animation();
+                node.anim_pos_.add(new Vec(node.dir_x, 0));
+                node.color_line_.set_anim_hsva(new Color(.5,0,0,.1));
+            }
+        }
+    }
+
     move_selected_elements(vec, total_vec) {
-        for (const element of this.selected_elements) {
+        for (const element of this.selected_elements_) {
             element.move(vec, total_vec);
         }
     }
 
     invert_selected_connection_nodes() {
-        for (const element of this.selected_elements) {
+        for (const element of this.selected_elements_) {
             if (element instanceof ConnectionNode) {
                 element.invert();
             }
@@ -127,12 +142,12 @@ class Model {
             return;
         }
 
-        this.selected_elements.add(element);
+        this.selected_elements_.add(element);
     }
 
     select_all() {
         for (const element of this.elements()) {
-            this.selected_elements.add(element);
+            this.selected_elements_.add(element);
         }
     }
 
@@ -141,11 +156,11 @@ class Model {
             return;
         }
 
-        this.selected_elements.delete(element);
+        this.selected_elements_.delete(element);
     }
 
     deselect_all() {
-        this.selected_elements = new Set;
+        this.selected_elements_ = new Set;
     }
 
     add(element) {
@@ -161,7 +176,7 @@ class Model {
     }
 
     delete_selected_elements() {
-        for (const element of this.selected_elements) {
+        for (const element of this.selected_elements_) {
             this.delete(element);
         }
 
@@ -212,7 +227,19 @@ class Model {
         wire_segments.push(segment);
         return segment;
     }
+    remove_wire_segment(wire_segments) {
+        if (wire_segments.length >= 2) {
+            this.deconnected_wire_segments(wire_segments.pop(), wire_segments.last());
+        }
+        else {
+            wire_segments.pop();
+        }
+    }
 
+    deconnected_wire_segments(segment_a, segment_b) {
+        segment_a.neighbor_segments.remove(segment_b);
+        segment_b.neighbor_segments.remove(segment_a);
+    }
     connected_wire_segments(segment_a, segment_b) {
         segment_a.neighbor_segments.push(segment_b);
         segment_b.neighbor_segments.push(segment_a);
@@ -226,7 +253,8 @@ class Model {
             this.wire_end_node = element;
             this.connect_nodes(start_node, this.wire_end_node);
 
-            this.main_gate.inner_elements.push(...new_wire_segments);
+            // this.main_gate.inner_elements.push(...new_wire_segments);
+            start_node.wire_segments = [...new_wire_segments];
             new_wire_segments.last().connected_pos = this.wire_end_node.pos;
 
             return true;
@@ -250,6 +278,19 @@ class Model {
         }
 
         return false;
+    }
+
+    split_selected_segments() {
+        for (const element of this.selected_elements_) {
+            this.split_segment(element);
+        }
+    }
+    split_segment(segment) {
+        if (!(segment instanceof WireSegment)) {
+            return;
+        }
+
+        // todo
     }
 
     nodes_connectable(start_node, end_node) {

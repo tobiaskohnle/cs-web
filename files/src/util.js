@@ -1,5 +1,9 @@
 'use strict';
 
+// TEMP
+globalThis.__defineGetter__('E', ()=>current_tab.model.selected_element());
+// /TEMP
+
 Array.prototype.last = function() {
     return this[this.length - 1];
 }
@@ -19,6 +23,9 @@ function map(v, s0,s1, d0,d1) {
 }
 function clamp(v, min,max) {
     return Math.min(max, Math.max(min, v));
+}
+function between(v, min,max) {
+    return min <= v && v < max;
 }
 
 function get_all_inner_elements(custom_gate) {
@@ -109,7 +116,12 @@ function deep_copy(element) {
 
         cached_results.push(result);
 
-        for (const key in element) {
+        if (Set.prototype.isPrototypeOf(element)) {
+            for (const item of element) {
+                result.add(copy(item));
+            }
+        }
+        else for (const key in element) {
             if (element.hasOwnProperty(key)) {
                 result[key] = copy(element[key]);
             }
@@ -140,10 +152,10 @@ function extended_stringify(value, replacer=null, space=null) {
         const index = references.indexOf(value);
 
         if (index >= 0) {
-            return {['$ref']: index};
+            return {$ref: index};
         }
         else if (value instanceof Object) {
-            value['$id'] = references.length;
+            value.$id = references.length;
             references.push(value);
         }
 
@@ -160,7 +172,7 @@ function extended_stringify(value, replacer=null, space=null) {
             }
 
             if (!['Object', 'Array', 'String', 'Number'].includes(value.constructor.name)) {
-                value['$type'] = type_to_string(value);
+                value.$type = type_to_string(value);
             }
         }
 
@@ -190,13 +202,13 @@ function extended_parse(value, reviver=null) {
     return (function edit(value) {
         if (value != undefined) {
             if (value.hasOwnProperty('$ref')) {
-                const return_value = references[value['$ref']];
-                delete value['$ref'];
+                const return_value = references[value.$ref];
+                delete value.$ref;
                 return return_value;
             }
             else if (value.hasOwnProperty('$id')) {
-                references[value['$id']] = value;
-                delete value['$id'];
+                references[value.$id] = value;
+                delete value.$id;
             }
         }
 

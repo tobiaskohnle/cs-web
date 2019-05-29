@@ -61,26 +61,18 @@ class Controller {
                     this.hovered_element,
                 ))
                 {
+                    console.log('CREATE WIRE');
+
                     this.current_action = Enum.action.none;
                     break;
                 }
 
-                // this.wire_end_node = null;
+                this.new_wire_segments.last().connected_pos = null;
+                const segment = this.model.add_wire_segment(this.new_wire_segments);
+                this.new_wire_segments.last().connected_pos = this.mouse_world_pos;
 
-                // const last_segment = this.new_wire_segments.last();
-
-                // const new_segment = new WireSegment;
-
-                // new_segment.vertical = !!(this.new_wire_segments.length & 1);
-                // new_segment.connected_pos = last_segment.connected_pos; // mouse_world_pos
-
-                // last_segment.connected_pos = null;
-
-                // last_segment.neighbor_segments.push(new_segment);
-                // new_segment.neighbor_segments.push(last_segment);
-
-                // this.new_wire_segments.push(new_segment);
-
+                segment.update();
+                segment.cancel_animation();
                 break;
 
             default:
@@ -105,9 +97,6 @@ class Controller {
                         this.current_action = Enum.action.move_elements;
                     }
                 }
-                else {
-                    this.current_action = Enum.action.move_screen;
-                }
                 break;
         }
     }
@@ -130,13 +119,13 @@ class Controller {
 
         this.mouse_world_movement.add(Vec.div(move_vec, current_tab.camera.anim_scale_));
 
+        if (event.buttons & -2) {
+            current_tab.camera.move(move_vec);
+        }
+
         switch (this.current_action) {
             case Enum.action.none:
                 this.current_hovered_element = this.hovered_element;
-                break;
-
-            case Enum.action.move_screen:
-                current_tab.camera.move(move_vec);
                 break;
 
             case Enum.action.create_wire:
@@ -150,6 +139,27 @@ class Controller {
                 }
                 else {
                     this.wire_end_node = null;
+                }
+                break;
+
+            case Enum.action.create_wire_segment:
+                if (
+                    this.model.nodes_connectable(this.wire_start_node, this.hovered_element)
+                    && !this.model.nodes_connected(this.wire_start_node, this.hovered_element)
+                ) {
+                    // current_tab.load_snapshot();
+                    // this.model.connect_nodes(this.wire_start_node, this.hovered_element);
+                    this.wire_end_node = this.hovered_element;
+                }
+                else {
+                    this.wire_end_node = null;
+                }
+
+                if (this.wire_end_node) {
+                    this.new_wire_segments.last().connected_pos = this.wire_end_node.pos;
+                }
+                else {
+                    this.new_wire_segments.last().connected_pos = this.mouse_world_pos;
                 }
                 break;
 
@@ -173,20 +183,17 @@ class Controller {
     event_mouse_up(event) {
         this.mouse_down = false;
 
-        // this.previous_main_gate = deep_copy(this.model.main_gate);
-
         if (!this.element_moved && this.hovered_element instanceof InputSwitch) {
             this.hovered_element.toggle();
             this.model.queue_tick(this.hovered_element.outputs[0]);
         }
 
         switch (this.current_action) {
-            case Enum.action.move_screen:
+            case Enum.action.none:
                 if (!this.mouse_moved()) {
                     this.model.deselect_all();
                     this.model.select(this.hovered_element);
                 }
-                this.current_action = Enum.action.none;
                 break;
 
             case Enum.action.create_wire:
@@ -212,9 +219,10 @@ class Controller {
 
                     segment_a.cancel_animation();
                     segment_b.cancel_animation();
-
-                    current_tab.model.connected_wire_segments(segment_a, segment_b);
                 }
+                break;
+
+            case Enum.action.create_wire_segment:
                 break;
 
             default:
@@ -256,7 +264,7 @@ class Controller {
     }
 
     copy_selected_elements() {
-        this.clipboard = extended_stringify(Array.from(this.model.selected_elements));
+        this.clipboard = extended_stringify(Array.from(this.model.selected_elements_));
     }
     paste_copied_elements() {
         if (!this.clipboard) {
@@ -295,7 +303,7 @@ class Controller {
         element.pos.set(this.mousedown_mouse_world_pos).round();
 
         if (element instanceof Gate) {
-            element.update_all_nodes();
+            element.set_all_nodes_pos();
             element.cancel_animation();
             element.nodes_init_animation();
         }

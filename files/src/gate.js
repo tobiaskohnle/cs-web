@@ -35,7 +35,7 @@ class Gate extends Element {
     }
 
     nodes_init_animation() {
-        this.update_all_nodes()
+        this.set_all_nodes_pos()
 
         let input_index = 0;
         for (const node of this.inputs)  {
@@ -48,7 +48,7 @@ class Gate extends Element {
         }
     }
 
-    update_nodes(nodes, offset) {
+    set_nodes_pos(nodes, offset) {
         const unit = this.size.y / nodes.length / 2;
 
         let i = 0;
@@ -59,14 +59,21 @@ class Gate extends Element {
         }
     }
 
+    set_all_nodes_pos() {
+        this.set_nodes_pos(this.inputs, 0);
+        this.set_nodes_pos(this.outputs, this.size.x);
+    }
+
     update_all_nodes() {
-        this.update_nodes(this.inputs, 0);
-        this.update_nodes(this.outputs, this.size.x);
+        for (const node of this.inputs)  node.update();
+        for (const node of this.outputs) node.update();
     }
 
     update() {
         super.update_pos();
         super.update_size();
+
+        this.set_all_nodes_pos();
 
         this.update_all_nodes();
 
@@ -114,10 +121,8 @@ class Gate extends Element {
     }
 
     distance(pos) {
-        if (   this.pos.x < pos.x
-            && this.pos.y < pos.y
-            && pos.x < this.pos.x+this.size.x
-            && pos.y < this.pos.y+this.size.y
+        if (between(pos.x, this.pos.x, this.pos.x+this.size.x) &&
+            between(pos.y, this.pos.y, this.pos.y+this.size.y)
         ) {
             return 0;
         }

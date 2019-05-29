@@ -8,7 +8,7 @@ class Element {
     }
 
     is_selected() {
-        return current_tab.model.selected_elements.has(this);
+        return current_tab.model.selected_elements_.has(this);
     }
     is_hovered() {
         return this == current_tab.controller.current_hovered_element;

@@ -51,18 +51,7 @@ const commands = [
         name: 'add-input-node',
         shortcuts: [new KeyCombination(187, '+', KeyCombination.Modifier_Ctrl|KeyCombination.Modifier_Shift)],
         command: function() {
-            for (const element of current_tab.model.selected_elements) {
-                if (element instanceof Gate) {
-                    const node = new InputNode(element);
-
-                    element.inputs.push(node);
-                    element.update_all_nodes();
-
-                    node.cancel_animation();
-                    node.anim_pos_.add(new Vec(node.dir_x, 0));
-                    node.color_line_.set_anim_hsva(new Color(.5,0,0,.1));
-                }
-            }
+            current_tab.model.add_input_node_to_selected_gates();
         },
     },
     {
@@ -191,6 +180,15 @@ const commands = [
         },
     },
     {
+        name: 'instant-import',
+        shortcuts: [new KeyCombination(76, 'l', KeyCombination.Modifier_Ctrl)],
+        command: function() {
+            const file_string = current_tab.controller.get_file_string();
+            current_tab.controller.create_custom_gate(extended_parse(file_string));
+            current_tab.model.tick_all();
+        },
+    },
+    {
         name: 'invert',
         shortcuts: [new KeyCombination(73, 'i', KeyCombination.Modifier_Ctrl|KeyCombination.Modifier_Shift)],
         command: function() {
@@ -282,6 +280,13 @@ const commands = [
         shortcuts: [new KeyCombination(65, 'a', KeyCombination.Modifier_Ctrl)],
         command: function() {
             current_tab.model.select_all();
+        },
+    },
+    {
+        name: 'split-segment',
+        shortcuts: [new KeyCombination(65, 'g', KeyCombination.Modifier_Ctrl)],
+        command: function() {
+            current_tab.model.split_selected_segments();
         },
     },
     {

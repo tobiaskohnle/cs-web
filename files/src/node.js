@@ -162,6 +162,16 @@ class OutputNode extends ConnectionNode {
         super(parent);
 
         this.next_nodes = [];
+
+        this.wire_segments = [];
+    }
+
+    update() {
+        super.update();
+
+        for (const segment of this.wire_segments) {
+            segment.update();
+        }
     }
 
     eval_state() {
@@ -185,5 +195,9 @@ class OutputNode extends ConnectionNode {
 
     draw() {
         super.draw(true);
+
+        for (const segment of this.wire_segments) {
+            segment.draw();
+        }
     }
 }
