@@ -23,12 +23,12 @@ class Gate extends Element {
     }
 
     add_input_node() {
-        const node = new InputNode(this, this.inputs.length);
+        const node = new InputNode(this, this.nodes_per_side()[Enum.side.west].length);
         this.inputs.push(node);
         return node;
     }
     add_output_node() {
-        const node = new OutputNode(this, this.outputs.length);
+        const node = new OutputNode(this, this.nodes_per_side()[Enum.side.east].length);
         this.outputs.push(node);
         return node;
     }
@@ -60,13 +60,6 @@ class Gate extends Element {
     }
 
     nodes_per_side() {
-        const index = dir => {
-            if (dir.x > 0) return 0;
-            if (dir.y > 0) return 1;
-            if (dir.x < 0) return 2;
-            if (dir.y < 0) return 3;
-        }
-
         const nodes = [[],[],[],[]];
 
         for (const node of this.nodes()) {
@@ -74,6 +67,32 @@ class Gate extends Element {
         }
 
         return nodes;
+    }
+
+    set_node_index(node, pos) {
+        // const {center_x, center_y} = get_center();
+        const center = Vec.add(this.pos, Vec.div(this.size, 2));
+
+        const x = (pos.x-center.x) / this.size.x;
+        const y = (pos.y-center.y) / this.size.y;
+
+        if (Math.abs(x) < Math.abs(y)) {
+            node.dir.x = 0;
+            node.dir.y = y>0 ? 1 : -1;
+        }
+        else {
+            node.dir.x = x>0 ? 1 : -1;
+            node.dir.y = 0;
+        }
+
+        const nodes = this.nodes_per_side()[index(node.dir)];
+
+        if (node.is_vertical()) {
+            node.index = map(pos.x, this.pos.x, this.pos.x+this.size.x, 0, nodes.length);
+        }
+        else {
+            node.index = map(pos.y, this.pos.y, this.pos.y+this.size.y, 0, nodes.length);
+        }
     }
 
     set_nodes_pos() {
@@ -97,6 +116,14 @@ class Gate extends Element {
     }
 
     update_all_nodes() {
+        for (const nodes of this.nodes_per_side()) {
+            [...nodes].sort((a,b) => a.index-b.index).forEach((node, i) => {
+                node.index = i;
+            });
+        }
+
+        this.set_nodes_pos();
+
         for (const node of this.nodes()) {
             node.update();
         }
@@ -105,8 +132,6 @@ class Gate extends Element {
     update() {
         super.update_pos();
         super.update_size();
-
-        this.set_nodes_pos();
 
         this.update_all_nodes();
 

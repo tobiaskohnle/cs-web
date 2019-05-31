@@ -30,7 +30,8 @@ class WireSegment extends Element {
 
         this.anim_offset_ = anim_interpolate(this.anim_offset_, this.offset);
 
-        this.color_outline_.set_hsva(this.color());
+        const default_color = this.parent && this.parent.state ? config.colors.wire_active : config.colors.wire_inactive;
+        this.color_outline_.set_hsva(this.color(default_color));
         this.color_outline_.update();
     }
 

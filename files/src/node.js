@@ -21,6 +21,8 @@ class ConnectionNode extends Element {
         this.state = false;
         this.is_inverted = false;
 
+        this.last_pos_ = new Vec;
+
         this.color_line_ = Color.new(config.colors.wire_inactive);
         this.color_dot_  = Color.new(config.colors.wire_inactive);
     }
@@ -42,8 +44,14 @@ class ConnectionNode extends Element {
         this.color_dot_.update();
     }
 
-    move(vec, total_vec) {
-        console.log('move node');
+    update_last_pos() {
+        this.last_pos_ = Vec.copy(this.pos);
+    }
+
+    move(vec, total_vec, mouse_pos) {
+        // this.pos.set(this.last_pos_).add(total_vec);
+        // this.index = this.parent
+        this.parent.set_node_index(this, mouse_pos);
     }
 
     is_vertical() {
@@ -200,6 +208,7 @@ class OutputNode extends ConnectionNode {
             current_tab.model.queue_tick(next_node);
         }
         this.next_nodes = [];
+        this.wire_segments = [];
     }
 
     draw() {

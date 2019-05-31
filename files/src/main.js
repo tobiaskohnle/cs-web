@@ -18,6 +18,12 @@ const Enum = {
         lines: Symbol('grid_style_lines'),
         dots:  Symbol('grid_style_dots'),
     },
+    side: {
+        east:  0,
+        south: 1,
+        west:  2,
+        north: 3,
+    },
 };
 
 const theme = {

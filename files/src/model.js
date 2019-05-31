@@ -121,9 +121,9 @@ class Model {
         }
     }
 
-    move_selected_elements(vec, total_vec) {
+    move_selected_elements(vec, total_vec, mouse_pos) {
         for (const element of this.selected_elements_) {
-            element.move(vec, total_vec);
+            element.move(vec, total_vec, mouse_pos);
         }
     }
 
@@ -213,6 +213,12 @@ class Model {
         return elements_in_rect;
     }
 
+    set_parent(elements, parent) {
+        for (const element of elements) {
+            element.parent = parent;
+        }
+    }
+
     add_wire_segment(wire_segments) {
         const segment = new WireSegment;
 
@@ -264,9 +270,13 @@ class Model {
                 this.remove_wire_segment(new_wire_segments);
             }
 
-            this.main_gate.inner_elements.push(...new_wire_segments);
+            element.parent.wire_segments.push(...new_wire_segments);
+
+            this.set_parent(new_wire_segments, element.parent);
 
             this.connect_wire_segments(new_wire_segments.last(), element);
+
+            this.connect_nodes(element.parent, start_node);
 
             return true;
         }

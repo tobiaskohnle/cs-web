@@ -62,6 +62,8 @@ class Controller {
                 ))
                 {
                     this.current_action = Enum.action.none;
+                    this.model.set_parent(this.new_wire_segments, this.wire_start_node);
+                    this.new_wire_segments = [];
                     break;
                 }
 
@@ -173,7 +175,7 @@ class Controller {
                 break;
 
             case Enum.action.move_elements:
-                this.model.move_selected_elements(world_move_vec, this.mouse_world_movement);
+                this.model.move_selected_elements(world_move_vec, this.mouse_world_movement, this.mouse_world_pos);
                 break;
         }
     }

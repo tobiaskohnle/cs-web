@@ -28,6 +28,13 @@ function between(v, min,max) {
     return min <= v && v < max;
 }
 
+function index(vec) {
+    if (vec.x > 0) return Enum.side.east;
+    if (vec.y > 0) return Enum.side.south;
+    if (vec.x < 0) return Enum.side.west;
+    if (vec.y < 0) return Enum.side.north;
+}
+
 function all_inner_elements(custom_gate) {
     return [
         ...custom_gate.inner_elements,

@@ -41,6 +41,36 @@ class KeyCombination {
 
 const commands = [
     {
+        name: 'TEMP-CREATE-WIRE',
+        shortcuts: [new KeyCombination(67, 'c', KeyCombination.Modifier_None)],
+        command: function() {
+            const start_node = current_tab.controller.hovered_element || E;
+
+            if (start_node instanceof ConnectionNode) {
+                current_tab.controller.wire_start_node = start_node;
+
+                current_tab.controller.current_action = Enum.action.create_wire_segment;
+
+                current_tab.controller.new_wire_segments = [];
+
+                const segment_a = current_tab.model.add_wire_segment(current_tab.controller.new_wire_segments);
+                segment_a.vertical = current_tab.controller.wire_start_node.is_vertical();
+
+                const segment_b = current_tab.model.add_wire_segment(current_tab.controller.new_wire_segments);
+
+                segment_a.connected_pos = current_tab.controller.wire_start_node.anchor_pos_;
+                segment_b.connected_pos = current_tab.controller.mouse_world_pos;
+
+                segment_a.update();
+                segment_b.update();
+
+                segment_a.cancel_animation();
+                segment_b.cancel_animation();
+            }
+        }
+    },
+
+    {
         name: 'add-and-gate',
         shortcuts: [],
         command: function() {
@@ -49,7 +79,7 @@ const commands = [
     },
     {
         name: 'add-input-node',
-        shortcuts: [new KeyCombination(187, '+', KeyCombination.Modifier_Ctrl|KeyCombination.Modifier_Shift)],
+        shortcuts: [new KeyCombination(187, '+', KeyCombination.Modifier_Shift)],
         command: function() {
             current_tab.model.add_input_node_to_selected_gates();
         },
