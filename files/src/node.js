@@ -1,7 +1,7 @@
 'use strict';
 
 class ConnectionNode extends Element {
-    constructor(parent) {
+    constructor(parent, index) {
         super();
 
         this.pos = new Vec;
@@ -16,7 +16,7 @@ class ConnectionNode extends Element {
         this.label = null;
         this.tag = null;
 
-        this.index = 0;
+        this.index = index;
 
         this.state = false;
         this.is_inverted = false;
@@ -32,16 +32,19 @@ class ConnectionNode extends Element {
         this.anchor_anim_pos_.set(Vec.add(this.anim_pos_, this.dir));
 
         const draw_line_active = this.is_inverted ? this.state == (this instanceof OutputNode) : this.state;
-        const color = this.color(draw_line_active ? config.colors.wire_active : config.colors.wire_inactive);
+        const color_line = this.color(draw_line_active ? config.colors.wire_active : config.colors.wire_inactive);
+        const color_dot  = this.color(draw_line_active ? config.colors.wire_inactive : config.colors.wire_active);
 
-        this.color_line_.set_hsva(color);
-        this.color_dot_.set_hsva(color);
+        this.color_line_.set_hsva(color_line);
+        this.color_dot_.set_hsva(color_dot);
 
         this.color_line_.update();
         this.color_dot_.update();
     }
 
-    move(vec) {}
+    move(vec, total_vec) {
+        console.log('move node');
+    }
 
     is_vertical() {
         return !this.dir.x;
@@ -101,8 +104,8 @@ class ConnectionNode extends Element {
 }
 
 class InputNode extends ConnectionNode {
-    constructor(parent) {
-        super(parent);
+    constructor(parent, index) {
+        super(parent, index);
 
         this.is_rising_edge = false;
         this.rising_edge_pulse_length = config.default_rising_edge_pulse_length;
@@ -164,8 +167,8 @@ class InputNode extends ConnectionNode {
 }
 
 class OutputNode extends ConnectionNode {
-    constructor(parent) {
-        super(parent);
+    constructor(parent, index) {
+        super(parent, index);
 
         this.next_nodes = [];
 

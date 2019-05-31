@@ -96,6 +96,7 @@ const commands = [
         name: 'add-text-label',
         shortcuts: [],
         command: function() {
+            current_tab.controller.init_element(new Label);
         },
     },
     {

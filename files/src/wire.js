@@ -59,106 +59,57 @@ class WireSegment extends Element {
         const normal_offset = this.normal_offset();
 
         if (between(pos_normal_offset, normal_offset.min, normal_offset.max)) {
-            const dist = distance - 1e-9;
+            const mid_distance = distance - 2e-9;
 
-            if (dist > 1) return Infinity;
-            return dist;
+            if (mid_distance > 1) return Infinity;
+            return mid_distance;
         }
 
-        let dist = Math.max(distance, normal_offset.min);
+        const min_distance = Math.min(
+            Math.abs(normal_offset.min-pos_normal_offset),
+            Math.abs(normal_offset.max-pos_normal_offset),
+        );
 
-        if (distance > normal_offset.min) {
-            dist -= 2e-9;
+        let side_distance = Math.max(distance, min_distance);
+
+        if (distance > min_distance) {
+            side_distance -= 1e-9;
         }
 
-        if (dist > 1) return Infinity;
-        return dist;
+        if (side_distance > 1) return Infinity;
+        return side_distance;
+    }
 
-        /*
-        const points = this.neighbor_segments.map(wire => {
-            if (this.vertical) {
-                return new Vec(this.offset, wire.offset);
-            }
-            return new Vec(wire.offset, this.offset);
-        });
+    neighbor_elements() {
+        const neighbor_elements = [];
 
-        const point = this.vertical ? new Vec(this.offset, 0) : new Vec(0, this.offset);
-        const last_point = points[0]     || point;
-        const next_point = points.last() || point;
-
-        const sx = this.vertical ? point.x : last_point.x; //
-        const sy = this.vertical ? last_point.y : point.y;
-        const ex = this.vertical ? point.x : next_point.x;
-        const ey = this.vertical ? next_point.y : point.y;
-
-        const distance = this.vertical ? Math.abs(pos.x-sx) : Math.abs(pos.y-sy);
-
-        const last_distance = this.vertical ? Math.abs(pos.y-sy) : Math.abs(pos.x-sx);
-        const next_distance = this.vertical ? Math.abs(pos.y-ey) : Math.abs(pos.x-ex);
-
-        const length = this.vertical ? Math.abs(ey-sy) : Math.abs(ex-sx);
-
-        if (last_distance < length && next_distance < length) {
-            const middistance = distance - 1e-9;
-
-            if (middistance > 1) return Infinity;
-            return middistance;
+        for (const neighbor_segment of this.neighbor_segments) {
+            neighbor_elements.push({
+                offset: neighbor_segment.offset,
+                anim_offset_: neighbor_segment.anim_offset_,
+            });
+        }
+        if (this.connected_pos) {
+            neighbor_elements.push({
+                offset: this.vertical ? this.connected_pos.y : this.connected_pos.x,
+                anim_offset_: this.vertical ? this.anim_connected_pos_.y : this.anim_connected_pos_.x,
+            });
         }
 
-        const mindistance = Math.min(last_distance, next_distance);
-
-        let sidedistance = Math.max(distance, mindistance);
-
-        if (distance > mindistance) {
-            sidedistance -= 2e-9;
-        }
-
-        if (sidedistance > 1) return Infinity;
-        return sidedistance;
-        */
+        return neighbor_elements;
     }
 
     anim_normal_offset() {
-        if (this.neighbor_segments.length == 0) {
-            return {min: 0, max: 0};
-        }
-
-        const neighbor_offsets = this.neighbor_segments.map(wire => wire.anim_offset_);
-
-        if (this.connected_pos && this.anim_connected_pos_) {
-            const connected_pos_offset
-                = this.vertical
-                ? this.anim_connected_pos_.y
-                : this.anim_connected_pos_.x;
-            var min = Math.min(...neighbor_offsets, connected_pos_offset);
-            var max = Math.max(...neighbor_offsets, connected_pos_offset);
-        }
-        else {
-            var min = Math.min(...neighbor_offsets);
-            var max = Math.max(...neighbor_offsets);
-        }
+        const neighbor_offsets = this.neighbor_elements().map(wire => wire.anim_offset_);
+        const min = Math.min(...neighbor_offsets);
+        const max = Math.max(...neighbor_offsets);
 
         return {min, max};
     }
     normal_offset() {
-        if (this.neighbor_segments.length == 0) {
-            return {min: 0, max: 0};
-        }
-
-        const neighbor_offsets = this.neighbor_segments.map(wire => wire.offset);
-
-        if (this.connected_pos) {
-            const connected_pos_offset
-                = this.vertical
-                ? this.connected_pos.y
-                : this.connected_pos.x;
-            var min = Math.min(...neighbor_offsets, connected_pos_offset);
-            var max = Math.max(...neighbor_offsets, connected_pos_offset);
-        }
-        else {
-            var min = Math.min(...neighbor_offsets);
-            var max = Math.max(...neighbor_offsets);
-        }
+        const neighbor_offsets = this.neighbor_elements().map(wire => wire.offset);
+        const min = Math.min(...neighbor_offsets);
+        const max = Math.max(...neighbor_offsets);
 
         return {min, max};
     }
@@ -191,12 +142,12 @@ class WireSegment extends Element {
     }
 
     draw_joints() {
-        context.fillStyle = '#f22';
+        context.fillStyle = '#ff2';
 
-        const neighbor_segments = [...this.neighbor_segments].sort((a,b) => b.anim_offset_-a.anim_offset_);
+        const neighbor_elements = [...this.neighbor_elements()].sort((a,b) => b.anim_offset_-a.anim_offset_);
 
-        for (let i = 1; i < neighbor_segments.length-1; i++) {
-            const neighbor_offset = neighbor_segments[i].anim_offset_;
+        for (let i = 1; i < neighbor_elements.length-1; i++) {
+            const neighbor_offset = neighbor_elements[i].anim_offset_;
 
             if (this.vertical) context.fillRect(this.anim_offset_ - .4/2, neighbor_offset - .4/2, .4, .4);
             else               context.fillRect(neighbor_offset - .4/2, this.anim_offset_ - .4/2, .4, .4);

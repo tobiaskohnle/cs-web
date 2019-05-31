@@ -86,11 +86,11 @@ class Controller {
                     if (this.hovered_element == null) {
                         this.current_action = Enum.action.create_selection_box;
                     }
-                    else if (this.hovered_element instanceof ConnectionNode) {
-                        this.current_action = Enum.action.create_wire;
-                        this.wire_start_node = this.hovered_element;
-                        // current_tab.create_snapshot();
-                    }
+                    // else if (this.hovered_element instanceof ConnectionNode) {
+                    //     this.current_action = Enum.action.create_wire;
+                    //     this.wire_start_node = this.hovered_element;
+                    //     // current_tab.create_snapshot();
+                    // }
                     else {
                         this.current_action = Enum.action.move_elements;
                     }
@@ -301,7 +301,7 @@ class Controller {
         element.pos.set(this.mousedown_mouse_world_pos).round();
 
         if (element instanceof Gate) {
-            element.set_all_nodes_pos();
+            element.set_nodes_pos();
             element.cancel_animation();
             element.nodes_init_animation();
         }
@@ -314,8 +314,7 @@ class Controller {
 
         for (const inner_element of gate.inner_elements) {
             if (inner_element instanceof InputSwitch) {
-                const input = new InputNode(gate);
-                gate.inputs.push(input);
+                gate.add_input_node();
 
                 input.is_inverted = inner_element.outputs[0].is_inverted;
 
@@ -323,8 +322,7 @@ class Controller {
                 inner_element.outputs[0].next_nodes = [];
             }
             if (inner_element instanceof OutputLight) {
-                const output = new OutputNode(gate);
-                gate.outputs.push(output);
+                gate.add_output_node();
 
                 output.is_inverted = inner_element.inputs[0].is_inverted;
 

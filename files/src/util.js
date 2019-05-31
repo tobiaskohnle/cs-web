@@ -143,6 +143,7 @@ function type_to_string(prototype) {
     if (prototype instanceof SegmentDisplay) return 'cs:segment_display';
     if (prototype instanceof WireSegment)    return 'cs:wire_segment';
     if (prototype instanceof Vec)            return 'cs:vector';
+    if (prototype instanceof Label)          return 'cs:label';
     if (prototype instanceof Color)          return 'color';
 }
 function extended_stringify(value, replacer=null, space=null) {
@@ -193,6 +194,7 @@ function string_to_type(string) {
         case 'cs:segment_display': return SegmentDisplay .prototype;
         case 'cs:wire_segment':    return WireSegment    .prototype;
         case 'cs:vector':          return Vec            .prototype;
+        case 'cs:label':           return Label          .prototype;
         case 'color':              return Color          .prototype;
     }
 }

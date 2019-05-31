@@ -79,14 +79,14 @@ class Vec {
     static sub(a, b) {
         return a.copy().sub(b);
     }
-    static mult(a, b) {
-        return a.copy().mult(b);
+    static mult(a, val) {
+        return a.copy().mult(val);
     }
-    static div(a, b) {
-        return a.copy().div(b);
+    static div(a, val) {
+        return a.copy().div(val);
     }
-    static rot(a, b) {
-        return a.copy().rot(b);
+    static rot(a, val) {
+        return a.copy().rot(val);
     }
     static floor(a) {
         return a.copy().floor();

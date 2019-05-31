@@ -5,6 +5,7 @@ class Element {
         console.assert(new.target != Element, 'illegal constructor @Element.constructor');
 
         this.snap_size = 1;
+        this.update_priority = 0;
     }
 
     is_selected() {
@@ -56,7 +57,7 @@ class Element {
         throw 'implementation required @Element.hitbox_rect';
     }
 
-    move(vec) {
+    move(vec, total_vec) {
         throw 'implementation required @Element.move';
     }
 }

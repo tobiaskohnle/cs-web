@@ -14,14 +14,12 @@ function update() {
     current_tab.model.update();
 
     if (assert) console.assert(
-        current_tab.model.main_gate.inner_elements.find(g => g instanceof AndGate).outputs[0].anim_pos_.y
-        ==
+        current_tab.model.main_gate.inner_elements.find(g => g instanceof AndGate).outputs[0].anim_pos_.y ==
         current_tab.model.main_gate.inner_elements.find(g => g instanceof AndGate).outputs[0].wire_segments[0].anim_offset_
     )
 
     // if (assert) console.assert(
-    //     current_tab.model.main_gate.inner_elements.find(g => g instanceof OrGate).anim_pos_.y+1
-    //     ==
+    //     current_tab.model.main_gate.inner_elements.find(g => g instanceof OrGate).anim_pos_.y+1 ==
     //     current_tab.model.main_gate.inner_elements.find(g => g instanceof OrGate).inputs[0].anim_pos_.y
     // )
 
@@ -67,7 +65,7 @@ function draw() {
 
     if (current_tab.controller.current_action == Enum.action.create_selection_box) {
         draw_selection_rect(
-            current_tab.controller.mousedown_mouse_pos,
+            current_tab.camera.to_screenspace(current_tab.controller.mousedown_mouse_world_pos),
             current_tab.controller.mouse_pos,
         );
     }

@@ -111,11 +111,9 @@ class Model {
     add_input_node_to_selected_gates() {
         for (const element of this.selected_elements_) {
             if (element instanceof Gate) {
-                const node = new InputNode(element);
+                const node = element.add_input_node();
 
-                element.inputs.push(node);
-                element.set_all_nodes_pos();
-
+                element.set_nodes_pos();
                 node.cancel_animation();
                 node.anim_pos_.add(node.dir);
                 node.color_line_.set_anim_hsva(new Color(.5,0,0,.1));
@@ -168,7 +166,7 @@ class Model {
             return;
         }
 
-        if (!(element instanceof Gate)) {
+        if (!(element instanceof Gate || element instanceof Label)) {
             return;
         }
 
@@ -221,7 +219,7 @@ class Model {
         if (wire_segments.length) {
             segment.vertical = !wire_segments.last().vertical;
 
-            this.connected_wire_segments(wire_segments.last(), segment);
+            this.connect_wire_segments(wire_segments.last(), segment);
         }
 
         wire_segments.push(segment);
@@ -229,18 +227,18 @@ class Model {
     }
     remove_wire_segment(wire_segments) {
         if (wire_segments.length >= 2) {
-            this.deconnected_wire_segments(wire_segments.pop(), wire_segments.last());
+            this.deconnect_wire_segments(wire_segments.pop(), wire_segments.last());
         }
         else {
             wire_segments.pop();
         }
     }
 
-    deconnected_wire_segments(segment_a, segment_b) {
+    deconnect_wire_segments(segment_a, segment_b) {
         segment_a.neighbor_segments.remove(segment_b);
         segment_b.neighbor_segments.remove(segment_a);
     }
-    connected_wire_segments(segment_a, segment_b) {
+    connect_wire_segments(segment_a, segment_b) {
         segment_a.neighbor_segments.push(segment_b);
         segment_b.neighbor_segments.push(segment_a);
     }
@@ -260,19 +258,15 @@ class Model {
             return true;
         }
         else if (element instanceof WireSegment) {
-            const mouse_segment = new_wire_segments.pop();
-            new_wire_segments.last().neighbor_segments.remove(mouse_segment);
+            new_wire_segments.last().connected_pos = null;
 
             if (new_wire_segments.last().vertical == element.vertical) {
-                const new_segment = new WireSegment;
-                new_segment.vertical = !!(new_wire_segments.length & 1);
-
-                new_wire_segments.push(new_segment);
+                this.remove_wire_segment(new_wire_segments);
             }
 
             this.main_gate.inner_elements.push(...new_wire_segments);
 
-            this.connected_wire_segments(new_wire_segments.last(), element);
+            this.connect_wire_segments(new_wire_segments.last(), element);
 
             return true;
         }

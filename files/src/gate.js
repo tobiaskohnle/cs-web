@@ -22,58 +22,91 @@ class Gate extends Element {
         this.color_outline_.set_hsva(config.colors.outline);
     }
 
+    add_input_node() {
+        const node = new InputNode(this, this.inputs.length);
+        this.inputs.push(node);
+        return node;
+    }
+    add_output_node() {
+        const node = new OutputNode(this, this.outputs.length);
+        this.outputs.push(node);
+        return node;
+    }
+
     clear_nodes() {
-        for (const node of this.inputs)  node.clear();
-        for (const node of this.outputs) node.clear();
+        for (const node of this.nodes()) {
+            node.clear();
+        }
     }
 
     cancel_animation() {
-        for (const node of this.inputs)  node.cancel_animation();
-        for (const node of this.outputs) node.cancel_animation();
+        for (const node of this.nodes()) {
+            node.cancel_animation();
+        }
 
         super.cancel_animation();
     }
 
+    nodes() {
+        return [...this.inputs, ...this.outputs];
+    }
+
     nodes_init_animation() {
-        this.set_all_nodes_pos()
+        this.set_nodes_pos();
 
-        let input_index = 0;
-        for (const node of this.inputs)  {
-            node.anim_pos_.add(new Vec(node.dir.x + node.dir.x * input_index++/2, 0));
-        }
-
-        let output_index = 0;
-        for (const node of this.outputs) {
-            node.anim_pos_.add(new Vec(node.dir.x + node.dir.x * output_index++/2, 0));
+        for (const node of this.nodes())  {
+            node.anim_pos_.add(node.dir);
         }
     }
 
-    set_nodes_pos(nodes, offset) {
-        const unit = this.size.y / nodes.length / 2;
-
-        let i = 0;
-        for (const node of nodes) {
-            const y = this.pos.y + unit * (1 + i++*2);
-
-            node.pos.set(new Vec(this.pos.x+offset, y));
+    nodes_per_side() {
+        const index = dir => {
+            if (dir.x > 0) return 0;
+            if (dir.y > 0) return 1;
+            if (dir.x < 0) return 2;
+            if (dir.y < 0) return 3;
         }
+
+        const nodes = [[],[],[],[]];
+
+        for (const node of this.nodes()) {
+            nodes[index(node.dir)].push(node);
+        }
+
+        return nodes;
     }
 
-    set_all_nodes_pos() {
-        this.set_nodes_pos(this.inputs, 0);
-        this.set_nodes_pos(this.outputs, this.size.x);
+    set_nodes_pos() {
+        const set_pos = (node, side_index, relative_offset) => {
+            const width  = new Vec(this.size.x, 0);
+            const height = new Vec(0, this.size.y);
+
+            switch (side_index) {
+                case 0: node.pos.set(Vec.add(this.pos, width).add(Vec.mult(height, relative_offset))); break;
+                case 1: node.pos.set(Vec.add(this.pos, height).add(Vec.mult(width, relative_offset))); break;
+                case 2: node.pos.set(Vec.add(this.pos, Vec.mult(height, relative_offset))); break;
+                case 3: node.pos.set(Vec.add(this.pos, Vec.mult(width,  relative_offset))); break;
+            }
+        }
+
+        this.nodes_per_side().forEach((nodes, i) => {
+            for (const node of nodes) {
+                set_pos(node, i, 1/2/nodes.length * (1 + node.index*2));
+            }
+        });
     }
 
     update_all_nodes() {
-        for (const node of this.inputs)  node.update();
-        for (const node of this.outputs) node.update();
+        for (const node of this.nodes()) {
+            node.update();
+        }
     }
 
     update() {
         super.update_pos();
         super.update_size();
 
-        this.set_all_nodes_pos();
+        this.set_nodes_pos();
 
         this.update_all_nodes();
 
@@ -139,9 +172,9 @@ class Gate extends Element {
 class AndGate extends Gate {
     constructor(pos, size) {
         super(pos, size, '&');
-        this.inputs.push(new InputNode(this));
-        this.inputs.push(new InputNode(this));
-        this.outputs.push(new OutputNode(this));
+        this.add_input_node();
+        this.add_input_node();
+        this.add_output_node();
     }
 
     eval_state() {
@@ -156,9 +189,9 @@ class AndGate extends Gate {
 class OrGate extends Gate {
     constructor(pos, size) {
         super(pos, size, '\u22651');
-        this.inputs.push(new InputNode(this));
-        this.inputs.push(new InputNode(this));
-        this.outputs.push(new OutputNode(this));
+        this.add_input_node();
+        this.add_input_node();
+        this.add_output_node();
     }
 
     eval_state() {
@@ -173,8 +206,8 @@ class OrGate extends Gate {
 class NopGate extends Gate {
     constructor(pos, size) {
         super(pos, size, '1');
-        this.inputs.push(new InputNode(this));
-        this.outputs.push(new OutputNode(this));
+        this.add_input_node();
+        this.add_output_node();
     }
 
     eval_state() {
@@ -202,7 +235,7 @@ class CustomGate extends Gate {
 class InputSwitch extends ModelGate {
     constructor(pos) {
         super(pos, new Vec(2,2));
-        this.outputs.push(new OutputNode(this));
+        this.add_output_node();
 
         this.is_enabled = false;
 
@@ -240,7 +273,7 @@ class InputSwitch extends ModelGate {
 class OutputLight extends ModelGate {
     constructor(pos) {
         super(pos, new Vec(2,2));
-        this.inputs.push(new InputNode(this));
+        this.add_input_node();
 
         this.color_fill_ = Color.new(config.colors.light_inactive);
     }
@@ -273,13 +306,13 @@ class OutputLight extends ModelGate {
 class SegmentDisplay extends ModelGate {
     constructor(pos) {
         super(pos, new Vec(5,7));
-        this.inputs.push(new InputNode(this));
-        this.inputs.push(new InputNode(this));
-        this.inputs.push(new InputNode(this));
-        this.inputs.push(new InputNode(this));
-        this.inputs.push(new InputNode(this));
-        this.inputs.push(new InputNode(this));
-        this.inputs.push(new InputNode(this));
+        this.add_input_node();
+        this.add_input_node();
+        this.add_input_node();
+        this.add_input_node();
+        this.add_input_node();
+        this.add_input_node();
+        this.add_input_node();
 
         this.color_segments_ = [
             Color.new(config.colors.segment_inactive),
@@ -349,16 +382,27 @@ class SegmentDisplay extends ModelGate {
             Vec.mirror(I0, X),
         ];
 
-        add_path(points_corner, 0  , -1, this.color_segments_[2]);
-        add_path(points_corner, Y  ,  1, this.color_segments_[4]);
-        add_path(points_corner, X  ,  1, this.color_segments_[1]);
-        add_path(points_corner, X|Y, -1, this.color_segments_[5]);
+        const transform_point = vec => {
+            return new Vec(
+                center.x + (vec.x + vec.y*skew_x/(width-segment_width/2)) * scale,
+                center.y + (vec.y                                       ) * scale,
+            );
+        }
 
-        add_path(points_side  , 0  , -1, this.color_segments_[3]);
-        add_path(points_side  , X  ,  1, this.color_segments_[0]);
-        add_path(points_center, 0  , -1, this.color_segments_[6]);
+        const intersection_point = (prev, next, point, scalar=1) => {
+            const prev_vector = Vec.sub(prev, point);
+            const next_vector = Vec.sub(next, point);
+            const angle = Math.atan2(prev_vector.y, prev_vector.x) - Math.atan2(next_vector.y, next_vector.x);
 
-        function add_path(points, mirror_flags, scalar, color) {
+            const d = segment_distance/2 / Math.sin((Math.PI-angle) * scalar);
+            const prev_normalized = Vec.mult(prev_vector, d / Vec.length(prev_vector));
+            const next_normalized = Vec.mult(next_vector, d / Vec.length(next_vector));
+
+            const center = Vec.mult(Vec.add(prev_normalized, next_normalized), .5);
+            return Vec.add(Vec.mult(Vec.sub(point, center), 2), point);
+        }
+
+        const add_path = (points, mirror_flags, scalar, color) => {
             points = points.map((vec, i) => Vec.mirror(vec, mirror_flags));
 
             context.beginPath();
@@ -382,24 +426,13 @@ class SegmentDisplay extends ModelGate {
             context.fill();
         }
 
-        function intersection_point(prev, next, point, scalar=1) {
-            const prev_vector = Vec.sub(prev, point);
-            const next_vector = Vec.sub(next, point);
-            const angle = Math.atan2(prev_vector.y, prev_vector.x) - Math.atan2(next_vector.y, next_vector.x);
+        add_path(points_corner, 0  , -1, this.color_segments_[2]);
+        add_path(points_corner, Y  ,  1, this.color_segments_[4]);
+        add_path(points_corner, X  ,  1, this.color_segments_[1]);
+        add_path(points_corner, X|Y, -1, this.color_segments_[5]);
 
-            const d = segment_distance/2 / Math.sin((Math.PI-angle) * scalar);
-            const prev_normalized = Vec.mult(prev_vector, d / Vec.length(prev_vector));
-            const next_normalized = Vec.mult(next_vector, d / Vec.length(next_vector));
-
-            const center = Vec.mult(Vec.add(prev_normalized, next_normalized), .5);
-            return Vec.add(Vec.mult(Vec.sub(point, center), 2), point);
-        }
-
-        function transform_point(vec) {
-            return new Vec(
-                center.x + (vec.x + vec.y*skew_x/(width-segment_width/2)) * scale,
-                center.y + (vec.y                                       ) * scale,
-            );
-        }
+        add_path(points_side  , 0  , -1, this.color_segments_[3]);
+        add_path(points_side  , X  ,  1, this.color_segments_[0]);
+        add_path(points_center, 0  , -1, this.color_segments_[6]);
     }
 }
