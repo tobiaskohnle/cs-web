@@ -4,6 +4,8 @@ class ConnectionNode extends Element {
     constructor(parent, index) {
         super();
 
+        this.update_priority = 1;
+
         this.pos = new Vec;
         this.anim_pos_ = new Vec;
 
@@ -181,14 +183,6 @@ class OutputNode extends ConnectionNode {
         this.next_nodes = [];
 
         this.wire_segments = [];
-    }
-
-    update() {
-        super.update();
-
-        for (const segment of this.wire_segments) {
-            segment.update();
-        }
     }
 
     eval_state() {

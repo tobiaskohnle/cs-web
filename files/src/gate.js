@@ -5,6 +5,8 @@ class Gate extends Element {
         console.assert(new.target != Gate, 'illegal constructor @Gate.constructor');
         super();
 
+        this.update_priority = 2;
+
         this.pos = pos;
         this.size = size;
         this.anim_pos_ = Vec.copy(pos);
@@ -115,7 +117,10 @@ class Gate extends Element {
         });
     }
 
-    update_all_nodes() {
+    update() {
+        super.update_pos();
+        super.update_size();
+
         for (const nodes of this.nodes_per_side()) {
             [...nodes].sort((a,b) => a.index-b.index).forEach((node, i) => {
                 node.index = i;
@@ -123,17 +128,6 @@ class Gate extends Element {
         }
 
         this.set_nodes_pos();
-
-        for (const node of this.nodes()) {
-            node.update();
-        }
-    }
-
-    update() {
-        super.update_pos();
-        super.update_size();
-
-        this.update_all_nodes();
 
         this.color_outline_.set_hsva(this.color());
         this.color_outline_.update();

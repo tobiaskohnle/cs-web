@@ -41,7 +41,7 @@ class Model {
     }
 
     update() {
-        for (const element of this.main_gate.inner_elements) {
+        for (const element of this.elements().sort((a,b) => b.update_priority-a.update_priority)) {
             element.update();
         }
 

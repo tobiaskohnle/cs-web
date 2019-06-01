@@ -278,11 +278,15 @@ class Controller {
 
         const top_left_pos = bounding_rect(copied_elements).pos;
 
+        const offset = Vec.sub(Vec.round(this.mouse_world_pos), top_left_pos);
+
+        // for (const e of copied_elements) if (e.update_last_pos) e.update_last_pos();
+
         for (const copied_element of copied_elements) {
             this.model.add(copied_element);
 
-            const relative_pos = Vec.sub(copied_element.pos, top_left_pos);
-            copied_element.pos.set(Vec.add(relative_pos, this.mouse_world_pos)).round();
+            if (copied_element instanceof Gate || copied_element instanceof WireSegment)
+            copied_element.move(offset, offset);
 
             this.model.select(copied_element);
         }
