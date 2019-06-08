@@ -12,10 +12,44 @@ class Label extends Element {
         this.last_pos_ = new Vec;
 
         this.font_size = .7;
+
+        this.caret_index = 0;
+        this.selection_index = 0;
+
+        this.anim_caret_index_ = 0;
+        this.anim_selection_index_ = 0;
+
+        this.text = '';
     }
 
     update_last_pos() {
         this.last_pos_ = Vec.copy(this.pos);
+    }
+
+    update() {
+        super.update_pos();
+        super.update_size();
+    }
+
+    special_info() {
+        if (/^tag\s*=/i.test(this.text)) {
+            return {tag: this.text.match(/^tag\s*=\s*(?<tag>\w*)\s*/i).groups.tag};
+        }
+
+        if (/^name\s*=/i.test(this.text)) {
+            return {name: this.text.match(/^name\s*=\s*(?<name>\w*)\s*/i).groups.name};
+        }
+
+        if (/^size\s*=/i.test(this.text)) {
+            if (/^size\s*=\d+,\d+/i.test(this.text)) {
+                const size = this.text.match(/^size\s*=\s*(?<x>\d+)\s*,\s*(?<y>\d+)\s*/i).groups;
+                return {size: new Vec(parseInt(size.x), parseInt(size.y))};
+            }
+
+            return {size: new Vec(3,4)};
+        }
+
+        return null;
     }
 
     draw() {
@@ -31,11 +65,6 @@ class Label extends Element {
         }
 
         return Infinity;
-    }
-
-    update() {
-        super.update_pos();
-        super.update_size();
     }
 
     hitbox_rect() {

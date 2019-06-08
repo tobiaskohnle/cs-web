@@ -55,9 +55,9 @@ const theme = {
         segment_inactive:  new Color(210/360,.86,.47,3/16) , // #1473
         segment_active:    new Color(201/360,.93,1)        , // #1af
         outline:           new Color(200/360,0,1)          , // #fff
-        hovered:           new Color(204/360,.77,.87)      , // #39d
-        selected:          new Color(228/360,.83,.8)       , // #24c
-        hovered_selected:  new Color(220/360,.86,.93)      , // #26e
+        hovered:           new Color(195/360,.85,.93)      , // #2be // #39d
+        selected:          new Color(215/360,.85,.93)      , // #27e // #24c
+        hovered_selected:  new Color(216/360,.92,.93)      , // #16e // #26e
         selection_fill:    new Color(210/360,.92,.87,3/16) , // #17d3
         selection_outline: new Color(210/360,.8,1)         , // #39fa
         node_init:         new Color(.5,1,1,0)             ,
@@ -68,7 +68,7 @@ const theme = {
 const config = {
     scale_factor: 1.14,
     color_anim_factor: .22,
-    camera_anim_factor: .36,
+    camera_anim_factor: .42,
     camera_motion_anim_factor: .06,
     camera_motion_falloff_factor: .91,
     anim_factor: .39,

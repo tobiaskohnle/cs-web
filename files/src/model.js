@@ -199,6 +199,37 @@ class Model {
         this.main_gate.inner_elements.remove(element);
     }
 
+    remove_wire_branch(segment) {
+        const remove_segments_queue = [segment];
+
+        const segments_to_remove = [];
+
+        while (remove_segments_queue.length) {
+            const segment = remove_segments_queue.pop();
+
+            if (segment.neighbor_segments.length <= 2) {
+                if (segments_to_remove.includes(segment)) {
+                    continue;
+                }
+
+                segments_to_remove.push(segment);
+
+                for (const neighbor_segment of segment.neighbor_segments) {
+                    remove_segments_queue.push(neighbor_segment);
+                }
+            }
+        }
+
+        for (const segment of segments_to_remove) {
+            segment.connected_pos = null;
+            segment.parent.wire_segments.remove(segment);
+
+            for (const neighbor_segment of segment.neighbor_segments) {
+                this.deconnect_wire_segments(segment, neighbor_segment);
+            }
+        }
+    }
+
     elements_in_rect(pos, size) {
         const elements_in_rect = [];
 
@@ -223,7 +254,7 @@ class Model {
         const segment = new WireSegment;
 
         if (wire_segments.length) {
-            segment.vertical = !wire_segments.last().vertical;
+            segment.is_vertical = !wire_segments.last().is_vertical;
 
             this.connect_wire_segments(wire_segments.last(), segment);
         }
@@ -261,12 +292,14 @@ class Model {
             start_node.wire_segments = [...new_wire_segments];
             new_wire_segments.last().connected_pos = this.wire_end_node.anchor_pos_;
 
+            this.set_parent(new_wire_segments, start_node);
+
             return true;
         }
         else if (element instanceof WireSegment) {
             new_wire_segments.last().connected_pos = null;
 
-            if (new_wire_segments.last().vertical == element.vertical) {
+            if (new_wire_segments.last().is_vertical == element.is_vertical) {
                 this.remove_wire_segment(new_wire_segments);
             }
 
@@ -277,6 +310,17 @@ class Model {
             this.connect_wire_segments(new_wire_segments.last(), element);
 
             this.connect_nodes(element.parent, start_node);
+
+            if (start_node instanceof OutputNode) {
+                const start_segment = element.parent.wire_segments.find(
+                    segment => segment.connected_pos == element.parent.anchor_pos_
+                );
+                this.remove_wire_branch(start_segment);
+
+                this.set_parent(start_node, element.parent);
+
+                start_node.next_nodes = [];
+            }
 
             return true;
         }

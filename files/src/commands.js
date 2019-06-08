@@ -54,7 +54,7 @@ const commands = [
                 current_tab.controller.new_wire_segments = [];
 
                 const segment_a = current_tab.model.add_wire_segment(current_tab.controller.new_wire_segments);
-                segment_a.vertical = current_tab.controller.wire_start_node.is_vertical();
+                segment_a.is_vertical = current_tab.controller.wire_start_node.is_vertical();
 
                 const segment_b = current_tab.model.add_wire_segment(current_tab.controller.new_wire_segments);
 

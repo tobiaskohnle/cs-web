@@ -62,7 +62,6 @@ class Controller {
                 ))
                 {
                     this.current_action = Enum.action.none;
-                    this.model.set_parent(this.new_wire_segments, this.wire_start_node);
                     this.new_wire_segments = [];
                     break;
                 }
@@ -77,24 +76,28 @@ class Controller {
 
             default:
                 if (event.buttons == 1) {
-                    if (!(event.ctrlKey || event.shiftKey)) {
-                        if (!this.hovered_element || !this.hovered_element.is_selected()) {
-                            this.model.deselect_all();
+                    if (!event.shiftKey && !event.ctrlKey && (!this.hovered_element || !this.hovered_element.is_selected())) {
+                        this.model.deselect_all();
+                    }
+
+                    if (this.hovered_element) {
+                        if (this.is_selected(this.hovered_element.is_selected(), event.shiftKey, event.ctrlKey)) {
+                            this.model.select(this.hovered_element);
                         }
-                    }
+                        else {
+                            this.model.deselect(this.hovered_element);
+                        }
 
-                    this.model.select(this.current_hovered_element);
-
-                    if (this.hovered_element == null) {
-                        this.current_action = Enum.action.create_selection_box;
-                    }
-                    // else if (this.hovered_element instanceof ConnectionNode) {
-                    //     this.current_action = Enum.action.create_wire;
-                    //     this.wire_start_node = this.hovered_element;
-                    //     // current_tab.create_snapshot();
-                    // }
-                    else {
                         this.current_action = Enum.action.move_elements;
+                    }
+                    else {
+                        // if (this.hovered_element instanceof ConnectionNode) {
+                        //     this.current_action = Enum.action.create_wire;
+                        //     this.wire_start_node = this.hovered_element;
+                        //     // current_tab.create_snapshot();
+                        // }
+
+                        this.current_action = Enum.action.create_selection_box;
                     }
                 }
                 break;
@@ -164,11 +167,6 @@ class Controller {
                 break;
 
             case Enum.action.create_selection_box:
-                // TEMP
-                if (!(event.ctrlKey || event.shiftKey)) {
-                    this.model.deselect_all();
-                }
-                // /TEMP
                 for (const element of this.elements_in_selection_rect()) {
                     this.model.select(element);
                 }
@@ -190,10 +188,10 @@ class Controller {
 
         switch (this.current_action) {
             case Enum.action.none:
-                if (!this.mouse_moved()) {
-                    this.model.deselect_all();
-                    this.model.select(this.hovered_element);
-                }
+                // if (!this.mouse_moved()) {
+                //     this.model.deselect_all();
+                //     this.model.select(this.hovered_element);
+                // }
                 break;
 
             case Enum.action.create_wire:
@@ -207,7 +205,7 @@ class Controller {
                     this.new_wire_segments = [];
 
                     const segment_a = current_tab.model.add_wire_segment(this.new_wire_segments);
-                    segment_a.vertical = this.wire_start_node.is_vertical();
+                    segment_a.is_vertical = this.wire_start_node.is_vertical();
 
                     const segment_b = current_tab.model.add_wire_segment(this.new_wire_segments);
 
@@ -232,6 +230,19 @@ class Controller {
 
         this.mouse_movement = new Vec;
         this.mouse_world_movement = new Vec;
+    }
+
+    is_selected(was_selected, modifier_shift, modifier_ctrl) {
+        if (modifier_shift && modifier_ctrl) {
+            return false;
+        }
+        if (modifier_shift) {
+            return true;
+        }
+        if (modifier_ctrl) {
+            return !was_selected;
+        }
+        return true;
     }
 
     elements_in_selection_rect() {

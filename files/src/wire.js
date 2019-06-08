@@ -8,7 +8,7 @@ class WireSegment extends Element {
 
         this.offset = 0;
         this.anim_offset_ = 0;
-        this.vertical = false;
+        this.is_vertical = false;
 
         this.last_pos_ = 0;
 
@@ -22,10 +22,13 @@ class WireSegment extends Element {
 
     update() {
         if (this.connected_pos) {
-            if (this.vertical) this.offset = this.connected_pos.x;
+            if (this.is_vertical) this.offset = this.connected_pos.x;
             else               this.offset = this.connected_pos.y;
 
             this.anim_connected_pos_ = anim_interpolate_vec(this.anim_connected_pos_, this.connected_pos);
+        }
+        else {
+            this.anim_connected_pos_ = null;
         }
 
         this.anim_offset_ = anim_interpolate(this.anim_offset_, this.offset);
@@ -44,7 +47,7 @@ class WireSegment extends Element {
     }
 
     move(vec, total_vec) {
-        if (this.vertical) this.offset = Math.round((this.last_pos_ + total_vec.x) / .5) * .5;
+        if (this.is_vertical) this.offset = Math.round((this.last_pos_ + total_vec.x) / .5) * .5;
         else               this.offset = Math.round((this.last_pos_ + total_vec.y) / .5) * .5;
     }
 
@@ -53,11 +56,14 @@ class WireSegment extends Element {
             return Infinity;
         }
 
-        const pos_offset        = this.vertical ? pos.x : pos.y;
-        const pos_normal_offset = this.vertical ? pos.y : pos.x;
+        return WireSegment.distance(pos, this.is_vertical, this.offset, this.normal_offset());
+    }
 
-        const distance = Math.abs(pos_offset - this.offset);
-        const normal_offset = this.normal_offset();
+    static distance(pos, is_vertical, offset, normal_offset) {
+        const pos_offset        = is_vertical ? pos.x : pos.y;
+        const pos_normal_offset = is_vertical ? pos.y : pos.x;
+
+        const distance = Math.abs(pos_offset - offset);
 
         if (between(pos_normal_offset, normal_offset.min, normal_offset.max)) {
             const mid_distance = distance - 2e-9;
@@ -92,8 +98,8 @@ class WireSegment extends Element {
         }
         if (this.connected_pos) {
             neighbor_elements.push({
-                offset: this.vertical ? this.connected_pos.y : this.connected_pos.x,
-                anim_offset_: this.vertical ? this.anim_connected_pos_.y : this.anim_connected_pos_.x,
+                offset: this.is_vertical ? this.connected_pos.y : this.connected_pos.x,
+                anim_offset_: this.is_vertical ? this.anim_connected_pos_.y : this.anim_connected_pos_.x,
             });
         }
 
@@ -118,7 +124,7 @@ class WireSegment extends Element {
     hitbox_rect() {
         const {min, max} = this.normal_offset();
 
-        if (this.vertical) {
+        if (this.is_vertical) {
             return {
                 pos: new Vec(this.offset, min),
                 size: new Vec(0, max-min),
@@ -136,7 +142,7 @@ class WireSegment extends Element {
 
         context.fillStyle = this.color_outline_.to_string();
 
-        if (this.vertical) context.fillRect(this.anim_offset_ - .1/2, min - .1/2, .1, max - min + .2/2);
+        if (this.is_vertical) context.fillRect(this.anim_offset_ - .1/2, min - .1/2, .1, max - min + .2/2);
         else               context.fillRect(min - .1/2, this.anim_offset_ - .1/2, max - min + .2/2, .1);
 
         this.draw_joints();
@@ -150,7 +156,7 @@ class WireSegment extends Element {
         for (let i = 1; i < neighbor_elements.length-1; i++) {
             const neighbor_offset = neighbor_elements[i].anim_offset_;
 
-            if (this.vertical) context.fillRect(this.anim_offset_ - .4/2, neighbor_offset - .4/2, .4, .4);
+            if (this.is_vertical) context.fillRect(this.anim_offset_ - .4/2, neighbor_offset - .4/2, .4, .4);
             else               context.fillRect(neighbor_offset - .4/2, this.anim_offset_ - .4/2, .4, .4);
         }
     }

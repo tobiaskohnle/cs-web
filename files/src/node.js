@@ -73,13 +73,14 @@ class ConnectionNode extends Element {
     }
 
     distance(pos) {
-        const dist = Vec.sub(this.pos, pos).length();
-
-        if (dist > 2) {
-            return Infinity;
-        }
-
-        return dist;
+        return WireSegment.distance(
+            pos,
+            this.is_vertical(),
+            this.is_vertical() ? this.pos.x : this.pos.y,
+            this.is_vertical()
+                ? {min:Math.min(this.pos.y,this.anchor_pos_.y), max:Math.max(this.pos.y,this.anchor_pos_.y)}
+                : {min:Math.min(this.pos.x,this.anchor_pos_.x), max:Math.max(this.pos.x,this.anchor_pos_.x)},
+        );
     }
 
     hitbox_rect() {
