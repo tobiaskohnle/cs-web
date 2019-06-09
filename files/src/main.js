@@ -47,7 +47,7 @@ const theme = {
     },
     dark: {
         background:        new Color(240/360,.22,.03)      , // #070709
-        grid:              new Color(180/360,.33,1,3/16)   , // #aff3
+        grid:              new Color(180/360,.33,1,5/16)   , // #aff5
         light_inactive:    new Color(0,0,0,7/16)           , // #0007
         light_active:      new Color(0,.8,1,7/16)          , // #f337
         wire_inactive:     new Color(0,0,1)                , // #fff

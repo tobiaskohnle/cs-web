@@ -65,36 +65,10 @@ class Gate extends Element {
         const nodes = [[],[],[],[]];
 
         for (const node of this.nodes()) {
-            nodes[index(node.dir)].push(node);
+            nodes[side_index(node.dir)].push(node);
         }
 
         return nodes;
-    }
-
-    set_node_index(node, pos) {
-        // const {center_x, center_y} = get_center();
-        const center = Vec.add(this.pos, Vec.div(this.size, 2));
-
-        const x = (pos.x-center.x) / this.size.x;
-        const y = (pos.y-center.y) / this.size.y;
-
-        if (Math.abs(x) < Math.abs(y)) {
-            node.dir.x = 0;
-            node.dir.y = y>0 ? 1 : -1;
-        }
-        else {
-            node.dir.x = x>0 ? 1 : -1;
-            node.dir.y = 0;
-        }
-
-        const nodes = this.nodes_per_side()[index(node.dir)];
-
-        if (node.is_vertical()) {
-            node.index = map(pos.x, this.pos.x, this.pos.x+this.size.x, 0, nodes.length);
-        }
-        else {
-            node.index = map(pos.y, this.pos.y, this.pos.y+this.size.y, 0, nodes.length);
-        }
     }
 
     set_nodes_pos() {
@@ -112,6 +86,9 @@ class Gate extends Element {
 
         this.nodes_per_side().forEach((nodes, i) => {
             for (const node of nodes) {
+                // TEMP
+                if (!node.is_selected() || !(C.current_action==Enum.action.move_elements))
+                // /TEMP
                 set_pos(node, i, 1/2/nodes.length * (1 + node.index*2));
             }
         });

@@ -50,10 +50,63 @@ class ConnectionNode extends Element {
         this.last_pos_ = Vec.copy(this.pos);
     }
 
-    move(vec, total_vec, mouse_pos) {
-        // this.pos.set(this.last_pos_).add(total_vec);
-        // this.index = this.parent
-        this.parent.set_node_index(this, mouse_pos);
+    move(vec, total_vec) {
+        this.pos.set(this.last_pos_).add(total_vec);
+
+        this.set_dir(this.pos);
+        this.set_index(this.eval_index());
+
+        switch (side_index(this.dir)) {
+            case Enum.side.east:  this.pos.x = this.parent.pos.x+this.parent.size.x; break;
+            case Enum.side.south: this.pos.y = this.parent.pos.y+this.parent.size.y; break;
+            case Enum.side.west:  this.pos.x = this.parent.pos.x; break;
+            case Enum.side.north: this.pos.y = this.parent.pos.y; break;
+        }
+    }
+
+    set_dir(pos) {
+        const center = Vec.add(this.parent.pos, Vec.div(this.parent.size, 2));
+        const delta = Vec.sub(pos, center);
+
+        if ((this.parent.size.y-this.parent.size.x) / 2 > Math.abs(delta.y) - Math.abs(delta.x)) {
+            this.dir.x = delta.x>0 ? 1 : -1;
+            this.dir.y = 0;
+        }
+        else {
+            this.dir.x = 0;
+            this.dir.y = delta.y>0 ? 1 : -1;
+        }
+    }
+
+    eval_index() {
+        const nodes = this.parent.nodes_per_side()[side_index(this.dir)];
+
+        if (this.is_vertical())
+        return Math.floor(map(this.pos.x, this.parent.pos.x, this.parent.pos.x+this.parent.size.x, 0, nodes.length));
+        return Math.floor(map(this.pos.y, this.parent.pos.y, this.parent.pos.y+this.parent.size.y, 0, nodes.length));
+    }
+
+    set_index(index) {
+        for (const neighbor of this.parent.nodes_per_side()[side_index(this.dir)]) {
+            if (neighbor != this) {
+                if (neighbor.index < index) {
+                    neighbor.index--;
+                }
+                else if (neighbor.index > index) {
+                    neighbor.index++;
+                }
+                else if (neighbor.index == index) {
+                    if (neighbor.index < this.index) {
+                        neighbor.index++;
+                    }
+                    else if (neighbor.index > this.index) {
+                        neighbor.index--;
+                    }
+                }
+            }
+        }
+
+        this.index = index;
     }
 
     is_vertical() {

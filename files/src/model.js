@@ -121,9 +121,9 @@ class Model {
         }
     }
 
-    move_selected_elements(vec, total_vec, mouse_pos) {
+    move_selected_elements(vec, total_vec) {
         for (const element of this.selected_elements_) {
-            element.move(vec, total_vec, mouse_pos);
+            element.move(vec, total_vec);
         }
     }
 

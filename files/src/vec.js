@@ -29,9 +29,19 @@ class Vec {
         this.y *= val;
         return this;
     }
+    mult_vec(vec) {
+        this.x *= vec.x;
+        this.y *= vec.y;
+        return this;
+    }
     div(val) {
         this.x /= val;
         this.y /= val;
+        return this;
+    }
+    div_vec(vec) {
+        this.x /= vec.x;
+        this.y /= vec.y;
         return this;
     }
     rot(val) {
@@ -82,8 +92,14 @@ class Vec {
     static mult(a, val) {
         return a.copy().mult(val);
     }
+    static mult_vec(a, b) {
+        return a.copy().mult_vec(b);
+    }
     static div(a, val) {
         return a.copy().div(val);
+    }
+    static div_vec(a, b) {
+        return a.copy().div_vec(b);
     }
     static rot(a, val) {
         return a.copy().rot(val);

@@ -19,6 +19,14 @@ class Controller {
         this.new_wire_segments = [];
     }
 
+    run_command(name) {
+        const command = commands.find(command => command.name == name);
+
+        if (command) {
+            command.command();
+        }
+    }
+
     event_key_down(event) {
         for (const command of commands) {
             for (const shortcut of command.shortcuts) {
@@ -159,7 +167,7 @@ class Controller {
                 }
 
                 if (this.wire_end_node) {
-                    this.new_wire_segments.last().connected_pos = this.wire_end_node.anchor_pos_;
+                    this.new_wire_segments.last().connected_pos = this.wire_end_node.pos//anchor_pos_;
                 }
                 else {
                     this.new_wire_segments.last().connected_pos = this.mouse_world_pos;
@@ -173,7 +181,7 @@ class Controller {
                 break;
 
             case Enum.action.move_elements:
-                this.model.move_selected_elements(world_move_vec, this.mouse_world_movement, this.mouse_world_pos);
+                this.model.move_selected_elements(world_move_vec, this.mouse_world_movement);
                 break;
         }
     }

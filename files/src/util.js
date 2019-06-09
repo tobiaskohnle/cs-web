@@ -2,6 +2,8 @@
 
 // TEMP
 globalThis.__defineGetter__('E', ()=>current_tab.model.selected_element());
+globalThis.__defineGetter__('M', ()=>current_tab.model);
+globalThis.__defineGetter__('C', ()=>current_tab.controller);
 // /TEMP
 
 Array.prototype.last = function() {
@@ -28,7 +30,7 @@ function between(v, min,max) {
     return min <= v && v < max;
 }
 
-function index(vec) {
+function side_index(vec) {
     if (vec.x > 0) return Enum.side.east;
     if (vec.y > 0) return Enum.side.south;
     if (vec.x < 0) return Enum.side.west;
