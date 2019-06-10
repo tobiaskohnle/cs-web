@@ -86,9 +86,6 @@ class Gate extends Element {
 
         this.nodes_per_side().forEach((nodes, i) => {
             for (const node of nodes) {
-                // TEMP
-                if (!node.is_selected() || !(C.current_action==Enum.action.move_elements))
-                // /TEMP
                 set_pos(node, i, 1/2/nodes.length * (1 + node.index*2));
             }
         });
@@ -132,7 +129,7 @@ class Gate extends Element {
         context.strokeStyle = this.color_outline_.to_string();
         context.lineWidth = .1;
 
-        if (this.is_hovered() && current_tab.controller.mouse_down) {
+        if (this.is_hovered() && current_tab.controller.is_mouse_down) {
             context.lineWidth = .12;
             context.strokeRect(...Vec.add(this.anim_pos_, new Vec(.1/2)).xy, ...Vec.sub(this.anim_size_, new Vec(.2/2)).xy);
         }

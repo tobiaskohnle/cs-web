@@ -12,6 +12,7 @@ const Enum = {
         create_wire_segment:  Symbol('action_create_wire_segment'),
         create_selection_box: Symbol('action_create_selection_box'),
         move_elements:        Symbol('action_move_elements'),
+        edit_labels:          Symbol('action_edit_labels'),
     },
     grid_style: {
         none:  Symbol('grid_style_none'),
@@ -71,6 +72,14 @@ const config = {
     camera_anim_factor: .42,
     camera_motion_anim_factor: .06,
     camera_motion_falloff_factor: .91,
+
+    label_anim_factor: .425,
+    label_caret_width: .07,
+    label_caret_smoothness: 3.1, // Infinity: instant
+    label_caret_blink_rate: 1000,
+
+    use_system_clipboard: false,
+
     anim_factor: .39,
     ticks_per_frame: 101,
     block_unused_key_combinations: false,
@@ -115,23 +124,37 @@ onresize = function() {
 onkeydown = function(event) {
     if (event.key.match(/F\d{1,2}/)) return;
 
-    return current_tab.controller.event_key_down(event);
+    return current_tab.controller.key_down(event);
 }
 
 onmousedown = function(event) {
     menu_click(event.path || event.composedPath());
 
     if (event.target == canvas) {
-        current_tab.controller.event_mouse_down(event);
+        current_tab.controller.mouse_down(event);
     }
 }
 
 onmousemove = function(event) {
-    current_tab.controller.event_mouse_move(event);
+    current_tab.controller.mouse_move(event);
 }
 
 onmouseup = function(event) {
-    current_tab.controller.event_mouse_up(event);
+    current_tab.controller.mouse_up(event);
+}
+
+ondragenter = function(event) {
+    console.log('ONDRAGOVER', event);
+
+    event.preventDefault();
+    return false;
+}
+
+ondrop = function(event) {
+    console.log('ONDROP', event);
+
+    event.preventDefault();
+    return false;
 }
 
 document.documentElement.addEventListener(

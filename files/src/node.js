@@ -7,6 +7,7 @@ class ConnectionNode extends Element {
         this.update_priority = 1;
 
         this.pos = new Vec;
+        this.grab_pos_ = null;
         this.anim_pos_ = new Vec;
 
         this.dir = new Vec(this instanceof OutputNode ? 1 : -1, 0);
@@ -30,9 +31,9 @@ class ConnectionNode extends Element {
     }
 
     update() {
-        this.anim_pos_ = anim_interpolate_vec(this.anim_pos_, this.pos);
+        this.anim_pos_ = anim_interpolate_vec(this.anim_pos_, this.grab_pos_||this.pos);
 
-        this.anchor_pos_.set(Vec.add(this.pos, this.dir));
+        this.anchor_pos_.set(Vec.add(this.grab_pos_||this.pos, this.dir));
         this.anchor_anim_pos_.set(Vec.add(this.anim_pos_, this.dir));
 
         const draw_line_active = this.is_inverted ? this.state == (this instanceof OutputNode) : this.state;
@@ -50,18 +51,25 @@ class ConnectionNode extends Element {
         this.last_pos_ = Vec.copy(this.pos);
     }
 
-    move(vec, total_vec) {
-        this.pos.set(this.last_pos_).add(total_vec);
+    grab() {
+        this.grab_pos_ = Vec.copy(this.pos);
+    }
+    release() {
+        this.grab_pos_ = null;
+    }
 
-        this.set_dir(this.pos);
+    move(vec, total_vec) {
+        (this.grab_pos_||this.pos).set(this.last_pos_).add(total_vec);
+
+        this.set_dir(this.grab_pos_||this.pos);
         this.set_index(this.eval_index());
 
-        switch (side_index(this.dir)) {
-            case Enum.side.east:  this.pos.x = this.parent.pos.x+this.parent.size.x; break;
-            case Enum.side.south: this.pos.y = this.parent.pos.y+this.parent.size.y; break;
-            case Enum.side.west:  this.pos.x = this.parent.pos.x; break;
-            case Enum.side.north: this.pos.y = this.parent.pos.y; break;
-        }
+        // switch (side_index(this.dir)) {
+        //     case Enum.side.east:  this.pos.x = this.parent.pos.x+this.parent.size.x; break;
+        //     case Enum.side.south: this.pos.y = this.parent.pos.y+this.parent.size.y; break;
+        //     case Enum.side.west:  this.pos.x = this.parent.pos.x; break;
+        //     case Enum.side.north: this.pos.y = this.parent.pos.y; break;
+        // }
     }
 
     set_dir(pos) {
@@ -82,31 +90,19 @@ class ConnectionNode extends Element {
         const nodes = this.parent.nodes_per_side()[side_index(this.dir)];
 
         if (this.is_vertical())
-        return Math.floor(map(this.pos.x, this.parent.pos.x, this.parent.pos.x+this.parent.size.x, 0, nodes.length));
-        return Math.floor(map(this.pos.y, this.parent.pos.y, this.parent.pos.y+this.parent.size.y, 0, nodes.length));
+        return Math.floor(map((this.grab_pos_||this.pos).x, this.parent.pos.x, this.parent.pos.x+this.parent.size.x, 0, nodes.length));
+        return Math.floor(map((this.grab_pos_||this.pos).y, this.parent.pos.y, this.parent.pos.y+this.parent.size.y, 0, nodes.length));
     }
 
     set_index(index) {
-        for (const neighbor of this.parent.nodes_per_side()[side_index(this.dir)]) {
-            if (neighbor != this) {
-                if (neighbor.index < index) {
-                    neighbor.index--;
-                }
-                else if (neighbor.index > index) {
-                    neighbor.index++;
-                }
-                else if (neighbor.index == index) {
-                    if (neighbor.index < this.index) {
-                        neighbor.index++;
-                    }
-                    else if (neighbor.index > this.index) {
-                        neighbor.index--;
-                    }
-                }
-            }
-        }
+        const neighbors = this.parent.nodes_per_side()[side_index(this.dir)];
 
-        this.index = index;
+        neighbors.sort((a,b) => a.index-b.index);
+
+        neighbors.remove(this);
+        neighbors.splice(Math.max(0,index), 0, this);
+
+        neighbors.forEach((neighbor, i) => neighbor.index = i);
     }
 
     is_vertical() {

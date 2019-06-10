@@ -121,8 +121,8 @@ class Model {
         }
     }
 
-    move_selected_elements(vec, total_vec) {
-        for (const element of this.selected_elements_) {
+    move_elements(elements, vec, total_vec) {
+        for (const element of elements) {
             element.move(vec, total_vec);
         }
     }
@@ -132,6 +132,19 @@ class Model {
             if (element instanceof ConnectionNode) {
                 element.invert();
             }
+        }
+    }
+
+    set_selected(element, is_selected) {
+        if (element == null) {
+            return;
+        }
+
+        if (is_selected) {
+            this.selected_elements_.add(element);
+        }
+        else {
+            this.selected_elements_.delete(element);
         }
     }
 
