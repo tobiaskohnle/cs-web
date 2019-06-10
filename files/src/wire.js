@@ -10,7 +10,9 @@ class WireSegment extends Element {
         this.anim_offset_ = 0;
         this.is_vertical = false;
 
-        this.last_pos_ = 0;
+        this.last_offset_ = 0;
+
+        this.snap_size = .5;
 
         this.neighbor_segments = [];
 
@@ -39,16 +41,16 @@ class WireSegment extends Element {
     }
 
     update_last_pos() {
-        this.last_pos_ = this.offset;
+        this.last_offset_ = this.offset;
     }
 
     cancel_animation() {
         this.anim_offset_ = this.offset;
     }
 
-    move(vec, total_vec) {
-        if (this.is_vertical) this.offset = Math.round((this.last_pos_ + total_vec.x) / .5) * .5;
-        else               this.offset = Math.round((this.last_pos_ + total_vec.y) / .5) * .5;
+    move(vec, total_vec, snap_size) {
+        if (this.is_vertical) this.offset = round(this.last_offset_+total_vec.x, snap_size);
+        else                  this.offset = round(this.last_offset_+total_vec.y, snap_size);
     }
 
     distance(pos) {

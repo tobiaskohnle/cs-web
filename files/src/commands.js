@@ -221,14 +221,14 @@ const commands = [
     },
     {
         name: 'invert',
-        shortcuts: [new KeyCombination(73, 'i', KeyCombination.Modifier_Ctrl|KeyCombination.Modifier_Shift)],
+        shortcuts: [new KeyCombination(73, 'i', KeyCombination.Modifier_Shift|KeyCombination.Modifier_Ctrl)],
         command: function() {
             current_tab.model.invert_selected_connection_nodes();
         },
     },
     {
         name: 'new',
-        shortcuts: [new KeyCombination(78, 'n', KeyCombination.Modifier_Ctrl|KeyCombination.Modifier_Shift)],
+        shortcuts: [new KeyCombination(78, 'n', KeyCombination.Modifier_Shift|KeyCombination.Modifier_Ctrl)],
         command: function() {
             current_tab.reset();
             current_tab.camera.reset();
@@ -246,7 +246,7 @@ const commands = [
     },
     {
         name: 'open-folder',
-        shortcuts: [new KeyCombination(79, 'o', KeyCombination.Modifier_Ctrl|KeyCombination.Modifier_Shift)],
+        shortcuts: [new KeyCombination(79, 'o', KeyCombination.Modifier_Shift|KeyCombination.Modifier_Ctrl)],
         command: function() {
         },
     },
@@ -260,7 +260,7 @@ const commands = [
     {
         name: 'redo',
         shortcuts: [
-            new KeyCombination(90, 'z', KeyCombination.Modifier_Ctrl|KeyCombination.Modifier_Shift),
+            new KeyCombination(90, 'z', KeyCombination.Modifier_Shift|KeyCombination.Modifier_Ctrl),
             new KeyCombination(89, 'y', KeyCombination.Modifier_Ctrl),
         ],
         command: function() {
@@ -277,7 +277,7 @@ const commands = [
     },
     {
         name: 'reopen-last-file',
-        shortcuts: [new KeyCombination(84, 't', KeyCombination.Modifier_Ctrl|KeyCombination.Modifier_Shift)],
+        shortcuts: [new KeyCombination(84, 't', KeyCombination.Modifier_Shift|KeyCombination.Modifier_Ctrl)],
         command: function() {
         },
     },
@@ -297,7 +297,7 @@ const commands = [
     },
     {
         name: 'save-as',
-        shortcuts: [new KeyCombination(83, 's', KeyCombination.Modifier_Ctrl|KeyCombination.Modifier_Shift)],
+        shortcuts: [new KeyCombination(83, 's', KeyCombination.Modifier_Shift|KeyCombination.Modifier_Ctrl)],
         command: function() {
             let file_name = prompt('Save file as...', 'file.circ');
             if (file_name) {
@@ -308,9 +308,28 @@ const commands = [
     },
     {
         name: 'select-all',
-        shortcuts: [new KeyCombination(65, 'a', KeyCombination.Modifier_Ctrl)],
+        shortcuts: [new KeyCombination(65, 'a', KeyCombination.Modifier_Shift)],
         command: function() {
             current_tab.model.select_all();
+        },
+    },
+    {
+        name: 'toggle-selection',
+        shortcuts: [new KeyCombination(65, 'a', KeyCombination.Modifier_Ctrl)],
+        command: function() {
+            if (current_tab.model.elements().every(element => element.is_selected())) {
+                current_tab.model.deselect_all();
+            }
+            else {
+                current_tab.model.select_all();
+            }
+        },
+    },
+    {
+        name: 'deselect-all',
+        shortcuts: [new KeyCombination(65, 'a', KeyCombination.Modifier_Shift|KeyCombination.Modifier_Ctrl)],
+        command: function() {
+            current_tab.model.deselect_all();
         },
     },
     {

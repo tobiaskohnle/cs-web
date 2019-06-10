@@ -122,8 +122,10 @@ class Model {
     }
 
     move_elements(elements, vec, total_vec) {
+        const snap_size = Math.max(...elements.map(element => element.snap_size));
+
         for (const element of elements) {
-            element.move(vec, total_vec);
+            element.move(vec, total_vec, snap_size);
         }
     }
 
@@ -298,14 +300,15 @@ class Model {
             this.nodes_connectable(start_node, element)
             && !this.nodes_connected(start_node, element)
         ) {
-            this.wire_end_node = element;
-            this.connect_nodes(start_node, this.wire_end_node);
+            const end_node = element;
+            this.connect_nodes(start_node, end_node);
 
-            // this.main_gate.inner_elements.push(...new_wire_segments);
-            start_node.wire_segments = [...new_wire_segments];
-            new_wire_segments.last().connected_pos = this.wire_end_node.anchor_pos_;
+            const output_node = start_node instanceof OutputNode ? start_node : end_node;
 
-            this.set_parent(new_wire_segments, start_node);
+            output_node.wire_segments = [...new_wire_segments];
+            new_wire_segments.last().connected_pos = end_node.anchor_pos_;
+
+            this.set_parent(new_wire_segments, output_node);
 
             return true;
         }

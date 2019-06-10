@@ -57,7 +57,7 @@ class Element {
         throw 'implementation required @Element.hitbox_rect';
     }
 
-    move(vec, total_vec) {
+    move(vec, total_vec, snap_size) {
         throw 'implementation required @Element.move';
     }
 }

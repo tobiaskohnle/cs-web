@@ -61,8 +61,8 @@ class Vec {
         return this;
     }
     round(factor=1) {
-        this.x = Math.round(this.x / factor) * factor;
-        this.y = Math.round(this.y / factor) * factor;
+        this.x = round(this.x, factor);
+        this.y = round(this.y, factor);
         return this;
     }
     mirror(flags) {
@@ -110,8 +110,8 @@ class Vec {
     static abs(a) {
         return a.copy().abs();
     }
-    static round(a) {
-        return a.copy().round();
+    static round(a, factor=1) {
+        return a.copy().round(factor);
     }
     static mirror(a, flags) {
         return a.copy().mirror(flags);

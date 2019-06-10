@@ -157,8 +157,8 @@ class Gate extends Element {
         return Infinity;
     }
 
-    move(vec, total_vec) {
-        this.pos.set(this.last_pos_).add(total_vec).round();
+    move(vec, total_vec, snap_size) {
+        this.pos.set(this.last_pos_).add(total_vec).round(snap_size);
     }
 }
 

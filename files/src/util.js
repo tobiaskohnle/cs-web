@@ -17,6 +17,9 @@ Array.prototype.remove = function(element) {
     }
 }
 
+function round(number, factor=1) {
+    return Math.round(number / factor) * factor;
+}
 function mod(a, n) {
     return a - n * Math.floor(a / n);
 }

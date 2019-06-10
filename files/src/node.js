@@ -58,7 +58,7 @@ class ConnectionNode extends Element {
         this.grab_pos_ = null;
     }
 
-    move(vec, total_vec) {
+    move(vec, total_vec, snap_size) {
         (this.grab_pos_||this.pos).set(this.last_pos_).add(total_vec);
 
         this.set_dir(this.grab_pos_||this.pos);
