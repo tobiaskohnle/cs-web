@@ -41,7 +41,7 @@ class Model {
     }
 
     update() {
-        for (const element of this.elements().sort((a,b) => b.update_priority-a.update_priority)) {
+        for (const element of this.elements().sorted((a,b) => b.update_priority-a.update_priority)) {
             element.update();
         }
 
@@ -305,7 +305,7 @@ class Model {
 
             const output_node = start_node instanceof OutputNode ? start_node : end_node;
 
-            output_node.wire_segments = [...new_wire_segments];
+            output_node.wire_segments = new_wire_segments.copy();
             new_wire_segments.last().connected_pos = end_node.anchor_pos_;
 
             this.set_parent(new_wire_segments, output_node);

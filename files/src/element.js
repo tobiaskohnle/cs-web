@@ -41,6 +41,10 @@ class Element {
         this.anim_size_ = anim_interpolate_vec(this.anim_size_, this.size);
     }
 
+    snap_pos(last_pos, total_vec, snap_size) {
+        this.pos.set(Vec.add(Vec.round(last_pos, this.snap_size), Vec.round(total_vec, snap_size)));
+    }
+
     draw() {
         throw 'implementation required @Element.draw';
     }

@@ -6,6 +6,12 @@ globalThis.__defineGetter__('M', ()=>current_tab.model);
 globalThis.__defineGetter__('C', ()=>current_tab.controller);
 // /TEMP
 
+Array.prototype.copy = function() {
+    return [...this];
+}
+Array.prototype.sorted = function(compare_function) {
+    return this.copy().sort(compare_function);
+}
 Array.prototype.last = function() {
     return this[this.length - 1];
 }

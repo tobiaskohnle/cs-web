@@ -145,14 +145,14 @@ const commands = [
         name: 'copy',
         shortcuts: [new KeyCombination(67, 'c', KeyCombination.Modifier_Ctrl)],
         command: function() {
-            current_tab.controller.copy_selected_elements();
+            current_tab.controller.copy();
         },
     },
     {
         name: 'cut',
         shortcuts: [new KeyCombination(88, 'x', KeyCombination.Modifier_Ctrl)],
         command: function() {
-            current_tab.controller.copy_selected_elements();
+            current_tab.controller.copy();
             current_tab.model.delete_selected_elements();
         },
     },
@@ -169,6 +169,13 @@ const commands = [
         command: function() {
             close_menu();
             current_tab.model.deselect_all();
+            current_tab.controller.current_action = Enum.action.none;
+        },
+    },
+    {
+        name: 'enter',
+        shortcuts: [new KeyCombination(13, 'enter', KeyCombination.Modifier_None)],
+        command: function() {
             current_tab.controller.current_action = Enum.action.none;
         },
     },
@@ -254,7 +261,14 @@ const commands = [
         name: 'paste',
         shortcuts: [new KeyCombination(86, 'v', KeyCombination.Modifier_Ctrl)],
         command: function() {
-            current_tab.controller.paste_copied_elements();
+            current_tab.controller.paste();
+        },
+    },
+    {
+        name: 'undo',
+        shortcuts: [new KeyCombination(90, 'z', KeyCombination.Modifier_Ctrl)],
+        command: function() {
+            current_tab.controller.undo();
         },
     },
     {
@@ -264,12 +278,23 @@ const commands = [
             new KeyCombination(89, 'y', KeyCombination.Modifier_Ctrl),
         ],
         command: function() {
+            current_tab.controller.redo();
         },
     },
     {
-        name: 'reload',
-        shortcuts: [new KeyCombination(82, 'r', KeyCombination.Modifier_Ctrl)],
+        name: 'TEMP-SAVE-STATE',
+        shortcuts: [
+            new KeyCombination(83, 's', KeyCombination.Modifier_None),
+        ],
         command: function() {
+            current_tab.controller.save_state('COMMAND');
+        },
+    },
+    {
+        name: 'TEMP-RELOAD',
+        shortcuts: [new KeyCombination(82, 'r', KeyCombination.Modifier_None)],
+        command: function() {
+            console.log('RELOAD');
             const file_string = current_tab.controller.file_string();
             current_tab.reset();
             current_tab.model.main_gate = extended_parse(file_string);
@@ -314,6 +339,28 @@ const commands = [
         },
     },
     {
+        name: 'next-vertical-align',
+        shortcuts: [],
+        command: function() {
+            for (const element of current_tab.model.selected_elements_) {
+                if (element instanceof Label) {
+                    element.next_vertical_align();
+                }
+            }
+        },
+    },
+    {
+        name: 'next-horizontal-align',
+        shortcuts: [],
+        command: function() {
+            for (const element of current_tab.model.selected_elements_) {
+                if (element instanceof Label) {
+                    element.next_horizontal_align();
+                }
+            }
+        },
+    },
+    {
         name: 'toggle-selection',
         shortcuts: [new KeyCombination(65, 'a', KeyCombination.Modifier_Ctrl)],
         command: function() {
@@ -351,12 +398,6 @@ const commands = [
         shortcuts: [],
         command: function() {
             select_theme(theme.light);
-        },
-    },
-    {
-        name: 'undo',
-        shortcuts: [new KeyCombination(90, 'z', KeyCombination.Modifier_Ctrl)],
-        command: function() {
         },
     },
     {

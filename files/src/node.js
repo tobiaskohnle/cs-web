@@ -26,8 +26,8 @@ class ConnectionNode extends Element {
 
         this.last_pos_ = new Vec;
 
-        this.color_line_ = Color.new(config.colors.wire_inactive);
-        this.color_dot_  = Color.new(config.colors.wire_inactive);
+        this.color_line_ = Color.from(config.colors.wire_inactive);
+        this.color_dot_  = Color.from(config.colors.wire_inactive);
     }
 
     update() {
@@ -51,13 +51,6 @@ class ConnectionNode extends Element {
         this.last_pos_ = Vec.copy(this.pos);
     }
 
-    grab() {
-        this.grab_pos_ = Vec.copy(this.pos);
-    }
-    release() {
-        this.grab_pos_ = null;
-    }
-
     move(vec, total_vec, snap_size) {
         (this.grab_pos_||this.pos).set(this.last_pos_).add(total_vec);
 
@@ -70,6 +63,13 @@ class ConnectionNode extends Element {
         //     case Enum.side.west:  this.pos.x = this.parent.pos.x; break;
         //     case Enum.side.north: this.pos.y = this.parent.pos.y; break;
         // }
+    }
+
+    grab() {
+        this.grab_pos_ = Vec.copy(this.pos);
+    }
+    release() {
+        this.grab_pos_ = null;
     }
 
     set_dir(pos) {

@@ -5,8 +5,8 @@ class Controller {
         this.model = model;
 
         this.open_menu_stack = [];
-        this.mousedown_mouse_pos = new Vec;
-        this.mousedown_mouse_world_pos = new Vec;
+        this.mouse_down_pos = new Vec;
+        this.mouse_down_world_pos = new Vec;
         this.mouse_pos = new Vec;
         this.mouse_world_pos = new Vec;
         this.mouse_movement = new Vec;
@@ -19,6 +19,9 @@ class Controller {
 
         this.wire_start_node = null;
         this.new_wire_segments = [];
+
+        this.undo_stack = [];
+        this.redo_stack = [];
     }
 
     run_command(name) {
@@ -30,7 +33,7 @@ class Controller {
     }
 
     key_down(event) {
-        if (this.current_action == Enum.action.edit_labels) {
+        if (this.current_action == Enum.action.edit_elements) {
             let result = true;
 
             for (const element of this.model.selected_elements_) {
@@ -59,6 +62,15 @@ class Controller {
     }
 
     mouse_down(event) {
+        this.abs_mouse_movement = new Vec;
+
+        this.mouse_down_pos = new Vec(event.x-canvas.offsetLeft, event.y-canvas.offsetTop);
+        this.mouse_down_world_pos = current_tab.camera.to_worldspace(this.mouse_down_pos);
+
+        if (event.button != 0) {
+            return;
+        }
+
         this.is_mouse_down = true;
 
         this.element_moved = false;
@@ -72,12 +84,10 @@ class Controller {
 
         this.model.update_all_last_pos();
 
-        this.mousedown_mouse_pos = new Vec(event.x-canvas.offsetLeft, event.y-canvas.offsetTop);
-        this.mousedown_mouse_world_pos = current_tab.camera.to_worldspace(this.mousedown_mouse_pos);
-
         this.mouse_movement = new Vec;
         this.mouse_world_movement = new Vec;
-        this.abs_mouse_movement = new Vec;
+
+        this.clicked_selected_element = this.hovered_element && this.hovered_element.is_selected();
 
         switch (this.current_action) {
             case Enum.action.create_wire_segment:
@@ -101,71 +111,69 @@ class Controller {
                 break;
 
             default:
-                if (event.buttons == 1) {
-                    if (!event.shiftKey && !event.ctrlKey && (!this.hovered_element || !this.hovered_element.is_selected())) {
-                        this.model.deselect_all();
-                    }
+                if (!event.shiftKey && !event.ctrlKey && (!this.hovered_element || !this.hovered_element.is_selected())) {
+                    this.model.deselect_all();
+                }
 
-                    if (this.hovered_element) {
-                        if (this.is_selected(this.hovered_element.is_selected(), event.shiftKey, event.ctrlKey)) {
-                            this.model.select(this.hovered_element);
-                        }
-                        else {
-                            this.model.deselect(this.hovered_element);
-                        }
-
-                        this.current_action = Enum.action.move_elements;
-
-                        const selected_elements = this.model.selected_elements_array();
-
-                        if (selected_elements.every(element => element instanceof ConnectionNode)) {
-                            this.moving_elements = selected_elements;
-                        }
-                        else {
-                            this.moving_elements = selected_elements.filter(element => element instanceof ConnectionNode == false);
-                        }
-
-                        for (const element of this.moving_elements) {
-                            if (element.grab) element.grab();
-                        }
+                if (this.hovered_element) {
+                    if (this.is_selected(this.hovered_element.is_selected(), event.shiftKey, event.ctrlKey)) {
+                        this.model.select(this.hovered_element);
                     }
                     else {
-                        // if (this.hovered_element instanceof ConnectionNode) {
-                        //     this.current_action = Enum.action.create_wire;
-                        //     this.wire_start_node = this.hovered_element;
-                        //     // current_tab.create_snapshot();
-                        // }
-
-                        this.current_action = Enum.action.create_selection_box;
-
-                        this.saved_selected_elements = this.model.selected_elements_array();
+                        this.model.deselect(this.hovered_element);
                     }
+
+                    this.current_action = Enum.action.move_elements;
+
+                    const selected_elements = this.model.selected_elements_array();
+
+                    if (selected_elements.every(element => element instanceof ConnectionNode)) {
+                        this.moving_elements = selected_elements;
+                    }
+                    else {
+                        this.moving_elements = selected_elements.filter(element => element instanceof ConnectionNode == false);
+                    }
+
+                    for (const element of this.moving_elements) {
+                        if (element.grab) element.grab();
+                    }
+                }
+                else {
+                    // if (this.hovered_element instanceof ConnectionNode) {
+                    //     this.current_action = Enum.action.create_wire;
+                    //     this.wire_start_node = this.hovered_element;
+                    //     // current_tab.create_snapshot();
+                    // }
+
+                    this.current_action = Enum.action.create_selection_box;
+
+                    this.saved_selected_elements = this.model.selected_elements_array();
                 }
                 break;
         }
     }
 
     mouse_move(event) {
-        this.mouse_pos = new Vec(event.x-canvas.offsetLeft, event.y-canvas.offsetTop);
-        this.mouse_world_pos.set(current_tab.camera.to_worldspace(this.mouse_pos));
-
-        const previous_hovered_element = this.hovered_element;
-        this.hovered_element = this.model.element_at(this.mouse_world_pos);
-
-        this.element_moved = this.element_moved
-            || !Vec.sub(this.mouse_world_pos, this.mousedown_mouse_world_pos).round().equals(new Vec);
-
         const move_vec = new Vec(event.movementX, event.movementY);
-        const world_move_vec = Vec.div(move_vec, current_tab.camera.anim_scale_);
 
-        this.mouse_movement.add(move_vec);
         this.abs_mouse_movement.add(Vec.abs(move_vec));
-
-        this.mouse_world_movement.add(Vec.div(move_vec, current_tab.camera.anim_scale_));
 
         if (event.buttons & -2) {
             current_tab.camera.move(move_vec);
         }
+
+        this.mouse_pos = new Vec(event.x-canvas.offsetLeft, event.y-canvas.offsetTop);
+        this.mouse_world_pos.set(current_tab.camera.to_worldspace(this.mouse_pos));
+
+        const vec = !Vec.sub(this.mouse_world_pos, this.mouse_down_world_pos).round().equals(new Vec);
+        this.element_moved = this.element_moved || vec;
+
+        const world_move_vec = Vec.div(move_vec, current_tab.camera.anim_scale_);
+
+        this.mouse_movement.add(move_vec);
+        this.mouse_world_movement.add(world_move_vec);
+
+        this.hovered_element = this.model.element_at(this.mouse_world_pos);
 
         switch (this.current_action) {
             case Enum.action.none:
@@ -208,7 +216,7 @@ class Controller {
                 break;
 
             case Enum.action.create_selection_box:
-                const selection_size = Vec.sub(this.mousedown_mouse_world_pos, this.mouse_world_pos);
+                const selection_size = Vec.sub(this.mouse_down_world_pos, this.mouse_world_pos);
                 const elements_in_rect = new Set(this.model.elements_in_rect(this.mouse_world_pos, selection_size));
 
                 const elements_entering_rect = new Set(elements_in_rect);
@@ -240,23 +248,33 @@ class Controller {
     }
 
     mouse_up(event) {
-        this.is_mouse_down = false;
-
-        if (!this.element_moved && this.hovered_element instanceof InputSwitch) {
-            this.hovered_element.toggle();
-            this.model.queue_tick(this.hovered_element.outputs[0]);
+        if (event.button != 0) {
+            return;
         }
 
+        this.is_mouse_down = false;
+
+
         for (const element of this.moving_elements) {
-            if (element.release) element.release();
+            if (element.release) {
+                element.release();
+            }
+        }
+
+        if (this.element_moved == false) {
+            if (this.hovered_element instanceof InputSwitch) {
+                this.hovered_element.toggle();
+                this.model.queue_tick(this.hovered_element.outputs[0]);
+            }
+
+            if (this.clicked_selected_element) {
+                this.current_action = Enum.action.edit_elements;
+                return;
+            }
         }
 
         switch (this.current_action) {
             case Enum.action.none:
-                // if (!this.mouse_moved()) {
-                //     this.model.deselect_all();
-                //     this.model.select(this.hovered_element);
-                // }
                 break;
 
             case Enum.action.create_wire:
@@ -288,28 +306,37 @@ class Controller {
             case Enum.action.create_wire_segment:
                 break;
 
-            case Enum.action.edit_labels:
+            case Enum.action.edit_elements:
                 if (!this.hovered_element) {
                     this.current_action = Enum.action.none;
                 }
                 break;
 
             default:
-                if (!this.element_moved) {
-                    if (this.hovered_element instanceof Label) {
-                        if (this.hovered_element.is_selected()) {
-                            this.current_action = Enum.action.edit_labels;
-                            break;
-                        }
-                    }
-                }
-
                 this.current_action = Enum.action.none;
                 break;
         }
 
         this.mouse_movement = new Vec;
         this.mouse_world_movement = new Vec;
+    }
+
+    save_state(msg) {
+        console.log('SAVE STATE:', msg);
+        this.undo_stack.push(deep_copy(this.model.main_gate));
+        this.redo_stack = [];
+    }
+    undo() {
+        if (this.undo_stack.length) {
+            this.redo_stack.push(deep_copy(this.model.main_gate));
+            this.model.main_gate = this.undo_stack.pop();
+        }
+    }
+    redo() {
+        if (this.redo_stack.length) {
+            this.undo_stack.push(deep_copy(this.model.main_gate));
+            this.model.main_gate = this.redo_stack.pop();
+        }
     }
 
     is_selected(was_selected, modifier_shift, modifier_ctrl) {
@@ -349,10 +376,10 @@ class Controller {
         }
     }
 
-    copy_selected_elements() {
-        this.clipboard = extended_stringify(Array.from(this.model.selected_elements_));
+    copy() {
+        this.clipboard = extended_stringify(this.model.selected_elements_array());
     }
-    paste_copied_elements() {
+    paste() {
         if (!this.clipboard) {
             return;
         }
@@ -366,13 +393,18 @@ class Controller {
 
         const offset = Vec.sub(Vec.round(this.mouse_world_pos), top_left_pos);
 
-        // for (const e of copied_elements) if (e.update_last_pos) e.update_last_pos();
+        for (const element of copied_elements) {
+            if (element.update_last_pos) {
+                element.update_last_pos();
+            }
+        }
 
         for (const copied_element of copied_elements) {
             this.model.add(copied_element);
 
-            if (copied_element instanceof Gate || copied_element instanceof WireSegment)
-            copied_element.move(offset, offset);
+            if (copied_element instanceof ConnectionNode == false) {
+                copied_element.move(offset, offset);
+            }
 
             this.model.select(copied_element);
         }
@@ -390,12 +422,16 @@ class Controller {
     }
 
     init_element(element) {
-        element.pos.set(this.mousedown_mouse_world_pos).round();
+        element.pos.set(this.mouse_down_world_pos).round();
 
         if (element instanceof Gate) {
             element.set_nodes_pos();
             element.cancel_animation();
             element.nodes_init_animation();
+        }
+
+        if (element instanceof Label) {
+            element.cancel_animation();
         }
 
         this.model.add(element);
@@ -404,9 +440,11 @@ class Controller {
     create_custom_gate(gate) {
         this.init_element(gate);
 
-        for (const inner_element of gate.inner_elements) {
+        const inner_elements = gate.inner_elements.sorted((a,b) => a.pos.y==b.pos.y ? a.pos.x-b.pos.x : a.pos.y-b.pos.y);
+
+        for (const inner_element of inner_elements) {
             if (inner_element instanceof InputSwitch) {
-                gate.add_input_node();
+                const input = gate.add_input_node();
 
                 input.is_inverted = inner_element.outputs[0].is_inverted;
 
@@ -414,7 +452,7 @@ class Controller {
                 inner_element.outputs[0].next_nodes = [];
             }
             if (inner_element instanceof OutputLight) {
-                gate.add_output_node();
+                const output = gate.add_output_node();
 
                 output.is_inverted = inner_element.inputs[0].is_inverted;
 

@@ -19,13 +19,13 @@ class WireSegment extends Element {
         this.connected_pos = null;
         this.anim_connected_pos_ = null;
 
-        this.color_outline_ = Color.new(config.colors.outline);
+        this.color_outline_ = Color.from(config.colors.outline);
     }
 
     update() {
         if (this.connected_pos) {
             if (this.is_vertical) this.offset = this.connected_pos.x;
-            else               this.offset = this.connected_pos.y;
+            else                  this.offset = this.connected_pos.y;
 
             this.anim_connected_pos_ = anim_interpolate_vec(this.anim_connected_pos_, this.connected_pos);
         }
@@ -44,13 +44,13 @@ class WireSegment extends Element {
         this.last_offset_ = this.offset;
     }
 
-    cancel_animation() {
-        this.anim_offset_ = this.offset;
+    move(vec, total_vec, snap_size) {
+        if (this.is_vertical) this.offset = round(this.last_offset_, this.snap_size) + round(total_vec.x, snap_size);
+        else                  this.offset = round(this.last_offset_, this.snap_size) + round(total_vec.y, snap_size);
     }
 
-    move(vec, total_vec, snap_size) {
-        if (this.is_vertical) this.offset = round(this.last_offset_+total_vec.x, snap_size);
-        else                  this.offset = round(this.last_offset_+total_vec.y, snap_size);
+    cancel_animation() {
+        this.anim_offset_ = this.offset;
     }
 
     distance(pos) {
@@ -145,7 +145,7 @@ class WireSegment extends Element {
         context.fillStyle = this.color_outline_.to_string();
 
         if (this.is_vertical) context.fillRect(this.anim_offset_ - .1/2, min - .1/2, .1, max - min + .2/2);
-        else               context.fillRect(min - .1/2, this.anim_offset_ - .1/2, max - min + .2/2, .1);
+        else                  context.fillRect(min - .1/2, this.anim_offset_ - .1/2, max - min + .2/2, .1);
 
         this.draw_joints();
     }
@@ -153,13 +153,13 @@ class WireSegment extends Element {
     draw_joints() {
         context.fillStyle = '#ff2';
 
-        const neighbor_elements = [...this.neighbor_elements()].sort((a,b) => b.anim_offset_-a.anim_offset_);
+        const neighbor_elements = this.neighbor_elements().sorted((a,b) => a.anim_offset_-b.anim_offset_);
 
         for (let i = 1; i < neighbor_elements.length-1; i++) {
             const neighbor_offset = neighbor_elements[i].anim_offset_;
 
             if (this.is_vertical) context.fillRect(this.anim_offset_ - .4/2, neighbor_offset - .4/2, .4, .4);
-            else               context.fillRect(neighbor_offset - .4/2, this.anim_offset_ - .4/2, .4, .4);
+            else                  context.fillRect(neighbor_offset - .4/2, this.anim_offset_ - .4/2, .4, .4);
         }
     }
 }

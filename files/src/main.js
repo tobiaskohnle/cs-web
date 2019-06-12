@@ -12,7 +12,7 @@ const Enum = {
         create_wire_segment:  Symbol('action_create_wire_segment'),
         create_selection_box: Symbol('action_create_selection_box'),
         move_elements:        Symbol('action_move_elements'),
-        edit_labels:          Symbol('action_edit_labels'),
+        edit_elements:        Symbol('action_edit_elements'),
     },
     grid_style: {
         none:  Symbol('grid_style_none'),
@@ -24,6 +24,11 @@ const Enum = {
         south: 1,
         west:  2,
         north: 3,
+    },
+    align: {
+        start:  0,
+        center: 1,
+        end:    2,
     },
 };
 
@@ -47,22 +52,28 @@ const theme = {
         gate_init:         new Color(.5,1,1,0)             ,
     },
     dark: {
-        background:        new Color(240/360,.22,.03)      , // #070709
-        grid:              new Color(180/360,.33,1,5/16)   , // #aff5
-        light_inactive:    new Color(0,0,0,7/16)           , // #0007
-        light_active:      new Color(0,.8,1,7/16)          , // #f337
-        wire_inactive:     new Color(0,0,1)                , // #fff
-        wire_active:       new Color(0,.8,1)               , // #f33
-        segment_inactive:  new Color(210/360,.86,.47,3/16) , // #1473
-        segment_active:    new Color(201/360,.93,1)        , // #1af
-        outline:           new Color(200/360,0,1)          , // #fff
-        hovered:           new Color(195/360,.85,.93)      , // #2be // #39d
-        selected:          new Color(215/360,.85,.93)      , // #27e // #24c
-        hovered_selected:  new Color(216/360,.92,.93)      , // #16e // #26e
-        selection_fill:    new Color(210/360,.92,.87,3/16) , // #17d3
-        selection_outline: new Color(210/360,.8,1)         , // #39fa
-        node_init:         new Color(.5,1,1,0)             ,
-        gate_init:         new Color(.5,1,1,0)             ,
+        background:         new Color(240/360,.22,.03)      , // #070709
+        grid:               new Color(180/360,.33,1,5/16)   , // #aff5
+        light_inactive:     new Color(0,0,0,7/16)           , // #0007
+        light_active:       new Color(0,.8,1,7/16)          , // #f337
+        wire_inactive:      new Color(0,0,1)                , // #fff
+        wire_active:        new Color(0,.8,1)               , // #f33
+        segment_inactive:   new Color(210/360,.86,.47,3/16) , // #1473
+        segment_active:     new Color(201/360,.93,1)        , // #1af
+        outline:            new Color(200/360,0,1)          , // #fff
+        edit_outline:       new Color(353/360, .8, .9, .9)  ,
+        hovered:            new Color(195/360,.85,.93)      , // #2be // #39d
+        selected:           new Color(215/360,.85,.93)      , // #27e // #24c
+        hovered_selected:   new Color(216/360,.92,.93)      , // #16e // #26e
+        selection_fill:     new Color(210/360,.92,.87,3/16) , // #17d3
+        selection_outline:  new Color(210/360,.8,1)         , // #39fa
+        node_init:          new Color(.5,1,1,0)             ,
+        gate_init:          new Color(.5,1,1,0)             ,
+        label_text:         new Color(0, 0, .8)             , // #ccc
+        label_special_text: new Color(60/360, .91, .8)      , // #cc1
+        label_outline:      new Color(220/360, .2, .4, .7)  ,
+        label_caret:        new Color(212/360, 1, 1)        , // #07f
+        label_selection:    new Color(204/360, 1, 1, 4/16)  , // #09f4
     },
 };
 

@@ -11,34 +11,31 @@ class Label extends Element {
 
         this.last_pos_ = new Vec;
 
-        this.anim_color_ = new Color;
-        this.anim_color_.set_hsva(config.colors.outline);
+        this.anim_color_ = Color.from(config.colors.label_outline);
+        this.anim_text_color_ = Color.from(config.colors.label_text);
 
         this.font_size = 1;
-
-        // this.caret_index = 0;
-        // this.selection_index = 0;
-
-        // this.anim_caret_index_ = 0;
-        // this.anim_selection_index_ = 0;
+        this.anim_font_size_ = 1;
 
         this.text = '';
 
-        this.last_time_caret_moved = Date.now();
+        this.vertical_text_align = Enum.align.center;
+        this.horizontal_text_align = Enum.align.center;
 
-        this.caret_hovered = 0;
         this.selection_start = 0;
         this.caret = 0;
 
-        this.anim_selection_bounds;
-        this.anim_caret_bounds;
+        this.last_time_caret_moved_ = Date.now();
+        this.caret_hovered_ = 0;
 
-        this.text = '';
-        this.anim_total_offset = 0;
-        this.anim_chars_offset = [];
+        this.anim_selection_bounds_;
+        this.anim_caret_bounds_;
 
-        this.mousedown_caret;
-        this.mousedown_detail;
+        this.anim_total_width_ = 0;
+        this.anim_chars_offset_ = [];
+
+        this.mousedown_caret_;
+        this.mousedown_detail_;
     }
 
     update_last_pos() {
@@ -49,31 +46,94 @@ class Label extends Element {
         super.update_pos();
         super.update_size();
 
-        const color = new Color;
-        color.set_hsva(this.color(new Color(220/360, .2, .4)));
-        color.a = .7;
+        const color = Color.from(this.color(config.colors.label_outline));
 
-        if (this.is_selected() && C.current_action == Enum.action.edit_labels) {
-            color.set_hsva({h:-.02, s:.8, v:.9, a:.9});
+        if (this.is_selected() && C.current_action == Enum.action.edit_elements) {
+            color.set_hsva(config.colors.edit_outline);
         }
+
+        color.from_hsva({a: config.colors.label_outline.a});
 
         this.anim_color_.set_hsva(color);
         this.anim_color_.update();
+
+        this.anim_text_color_.set_hsva(this.special_info() ? config.colors.label_special_text : config.colors.label_text);
+        this.anim_text_color_.update();
+
+        this.anim_font_size_ = anim_interpolate(this.anim_font_size_, this.font_size, config.label_anim_factor);
+
+        let total_width = this.text_width(this.text);
+        this.anim_total_width_ = anim_interpolate(this.anim_total_width_, total_width, config.label_anim_factor);
+
+        const offset = new Vec(
+            (this.size.x - total_width)    * [0, .5, 1][this.horizontal_text_align],
+            (this.size.y - this.font_size) * [0, .5, 1][this.vertical_text_align] + this.font_size/2,
+        );
+        this.anim_offset_ = anim_interpolate_vec(this.anim_offset_, offset, config.label_anim_factor);
+
+        const selection_bounds = this.text_bounds(this.selection_start, this.selection_width());
+
+        if (!this.anim_selection_bounds_) this.anim_selection_bounds_ = selection_bounds;
+        this.anim_selection_bounds_.start = anim_interpolate(this.anim_selection_bounds_.start, selection_bounds.start, config.label_anim_factor);
+        this.anim_selection_bounds_.end = anim_interpolate(this.anim_selection_bounds_.end, selection_bounds.end, config.label_anim_factor);
+
+        const caret_bounds = this.text_bounds(this.caret, 0);
+        caret_bounds.start -= config.label_caret_width/2 * this.font_size;
+        caret_bounds.end = config.label_caret_width * this.font_size + caret_bounds.start;
+
+        if (!this.anim_caret_bounds_) this.anim_caret_bounds_ = caret_bounds;
+        this.anim_caret_bounds_.start = anim_interpolate(this.anim_caret_bounds_.start, caret_bounds.start, config.label_anim_factor);
+        this.anim_caret_bounds_.end = anim_interpolate(this.anim_caret_bounds_.end, caret_bounds.end, config.label_anim_factor);
+
+        let width = 0;
+        for (let x = 0; x < this.text.length; x++) {
+            this.anim_chars_offset_[x] = anim_interpolate(this.anim_chars_offset_[x], width, config.label_anim_factor);
+            width += this.get_char_width(this.text[x]);
+        }
+
+        const delta_time = Date.now() - this.last_time_caret_moved_;
+        const sin = config.label_caret_smoothness * Math.sin(
+            Math.PI * (1/4 + 2*delta_time/config.label_caret_blink_rate + config.label_caret_blink_rate/2)
+        );
+        const alpha = delta_time < config.label_caret_blink_rate/2 ? 1 : map(clamp(sin, -1, 1), -1, 1, 0, 1);
+        this.caret_color_ = Color.from(config.colors.label_caret, {a:alpha}).to_string();
+    }
+
+    move(vec, total_vec, snap_size) {
+        super.snap_pos(this.last_pos_, total_vec, snap_size);
+    }
+
+    next_vertical_align() {
+        this.vertical_text_align = [Enum.align.center, Enum.align.end, Enum.align.start][this.vertical_text_align];
+    }
+    next_horizontal_align() {
+        this.horizontal_text_align = [Enum.align.center, Enum.align.end, Enum.align.start][this.horizontal_text_align];
+    }
+
+    increase_font_size() {
+        this.font_size *= 1.2;
+    }
+    decrease_font_size() {
+        this.font_size /= 1.2;
     }
 
     special_info() {
         if (/^tag\s*=/i.test(this.text)) {
-            return {tag: this.text.match(/^tag\s*=\s*(?<tag>\w*)\s*/i).groups.tag};
+            return {tag: this.text.match(/^tag\s*=(?<tag>[\w\s]*)/i).groups.tag.trim()};
         }
 
         if (/^name\s*=/i.test(this.text)) {
-            return {name: this.text.match(/^name\s*=\s*(?<name>\w*)\s*/i).groups.name};
+            return {name: this.text.match(/^name\s*=(?<name>[\w\s]*)/i).groups.name.trim()};
         }
 
         if (/^size\s*=/i.test(this.text)) {
-            if (/^size\s*=\d+,\d+/i.test(this.text)) {
+            if (/^size\s*=\s*\d+\s*,\s*\d+\s*/i.test(this.text)) {
                 const size = this.text.match(/^size\s*=\s*(?<x>\d+)\s*,\s*(?<y>\d+)\s*/i).groups;
                 return {size: new Vec(parseInt(size.x), parseInt(size.y))};
+            }
+            if (/^size\s*=\s*\d+\s*/i.test(this.text)) {
+                const size = this.text.match(/^size\s*=\s*(?<xy>\d+)\s*/i).groups;
+                return {size: new Vec(parseInt(size.xy))};
             }
 
             return {size: new Vec(3,4)};
@@ -99,10 +159,6 @@ class Label extends Element {
         };
     }
 
-    move(vec, total_vec, snap_size) {
-        this.pos.set(this.last_pos_).add(total_vec).round(snap_size);
-    }
-
     text_bounds(start, width) {
         return {
             start: this.text_width(this.text.substring(0, start)),
@@ -111,11 +167,8 @@ class Label extends Element {
     }
 
     get_char_width(char='') {
-        if (/[fijl.,:; ]/.test(char)) return .3 * this.font_size;
-        if (/[rt]/       .test(char)) return .4 * this.font_size;
-        if (/[mw]/       .test(char)) return .8 * this.font_size;
-        return .6;
-        // return context.measureText(char).width / current_tab.camera.anim_scale_;
+        context.font = `${this.font_size}px sans-serif`;
+        return context.measureText(char).width;
     }
     text_width(text) {
         let width = 0;
@@ -128,7 +181,7 @@ class Label extends Element {
     }
 
     draw_text_bounds(bounds) {
-        context.fillRect(bounds.start, this.font_size/-2, bounds.end-bounds.start, this.font_size);
+        context.fillRect(bounds.start, this.anim_font_size_/-2, bounds.end-bounds.start, this.anim_font_size_);
     }
 
     draw() {
@@ -138,64 +191,24 @@ class Label extends Element {
 
         context.save();
 
-        let total_width = this.text_width(this.text);
-        this.anim_total_offset = anim_interpolate(this.anim_total_offset, total_width, config.label_anim_factor);
+        context.translate(...Vec.add(this.anim_pos_, this.anim_offset_).xy);
 
-        const center = Vec.add(this.anim_pos_, Vec.div(this.anim_size_, 2));
-        context.translate(center.x - this.anim_total_offset/2, center.y);
-
-        const selection_bounds = this.text_bounds(this.selection_start, this.selection_width());
-
-        if (!this.anim_selection_bounds) this.anim_selection_bounds = selection_bounds;
-        this.anim_selection_bounds.start = anim_interpolate(this.anim_selection_bounds.start, selection_bounds.start, config.label_anim_factor);
-        this.anim_selection_bounds.end = anim_interpolate(this.anim_selection_bounds.end, selection_bounds.end, config.label_anim_factor);
-
-        context.fillStyle = '#ccc';
-
-        let width = 0;
+        context.fillStyle = this.anim_text_color_.to_string();
+        context.font = `${this.anim_font_size_}px sans-serif`;
+        context.textAlign = 'start';
+        context.textBaseline = 'middle';
 
         for (let x = 0; x < this.text.length; x++) {
-            this.anim_chars_offset[x] = anim_interpolate(this.anim_chars_offset[x], width, config.label_anim_factor);
-
             const char = this.text[x];
-            context.font = `${this.font_size}px sans-serif`;
-            context.textAlign = 'start';
-            context.textBaseline = 'middle';
-            context.fillText(char, this.anim_chars_offset[x], 0);
-
-            width += this.get_char_width(char);
+            context.fillText(char, this.anim_chars_offset_[x], 0);
         }
 
-        context.fillStyle = '#09f4';
-        this.draw_text_bounds(this.anim_selection_bounds);
+        context.fillStyle = config.colors.label_selection.to_string();
+        this.draw_text_bounds(this.anim_selection_bounds_);
 
-        const caret_bounds = this.text_bounds(this.caret, 0);
-        caret_bounds.start -= config.label_caret_width/2;
-        caret_bounds.end = config.label_caret_width + caret_bounds.start;
-
-        if (!this.anim_caret_bounds) this.anim_caret_bounds = caret_bounds;
-        this.anim_caret_bounds.start = anim_interpolate(this.anim_caret_bounds.start, caret_bounds.start, config.label_anim_factor);
-        this.anim_caret_bounds.end = anim_interpolate(this.anim_caret_bounds.end, caret_bounds.end, config.label_anim_factor);
-
-        if (document.hasFocus() && C.current_action == Enum.action.edit_labels) {
-            context.fillStyle = `rgba(${0x00},${0x77},${0xff},${
-                map(
-                    Date.now()-this.last_time_caret_moved < config.label_caret_blink_rate/2 ? 1 :
-                    Math.max(
-                        -1,
-                        Math.min(
-                            1,
-                            config.label_caret_smoothness * Math.sin(
-                                (Date.now()-this.last_time_caret_moved)*Math.PI*2/config.label_caret_blink_rate
-                                + Math.PI/4+config.label_caret_blink_rate/2
-                            ),
-                        ),
-                    ),
-                    -1, 1,
-                    0, 1,
-                )
-            })`;
-            this.draw_text_bounds(this.anim_caret_bounds);
+        if (document.hasFocus() && this.is_selected() && C.current_action == Enum.action.edit_elements) {
+            context.fillStyle = this.caret_color_;
+            this.draw_text_bounds(this.anim_caret_bounds_);
         }
 
         context.restore();
@@ -223,7 +236,7 @@ class Label extends Element {
     }
 
     set_caret(pos, extend_selection) {
-        this.last_time_caret_moved = Date.now();
+        this.last_time_caret_moved_ = Date.now();
         this.caret = Math.max(0, Math.min(this.text.length, pos));
 
         if (!extend_selection) {
@@ -265,53 +278,49 @@ class Label extends Element {
     }
 
     mouse_down(event) {
-        this.mousedown_caret = this.caret;
-        this.mousedown_detail = event.detail;
+        this.mousedown_caret_ = this.caret;
+        this.mousedown_detail_ = event.detail;
 
-        if (event.buttons == 1) {
-            switch ((event.detail-1) % 3) {
-                case 0:
-                    set_caret(this.caret_hovered, event.shiftKey);
-                    break;
-                case 1:
-                    const bounds = this.get_word_bounds(this.caret_hovered);
-                    this.set_caret(bounds.lower, event.shiftKey);
-                    this.set_caret(bounds.upper, true);
-                    break;
-                case 2:
-                    this.select_all();
-                    break;
-            }
+        switch ((event.detail-1) % 3) {
+            case 0:
+                set_caret(this.caret_hovered_, event.shiftKey);
+                break;
+            case 1:
+                const bounds = this.get_word_bounds(this.caret_hovered_);
+                this.set_caret(bounds.lower, event.shiftKey);
+                this.set_caret(bounds.upper, true);
+                break;
+            case 2:
+                this.select_all();
+                break;
         }
     }
     mouse_move(event) {
-        this.caret_hovered = this.get_text_index(event.x);
+        this.caret_hovered_ = this.get_text_index(event.x);
 
-        if (event.buttons == 1) {
-            switch ((this.mousedown_detail-1) % 3) {
-                case 0:
-                    this.set_caret(this.caret_hovered, true);
-                    break;
-                case 1:
-                    const init_bounds = this.get_word_bounds(this.mousedown_caret);
-                    const bounds = this.get_word_bounds(this.caret_hovered);
+        switch ((this.mousedown_detail_-1) % 3) {
+            case 0:
+                this.set_caret(this.caret_hovered_, true);
+                break;
+            case 1:
+                const init_bounds = this.get_word_bounds(this.mousedown_caret_);
+                const bounds = this.get_word_bounds(this.caret_hovered_);
 
-                    this.selection_start = Math.min(init_bounds.lower, bounds.lower);
-                    this.set_caret(Math.max(init_bounds.upper, bounds.upper), true);
-                    break;
-            }
+                this.selection_start = Math.min(init_bounds.lower, bounds.lower);
+                this.set_caret(Math.max(init_bounds.upper, bounds.upper), true);
+                break;
         }
     }
 
     delete_selection() {
-        this.anim_chars_offset.splice(this.selection_lower(), this.selection_upper()-this.selection_lower());
+        this.anim_chars_offset_.splice(this.selection_lower(), this.selection_upper()-this.selection_lower());
 
         this.text = `${this.text.substr(0, this.selection_lower())}${this.text.substring(this.selection_upper(), this.text.length)}`;
         this.set_caret(this.selection_lower());
     }
     write_text(string) {
-        let width = this.text_width(this.text.substr(0, this.caret));
-        this.anim_chars_offset.splice(this.caret, 0, ...Array.from(Array(string.length), (_,i) => {
+        let width = this.text_width(this.text.substr(0, this.selection_lower()));
+        this.anim_chars_offset_.splice(this.caret, 0, ...Array.from(Array(string.length), (_,i) => {
             let prev_width = width;
             width += this.get_char_width(string[i]);
             return prev_width;

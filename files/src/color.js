@@ -6,12 +6,21 @@ class Color {
         this.set_hsva({h, s, v, a});
     }
 
-    static new(color) {
+    static from(...colors) {
         const new_color = new Color;
-        new_color.set_anim_hsva(color);
-        new_color.set_hsva(color);
+
+        for (const color of colors) {
+            new_color.from_hsva(color);
+        }
 
         return new_color;
+    }
+
+    from_hsva({h, s, v, a}) {
+        if (h !== undefined) this.anim_h = this.h = h;
+        if (s !== undefined) this.anim_s = this.s = s;
+        if (v !== undefined) this.anim_v = this.v = v;
+        if (a !== undefined) this.anim_a = this.a = a;
     }
 
     set_anim_hsva({h=0, s=0, v=0, a=1}) {

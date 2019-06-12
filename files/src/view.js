@@ -65,7 +65,7 @@ function draw() {
 
     if (current_tab.controller.current_action == Enum.action.create_selection_box) {
         draw_selection_rect(
-            current_tab.camera.to_screenspace(current_tab.controller.mousedown_mouse_world_pos),
+            current_tab.camera.to_screenspace(current_tab.controller.mouse_down_world_pos),
             current_tab.controller.mouse_pos,
         );
     }
@@ -145,10 +145,6 @@ function anim_interpolate(value, target, factor=config.anim_factor) {
 }
 function anim_interpolate_mod(value, target, factor=config.anim_factor) {
     const offset = mod(target-value-.5, 1)-.5;
-
-    if (offset * (1-factor) > .1)  factor = 1 - .1/offset;
-    if (offset * (1-factor) < -.1) factor = 1 + .1/offset;
-
     return value + offset * factor;
 }
 function anim_interpolate_vec(value, target, factor=config.anim_factor) {
