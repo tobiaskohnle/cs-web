@@ -175,7 +175,7 @@ function close_menu() {
 }
 
 function menu_click(path) {
-    for (const class_name of ['menu', 'menu-bar-item', 'menu-item', 'menu-separator']) {
+    for (const class_name of ['menu', 'menubar-item', 'menu-item', 'menu-separator']) {
         for (const element of path) {
             if (element.classList && element.classList.contains(class_name)) {
                 return;

@@ -23,6 +23,7 @@
 <script src='files/src/vec.js'></script>
 <script src='files/src/view.js'></script>
 <script src='files/src/wire.js'></script>
+<script src='files/src/sidebar.js'></script>
 
 <script src='files/src/gate.js'></script>
 
@@ -32,23 +33,23 @@
 
 <body>
     <div class='window'>
-        <div class='menu-bar'>
-            <div class='menu-bar-item' menu='file'>
+        <div class='menubar'>
+            <div class='menubar-item' menu='file'>
                 <span>File</span>
             </div>
-            <div class='menu-bar-item' menu='edit'>
+            <div class='menubar-item' menu='edit'>
                 <span>Edit</span>
             </div>
-            <div class='menu-bar-item' menu='view'>
+            <div class='menubar-item' menu='view'>
                 <span>View</span>
             </div>
-            <div class='menu-bar-item' menu='tools'>
+            <div class='menubar-item' menu='tools'>
                 <span>Tools</span>
             </div>
         </div>
-        <div class='tabs'></div>
-        <div class='sidebar'></div>
-        <canvas></canvas>
+        <div class='toolbar'></div>
+        <canvas class='sidebar'></canvas>
+        <canvas class='canvas'></canvas>
     </div>
 
     <div class='menu' menu='context-menu'>

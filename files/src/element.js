@@ -4,8 +4,10 @@ class Element {
     constructor() {
         console.assert(new.target != Element, 'illegal constructor @Element.constructor');
 
-        this.snap_size = 1;
-        this.update_priority = 0;
+        this.snap_size_ = 1;
+        this.update_priority_ = 0;
+
+        this.id_ = config.next_id++;
     }
 
     is_selected() {
@@ -16,6 +18,7 @@ class Element {
     }
 
     cancel_animation() {
+        this.update();
         this.anim_pos_.set(this.pos);
     }
 
@@ -41,8 +44,8 @@ class Element {
         this.anim_size_ = anim_interpolate_vec(this.anim_size_, this.size);
     }
 
-    snap_pos(last_pos, total_vec, snap_size) {
-        this.pos.set(Vec.add(Vec.round(last_pos, this.snap_size), Vec.round(total_vec, snap_size)));
+    snap_pos(last_pos, total_vec, snap_size_) {
+        this.pos.set(Vec.add(Vec.round(last_pos, this.snap_size_), Vec.round(total_vec, snap_size_)));
     }
 
     draw() {
@@ -61,7 +64,7 @@ class Element {
         throw 'implementation required @Element.hitbox_rect';
     }
 
-    move(vec, total_vec, snap_size) {
+    move(vec, total_vec, snap_size_) {
         throw 'implementation required @Element.move';
     }
 }

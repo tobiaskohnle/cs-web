@@ -4,7 +4,7 @@ class ConnectionNode extends Element {
     constructor(parent, index) {
         super();
 
-        this.update_priority = 1;
+        this.update_priority_ = 1;
 
         this.pos = new Vec;
         this.grab_pos_ = null;
@@ -16,7 +16,6 @@ class ConnectionNode extends Element {
         this.anchor_pos_ = new Vec;
         this.anchor_anim_pos_ = new Vec;
 
-        this.label = null;
         this.tag = null;
 
         this.index = index;
@@ -51,7 +50,7 @@ class ConnectionNode extends Element {
         this.last_pos_ = Vec.copy(this.pos);
     }
 
-    move(vec, total_vec, snap_size) {
+    move(vec, total_vec, snap_size_) {
         (this.grab_pos_||this.pos).set(this.last_pos_).add(total_vec);
 
         this.set_dir(this.grab_pos_||this.pos);

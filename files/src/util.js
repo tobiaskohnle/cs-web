@@ -4,6 +4,7 @@
 globalThis.__defineGetter__('E', ()=>current_tab.model.selected_element());
 globalThis.__defineGetter__('M', ()=>current_tab.model);
 globalThis.__defineGetter__('C', ()=>current_tab.controller);
+globalThis.__defineGetter__('S', ()=>current_tab.sidebar);
 // /TEMP
 
 Array.prototype.copy = function() {
@@ -115,8 +116,8 @@ function bounding_rect(elements) {
 }
 
 function deep_copy(element) {
-    const references = [];
-    const cached_results = [];
+    const references = [canvas, sidebar_canvas];
+    const cached_results = [canvas, sidebar_canvas];
 
     return (function copy(element) {
         if (!element || typeof element !== 'object') {
@@ -130,7 +131,7 @@ function deep_copy(element) {
 
         references.push(element);
 
-        const result = new element.constructor();
+        var result = new element.constructor();
 
         cached_results.push(result);
 

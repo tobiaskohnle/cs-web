@@ -71,12 +71,12 @@
     text-align: right;
 }
 
-.menu-bar-item span {
+.menubar-item span {
     user-select: none;
     user-drag: none;
 }
 
-.menu-bar-item {
+.menubar-item {
     width: min-content;
     height: 19px;
 
@@ -84,11 +84,11 @@
 
     border: 1px solid #0000;
 }
-.menu-bar-item:hover {
+.menubar-item:hover {
     border-color: #39fd;
     background: #49f3;
 }
-.menu-bar-item:active, .menu-bar-item.active {
+.menubar-item:active, .menubar-item.active {
     border-color: #39fe;
     background: #49f6;
 }

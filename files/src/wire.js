@@ -12,7 +12,7 @@ class WireSegment extends Element {
 
         this.last_offset_ = 0;
 
-        this.snap_size = .5;
+        this.snap_size_ = .5;
 
         this.neighbor_segments = [];
 
@@ -33,6 +33,19 @@ class WireSegment extends Element {
             this.anim_connected_pos_ = null;
         }
 
+        if (this.auto_offset_) {
+            let avg = 0;
+
+            for (const neighbor of this.neighbor_segments) {
+                if (neighbor.connected_pos) {
+                    const norm_offset = this.is_vertical ? neighbor.connected_pos.x : neighbor.connected_pos.y;
+                    avg += norm_offset / this.neighbor_segments.length;
+                }
+            }
+
+            this.offset = avg;
+        }
+
         this.anim_offset_ = anim_interpolate(this.anim_offset_, this.offset);
 
         const default_color = this.parent && this.parent.state ? config.colors.wire_active : config.colors.wire_inactive;
@@ -44,12 +57,13 @@ class WireSegment extends Element {
         this.last_offset_ = this.offset;
     }
 
-    move(vec, total_vec, snap_size) {
-        if (this.is_vertical) this.offset = round(this.last_offset_, this.snap_size) + round(total_vec.x, snap_size);
-        else                  this.offset = round(this.last_offset_, this.snap_size) + round(total_vec.y, snap_size);
+    move(vec, total_vec, snap_size_) {
+        if (this.is_vertical) this.offset = round(this.last_offset_, this.snap_size_) + round(total_vec.x, snap_size_);
+        else                  this.offset = round(this.last_offset_, this.snap_size_) + round(total_vec.y, snap_size_);
     }
 
     cancel_animation() {
+        this.update();
         this.anim_offset_ = this.offset;
     }
 

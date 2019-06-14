@@ -5,7 +5,7 @@ class Gate extends Element {
         console.assert(new.target != Gate, 'illegal constructor @Gate.constructor');
         super();
 
-        this.update_priority = 2;
+        this.update_priority_ = 2;
 
         this.pos = pos;
         this.size = size;
@@ -14,7 +14,6 @@ class Gate extends Element {
 
         this.last_pos_ = new Vec;
 
-        this.label = null;
         this.tag = tag;
 
         this.inputs = [];
@@ -22,15 +21,6 @@ class Gate extends Element {
 
         this.color_outline_ = new Color;
         this.color_outline_.set_hsva(config.colors.outline);
-
-        this.options = {
-            scale:                 .0026,
-            skew:                  -30,
-            width:                 450,
-            segment_width:         105,
-            segment_distance:      21,
-            segment_center_length: 70,
-        };
     }
 
     add_input_node() {
@@ -51,11 +41,11 @@ class Gate extends Element {
     }
 
     cancel_animation() {
+        super.cancel_animation();
+
         for (const node of this.nodes()) {
             node.cancel_animation();
         }
-
-        super.cancel_animation();
     }
 
     nodes() {
@@ -120,8 +110,8 @@ class Gate extends Element {
         this.last_pos_ = Vec.copy(this.pos);
     }
 
-    move(vec, total_vec, snap_size) {
-        super.snap_pos(this.last_pos_, total_vec, snap_size);
+    move(vec, total_vec, snap_size_) {
+        super.snap_pos(this.last_pos_, total_vec, snap_size_);
     }
 
     hitbox_rect() {
@@ -325,6 +315,15 @@ class SegmentDisplay extends ModelGate {
             Color.from(config.colors.segment_inactive),
             Color.from(config.colors.segment_inactive),
         ];
+
+        this.options_ = {
+            scale:                 .0026,
+            skew:                  -30,
+            width:                 450,
+            segment_width:         105,
+            segment_distance:      21,
+            segment_center_length: 70,
+        };
     }
 
     update() {
@@ -355,12 +354,12 @@ class SegmentDisplay extends ModelGate {
         // const segment_distance      = 21;
         // const segment_center_length = 70;
 
-        const scale                 = this.options.scale * Math.min(this.anim_size_.x/5, this.anim_size_.y/7);
-        const skew                  = this.options.skew;
-        const width                 = this.options.width;
-        const segment_width         = this.options.segment_width;
-        const segment_distance      = this.options.segment_distance;
-        const segment_center_length = this.options.segment_center_length;
+        const scale                 = this.options_.scale * Math.min(this.anim_size_.x/5, this.anim_size_.y/7);
+        const skew                  = this.options_.skew;
+        const width                 = this.options_.width;
+        const segment_width         = this.options_.segment_width;
+        const segment_distance      = this.options_.segment_distance;
+        const segment_center_length = this.options_.segment_center_length;
 
         const center = Vec.add(this.anim_pos_, Vec.div(this.anim_size_, 2));
 

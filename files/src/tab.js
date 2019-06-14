@@ -9,28 +9,32 @@ class Tab {
     reset() {
         this.model = new Model;
         this.controller = new Controller(this.model);
+        this.sidebar = new Sidebar;
     }
 
     create_snapshot() {
-        this.snapshot = deep_copy({
-            model: this.model,
-            wire_start_node: this.controller.wire_start_node,
-            current_action: this.controller.current_action,
-            hovered_element: this.controller.hovered_element,
-            new_wire_segments: this.controller.new_wire_segments,
-        });
+        console.log(`%c>> CREATED SNAPSHOT`, 'color:#fb2; font-weight:bold');
+
+        this.snapshot = deep_copy({model:this.model, controller:this.controller});;
     }
 
     load_snapshot() {
         if (this.snapshot) {
+            console.log(`%c<< LOADED SNAPSHOT`, 'color:#2d2; font-weight:bold');
             const snapshot = deep_copy(this.snapshot);
 
             this.model = snapshot.model;
-            this.controller.model = snapshot.model;
-            this.controller.wire_start_node = snapshot.wire_start_node;
-            this.controller.current_action = snapshot.current_action;
-            this.controller.hovered_element = snapshot.hovered_element;
-            this.controller.new_wire_segments = snapshot.new_wire_segments;
+
+            for (const key in snapshot.controller) {
+                this.controller[key] = snapshot.controller[key];
+            }
         }
+        else {
+            console.log(`%c<< LOADED SNAPSHOT (FAILED)`, 'color:#c229; font-weight:bold');
+        }
+    }
+
+    clear_snapshot() {
+        this.snapshot = null;
     }
 }

@@ -41,7 +41,7 @@ class Model {
     }
 
     update() {
-        for (const element of this.elements().sorted((a,b) => b.update_priority-a.update_priority)) {
+        for (const element of this.elements().sorted((a,b) => b.update_priority_-a.update_priority_)) {
             element.update();
         }
 
@@ -92,16 +92,18 @@ class Model {
         }
     }
 
-    element_at(pos) {
+    element_at(pos, filter=null) {
         let nearest_element = null;
         let min_dist = Infinity;
 
         for (const element of this.elements()) {
-            const dist = element.distance(pos);
+            if (!filter || filter(element)) {
+                const dist = element.distance(pos);
 
-            if (dist < min_dist) {
-                min_dist = dist;
-                nearest_element = element;
+                if (dist < min_dist) {
+                    min_dist = dist;
+                    nearest_element = element;
+                }
             }
         }
 
@@ -122,11 +124,13 @@ class Model {
     }
 
     move_elements(elements, vec, total_vec) {
-        const snap_size = Math.max(...elements.map(element => element.snap_size));
+        const snap_size = Math.max(...elements.map(element => element.snap_size_));
 
         for (const element of elements) {
             element.move(vec, total_vec, snap_size);
         }
+
+        return snap_size;
     }
 
     invert_selected_connection_nodes() {
@@ -295,45 +299,41 @@ class Model {
         segment_b.neighbor_segments.push(segment_a);
     }
 
-    connect_new_wire_to(new_wire_segments, start_node, element) {
-        if (
-            this.nodes_connectable(start_node, element)
-            && !this.nodes_connected(start_node, element)
-        ) {
-            const end_node = element;
-            this.connect_nodes(start_node, end_node);
+    connect_new_wire(new_wire_segments, start_node, end_element) {
+        if (this.nodes_connectable(start_node, end_element)) {
+            this.connect_nodes(start_node, end_element);
 
-            const output_node = start_node instanceof OutputNode ? start_node : end_node;
+            const output_node = start_node instanceof OutputNode ? start_node : end_element;
 
             output_node.wire_segments = new_wire_segments.copy();
-            new_wire_segments.last().connected_pos = end_node.anchor_pos_;
+            new_wire_segments.last().connected_pos = end_element.anchor_pos_;
 
             this.set_parent(new_wire_segments, output_node);
 
             return true;
         }
-        else if (element instanceof WireSegment) {
+        else if (end_element instanceof WireSegment) {
             new_wire_segments.last().connected_pos = null;
 
-            if (new_wire_segments.last().is_vertical == element.is_vertical) {
+            if (new_wire_segments.last().is_vertical == end_element.is_vertical) {
                 this.remove_wire_segment(new_wire_segments);
             }
 
-            element.parent.wire_segments.push(...new_wire_segments);
+            end_element.parent.wire_segments.push(...new_wire_segments);
 
-            this.set_parent(new_wire_segments, element.parent);
+            this.set_parent(new_wire_segments, end_element.parent);
 
-            this.connect_wire_segments(new_wire_segments.last(), element);
+            this.connect_wire_segments(new_wire_segments.last(), end_element);
 
-            this.connect_nodes(element.parent, start_node);
+            this.connect_nodes(end_element.parent, start_node);
 
             if (start_node instanceof OutputNode) {
-                const start_segment = element.parent.wire_segments.find(
-                    segment => segment.connected_pos == element.parent.anchor_pos_
+                const start_segment = end_element.parent.wire_segments.find(
+                    segment => segment.connected_pos == end_element.parent.anchor_pos_
                 );
                 this.remove_wire_branch(start_segment);
 
-                this.set_parent(start_node, element.parent);
+                this.set_parent([start_node], end_element.parent);
 
                 start_node.next_nodes = [];
             }
@@ -360,12 +360,9 @@ class Model {
     nodes_connectable(start_node, end_node) {
         return start_node instanceof ConnectionNode
             && end_node instanceof ConnectionNode
-            && (start_node instanceof OutputNode) != (end_node instanceof OutputNode);
-    }
-    nodes_connected(start_node, end_node) {
-        return this.nodes_connectable(start_node, end_node)
-            && (start_node.next_nodes && start_node.next_nodes.includes(end_node)
-            || end_node.next_nodes && end_node.next_nodes.includes(start_node));
+            && (start_node instanceof OutputNode) != (end_node instanceof OutputNode)
+            // && !(start_node.next_nodes && start_node.next_nodes.includes(end_node)
+            // || end_node.next_nodes && end_node.next_nodes.includes(start_node));
     }
     connect_nodes(start_node, end_node) {
         if (!this.nodes_connectable(start_node, end_node)) {

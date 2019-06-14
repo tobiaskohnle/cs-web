@@ -13,22 +13,13 @@ function update() {
 
     current_tab.model.update();
 
-    if (assert) console.assert(
-        current_tab.model.main_gate.inner_elements.find(g => g instanceof AndGate).outputs[0].anim_pos_.y ==
-        current_tab.model.main_gate.inner_elements.find(g => g instanceof AndGate).outputs[0].wire_segments[0].anim_offset_
-    )
-
-    // if (assert) console.assert(
-    //     current_tab.model.main_gate.inner_elements.find(g => g instanceof OrGate).anim_pos_.y+1 ==
-    //     current_tab.model.main_gate.inner_elements.find(g => g instanceof OrGate).inputs[0].anim_pos_.y
-    // )
+    current_tab.sidebar.update();
+    current_tab.sidebar.draw();
 
     draw();
 }
 
 function draw() {
-    context.save();
-
     clear_screen();
 
     switch (config.grid_style) {
@@ -40,22 +31,18 @@ function draw() {
             break;
     }
 
+    context.save();
     current_tab.camera.transform_canvas();
 
     for (const gate of current_tab.model.main_gate.inner_elements) {
         gate.draw();
     }
 
-    if (current_tab.controller.current_action == Enum.action.create_wire) {
+    if (current_tab.controller.current_action == Enum.action.create_wire_segment ||
+        current_tab.controller.current_action == Enum.action.create_wire
+    ) {
         console.assert(current_tab.controller.wire_start_node);
 
-        // draw_wire(
-        //     Vec.add(current_tab.controller.wire_start_node.pos, new Vec(current_tab.controller.wire_start_node.dir.x,0)),
-        //     current_tab.controller.mouse_world_pos,
-        // );
-    }
-
-    if (current_tab.controller.current_action == Enum.action.create_wire_segment) {
         for (const segment of current_tab.controller.new_wire_segments) {
             segment.draw();
         }

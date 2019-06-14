@@ -99,8 +99,8 @@ class Label extends Element {
         this.caret_color_ = Color.from(config.colors.label_caret, {a:alpha}).to_string();
     }
 
-    move(vec, total_vec, snap_size) {
-        super.snap_pos(this.last_pos_, total_vec, snap_size);
+    move(vec, total_vec, snap_size_) {
+        super.snap_pos(this.last_pos_, total_vec, snap_size_);
     }
 
     next_vertical_align() {

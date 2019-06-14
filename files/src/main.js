@@ -3,16 +3,21 @@
 let canvas;
 let context;
 
+let sidebar_canvas;
+let sidebar_context;
+
 let current_tab;
 
 const Enum = {
     action: {
         none:                 Symbol('action_none'),
+        start_wire:           Symbol('action_start_wire'),
         create_wire:          Symbol('action_create_wire'),
         create_wire_segment:  Symbol('action_create_wire_segment'),
         create_selection_box: Symbol('action_create_selection_box'),
         move_elements:        Symbol('action_move_elements'),
         edit_elements:        Symbol('action_edit_elements'),
+        import_element:       Symbol('action_import_element'),
     },
     grid_style: {
         none:  Symbol('grid_style_none'),
@@ -79,14 +84,14 @@ const theme = {
 
 const config = {
     scale_factor: 1.14,
-    color_anim_factor: .22,
+    color_anim_factor: .57,
     camera_anim_factor: .42,
     camera_motion_anim_factor: .06,
     camera_motion_falloff_factor: .91,
 
     label_anim_factor: .425,
     label_caret_width: .07,
-    label_caret_smoothness: 3.1, // Infinity: instant
+    label_caret_smoothness: 3.1,
     label_caret_blink_rate: 1000,
 
     use_system_clipboard: false,
@@ -99,6 +104,8 @@ const config = {
 
     colors: null,
     grid_style: Enum.grid_style.dots,
+
+    next_id: Date.now(),
 };
 
 function select_theme(colors) {
@@ -106,14 +113,18 @@ function select_theme(colors) {
 
     const background_color = config.colors.background.to_string();
 
-    canvas.style.background = background_color;
-    document.querySelector('.tabs').style.background = background_color;
-    document.querySelector('.sidebar').style.background = background_color;
+
+    document.documentElement.style.background = background_color;
+    document.querySelector('.menubar').style.background = '#eee';
 }
 
 onload = function() {
-    canvas = document.querySelector('canvas');
+    canvas = document.querySelector('.canvas');
     context = canvas.getContext('2d');
+
+    sidebar_canvas = document.querySelector('.sidebar');
+    sidebar_context = sidebar_canvas.getContext('2d');
+
     onresize();
 
     select_theme(theme.dark);
@@ -123,13 +134,23 @@ onload = function() {
     add_menu_event_listeners();
 
     requestAnimationFrame(update);
+
+    // TEMP
+    const RESTORE_STATE = localStorage.getItem('CS-RESTORE-ON-STARTUP');
+
+    if (RESTORE_STATE) {
+        localStorage.removeItem('CS-RESTORE-ON-STARTUP');
+        current_tab.model.main_gate = extended_parse(RESTORE_STATE);
+    }
+    // /TEMP
 }
 
 onresize = function() {
-    canvas.width = canvas.clientWidth;
+    canvas.width  = canvas.clientWidth;
     canvas.height = canvas.clientHeight;
 
-    context.imageSmoothingEnabled = false;
+    sidebar_canvas.width  = sidebar_canvas.clientWidth;
+    sidebar_canvas.height = sidebar_canvas.clientHeight;
 }
 
 onkeydown = function(event) {
@@ -141,17 +162,38 @@ onkeydown = function(event) {
 onmousedown = function(event) {
     menu_click(event.path || event.composedPath());
 
-    if (event.target == canvas) {
-        current_tab.controller.mouse_down(event);
+    switch (current_tab.controller.element_mouse_captured || event.target) {
+        case canvas:
+            current_tab.controller.mouse_down(event);
+            break;
+        case sidebar_canvas:
+            current_tab.controller.sidebar_mouse_down(event);
+            break;
     }
 }
 
 onmousemove = function(event) {
-    current_tab.controller.mouse_move(event);
+    switch (current_tab.controller.element_mouse_captured || event.target) {
+        case canvas:
+            current_tab.controller.mouse_move(event);
+            break;
+        case sidebar_canvas:
+            current_tab.controller.sidebar_mouse_move(event);
+            break;
+    }
 }
 
 onmouseup = function(event) {
-    current_tab.controller.mouse_up(event);
+    switch (current_tab.controller.element_mouse_captured || event.target) {
+        case canvas:
+            current_tab.controller.mouse_up(event);
+            break;
+        case sidebar_canvas:
+            current_tab.controller.sidebar_mouse_up(event);
+            break;
+    }
+
+    current_tab.controller.release_mouse();
 }
 
 ondragenter = function(event) {
@@ -168,19 +210,21 @@ ondrop = function(event) {
     return false;
 }
 
-document.documentElement.addEventListener(
-    'wheel',
-    function(event) {
-        close_menu();
+onwheel = function(event) {
+    close_menu();
 
-        const scale_factor = event.deltaY < 0 ? config.scale_factor : 1/config.scale_factor;
-        current_tab.camera.scale_at(current_tab.controller.mouse_pos, scale_factor);
+    switch (event.target) {
+        case canvas:
+            current_tab.controller.mouse_wheel(event);
+            break;
+        case sidebar_canvas:
+            current_tab.controller.sidebar_mouse_wheel(event);
+            break;
+    }
 
-        event.preventDefault();
-        return false;
-    },
-    {passive: false},
-);
+    // event.preventDefault();
+    // return false;
+}
 
 oncontextmenu = function(event) {
     if (!current_tab.controller.mouse_moved()) {

@@ -20,8 +20,18 @@ class Controller {
         this.wire_start_node = null;
         this.new_wire_segments = [];
 
+        this.element_mouse_captured = null;
+
         this.undo_stack = [];
         this.redo_stack = [];
+    }
+
+    capture_mouse(element) {
+        this.element_mouse_captured = element;
+    }
+
+    release_mouse() {
+        this.element_mouse_captured = null;
     }
 
     run_command(name) {
@@ -67,13 +77,16 @@ class Controller {
         this.mouse_down_pos = new Vec(event.x-canvas.offsetLeft, event.y-canvas.offsetTop);
         this.mouse_down_world_pos = current_tab.camera.to_worldspace(this.mouse_down_pos);
 
+        if (event.button & -2) {
+            this.capture_mouse(canvas);
+        }
         if (event.button != 0) {
             return;
         }
 
         this.is_mouse_down = true;
 
-        this.element_moved = false;
+        this.elements_moved = false;
 
         if ((event.detail-1) & 1) {
             if (this.hovered_element instanceof ConnectionNode) {
@@ -89,67 +102,52 @@ class Controller {
 
         this.clicked_selected_element = this.hovered_element && this.hovered_element.is_selected();
 
-        switch (this.current_action) {
-            case Enum.action.create_wire_segment:
-                if (this.model.connect_new_wire_to(
-                    this.new_wire_segments,
-                    this.wire_start_node,
-                    this.hovered_element,
-                ))
-                {
-                    this.current_action = Enum.action.none;
-                    this.new_wire_segments = [];
-                    break;
+        if (!event.shiftKey && !event.ctrlKey && (!this.hovered_element || !this.hovered_element.is_selected())) {
+            this.model.deselect_all();
+        }
+
+        if (this.hovered_element) {
+            if (this.is_selected(this.hovered_element.is_selected(), event.shiftKey, event.ctrlKey)) {
+                this.model.select(this.hovered_element);
+            }
+            else {
+                this.model.deselect(this.hovered_element);
+            }
+
+            if (this.hovered_element instanceof ConnectionNode) {
+                if (this.current_action != Enum.action.edit_elements) {
+                    this.current_action = Enum.action.start_wire;
+                    this.capture_mouse(canvas);
+                    this.wire_start_node = this.hovered_element;
+
+                    this.saved_state_create_wire = this.get_state();
                 }
+            }
+            else {
+                this.saved_state_move_elements = this.get_state();
 
-                this.new_wire_segments.last().connected_pos = null;
-                const segment = this.model.add_wire_segment(this.new_wire_segments);
-                this.new_wire_segments.last().connected_pos = this.mouse_world_pos;
+                this.current_action = Enum.action.move_elements;
+                this.capture_mouse(canvas);
 
-                segment.update();
-                segment.cancel_animation();
-                break;
+                const selected_elements = this.model.selected_elements_array();
 
-            default:
-                if (!event.shiftKey && !event.ctrlKey && (!this.hovered_element || !this.hovered_element.is_selected())) {
-                    this.model.deselect_all();
-                }
-
-                if (this.hovered_element) {
-                    if (this.is_selected(this.hovered_element.is_selected(), event.shiftKey, event.ctrlKey)) {
-                        this.model.select(this.hovered_element);
-                    }
-                    else {
-                        this.model.deselect(this.hovered_element);
-                    }
-
-                    this.current_action = Enum.action.move_elements;
-
-                    const selected_elements = this.model.selected_elements_array();
-
-                    if (selected_elements.every(element => element instanceof ConnectionNode)) {
-                        this.moving_elements = selected_elements;
-                    }
-                    else {
-                        this.moving_elements = selected_elements.filter(element => element instanceof ConnectionNode == false);
-                    }
-
-                    for (const element of this.moving_elements) {
-                        if (element.grab) element.grab();
-                    }
+                if (selected_elements.every(element => element instanceof ConnectionNode)) {
+                    this.moving_elements = selected_elements;
                 }
                 else {
-                    // if (this.hovered_element instanceof ConnectionNode) {
-                    //     this.current_action = Enum.action.create_wire;
-                    //     this.wire_start_node = this.hovered_element;
-                    //     // current_tab.create_snapshot();
-                    // }
-
-                    this.current_action = Enum.action.create_selection_box;
-
-                    this.saved_selected_elements = this.model.selected_elements_array();
+                    this.moving_elements = selected_elements.filter(element => element instanceof ConnectionNode == false);
                 }
-                break;
+
+                for (const element of this.moving_elements) {
+                    if (element.grab) element.grab();
+                }
+            }
+        }
+        else {
+            this.current_action = Enum.action.create_selection_box;
+            this.capture_mouse(canvas);
+
+            this.saved_selected_elements = this.model.selected_elements_array();
         }
     }
 
@@ -165,53 +163,77 @@ class Controller {
         this.mouse_pos = new Vec(event.x-canvas.offsetLeft, event.y-canvas.offsetTop);
         this.mouse_world_pos.set(current_tab.camera.to_worldspace(this.mouse_pos));
 
-        const vec = !Vec.sub(this.mouse_world_pos, this.mouse_down_world_pos).round().equals(new Vec);
-        this.element_moved = this.element_moved || vec;
-
         const world_move_vec = Vec.div(move_vec, current_tab.camera.anim_scale_);
 
         this.mouse_movement.add(move_vec);
         this.mouse_world_movement.add(world_move_vec);
 
-        this.hovered_element = this.model.element_at(this.mouse_world_pos);
+        let filter;
+
+        if (this.current_action == Enum.action.create_wire || this.current_action == Enum.action.create_wire_segment) {
+            filter = element => current_tab.model.nodes_connectable(current_tab.controller.wire_start_node, element)
+                || element instanceof WireSegment && !current_tab.controller.new_wire_segments.includes(element);
+        }
+
+        const hovered_element = this.model.element_at(this.mouse_world_pos, filter);
+        const other_hovered_element = this.hovered_element != hovered_element;
+
+        if (other_hovered_element) {
+            this.hovered_element = hovered_element;
+            console.log(`%cnew hovered element: %c${hovered_element && hovered_element.constructor.name}`,
+                'color:#f90',
+                hovered_element ? 'color:#fd4' : 'color:#777',
+            );
+        }
 
         switch (this.current_action) {
             case Enum.action.none:
                 this.current_hovered_element = this.hovered_element;
                 break;
 
-            case Enum.action.create_wire:
-                if (
-                    this.model.nodes_connectable(this.wire_start_node, this.hovered_element)
-                    && !this.model.nodes_connected(this.wire_start_node, this.hovered_element)
-                ) {
-                    // current_tab.load_snapshot();
-                    // this.model.connect_nodes(this.wire_start_node, this.hovered_element);
-                    this.wire_end_node = this.hovered_element;
-                }
-                else {
-                    this.wire_end_node = null;
+            case Enum.action.start_wire:
+                if (this.mouse_moved()) {
+                    this.current_action = Enum.action.create_wire;
+                    this.capture_mouse(canvas);
+
+                    this.new_wire_segments = [];
+
+                    const segment_a = this.model.add_wire_segment(this.new_wire_segments);
+                    segment_a.is_vertical = this.wire_start_node.is_vertical();
+                    const segment_b = this.model.add_wire_segment(this.new_wire_segments);
+                    segment_b.auto_offset_ = true;
+                    const segment_c = this.model.add_wire_segment(this.new_wire_segments);
+
+                    segment_a.connected_pos = this.wire_start_node.anchor_pos_;
+                    segment_c.connected_pos = this.mouse_world_pos;
+
+                    segment_a.cancel_animation();
+                    segment_b.cancel_animation();
+                    segment_c.cancel_animation();
+
+                    current_tab.create_snapshot();
                 }
                 break;
 
+            case Enum.action.create_wire:
             case Enum.action.create_wire_segment:
-                if (
-                    this.model.nodes_connectable(this.wire_start_node, this.hovered_element)
-                    && !this.model.nodes_connected(this.wire_start_node, this.hovered_element)
-                ) {
-                    // current_tab.load_snapshot();
-                    // this.model.connect_nodes(this.wire_start_node, this.hovered_element);
-                    this.wire_end_node = this.hovered_element;
-                }
-                else {
-                    this.wire_end_node = null;
-                }
+                this.current_hovered_element = this.hovered_element;
 
-                if (this.wire_end_node) {
-                    this.new_wire_segments.last().connected_pos = this.wire_end_node.pos//anchor_pos_;
-                }
-                else {
-                    this.new_wire_segments.last().connected_pos = this.mouse_world_pos;
+                if (other_hovered_element) {
+                    const prev_hovered_element = this.hovered_element;
+
+                    current_tab.load_snapshot();
+
+                    this.hovered_element = prev_hovered_element &&
+                        this.model.elements().find(element => element.id_ == prev_hovered_element.id_);
+
+                    this.action_successful_create_wire = this.model.connect_new_wire(
+                        this.new_wire_segments, this.wire_start_node, this.hovered_element,
+                    );
+
+                    for (const segment of this.new_wire_segments) {
+                        segment.cancel_animation();
+                    }
                 }
                 break;
 
@@ -242,7 +264,22 @@ class Controller {
                 break;
 
             case Enum.action.move_elements:
-                this.model.move_elements(this.moving_elements, world_move_vec, this.mouse_world_movement);
+                const snap_size = this.model.move_elements(this.moving_elements, world_move_vec, this.mouse_world_movement);
+                const elements_moved = !Vec.sub(this.mouse_world_pos, this.mouse_down_world_pos).round(snap_size).equals(new Vec);
+                this.elements_moved = this.elements_moved || elements_moved;
+                break;
+
+            case Enum.action.import_element:
+                console.assert(this.imported_element);
+
+                if (!this.model.elements().includes(this.imported_element)) {
+                    this.save_state('import element');
+                    this.model.add(this.imported_element);
+                }
+
+                const element_pos = Vec.sub(this.mouse_world_pos, Vec.div(this.imported_element.size, 2));
+                this.imported_element.pos.set(Vec.round(element_pos, this.imported_element.snap_size_));
+
                 break;
         }
     }
@@ -254,14 +291,13 @@ class Controller {
 
         this.is_mouse_down = false;
 
-
         for (const element of this.moving_elements) {
             if (element.release) {
                 element.release();
             }
         }
 
-        if (this.element_moved == false) {
+        if (this.elements_moved == false) {
             if (this.hovered_element instanceof InputSwitch) {
                 this.hovered_element.toggle();
                 this.model.queue_tick(this.hovered_element.outputs[0]);
@@ -274,16 +310,27 @@ class Controller {
         }
 
         switch (this.current_action) {
-            case Enum.action.none:
+            case Enum.action.edit_elements:
+                if (!this.hovered_element) {
+                    this.current_action = Enum.action.none;
+                }
                 break;
 
             case Enum.action.create_wire:
-                if (this.wire_end_node) {
+            case Enum.action.create_wire_segment:
+                if (this.action_successful_create_wire) {
                     this.current_action = Enum.action.none;
-                    this.model.connect_nodes(this.wire_start_node, this.wire_end_node);
+
+                    for (const segment of this.new_wire_segments) {
+                        segment.auto_offset_ = false;
+                    }
+                    this.new_wire_segments = [];
+
+                    this.save_state('create wire', this.saved_state_create_wire);
                 }
-                else {
+                else if (this.current_action == Enum.action.create_wire) {
                     this.current_action = Enum.action.create_wire_segment;
+                    this.capture_mouse(canvas);
 
                     this.new_wire_segments = [];
 
@@ -295,21 +342,27 @@ class Controller {
                     segment_a.connected_pos = this.wire_start_node.anchor_pos_;
                     segment_b.connected_pos = this.mouse_world_pos;
 
-                    segment_a.update();
-                    segment_b.update();
-
                     segment_a.cancel_animation();
                     segment_b.cancel_animation();
+
+                    current_tab.create_snapshot();
+                }
+                else {
+                    this.new_wire_segments.last().connected_pos = null;
+
+                    const segment = this.model.add_wire_segment(this.new_wire_segments);
+                    segment.connected_pos = this.mouse_world_pos;
+                    segment.cancel_animation();
+
+                    current_tab.create_snapshot();
                 }
                 break;
 
-            case Enum.action.create_wire_segment:
-                break;
-
-            case Enum.action.edit_elements:
-                if (!this.hovered_element) {
-                    this.current_action = Enum.action.none;
+            case Enum.action.move_elements:
+                if (this.elements_moved) {
+                    this.save_state('moved elements', this.saved_state_move_elements);
                 }
+                this.current_action = Enum.action.none;
                 break;
 
             default:
@@ -321,11 +374,35 @@ class Controller {
         this.mouse_world_movement = new Vec;
     }
 
-    save_state(msg) {
-        console.log('SAVE STATE:', msg);
-        this.undo_stack.push(deep_copy(this.model.main_gate));
+    mouse_wheel(event) {
+        const scale_factor = event.deltaY < 0 ? config.scale_factor : 1/config.scale_factor;
+        current_tab.camera.scale_at(this.mouse_pos, scale_factor);
+    }
+
+    sidebar_mouse_down(event) {
+        current_tab.sidebar.mouse_down(event);
+    }
+
+    sidebar_mouse_move(event) {
+        current_tab.sidebar.mouse_move(event);
+    }
+
+    sidebar_mouse_up(event) {
+    }
+
+    sidebar_mouse_wheel(event) {
+        current_tab.sidebar.scroll_by(event.deltaY);
+    }
+
+    get_state() {
+        return deep_copy(this.model.main_gate);
+    }
+    save_state(message, state=this.get_state()) {
+        console.log(`%cSAVE STATE: ${message}`, 'color:#4c4');
+        this.undo_stack.push(state);
         this.redo_stack = [];
     }
+
     undo() {
         if (this.undo_stack.length) {
             this.redo_stack.push(deep_copy(this.model.main_gate));

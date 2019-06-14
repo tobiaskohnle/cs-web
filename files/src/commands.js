@@ -41,39 +41,10 @@ class KeyCombination {
 
 const commands = [
     {
-        name: 'TEMP-CREATE-WIRE',
-        shortcuts: [new KeyCombination(67, 'c', KeyCombination.Modifier_None)],
-        command: function() {
-            const start_node = current_tab.controller.hovered_element || E;
-
-            if (start_node instanceof ConnectionNode) {
-                current_tab.controller.wire_start_node = start_node;
-
-                current_tab.controller.current_action = Enum.action.create_wire_segment;
-
-                current_tab.controller.new_wire_segments = [];
-
-                const segment_a = current_tab.model.add_wire_segment(current_tab.controller.new_wire_segments);
-                segment_a.is_vertical = current_tab.controller.wire_start_node.is_vertical();
-
-                const segment_b = current_tab.model.add_wire_segment(current_tab.controller.new_wire_segments);
-
-                segment_a.connected_pos = current_tab.controller.wire_start_node.anchor_pos_;
-                segment_b.connected_pos = current_tab.controller.mouse_world_pos;
-
-                segment_a.update();
-                segment_b.update();
-
-                segment_a.cancel_animation();
-                segment_b.cancel_animation();
-            }
-        }
-    },
-
-    {
         name: 'add-and-gate',
         shortcuts: [],
         command: function() {
+            current_tab.controller.save_state('(command) add-and-gate');
             current_tab.controller.init_element(new AndGate);
         },
     },
@@ -81,6 +52,7 @@ const commands = [
         name: 'add-input-node',
         shortcuts: [new KeyCombination(187, '+', KeyCombination.Modifier_Shift)],
         command: function() {
+            current_tab.controller.save_state('(command) add-input-node');
             current_tab.model.add_input_node_to_selected_gates();
         },
     },
@@ -88,6 +60,7 @@ const commands = [
         name: 'add-input-switch',
         shortcuts: [],
         command: function() {
+            current_tab.controller.save_state('(command) add-input-switch');
             current_tab.controller.init_element(new InputSwitch);
         },
     },
@@ -95,6 +68,7 @@ const commands = [
         name: 'add-not-gate',
         shortcuts: [],
         command: function() {
+            current_tab.controller.save_state('(command) add-not-gate');
             let nop_gate = new NopGate;
             current_tab.controller.init_element(nop_gate);
 
@@ -105,6 +79,7 @@ const commands = [
         name: 'add-or-gate',
         shortcuts: [],
         command: function() {
+            current_tab.controller.save_state('(command) add-or-gate');
             current_tab.controller.init_element(new OrGate);
         },
     },
@@ -112,6 +87,7 @@ const commands = [
         name: 'add-output-light',
         shortcuts: [],
         command: function() {
+            current_tab.controller.save_state('(command) add-output-light');
             current_tab.controller.init_element(new OutputLight);
         },
     },
@@ -119,6 +95,7 @@ const commands = [
         name: 'add-segment-display',
         shortcuts: [],
         command: function() {
+            current_tab.controller.save_state('(command) add-segment-display');
             current_tab.controller.init_element(new SegmentDisplay);
         },
     },
@@ -126,6 +103,7 @@ const commands = [
         name: 'add-text-label',
         shortcuts: [],
         command: function() {
+            current_tab.controller.save_state('(command) add-text-label');
             current_tab.controller.init_element(new Label);
         },
     },
@@ -152,6 +130,7 @@ const commands = [
         name: 'cut',
         shortcuts: [new KeyCombination(88, 'x', KeyCombination.Modifier_Ctrl)],
         command: function() {
+            current_tab.controller.save_state('(command) cut');
             current_tab.controller.copy();
             current_tab.model.delete_selected_elements();
         },
@@ -160,6 +139,7 @@ const commands = [
         name: 'delete',
         shortcuts: [new KeyCombination(46, 'delete', KeyCombination.Modifier_None)],
         command: function() {
+            current_tab.controller.save_state('(command) delete');
             current_tab.model.delete_selected_elements();
         },
     },
@@ -211,6 +191,7 @@ const commands = [
         name: 'import',
         shortcuts: [new KeyCombination(73, 'i', KeyCombination.Modifier_Ctrl)],
         command: function() {
+            current_tab.controller.save_state('(command) import');
             current_tab.controller.read_files(function(result) {
                 current_tab.controller.create_custom_gate(extended_parse(result));
                 current_tab.model.tick_all();
@@ -230,6 +211,7 @@ const commands = [
         name: 'invert',
         shortcuts: [new KeyCombination(73, 'i', KeyCombination.Modifier_Shift|KeyCombination.Modifier_Ctrl)],
         command: function() {
+            current_tab.controller.save_state('(command) invert');
             current_tab.model.invert_selected_connection_nodes();
         },
     },
@@ -237,6 +219,7 @@ const commands = [
         name: 'new',
         shortcuts: [new KeyCombination(78, 'n', KeyCombination.Modifier_Shift|KeyCombination.Modifier_Ctrl)],
         command: function() {
+            current_tab.controller.save_state('(command) new');
             current_tab.reset();
             current_tab.camera.reset();
         },
@@ -261,6 +244,7 @@ const commands = [
         name: 'paste',
         shortcuts: [new KeyCombination(86, 'v', KeyCombination.Modifier_Ctrl)],
         command: function() {
+            current_tab.controller.save_state('(command) paste');
             current_tab.controller.paste();
         },
     },
@@ -294,10 +278,8 @@ const commands = [
         name: 'TEMP-RELOAD',
         shortcuts: [new KeyCombination(82, 'r', KeyCombination.Modifier_None)],
         command: function() {
-            console.log('RELOAD');
-            const file_string = current_tab.controller.file_string();
-            current_tab.reset();
-            current_tab.model.main_gate = extended_parse(file_string);
+            localStorage.setItem('CS-RESTORE-ON-STARTUP', current_tab.controller.file_string());
+            location.reload();
         },
     },
     {
@@ -342,6 +324,7 @@ const commands = [
         name: 'next-vertical-align',
         shortcuts: [],
         command: function() {
+            current_tab.controller.save_state('(command) next-vertical-align');
             for (const element of current_tab.model.selected_elements_) {
                 if (element instanceof Label) {
                     element.next_vertical_align();
@@ -353,6 +336,7 @@ const commands = [
         name: 'next-horizontal-align',
         shortcuts: [],
         command: function() {
+            current_tab.controller.save_state('(command) next-horizontal-align');
             for (const element of current_tab.model.selected_elements_) {
                 if (element instanceof Label) {
                     element.next_horizontal_align();
@@ -383,6 +367,7 @@ const commands = [
         name: 'split-segment',
         shortcuts: [new KeyCombination(65, 'g', KeyCombination.Modifier_Ctrl)],
         command: function() {
+            current_tab.controller.save_state('(command) split-segment');
             current_tab.model.split_selected_segments();
         },
     },

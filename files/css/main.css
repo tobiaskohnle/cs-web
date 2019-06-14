@@ -20,16 +20,15 @@ body {
     height: 100vh;
 
     display: grid;
-    /*grid-template-columns: 200px auto;*/
-    grid-template-columns: 0px auto;
+    grid-template-columns: 250px auto;
     grid-template-rows: 23px 40px auto;
-    grid-template-areas: 'menu-bar menu-bar' 'tabs tabs' 'sidebar canvas';
+    grid-template-areas: 'menubar menubar' 'toolbar toolbar' 'sidebar canvas';
 }
 
-.menu-bar {
+.menubar {
     width: 100%;
     height: 100%;
-    grid-area: menu-bar;
+    grid-area: menubar;
 
     display: flex;
     flex-direction: row;
@@ -37,10 +36,10 @@ body {
     padding: 2px;
 }
 
-.tabs {
+.toolbar {
     width: 100%;
     height: 100%;
-    grid-area: tabs;
+    grid-area: toolbar;
 
     box-shadow: 0 0 7px 1px #0003;
 }
@@ -48,15 +47,17 @@ body {
 .sidebar {
     width: 100%;
     height: 100%;
+    image-rendering: pixelated;
+
     grid-area: sidebar;
 
     box-shadow: 0 0 4px 1px #0002;
 }
 
-canvas {
+.canvas {
     width: 100%;
     height: 100%;
-    grid-area: canvas;
-
     image-rendering: pixelated;
+
+    grid-area: canvas;
 }
