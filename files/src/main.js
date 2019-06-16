@@ -46,7 +46,7 @@ const theme = {
         light_active:       new Color(0,.8,1,4/16)          , // #f334
         wire_inactive:      new Color(0,0,0)                , // #000
         wire_active:        new Color(0,.8,1)               , // #f33
-        segment_inactive:   new Color(0,.8,1)               , // #f334
+        segment_inactive:   new Color(0,.8,1,4/16)          , // #f334
         segment_active:     new Color(0,.8,1)               , // #f33
         outline:            new Color(200/360,0,0)          , // #000
         edit_outline:       new Color(353/360, .8, .9, .9)  ,
@@ -62,6 +62,7 @@ const theme = {
         label_outline:      new Color(220/360, .2, .4, .7)  ,
         label_caret:        new Color(212/360, 1, 1)        , // #07f
         label_selection:    new Color(204/360, 1, 1, 4/16)  , // #09f4
+        wire_joint:         new Color(0, 0, .2)             , // #222
     },
     dark: {
         background:         new Color(240/360,.22,.03)      , // #070709
@@ -86,6 +87,7 @@ const theme = {
         label_outline:      new Color(220/360, .2, .4, .7)  ,
         label_caret:        new Color(212/360, 1, 1)        , // #07f
         label_selection:    new Color(204/360, 1, 1, 4/16)  , // #09f4
+        wire_joint:         new Color(60/360, .86, 1)       , // #ff2
     },
 };
 
@@ -114,7 +116,7 @@ const config = {
 
     // TEMP
     DEBUG_LOG: false,
-    DEBUG_DRAW_CONNECTIONS: true,
+    DEBUG_DRAW_CONNECTIONS: false,
     // /TEMP
 
     next_id: 0,

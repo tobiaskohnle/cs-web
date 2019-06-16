@@ -46,6 +46,10 @@ class ConnectionNode extends Element {
         this.color_dot_.update();
     }
 
+    update_last_pos() {
+        this.last_pos_ = Vec.copy(this.pos);
+    }
+
     move(total_vec, snap_size_) {
         (this.grab_pos_||this.pos).set(this.last_pos_).add(total_vec);
 

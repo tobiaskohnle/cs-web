@@ -175,7 +175,7 @@ class Controller {
                         }
                     }
                 }
-                else if (this.hovered_element instanceof Gate) {
+                if (this.hovered_element instanceof Gate || this.hovered_element instanceof Label) {
                     this.current_action = Enum.action.edit_elements_resize;
                 }
 
@@ -337,8 +337,30 @@ class Controller {
                     }
                 }
 
-                if (this.hovered_element instanceof Gate) {
-                    this.resize = this.hovered_element.get_resize(this.mouse_world_pos);
+                if (this.hovered_element instanceof Gate || this.hovered_element instanceof Label) {
+                    this.resize = {
+                        north: Math.abs(this.mouse_world_pos.y - this.hovered_element.pos.y                              ) < .5,
+                        south: Math.abs(this.mouse_world_pos.y - this.hovered_element.pos.y - this.hovered_element.size.y) < .5,
+                        east:  Math.abs(this.mouse_world_pos.x - this.hovered_element.pos.x - this.hovered_element.size.x) < .5,
+                        west:  Math.abs(this.mouse_world_pos.x - this.hovered_element.pos.x                              ) < .5,
+                    };
+
+                    this.resize.cursor =
+                        this.resize.east && this.resize.south ? 'se-resize' :
+                        this.resize.south && this.resize.west ? 'sw-resize' :
+                        this.resize.north && this.resize.east ? 'ne-resize' :
+                        this.resize.north && this.resize.west ? 'nw-resize' :
+                        this.resize.east                      ? 'e-resize'  :
+                        this.resize.south                     ? 's-resize'  :
+                        this.resize.north                     ? 'n-resize'  :
+                        this.resize.west                      ? 'w-resize'  :
+                        '';
+
+                    this.resize.vec = new Vec(
+                        this.resize.east  ? 1 : this.resize.west  ? -1 : 0,
+                        this.resize.south ? 1 : this.resize.north ? -1 : 0,
+                    );
+
                     document.documentElement.style.cursor = this.resize.cursor;
                 }
 

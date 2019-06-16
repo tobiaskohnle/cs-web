@@ -175,7 +175,7 @@ class WireSegment extends Element {
     }
 
     draw_joints() {
-        context.fillStyle = '#ff2';
+        context.fillStyle = config.colors.wire_joint.to_string();
 
         const neighbor_elements = this.neighbor_elements().sorted((a,b) => a.anim_offset_-b.anim_offset_);
 

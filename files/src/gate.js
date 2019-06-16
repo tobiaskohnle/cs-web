@@ -97,33 +97,6 @@ class Gate extends Element {
         });
     }
 
-    get_resize(pos) {
-        const resize = {
-            north: Math.abs(pos.y - this.pos.y              ) < .5,
-            south: Math.abs(pos.y - this.pos.y - this.size.y) < .5,
-            east:  Math.abs(pos.x - this.pos.x - this.size.x) < .5,
-            west:  Math.abs(pos.x - this.pos.x              ) < .5,
-        };
-
-        resize.cursor =
-            resize.east && resize.south ? 'se-resize' :
-            resize.south && resize.west ? 'sw-resize' :
-            resize.north && resize.east ? 'ne-resize' :
-            resize.north && resize.west ? 'nw-resize' :
-            resize.east                 ? 'e-resize'  :
-            resize.south                ? 's-resize'  :
-            resize.north                ? 'n-resize'  :
-            resize.west                 ? 'w-resize'  :
-            '';
-
-        resize.vec = new Vec(
-            resize.east  ? 1 : resize.west  ? -1 : 0,
-            resize.south ? 1 : resize.north ? -1 : 0,
-        );
-
-        return resize;
-    }
-
     get_dir(pos) {
         const center = Vec.add(this.pos, Vec.div(this.size, 2));
         const delta = Vec.sub(pos, center);
@@ -411,8 +384,6 @@ class InputPulse extends Gate {
 
         this.pulse_length = config.default_rising_edge_pulse_length;
         this.pulse_ticks_ = Infinity;
-
-        this.color_fill_ = Color.from(config.colors.light_inactive);
     }
 
     mouse_down() {
@@ -441,9 +412,6 @@ class InputPulse extends Gate {
     }
 
     draw() {
-        context.fillStyle = this.color_fill_.to_string();
-        context.fillRect(...this.anim_pos_.xy, ...this.anim_size_.xy);
-
         super.draw();
 
         context.beginPath();
@@ -465,8 +433,6 @@ class Clock extends Gate {
         this.pulse_length = 6000;
         this.pulse_width = 3000;
         this.pulse_ticks_ = 0;
-
-        this.color_fill_ = Color.from(config.colors.light_inactive);
     }
 
     eval_state() {
@@ -479,9 +445,6 @@ class Clock extends Gate {
     }
 
     draw() {
-        context.fillStyle = this.color_fill_.to_string();
-        context.fillRect(...this.anim_pos_.xy, ...this.anim_size_.xy);
-
         super.draw();
 
         context.beginPath();
