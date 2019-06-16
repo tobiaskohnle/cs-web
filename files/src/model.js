@@ -11,10 +11,21 @@ class Model {
     tick() {
         const next_ticked_nodes = new Set;
 
+        for (const gate of this.main_gate.inner_elements) {
+            if (gate instanceof Clock) {
+                for (const node of gate.outputs) {
+                    next_ticked_nodes.add(node);
+                }
+            }
+        }
+
         for (const node of this.ticked_nodes_) {
             const eval_node_state = node.eval_state();
 
             if (node.is_rising_edge && node.rising_edge_ticks_active <= node.rising_edge_pulse_length) {
+                next_ticked_nodes.add(node);
+            }
+            if (node.parent instanceof InputPulse && node.parent.pulse_ticks_ <= node.parent.pulse_length) {
                 next_ticked_nodes.add(node);
             }
 
@@ -46,8 +57,12 @@ class Model {
         }
 
         // TEMP
-        for (const segment of current_tab.controller.new_wire_segments) {
-            segment.update();
+        if (current_tab.controller.current_action == Enum.action.create_wire ||
+            current_tab.controller.current_action == Enum.action.create_wire_segment
+        ) {
+            for (const segment of current_tab.controller.new_wire_segments) {
+                segment.update();
+            }
         }
         // /TEMP
     }
@@ -61,10 +76,10 @@ class Model {
     }
     // /TEMP
 
-    elements() {
+    elements(element_list=this.main_gate.inner_elements) {
         const elements = [];
 
-        for (const element of this.main_gate.inner_elements) {
+        for (const element of element_list) {
             elements.push(element);
 
             if (element instanceof Gate) {
@@ -84,8 +99,8 @@ class Model {
         this.ticked_nodes_.add(node);
     }
 
-    update_all_last_pos() {
-        for (const element of this.elements()) {
+    update_all_last_pos(elements=this.elements()) {
+        for (const element of elements) {
             if (element.update_last_pos) {
                 element.update_last_pos();
             }
@@ -113,21 +128,23 @@ class Model {
     add_input_node_to_selected_gates() {
         for (const element of this.selected_elements_) {
             if (element instanceof Gate) {
-                const node = element.add_input_node();
+                if (element.allow_new_input_nodes()) {
+                    const node = element.add_input_node();
 
-                element.set_nodes_pos();
-                node.cancel_animation();
-                node.anim_pos_.add(node.dir);
-                node.color_line_.set_anim_hsva(new Color(.5,0,0,.1));
+                    element.set_nodes_pos();
+                    node.cancel_animation();
+                    node.anim_pos_.add(node.dir);
+                    node.color_line_.set_anim_hsva(new Color(.5,0,0,.1));
+                }
             }
         }
     }
 
-    move_elements(elements, vec, total_vec) {
+    move_elements(elements, total_vec) {
         const snap_size = Math.max(...elements.map(element => element.snap_size_));
 
         for (const element of elements) {
-            element.move(vec, total_vec, snap_size);
+            element.move(total_vec, snap_size);
         }
 
         return snap_size;
@@ -142,9 +159,7 @@ class Model {
     }
 
     set_selected(element, is_selected) {
-        if (element == null) {
-            return;
-        }
+        console.assert(element);
 
         if (is_selected) {
             this.selected_elements_.add(element);
@@ -155,9 +170,7 @@ class Model {
     }
 
     select(element) {
-        if (element == null) {
-            return;
-        }
+        console.assert(element);
 
         this.selected_elements_.add(element);
     }
@@ -169,9 +182,7 @@ class Model {
     }
 
     deselect(element) {
-        if (element == null) {
-            return;
-        }
+        console.assert(element);
 
         this.selected_elements_.delete(element);
     }
@@ -181,37 +192,63 @@ class Model {
     }
 
     add(element) {
-        if (element == null) {
-            return;
+        console.assert(element);
+
+        element.assign_id();
+
+        if (element instanceof Gate) {
+            for (const node of element.nodes()) {
+                node.assign_id();
+            }
+            for (const node of element.outputs) {
+                for (const wire_segment of node.wire_segments) {
+                    wire_segment.assign_id();
+                }
+            }
+
+            this.main_gate.inner_elements.push(element);
         }
 
-        if (!(element instanceof Gate || element instanceof Label)) {
-            return;
+        if (element instanceof Label) {
+            this.main_gate.inner_elements.push(element);
         }
-
-        this.main_gate.inner_elements.push(element);
     }
 
     delete_selected_elements() {
+        const soft = this.selected_elements_array().some(
+            element => element instanceof ConnectionNode && !element.is_empty()
+        );
+
         for (const element of this.selected_elements_) {
-            this.delete(element);
+            this.delete(element, soft);
         }
 
         this.deselect_all();
     }
 
-    delete(element) {
-        if (element == null) {
-            return;
-        }
+    delete(element, soft=false) {
+        console.assert(element);
 
         if (element instanceof ConnectionNode) {
-            element.clear();
+            if (soft) {
+                this.clear_node(element);
+            }
+            else if (element.parent.allow_new_input_nodes()) {
+                element.parent.remove_input_node(element);
+            }
         }
 
         if (element instanceof Gate) {
-            element.clear_nodes();
+            for (const node of element.nodes()) {
+                this.clear_node(node);
+            }
         }
+
+        // TEMP
+        if (element instanceof WireSegment) {
+            this.remove_wire_branch(element);
+        }
+        // /TEMP
 
         this.deselect(element);
 
@@ -219,32 +256,35 @@ class Model {
     }
 
     remove_wire_branch(segment) {
-        const remove_segments_queue = [segment];
+        console.assert(segment instanceof WireSegment);
 
-        const segments_to_remove = [];
+        const remove_segments_queue = new Set([segment]);
 
-        while (remove_segments_queue.length) {
-            const segment = remove_segments_queue.pop();
+        while (remove_segments_queue.size) {
+            for (const segment of Array.from(remove_segments_queue)) {
+                remove_segments_queue.delete(segment);
+                segment.parent.wire_segments.remove(segment);
 
-            if (segment.neighbor_segments.length <= 2) {
-                if (segments_to_remove.includes(segment)) {
-                    continue;
+                if (segment.parent.anchor_pos_ == segment.connected_pos) {
+                    segment.parent.clear();
                 }
 
-                segments_to_remove.push(segment);
-
-                for (const neighbor_segment of segment.neighbor_segments) {
-                    remove_segments_queue.push(neighbor_segment);
+                const input_node = segment.parent.next_nodes.find(node => segment.connected_pos == node.anchor_pos_);
+                if (input_node) {
+                    input_node.clear();
                 }
-            }
-        }
 
-        for (const segment of segments_to_remove) {
-            segment.connected_pos = null;
-            segment.parent.wire_segments.remove(segment);
+                const neighbor_segments = segment.neighbor_segments.copy();
 
-            for (const neighbor_segment of segment.neighbor_segments) {
-                this.deconnect_wire_segments(segment, neighbor_segment);
+                for (const neighbor_segment of neighbor_segments) {
+                    this.deconnect_wire_segments(segment, neighbor_segment);
+                }
+
+                for (const neighbor_segment of neighbor_segments) {
+                    if (neighbor_segment.neighbor_elements().length == 1) {
+                        remove_segments_queue.add(neighbor_segment);
+                    }
+                }
             }
         }
     }
@@ -274,6 +314,7 @@ class Model {
 
         if (wire_segments.length) {
             segment.is_vertical = !wire_segments.last().is_vertical;
+            segment.parent = wire_segments.last().parent;
 
             this.connect_wire_segments(wire_segments.last(), segment);
         }
@@ -305,7 +346,7 @@ class Model {
 
             const output_node = start_node instanceof OutputNode ? start_node : end_element;
 
-            output_node.wire_segments = new_wire_segments.copy();
+            output_node.wire_segments.push(...new_wire_segments);
             new_wire_segments.last().connected_pos = end_element.anchor_pos_;
 
             this.set_parent(new_wire_segments, output_node);
@@ -313,6 +354,11 @@ class Model {
             return true;
         }
         else if (end_element instanceof WireSegment) {
+            // TEMP
+            if (start_node instanceof OutputNode) return false;
+            if (end_element.parent.next_nodes.includes(start_node)) return false;
+            // /TEMP
+
             new_wire_segments.last().connected_pos = null;
 
             if (new_wire_segments.last().is_vertical == end_element.is_vertical) {
@@ -350,11 +396,17 @@ class Model {
         }
     }
     split_segment(segment) {
-        if (!(segment instanceof WireSegment)) {
+        console.assert(segment instanceof WireSegment);
+
+        // todo
+    }
+
+    clear_node(node) {
+        if (node.is_empty()) {
             return;
         }
 
-        // todo
+        this.remove_wire_branch(node.attached_wire_segment());
     }
 
     nodes_connectable(start_node, end_node) {
@@ -365,14 +417,12 @@ class Model {
             // || end_node.next_nodes && end_node.next_nodes.includes(start_node));
     }
     connect_nodes(start_node, end_node) {
-        if (!this.nodes_connectable(start_node, end_node)) {
-            return;
-        }
+        console.assert(this.nodes_connectable(start_node, end_node));
 
         const input_node = start_node instanceof InputNode ? start_node : end_node;
         const output_node = start_node instanceof OutputNode ? start_node : end_node;
 
-        input_node.clear();
+        this.clear_node(input_node);
 
         output_node.next_nodes.push(input_node);
 

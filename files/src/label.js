@@ -40,19 +40,14 @@ class Label extends Element {
 
     update_last_pos() {
         this.last_pos_ = Vec.copy(this.pos);
+        this.last_size_ = Vec.copy(this.size);
     }
 
     update() {
         super.update_pos();
         super.update_size();
 
-        const color = Color.from(this.color(config.colors.label_outline));
-
-        if (this.is_selected() && C.current_action == Enum.action.edit_elements) {
-            color.set_hsva(config.colors.edit_outline);
-        }
-
-        color.from_hsva({a: config.colors.label_outline.a});
+        const color = Color.from(this.current_color(config.colors.label_outline), {a: config.colors.label_outline.a});
 
         this.anim_color_.set_hsva(color);
         this.anim_color_.update();
@@ -99,7 +94,7 @@ class Label extends Element {
         this.caret_color_ = Color.from(config.colors.label_caret, {a:alpha}).to_string();
     }
 
-    move(vec, total_vec, snap_size_) {
+    move(total_vec, snap_size_) {
         super.snap_pos(this.last_pos_, total_vec, snap_size_);
     }
 
@@ -118,12 +113,18 @@ class Label extends Element {
     }
 
     special_info() {
+        const unescape = string => {
+            return string.trim().replace(/(?:u\+|%u|\\u|\\)([0-9a-f]{4})/gi, (match, digits) => {
+                return String.fromCharCode(parseInt(digits, 16));
+            });
+        };
+
         if (/^tag\s*=/i.test(this.text)) {
-            return {tag: this.text.match(/^tag\s*=(?<tag>[\w\s]*)/i).groups.tag.trim()};
+            return {tag: unescape(this.text.match(/^tag\s*=(?<tag>.*)/i).groups.tag)};
         }
 
         if (/^name\s*=/i.test(this.text)) {
-            return {name: this.text.match(/^name\s*=(?<name>[\w\s]*)/i).groups.name.trim()};
+            return {name: unescape(this.text.match(/^name\s*=(?<name>.*)/i).groups.name)};
         }
 
         if (/^size\s*=/i.test(this.text)) {
@@ -203,10 +204,10 @@ class Label extends Element {
             context.fillText(char, this.anim_chars_offset_[x], 0);
         }
 
-        context.fillStyle = config.colors.label_selection.to_string();
-        this.draw_text_bounds(this.anim_selection_bounds_);
-
         if (document.hasFocus() && this.is_selected() && C.current_action == Enum.action.edit_elements) {
+            context.fillStyle = config.colors.label_selection.to_string();
+            this.draw_text_bounds(this.anim_selection_bounds_);
+
             context.fillStyle = this.caret_color_;
             this.draw_text_bounds(this.anim_caret_bounds_);
         }
@@ -249,16 +250,16 @@ class Label extends Element {
         this.set_caret(this.text.length, true);
     }
 
-    get_text_index(page_x) {
-        const rel_x = page_x - this.size.x/2 + this.text_width(this.text)/2;
+    get_text_index(pos) {
+        const rel_x = pos.x - this.pos.x - this.size.x/2 + this.text_width(this.text)/2;
 
         let smallest_dist = Infinity;
 
         let width = 0;
 
-        for (let x = 0; x <= text.length; x++) {
+        for (let x = 0; x <= this.text.length; x++) {
             const current_dist = Math.abs(rel_x - width);
-            width += this.get_char_width(text[x]);
+            width += this.get_char_width(this.text[x]);
 
             if (current_dist > smallest_dist) {
                 return x - 1;
@@ -277,13 +278,15 @@ class Label extends Element {
         };
     }
 
-    mouse_down(event) {
+    event_mouse_down(event) {
+        config.DEBUG_LOG && console.log('label mouse down');
+
         this.mousedown_caret_ = this.caret;
         this.mousedown_detail_ = event.detail;
 
         switch ((event.detail-1) % 3) {
             case 0:
-                set_caret(this.caret_hovered_, event.shiftKey);
+                this.set_caret(this.caret_hovered_, event.shiftKey);
                 break;
             case 1:
                 const bounds = this.get_word_bounds(this.caret_hovered_);
@@ -295,20 +298,24 @@ class Label extends Element {
                 break;
         }
     }
-    mouse_move(event) {
-        this.caret_hovered_ = this.get_text_index(event.x);
+    event_mouse_move(event) {
+        config.DEBUG_LOG && console.log('label mouse move');
 
-        switch ((this.mousedown_detail_-1) % 3) {
-            case 0:
-                this.set_caret(this.caret_hovered_, true);
-                break;
-            case 1:
-                const init_bounds = this.get_word_bounds(this.mousedown_caret_);
-                const bounds = this.get_word_bounds(this.caret_hovered_);
+        this.caret_hovered_ = this.get_text_index(current_tab.controller.mouse_world_pos);
 
-                this.selection_start = Math.min(init_bounds.lower, bounds.lower);
-                this.set_caret(Math.max(init_bounds.upper, bounds.upper), true);
-                break;
+        if (event.buttons & 1) {
+            switch ((this.mousedown_detail_-1) % 3) {
+                case 0:
+                    this.set_caret(this.caret_hovered_, true);
+                    break;
+                case 1:
+                    const init_bounds = this.get_word_bounds(this.mousedown_caret_);
+                    const bounds = this.get_word_bounds(this.caret_hovered_);
+
+                    this.selection_start = Math.min(init_bounds.lower, bounds.lower);
+                    this.set_caret(Math.max(init_bounds.upper, bounds.upper), true);
+                    break;
+            }
         }
     }
 

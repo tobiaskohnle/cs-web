@@ -17,6 +17,7 @@ const Enum = {
         create_selection_box: Symbol('action_create_selection_box'),
         move_elements:        Symbol('action_move_elements'),
         edit_elements:        Symbol('action_edit_elements'),
+        edit_elements_resize: Symbol('action_edit_elements_resize'),
         import_element:       Symbol('action_import_element'),
     },
     grid_style: {
@@ -39,22 +40,28 @@ const Enum = {
 
 const theme = {
     light: {
-        background:        new Color(0,0,0,0)              , // #0000
-        grid:              new Color(0,0,.67,7/16)         , // #aaa7
-        light_inactive:    new Color(0,0,1,4/16)           , // #fff4
-        light_active:      new Color(0,.8,1,4/16)          , // #f334
-        wire_inactive:     new Color(0,0,0)                , // #000
-        wire_active:       new Color(0,.8,1)               , // #f33
-        segment_inactive:  new Color(0,.8,1)               , // #f334
-        segment_active:    new Color(0,.8,1)               , // #f33
-        outline:           new Color(200/360,0,0)          , // #000
-        hovered:           new Color(204/360,.77,.87)      , // #39d
-        selected:          new Color(228/360,.83,.8)       , // #24c
-        hovered_selected:  new Color(220/360,.86,.93)      , // #26e
-        selection_fill:    new Color(210/360,.92,.87,3/16) , // #17d3
-        selection_outline: new Color(210/360,.8,1,10/16)   , // #39fa
-        node_init:         new Color(.5,1,1,0)             ,
-        gate_init:         new Color(.5,1,1,0)             ,
+        background:         new Color(0,0,0,0)              , // #0000
+        grid:               new Color(0,0,.67,7/16)         , // #aaa7
+        light_inactive:     new Color(0,0,1,4/16)           , // #fff4
+        light_active:       new Color(0,.8,1,4/16)          , // #f334
+        wire_inactive:      new Color(0,0,0)                , // #000
+        wire_active:        new Color(0,.8,1)               , // #f33
+        segment_inactive:   new Color(0,.8,1)               , // #f334
+        segment_active:     new Color(0,.8,1)               , // #f33
+        outline:            new Color(200/360,0,0)          , // #000
+        edit_outline:       new Color(353/360, .8, .9, .9)  ,
+        hovered:            new Color(204/360,.77,.87)      , // #39d
+        selected:           new Color(228/360,.83,.8)       , // #24c
+        hovered_selected:   new Color(220/360,.86,.93)      , // #26e
+        selection_fill:     new Color(210/360,.92,.87,3/16) , // #17d3
+        selection_outline:  new Color(210/360,.8,1,10/16)   , // #39fa
+        node_init:          new Color(.5,1,1,0)             ,
+        gate_init:          new Color(.5,1,1,0)             ,
+        label_text:         new Color(0, 0, .2)             , // #ccc
+        label_special_text: new Color(60/360, .91, .2)      , // #cc1
+        label_outline:      new Color(220/360, .2, .4, .7)  ,
+        label_caret:        new Color(212/360, 1, 1)        , // #07f
+        label_selection:    new Color(204/360, 1, 1, 4/16)  , // #09f4
     },
     dark: {
         background:         new Color(240/360,.22,.03)      , // #070709
@@ -105,14 +112,18 @@ const config = {
     colors: null,
     grid_style: Enum.grid_style.dots,
 
-    next_id: Date.now(),
+    // TEMP
+    DEBUG_LOG: false,
+    DEBUG_DRAW_CONNECTIONS: true,
+    // /TEMP
+
+    next_id: 0,
 };
 
 function select_theme(colors) {
     config.colors = colors;
 
     const background_color = config.colors.background.to_string();
-
 
     document.documentElement.style.background = background_color;
     document.querySelector('.menubar').style.background = '#eee';
@@ -131,6 +142,9 @@ onload = function() {
 
     current_tab = new Tab;
 
+    canvas.onmouseleave = current_tab.controller.mouse_leave.bind(current_tab.controller);
+    sidebar_canvas.onmouseleave = current_tab.controller.sidebar_mouse_leave.bind(current_tab.controller);
+
     add_menu_event_listeners();
 
     requestAnimationFrame(update);
@@ -141,6 +155,7 @@ onload = function() {
     if (RESTORE_STATE) {
         localStorage.removeItem('CS-RESTORE-ON-STARTUP');
         current_tab.model.main_gate = extended_parse(RESTORE_STATE);
+        current_tab.model.tick_all();
     }
     // /TEMP
 }
@@ -197,14 +212,14 @@ onmouseup = function(event) {
 }
 
 ondragenter = function(event) {
-    console.log('ONDRAGOVER', event);
+    config.DEBUG_LOG && console.log('ONDRAGOVER', event);
 
     event.preventDefault();
     return false;
 }
 
 ondrop = function(event) {
-    console.log('ONDROP', event);
+    config.DEBUG_LOG && console.log('ONDROP', event);
 
     event.preventDefault();
     return false;
@@ -213,13 +228,15 @@ ondrop = function(event) {
 onwheel = function(event) {
     close_menu();
 
-    switch (event.target) {
-        case canvas:
-            current_tab.controller.mouse_wheel(event);
-            break;
-        case sidebar_canvas:
-            current_tab.controller.sidebar_mouse_wheel(event);
-            break;
+    if (!event.ctrlKey) {
+        switch (event.target) {
+            case canvas:
+                current_tab.controller.mouse_wheel(event);
+                break;
+            case sidebar_canvas:
+                current_tab.controller.sidebar_mouse_wheel(event);
+                break;
+        }
     }
 
     // event.preventDefault();

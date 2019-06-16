@@ -35,9 +35,9 @@ class ConnectionNode extends Element {
         this.anchor_pos_.set(Vec.add(this.grab_pos_||this.pos, this.dir));
         this.anchor_anim_pos_.set(Vec.add(this.anim_pos_, this.dir));
 
-        const draw_line_active = this.is_inverted ? this.state == (this instanceof OutputNode) : this.state;
-        const color_line = this.color(draw_line_active ? config.colors.wire_active : config.colors.wire_inactive);
-        const color_dot  = this.color(draw_line_active ? config.colors.wire_inactive : config.colors.wire_active);
+        const draw_line_active = this.display_state();
+        const color_line = this.current_color(draw_line_active ? config.colors.wire_active : config.colors.wire_inactive);
+        const color_dot  = this.current_color(draw_line_active ? config.colors.wire_inactive : config.colors.wire_active);
 
         this.color_line_.set_hsva(color_line);
         this.color_dot_.set_hsva(color_dot);
@@ -46,43 +46,22 @@ class ConnectionNode extends Element {
         this.color_dot_.update();
     }
 
-    update_last_pos() {
-        this.last_pos_ = Vec.copy(this.pos);
-    }
-
-    move(vec, total_vec, snap_size_) {
+    move(total_vec, snap_size_) {
         (this.grab_pos_||this.pos).set(this.last_pos_).add(total_vec);
 
         this.set_dir(this.grab_pos_||this.pos);
         this.set_index(this.eval_index());
-
-        // switch (side_index(this.dir)) {
-        //     case Enum.side.east:  this.pos.x = this.parent.pos.x+this.parent.size.x; break;
-        //     case Enum.side.south: this.pos.y = this.parent.pos.y+this.parent.size.y; break;
-        //     case Enum.side.west:  this.pos.x = this.parent.pos.x; break;
-        //     case Enum.side.north: this.pos.y = this.parent.pos.y; break;
-        // }
     }
 
-    grab() {
+    mouse_down() {
         this.grab_pos_ = Vec.copy(this.pos);
     }
-    release() {
+    mouse_up() {
         this.grab_pos_ = null;
     }
 
     set_dir(pos) {
-        const center = Vec.add(this.parent.pos, Vec.div(this.parent.size, 2));
-        const delta = Vec.sub(pos, center);
-
-        if ((this.parent.size.y-this.parent.size.x) / 2 > Math.abs(delta.y) - Math.abs(delta.x)) {
-            this.dir.x = delta.x>0 ? 1 : -1;
-            this.dir.y = 0;
-        }
-        else {
-            this.dir.x = 0;
-            this.dir.y = delta.y>0 ? 1 : -1;
-        }
+        this.dir = this.parent.get_dir(pos);
     }
 
     eval_index() {
@@ -171,30 +150,32 @@ class InputNode extends ConnectionNode {
         this.rising_edge_ticks_active = 0;
     }
 
+    display_state() {
+        return this.state_before;
+    }
+
     eval_state() {
         const previous_node = this.previous_node();
 
-        let state;
-
         if (previous_node) {
-            state = previous_node.state != this.is_inverted;
+            this.state_before = previous_node.state;
         }
         else {
+            // TEMP
             console.assert(this.is_empty());
-            state = this.is_inverted;
+            this.state_before = false;
         }
 
         if (this.is_rising_edge) {
-            if (state) {
+            if (this.state_before != this.is_inverted) {
                 return this.rising_edge_ticks_active++ < this.rising_edge_pulse_length;
             }
 
             this.rising_edge_ticks_active = 0;
             return false;
         }
-        else {
-            return state;
-        }
+
+        return this.state_before != this.is_inverted;
     }
 
     is_empty() {
@@ -208,17 +189,25 @@ class InputNode extends ConnectionNode {
         current_tab.model.queue_tick(this);
     }
 
+    attached_wire_segment() {
+        if (this.is_empty()) {
+            return null;
+        }
+
+        return this.previous_node().wire_segments.find(segment => segment.connected_pos == this.anchor_pos_);
+    }
+
     draw() {
         super.draw(false);
 
         if (this.is_rising_edge) {
             context.beginPath();
 
-            context.moveTo(this.anim_pos_.x, this.anim_pos_.y-.3);
-            context.lineTo(this.anim_pos_.x+.5, this.anim_pos_.y);
-            context.lineTo(this.anim_pos_.x, this.anim_pos_.y+.3);
+            context.moveTo(this.anim_pos_.x + .3*this.dir.y, this.anim_pos_.y + .3*this.dir.x);
+            context.lineTo(this.anim_pos_.x - .5*this.dir.x, this.anim_pos_.y - .5*this.dir.y);
+            context.lineTo(this.anim_pos_.x - .3*this.dir.y, this.anim_pos_.y - .3*this.dir.x);
 
-            context.strokeStyle = this.color();
+            context.strokeStyle = this.current_color().to_string();
             context.lineWidth = .1;
             context.stroke();
         }
@@ -234,9 +223,15 @@ class OutputNode extends ConnectionNode {
         this.wire_segments = [];
     }
 
+    display_state() {
+        return this.state;
+    }
+
     eval_state() {
-        if (this.previous_node()) {
-            return this.previous_node().state != this.is_inverted;
+        const previous_node = this.previous_node();
+
+        if (previous_node) {
+            return previous_node.state != this.is_inverted;
         }
 
         return this.parent.eval_state() != this.is_inverted;
@@ -254,8 +249,28 @@ class OutputNode extends ConnectionNode {
         this.wire_segments = [];
     }
 
+    attached_wire_segment() {
+        return this.wire_segments.find(segment => segment.connected_pos == this.anchor_pos_);
+    }
+
     draw() {
         super.draw(true);
+
+        // TEMP
+        if (config.DEBUG_DRAW_CONNECTIONS)
+            for (const node of this.next_nodes) {
+                context.beginPath();
+
+                context.moveTo(...this.anchor_anim_pos_.xy);
+                context.lineTo(...node.anchor_anim_pos_.xy);
+
+                context.setLineDash([.1]);
+                context.lineWidth = .1/8;
+
+                context.stroke();
+                context.setLineDash([]);
+            }
+        // /TEMP
 
         for (const segment of this.wire_segments) {
             segment.draw();

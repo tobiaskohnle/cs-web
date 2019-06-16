@@ -13,8 +13,11 @@ Array.prototype.copy = function() {
 Array.prototype.sorted = function(compare_function) {
     return this.copy().sort(compare_function);
 }
+Array.prototype.at = function(index) {
+    return this[mod(index, this.length)];
+}
 Array.prototype.last = function() {
-    return this[this.length - 1];
+    return this.at(-1);
 }
 Array.prototype.remove = function(element) {
     const index = this.indexOf(element);
@@ -79,22 +82,6 @@ function download_string(text, file_name) {
     URL.revokeObjectURL(a.href);
 }
 
-function remove_loose_connections(elements) {
-    for (const element of elements) {
-        if (element instanceof Gate) {
-            for (const input of element.inputs) {
-                if (!elements.includes(input.previous_node())) {
-                    input.clear();
-                }
-            }
-
-            for (const output of element.outputs) {
-                output.next_nodes = output.next_nodes.filter(next_node => elements.includes(next_node));
-            }
-        }
-    }
-}
-
 function bounding_rect(elements) {
     const min_pos = new Vec(Math.min());
     const max_pos = new Vec(Math.max());
@@ -113,6 +100,32 @@ function bounding_rect(elements) {
         pos: min_pos,
         size: Vec.sub(max_pos, min_pos),
     };
+}
+
+function replace_reference(element, reference, new_reference) {
+    const references = [];
+
+    (function replace(element) {
+        if (!element || typeof element !== 'object') {
+            return;
+        }
+
+        if (references.includes(element)) {
+            return;
+        }
+        references.push(element);
+
+        for (const key in element) {
+            if (element.hasOwnProperty(key)) {
+                if (element[key] == reference) {
+                    element[key] = new_reference;
+                    continue;
+                }
+
+                replace(element[key]);
+            }
+        }
+    })(element);
 }
 
 function deep_copy(element) {
@@ -155,6 +168,9 @@ function type_to_string(prototype) {
     if (prototype instanceof CustomGate)     return 'cs:custom_gate';
     if (prototype instanceof InputNode)      return 'cs:input_node';
     if (prototype instanceof InputSwitch)    return 'cs:input_switch';
+    if (prototype instanceof InputButton)    return 'cs:input_button';
+    if (prototype instanceof InputPulse)     return 'cs:input_pulse';
+    if (prototype instanceof Clock)          return 'cs:clock';
     if (prototype instanceof NopGate)        return 'cs:nop_gate';
     if (prototype instanceof OrGate)         return 'cs:or_gate';
     if (prototype instanceof OutputLight)    return 'cs:output_light';
@@ -206,6 +222,9 @@ function string_to_type(string) {
         case 'cs:custom_gate':     return CustomGate     .prototype;
         case 'cs:input_node':      return InputNode      .prototype;
         case 'cs:input_switch':    return InputSwitch    .prototype;
+        case 'cs:input_button':    return InputButton    .prototype;
+        case 'cs:input_pulse':     return InputPulse     .prototype;
+        case 'cs:clock':           return Clock          .prototype;
         case 'cs:nop_gate':        return NopGate        .prototype;
         case 'cs:or_gate':         return OrGate         .prototype;
         case 'cs:output_light':    return OutputLight    .prototype;

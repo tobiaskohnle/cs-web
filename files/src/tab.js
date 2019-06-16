@@ -13,14 +13,14 @@ class Tab {
     }
 
     create_snapshot() {
-        console.log(`%c>> CREATED SNAPSHOT`, 'color:#fb2; font-weight:bold');
+        config.DEBUG_LOG && console.log(`%c>> CREATED SNAPSHOT`, 'color:#fb2; font-weight:bold');
 
         this.snapshot = deep_copy({model:this.model, controller:this.controller});;
     }
 
     load_snapshot() {
         if (this.snapshot) {
-            console.log(`%c<< LOADED SNAPSHOT`, 'color:#2d2; font-weight:bold');
+            config.DEBUG_LOG && console.log(`%c<< LOADED SNAPSHOT`, 'color:#2d2; font-weight:bold');
             const snapshot = deep_copy(this.snapshot);
 
             this.model = snapshot.model;
@@ -30,7 +30,7 @@ class Tab {
             }
         }
         else {
-            console.log(`%c<< LOADED SNAPSHOT (FAILED)`, 'color:#c229; font-weight:bold');
+            config.DEBUG_LOG && console.log(`%c<< LOADED SNAPSHOT (FAILED)`, 'color:#c229; font-weight:bold');
         }
     }
 

@@ -65,6 +65,30 @@ const commands = [
         },
     },
     {
+        name: 'add-input-button',
+        shortcuts: [],
+        command: function() {
+            current_tab.controller.save_state('(command) add-input-button');
+            current_tab.controller.init_element(new InputButton);
+        },
+    },
+    {
+        name: 'add-input-pulse',
+        shortcuts: [],
+        command: function() {
+            current_tab.controller.save_state('(command) add-input-pulse');
+            current_tab.controller.init_element(new InputPulse);
+        },
+    },
+    {
+        name: 'add-clock',
+        shortcuts: [],
+        command: function() {
+            current_tab.controller.save_state('(command) add-clock');
+            current_tab.controller.init_element(new Clock);
+        },
+    },
+    {
         name: 'add-not-gate',
         shortcuts: [],
         command: function() {
@@ -108,6 +132,89 @@ const commands = [
         },
     },
     {
+        name: 'change-type-and-gate',
+        shortcuts: [],
+        command: function() {
+            current_tab.controller.save_state('(command) change-type-and-gate');
+            current_tab.controller.change_element(new AndGate);
+        },
+    },
+    {
+        name: 'change-type-input-switch',
+        shortcuts: [],
+        command: function() {
+            current_tab.controller.save_state('(command) change-type-input-switch');
+            current_tab.controller.change_element(new InputSwitch);
+        },
+    },
+    {
+        name: 'change-type-input-button',
+        shortcuts: [],
+        command: function() {
+            current_tab.controller.save_state('(command) change-type-input-button');
+            current_tab.controller.change_element(new InputButton);
+        },
+    },
+    {
+        name: 'change-type-input-pulse',
+        shortcuts: [],
+        command: function() {
+            current_tab.controller.save_state('(command) change-type-input-pulse');
+            current_tab.controller.change_element(new InputPulse);
+        },
+    },
+    {
+        name: 'change-type-clock',
+        shortcuts: [],
+        command: function() {
+            current_tab.controller.save_state('(command) change-type-clock');
+            current_tab.controller.change_element(new Clock);
+        },
+    },
+    {
+        name: 'change-type-not-gate',
+        shortcuts: [],
+        command: function() {
+            current_tab.controller.save_state('(command) change-type-not-gate');
+            let nop_gate = new NopGate;
+            nop_gate.outputs[0].is_inverted = true;
+
+            current_tab.controller.change_element(nop_gate);
+        },
+    },
+    {
+        name: 'change-type-or-gate',
+        shortcuts: [],
+        command: function() {
+            current_tab.controller.save_state('(command) change-type-or-gate');
+            current_tab.controller.change_element(new OrGate);
+        },
+    },
+    {
+        name: 'change-type-output-light',
+        shortcuts: [],
+        command: function() {
+            current_tab.controller.save_state('(command) change-type-output-light');
+            current_tab.controller.change_element(new OutputLight);
+        },
+    },
+    {
+        name: 'change-type-segment-display',
+        shortcuts: [],
+        command: function() {
+            current_tab.controller.save_state('(command) change-type-segment-display');
+            current_tab.controller.change_element(new SegmentDisplay);
+        },
+    },
+    {
+        name: 'change-type-text-label',
+        shortcuts: [],
+        command: function() {
+            current_tab.controller.save_state('(command) change-type-text-label');
+            current_tab.controller.change_element(new Label);
+        },
+    },
+    {
         name: 'clear-recent-file-list',
         shortcuts: [],
         command: function() {
@@ -117,6 +224,13 @@ const commands = [
         name: 'clear-recently-imported-list',
         shortcuts: [],
         command: function() {
+        },
+    },
+    {
+        name: 'view-content',
+        shortcuts: [],
+        command: function() {
+            current_tab.controller.view_content();
         },
     },
     {
@@ -140,6 +254,7 @@ const commands = [
         shortcuts: [new KeyCombination(46, 'delete', KeyCombination.Modifier_None)],
         command: function() {
             current_tab.controller.save_state('(command) delete');
+            current_tab.controller.current_action = Enum.action.none;
             current_tab.model.delete_selected_elements();
         },
     },
@@ -148,6 +263,17 @@ const commands = [
         shortcuts: [new KeyCombination(27, 'escape', KeyCombination.Modifier_None)],
         command: function() {
             close_menu();
+
+            switch (current_tab.controller.current_action) {
+                case Enum.action.import_element:
+                    current_tab.model.delete(current_tab.controller.imported_element);
+                    break;
+                case Enum.action.create_wire:
+                case Enum.action.create_wire_segment:
+                    current_tab.load_snapshot();
+                    break;
+            }
+
             current_tab.model.deselect_all();
             current_tab.controller.current_action = Enum.action.none;
         },
@@ -157,13 +283,6 @@ const commands = [
         shortcuts: [new KeyCombination(13, 'enter', KeyCombination.Modifier_None)],
         command: function() {
             current_tab.controller.current_action = Enum.action.none;
-        },
-    },
-    {
-        name: 'exit',
-        shortcuts: [],
-        command: function() {
-            close();
         },
     },
     {
@@ -193,7 +312,7 @@ const commands = [
         command: function() {
             current_tab.controller.save_state('(command) import');
             current_tab.controller.read_files(function(result) {
-                current_tab.controller.create_custom_gate(extended_parse(result));
+                current_tab.controller.init_custom_gate(extended_parse(result));
                 current_tab.model.tick_all();
             });
         },
@@ -203,13 +322,13 @@ const commands = [
         shortcuts: [new KeyCombination(76, 'l', KeyCombination.Modifier_Ctrl)],
         command: function() {
             const file_string = current_tab.controller.file_string();
-            current_tab.controller.create_custom_gate(extended_parse(file_string));
+            current_tab.controller.init_custom_gate(extended_parse(file_string));
             current_tab.model.tick_all();
         },
     },
     {
         name: 'invert',
-        shortcuts: [new KeyCombination(73, 'i', KeyCombination.Modifier_Shift|KeyCombination.Modifier_Ctrl)],
+        shortcuts: [new KeyCombination(73, 'i', KeyCombination.Modifier_Shift)],
         command: function() {
             current_tab.controller.save_state('(command) invert');
             current_tab.model.invert_selected_connection_nodes();
@@ -365,7 +484,7 @@ const commands = [
     },
     {
         name: 'split-segment',
-        shortcuts: [new KeyCombination(65, 'g', KeyCombination.Modifier_Ctrl)],
+        shortcuts: [new KeyCombination(65, 'g', KeyCombination.Modifier_Shift)],
         command: function() {
             current_tab.controller.save_state('(command) split-segment');
             current_tab.model.split_selected_segments();

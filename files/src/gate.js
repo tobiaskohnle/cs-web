@@ -23,6 +23,10 @@ class Gate extends Element {
         this.color_outline_.set_hsva(config.colors.outline);
     }
 
+    allow_new_input_nodes() {
+        return false;
+    }
+
     add_input_node() {
         const node = new InputNode(this, this.nodes_per_side()[Enum.side.west].length);
         this.inputs.push(node);
@@ -34,10 +38,13 @@ class Gate extends Element {
         return node;
     }
 
-    clear_nodes() {
-        for (const node of this.nodes()) {
-            node.clear();
-        }
+    remove_input_node(node) {
+        node.clear();
+        this.inputs.remove(node);
+    }
+    remove_output_node() {
+        node.clear();
+        this.outputs.remove(node);
     }
 
     cancel_animation() {
@@ -90,6 +97,45 @@ class Gate extends Element {
         });
     }
 
+    get_resize(pos) {
+        const resize = {
+            north: Math.abs(pos.y - this.pos.y              ) < .5,
+            south: Math.abs(pos.y - this.pos.y - this.size.y) < .5,
+            east:  Math.abs(pos.x - this.pos.x - this.size.x) < .5,
+            west:  Math.abs(pos.x - this.pos.x              ) < .5,
+        };
+
+        resize.cursor =
+            resize.east && resize.south ? 'se-resize' :
+            resize.south && resize.west ? 'sw-resize' :
+            resize.north && resize.east ? 'ne-resize' :
+            resize.north && resize.west ? 'nw-resize' :
+            resize.east                 ? 'e-resize'  :
+            resize.south                ? 's-resize'  :
+            resize.north                ? 'n-resize'  :
+            resize.west                 ? 'w-resize'  :
+            '';
+
+        resize.vec = new Vec(
+            resize.east  ? 1 : resize.west  ? -1 : 0,
+            resize.south ? 1 : resize.north ? -1 : 0,
+        );
+
+        return resize;
+    }
+
+    get_dir(pos) {
+        const center = Vec.add(this.pos, Vec.div(this.size, 2));
+        const delta = Vec.sub(pos, center);
+
+        if ((this.size.y-this.size.x) / 2 > Math.abs(delta.y) - Math.abs(delta.x)) {
+            return new Vec(delta.x>0 ? 1 : -1, 0);
+        }
+        else {
+            return new Vec(0, delta.y>0 ? 1 : -1);
+        }
+    }
+
     update() {
         super.update_pos();
         super.update_size();
@@ -102,15 +148,16 @@ class Gate extends Element {
 
         this.set_nodes_pos();
 
-        this.color_outline_.set_hsva(this.color());
+        this.color_outline_.set_hsva(this.current_color());
         this.color_outline_.update();
     }
 
     update_last_pos() {
         this.last_pos_ = Vec.copy(this.pos);
+        this.last_size_ = Vec.copy(this.size);
     }
 
-    move(vec, total_vec, snap_size_) {
+    move(total_vec, snap_size_) {
         super.snap_pos(this.last_pos_, total_vec, snap_size_);
     }
 
@@ -121,33 +168,46 @@ class Gate extends Element {
         };
     }
 
-    draw() {
+    draw_nodes() {
         for (const input of this.inputs) {
             input.draw();
         }
         for (const output of this.outputs) {
             output.draw();
         }
+    }
 
+    is_pressed() {
+        return this.is_hovered() && current_tab.controller.is_mouse_down;
+    }
+
+    draw_outline() {
         context.strokeStyle = this.color_outline_.to_string();
         context.lineWidth = .1;
 
-        if (this.is_hovered() && current_tab.controller.is_mouse_down) {
+        if (this.is_pressed()) {
             context.lineWidth = .12;
             context.strokeRect(...Vec.add(this.anim_pos_, new Vec(.1/2)).xy, ...Vec.sub(this.anim_size_, new Vec(.2/2)).xy);
         }
         else {
             context.strokeRect(...this.anim_pos_.xy, ...this.anim_size_.xy);
         }
+    }
 
-        // context.setLineDash([]);
+    draw_tag() {
+        if (this.tag) {
+            context.font = '2px consolas, monospace';
+            context.fillStyle = config.colors.wire_inactive.to_string();
+            context.textAlign = 'center';
+            context.textBaseline = 'middle';
+            context.fillText(this.tag, ...Vec.add(this.anim_pos_, Vec.div(this.anim_size_, 2)).xy);
+        }
+    }
 
-        context.font = '2px consolas, monospace';
-        context.fillStyle = config.colors.wire_inactive.to_string();
-        context.textAlign = 'center';
-        context.textBaseline = 'middle';
-        // context.fillText(this.tag, this.anim_pos_.x+this.anim_size_.x/2, this.anim_pos_.y+this.anim_size_.y/2, this.anim_size_.y);
-        context.fillText(this.tag, ...Vec.add(this.anim_pos_, Vec.div(this.anim_size_, 2)).xy);
+    draw() {
+        this.draw_nodes();
+        this.draw_outline();
+        this.draw_tag();
     }
 
     distance(pos) {
@@ -169,6 +229,10 @@ class AndGate extends Gate {
         this.add_output_node();
     }
 
+    allow_new_input_nodes() {
+        return true;
+    }
+
     eval_state() {
         for (const input of this.inputs) {
             if (!input.state) {
@@ -184,6 +248,10 @@ class OrGate extends Gate {
         this.add_input_node();
         this.add_input_node();
         this.add_output_node();
+    }
+
+    allow_new_input_nodes() {
+        return true;
     }
 
     eval_state() {
@@ -210,12 +278,6 @@ class NopGate extends Gate {
     }
 }
 
-class ModelGate extends Gate {
-    constructor(pos, size) {
-        super(pos, size, '');
-    }
-}
-
 class CustomGate extends Gate {
     constructor(pos, size) {
         super(pos, size, '');
@@ -224,7 +286,7 @@ class CustomGate extends Gate {
     }
 }
 
-class InputSwitch extends ModelGate {
+class InputSwitch extends Gate {
     constructor(pos) {
         super(pos, new Vec(2,2));
         this.add_output_node();
@@ -262,7 +324,183 @@ class InputSwitch extends ModelGate {
     }
 }
 
-class OutputLight extends ModelGate {
+class InputButton extends Gate {
+    constructor(pos) {
+        super(pos, new Vec(2,2));
+        this.add_output_node();
+
+        this.is_enabled = false;
+
+        this.color_fill_ = Color.from(config.colors.light_inactive);
+    }
+
+    mouse_down() {
+        this.is_enabled = true;
+        current_tab.model.queue_tick(this.outputs[0]);
+    }
+    mouse_up() {
+        this.is_enabled = false;
+        current_tab.model.queue_tick(this.outputs[0]);
+    }
+
+    eval_state() {
+        return this.is_enabled;
+    }
+
+    update() {
+        if (this.eval_state()) {
+            this.color_fill_.set_hsva(config.colors.light_active);
+        }
+        else {
+            this.color_fill_.set_hsva(config.colors.light_inactive);
+        }
+        this.color_fill_.update();
+
+        super.update();
+    }
+
+    draw() {
+        super.draw_nodes();
+
+        context.strokeStyle = this.color_outline_.to_string();
+        context.lineWidth = .1;
+
+        const radius = .33;
+
+        context.beginPath();
+
+        const pos = this.is_pressed() ? Vec.add(this.anim_pos_, new Vec(.1/2)) : this.anim_pos_;
+        const size = this.is_pressed() ? Vec.sub(this.anim_size_, new Vec(.2/2)) : this.anim_size_;
+
+        context.moveTo(
+            pos.x, pos.y + size.y/2,
+        );
+        context.arcTo(
+            pos.x, pos.y,
+            pos.x + size.x/2, pos.y,
+            radius,
+        );
+        context.arcTo(
+            pos.x + size.x, pos.y,
+            pos.x + size.x, pos.y + size.y/2,
+            radius,
+        );
+        context.arcTo(
+            pos.x + size.x, pos.y + size.y,
+            pos.x + size.x/2, pos.y + size.y,
+            radius,
+        );
+        context.arcTo(
+            pos.x, pos.y + size.y,
+            pos.x, pos.y + size.y/2,
+            radius,
+        );
+
+        context.fillStyle = this.color_fill_.to_string();
+        context.fill();
+
+        context.closePath();
+        context.stroke();
+    }
+}
+
+class InputPulse extends Gate {
+    constructor(pos) {
+        super(pos, new Vec(2,2));
+        this.add_output_node();
+
+        this.pulse_length = config.default_rising_edge_pulse_length;
+        this.pulse_ticks_ = Infinity;
+
+        this.color_fill_ = Color.from(config.colors.light_inactive);
+    }
+
+    mouse_down() {
+        if (!this.outputs[0].is_inverted) {
+            this.pulse_ticks_ = 0;
+            current_tab.model.queue_tick(this.outputs[0]);
+        }
+    }
+    mouse_up() {
+        if (this.outputs[0].is_inverted) {
+            this.pulse_ticks_ = 0;
+            current_tab.model.queue_tick(this.outputs[0]);
+        }
+    }
+
+    eval_state() {
+        if (this.outputs[0].is_inverted) {
+            return !(this.pulse_ticks_++ < this.pulse_length);
+        }
+
+        return this.pulse_ticks_++ < this.pulse_length;
+    }
+
+    update() {
+        super.update();
+    }
+
+    draw() {
+        context.fillStyle = this.color_fill_.to_string();
+        context.fillRect(...this.anim_pos_.xy, ...this.anim_size_.xy);
+
+        super.draw();
+
+        context.beginPath();
+        context.lineWidth = .1;
+
+        context.moveTo(this.anim_pos_.x, this.anim_pos_.y);
+        context.lineTo(this.anim_pos_.x+1.2, this.anim_pos_.y+this.anim_size_.y/2);
+        context.lineTo(this.anim_pos_.x, this.anim_pos_.y+this.anim_size_.y);
+
+        context.stroke();
+    }
+}
+
+class Clock extends Gate {
+    constructor(pos) {
+        super(pos, new Vec(2,2));
+        this.add_output_node();
+
+        this.pulse_length = 6000;
+        this.pulse_width = 3000;
+        this.pulse_ticks_ = 0;
+
+        this.color_fill_ = Color.from(config.colors.light_inactive);
+    }
+
+    eval_state() {
+        this.pulse_ticks_ = mod(this.pulse_ticks_+1, this.pulse_length);
+        return this.pulse_ticks_ < this.pulse_width;
+    }
+
+    update() {
+        super.update();
+    }
+
+    draw() {
+        context.fillStyle = this.color_fill_.to_string();
+        context.fillRect(...this.anim_pos_.xy, ...this.anim_size_.xy);
+
+        super.draw();
+
+        context.beginPath();
+        context.lineWidth = .1;
+
+        context.moveTo(this.anim_pos_.x,                      this.anim_pos_.y+this.anim_size_.y/2);
+        context.lineTo(this.anim_pos_.x+.3,                   this.anim_pos_.y+this.anim_size_.y/2);
+        context.lineTo(this.anim_pos_.x+.3,                   this.anim_pos_.y+this.anim_size_.y/2+.6);
+        context.lineTo(this.anim_pos_.x+this.anim_size_.x/2,  this.anim_pos_.y+this.anim_size_.y/2+.6);
+        context.lineTo(this.anim_pos_.x+this.anim_size_.x/2,  this.anim_pos_.y+this.anim_size_.y/2-.6);
+        context.lineTo(this.anim_pos_.x+this.anim_size_.x-.3, this.anim_pos_.y+this.anim_size_.y/2-.6);
+        context.lineTo(this.anim_pos_.x+this.anim_size_.x-.3, this.anim_pos_.y+this.anim_size_.y/2);
+        context.lineTo(this.anim_pos_.x+this.anim_size_.x,    this.anim_pos_.y+this.anim_size_.y/2);
+
+        context.stroke();
+    }
+}
+
+class OutputLight extends Gate {
     constructor(pos) {
         super(pos, new Vec(2,2));
         this.add_input_node();
@@ -295,7 +533,7 @@ class OutputLight extends ModelGate {
     }
 }
 
-class SegmentDisplay extends ModelGate {
+class SegmentDisplay extends Gate {
     constructor(pos) {
         super(pos, new Vec(5,7));
         this.add_input_node();
@@ -346,13 +584,6 @@ class SegmentDisplay extends ModelGate {
 
         const X = 1;
         const Y = 2;
-
-        // const scale                 = .0026 * Math.min(this.anim_size_.x/5, this.anim_size_.y/7);
-        // const skew                  = -30;
-        // const width                 = 450;
-        // const segment_width         = 105;
-        // const segment_distance      = 21;
-        // const segment_center_length = 70;
 
         const scale                 = this.options_.scale * Math.min(this.anim_size_.x/5, this.anim_size_.y/7);
         const skew                  = this.options_.skew;

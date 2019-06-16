@@ -24,7 +24,6 @@ class Sidebar {
         nor.outputs[0].is_inverted = nor.outputs[0].state = true;
         const not = new NopGate;
         not.outputs[0].is_inverted = not.outputs[0].state = true;
-        // const xor = new NopGate; not.outputs[0].is_inverted = true;
 
         const label = new Label;
         label.text = 'Text';
@@ -45,6 +44,9 @@ class Sidebar {
                 header: 'In/Out',
                 elements: [
                     new InputSwitch,
+                    new InputButton,
+                    new InputPulse,
+                    new Clock,
                     new OutputLight,
                     new SegmentDisplay,
                 ],
@@ -56,23 +58,6 @@ class Sidebar {
                 ],
             },
         ];
-
-        // sections: section[]
-
-        // section: {
-        //  height: px,
-        //  y: px,
-        //  index: num,
-        //  scroll_y: px, // clamped pos
-        //  anim_scroll_y: px, // clamped anim_pos
-        //  elements_sections: element_section[],
-        // }
-
-        // element_section: {
-        //  height: px,
-        //  y: px,
-        //  index: num, // relative to each section
-        // },
 
         this.sections = this.categories.map(category => {
             let section_height = 0;
@@ -99,7 +84,7 @@ class Sidebar {
         return Math.max(sidebar_canvas.height, this.segments_height()) - sidebar_canvas.height;
     }
     segments_height() {
-        return this.sections.reduce((acc,val) => acc+val.height+this.header_height, 0);//here
+        return this.sections.reduce((acc,val) => acc+val.height+this.header_height, 0);
     }
 
     scroll_to(value) {
@@ -115,10 +100,16 @@ class Sidebar {
                 this.scroll_to(this.hovered_section.y - this.hovered_section.index*this.header_height);
             }
             else if (this.hovered_element) {
-                current_tab.controller.current_action = Enum.action.import_element;
-                this.imported_element = this.hovered_element;
-                current_tab.controller.imported_element = deep_copy(this.hovered_element);
-                current_tab.controller.imported_element.cancel_animation();
+                if (this.imported_element && this.imported_element == this.hovered_element) {
+                    current_tab.controller.current_action = Enum.action.none;
+                    current_tab.controller.imported_element = null;
+                    this.imported_element = null;
+                }
+                else {
+                    current_tab.controller.current_action = Enum.action.import_element;
+                    current_tab.controller.imported_element = deep_copy(this.hovered_element);
+                    this.imported_element = this.hovered_element;
+                }
             }
         }
         else if (event.buttons & -2) {
@@ -148,6 +139,11 @@ class Sidebar {
                 }
             }
         }
+    }
+    mouse_leave(event) {
+        this.hovered_section = null;
+        this.hovered_element = null;
+        this.imported_element = null;
     }
 
     update() {
@@ -192,11 +188,11 @@ class Sidebar {
                 const element = element_section.element;
 
                 if (this.imported_element == element) {
-                    sidebar_context.fillStyle = '#f536';
+                    sidebar_context.fillStyle = '#28f7';
                     sidebar_context.fillRect(0, element_section.anim_scroll_y, sidebar_canvas.width, element_section.height);
                 }
                 else if (this.hovered_element == element) {
-                    sidebar_context.fillStyle = '#49d5';
+                    sidebar_context.fillStyle = '#49e4';
                     sidebar_context.fillRect(0, element_section.anim_scroll_y, sidebar_canvas.width, element_section.height);
                 }
 

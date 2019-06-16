@@ -24,24 +24,29 @@ class WireSegment extends Element {
 
     update() {
         if (this.connected_pos) {
-            if (this.is_vertical) this.offset = this.connected_pos.x;
-            else                  this.offset = this.connected_pos.y;
-
+            this.set_offset(this.connected_pos);
             this.anim_connected_pos_ = anim_interpolate_vec(this.anim_connected_pos_, this.connected_pos);
         }
         else {
             this.anim_connected_pos_ = null;
         }
 
-        if (this.auto_offset_) {
+        if (this.auto_offset_ &&
+            this.neighbor_segments.length == 2 &&
+            this.neighbor_segments[0].connected_pos &&
+            this.neighbor_segments[1].connected_pos
+        ) {
             let avg = 0;
 
-            for (const neighbor of this.neighbor_segments) {
-                if (neighbor.connected_pos) {
-                    const norm_offset = this.is_vertical ? neighbor.connected_pos.x : neighbor.connected_pos.y;
-                    avg += norm_offset / this.neighbor_segments.length;
-                }
-            }
+            const offset_a = this.is_vertical
+                ? this.neighbor_segments[0].connected_pos.x
+                : this.neighbor_segments[0].connected_pos.y;
+            avg += offset_a / 2;
+
+            const offset_b = this.is_vertical
+                ? this.neighbor_segments[1].connected_pos.x
+                : this.neighbor_segments[1].connected_pos.y;
+            avg += offset_b / 2;
 
             this.offset = avg;
         }
@@ -49,7 +54,7 @@ class WireSegment extends Element {
         this.anim_offset_ = anim_interpolate(this.anim_offset_, this.offset);
 
         const default_color = this.parent && this.parent.state ? config.colors.wire_active : config.colors.wire_inactive;
-        this.color_outline_.set_hsva(this.color(default_color));
+        this.color_outline_.set_hsva(this.current_color(default_color));
         this.color_outline_.update();
     }
 
@@ -57,9 +62,14 @@ class WireSegment extends Element {
         this.last_offset_ = this.offset;
     }
 
-    move(vec, total_vec, snap_size_) {
-        if (this.is_vertical) this.offset = round(this.last_offset_, this.snap_size_) + round(total_vec.x, snap_size_);
-        else                  this.offset = round(this.last_offset_, this.snap_size_) + round(total_vec.y, snap_size_);
+    move(total_vec, snap_size) {
+        this.set_offset(Vec.round(total_vec, snap_size));
+        this.offset += round(this.last_offset_, this.snap_size_);
+    }
+
+    set_offset(pos) {
+        if (this.is_vertical) this.offset = pos.x;
+        else                  this.offset = pos.y;
     }
 
     cancel_animation() {
