@@ -236,6 +236,27 @@ class OrGate extends Gate {
         return false;
     }
 }
+class XorGate extends Gate {
+    constructor(pos, size) {
+        super(pos, size, '=1');
+        this.add_input_node();
+        this.add_input_node();
+        this.add_output_node();
+    }
+
+    allow_new_input_nodes() {
+        return true;
+    }
+
+    eval_state() {
+        let state = false;
+
+        for (const input of this.inputs) {
+            state = state != input.state;
+        }
+        return state;
+    }
+}
 class NopGate extends Gate {
     constructor(pos, size) {
         super(pos, size, '1');

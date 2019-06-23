@@ -47,7 +47,7 @@ class Label extends Element {
         super.update_pos();
         super.update_size();
 
-        const color = Color.from(this.current_color(config.colors.label_outline), {a: config.colors.label_outline.a});
+        const color = this.current_color(config.colors.label_outline);
 
         this.anim_color_.set_hsva(color);
         this.anim_color_.update();

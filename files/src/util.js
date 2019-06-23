@@ -163,24 +163,6 @@ function deep_copy(element) {
     })(element);
 }
 
-function type_to_string(prototype) {
-    if (prototype instanceof AndGate)        return 'cs:and_gate';
-    if (prototype instanceof CustomGate)     return 'cs:custom_gate';
-    if (prototype instanceof InputNode)      return 'cs:input_node';
-    if (prototype instanceof InputSwitch)    return 'cs:input_switch';
-    if (prototype instanceof InputButton)    return 'cs:input_button';
-    if (prototype instanceof InputPulse)     return 'cs:input_pulse';
-    if (prototype instanceof Clock)          return 'cs:clock';
-    if (prototype instanceof NopGate)        return 'cs:nop_gate';
-    if (prototype instanceof OrGate)         return 'cs:or_gate';
-    if (prototype instanceof OutputLight)    return 'cs:output_light';
-    if (prototype instanceof OutputNode)     return 'cs:output_node';
-    if (prototype instanceof SegmentDisplay) return 'cs:segment_display';
-    if (prototype instanceof WireSegment)    return 'cs:wire_segment';
-    if (prototype instanceof Vec)            return 'cs:vector';
-    if (prototype instanceof Label)          return 'cs:label';
-    if (prototype instanceof Color)          return 'color';
-}
 function extended_stringify(value, replacer=null, space=null) {
     const references = [];
 
@@ -207,8 +189,10 @@ function extended_stringify(value, replacer=null, space=null) {
                 value[key] = prepare(value[key]);
             }
 
-            if (!['Object', 'Array', 'String', 'Number'].includes(value.constructor.name)) {
-                value.$type = type_to_string(value);
+            const constructor_name = value.constructor.name;
+
+            if (!['Object', 'Array', 'String', 'Number'].includes(constructor_name)) {
+                value.$type = constructor_name;
             }
         }
 
@@ -216,26 +200,6 @@ function extended_stringify(value, replacer=null, space=null) {
     }(deep_copy(value)), replacer, space);
 }
 
-function string_to_type(string) {
-    switch (string) {
-        case 'cs:and_gate':        return AndGate        .prototype;
-        case 'cs:custom_gate':     return CustomGate     .prototype;
-        case 'cs:input_node':      return InputNode      .prototype;
-        case 'cs:input_switch':    return InputSwitch    .prototype;
-        case 'cs:input_button':    return InputButton    .prototype;
-        case 'cs:input_pulse':     return InputPulse     .prototype;
-        case 'cs:clock':           return Clock          .prototype;
-        case 'cs:nop_gate':        return NopGate        .prototype;
-        case 'cs:or_gate':         return OrGate         .prototype;
-        case 'cs:output_light':    return OutputLight    .prototype;
-        case 'cs:output_node':     return OutputNode     .prototype;
-        case 'cs:segment_display': return SegmentDisplay .prototype;
-        case 'cs:wire_segment':    return WireSegment    .prototype;
-        case 'cs:vector':          return Vec            .prototype;
-        case 'cs:label':           return Label          .prototype;
-        case 'color':              return Color          .prototype;
-    }
-}
 function extended_parse(value, reviver=null) {
     const references = [];
 
@@ -269,7 +233,7 @@ function extended_parse(value, reviver=null) {
             }
 
             if (constructor_name) {
-                Object.setPrototypeOf(value, string_to_type(constructor_name));
+                Object.setPrototypeOf(value, eval(`${constructor_name}.prototype`));
             }
         }
 

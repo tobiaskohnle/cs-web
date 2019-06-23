@@ -135,6 +135,7 @@ function anim_interpolate_mod(value, target, factor=config.anim_factor) {
     return value + offset * factor;
 }
 function anim_interpolate_vec(value, target, factor=config.anim_factor) {
+    if (target == null) return target;
     if (value == null) return Vec.copy(target);
     return value.set(Vec.add(value, Vec.mult(Vec.sub(target, value), factor)));
 }

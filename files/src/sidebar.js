@@ -22,6 +22,8 @@ class Sidebar {
         nand.outputs[0].is_inverted = nand.outputs[0].state = true;
         const nor = new OrGate;
         nor.outputs[0].is_inverted = nor.outputs[0].state = true;
+        const xnor = new XorGate;
+        xnor.outputs[0].is_inverted = xnor.outputs[0].state = true;
         const not = new NopGate;
         not.outputs[0].is_inverted = not.outputs[0].state = true;
 
@@ -36,6 +38,8 @@ class Sidebar {
                     nand,
                     new OrGate,
                     nor,
+                    new XorGate,
+                    xnor,
                     new NopGate,
                     not,
                 ],

@@ -265,11 +265,11 @@ class Model {
                 remove_segments_queue.delete(segment);
                 segment.parent.wire_segments.remove(segment);
 
-                if (segment.parent.anchor_pos_ == segment.connected_pos) {
+                if (segment.is_connected_to(segment.parent)) {
                     segment.parent.clear();
                 }
 
-                const input_node = segment.parent.next_nodes.find(node => segment.connected_pos == node.anchor_pos_);
+                const input_node = segment.parent.next_nodes.find(node => segment.is_connected_to(node));
                 if (input_node) {
                     input_node.clear();
                 }
@@ -347,7 +347,7 @@ class Model {
             const output_node = start_node instanceof OutputNode ? start_node : end_element;
 
             output_node.wire_segments.push(...new_wire_segments);
-            new_wire_segments.last().connected_pos = end_element.anchor_pos_;
+            new_wire_segments.last().set_connected_pos(end_element.anchor_pos_);
 
             this.set_parent(new_wire_segments, output_node);
 
@@ -359,7 +359,7 @@ class Model {
             if (end_element.parent.next_nodes.includes(start_node)) return false;
             // /TEMP
 
-            new_wire_segments.last().connected_pos = null;
+            new_wire_segments.last().normal_pos = null;
 
             if (new_wire_segments.last().is_vertical == end_element.is_vertical) {
                 this.remove_wire_segment(new_wire_segments);
@@ -374,9 +374,7 @@ class Model {
             this.connect_nodes(end_element.parent, start_node);
 
             if (start_node instanceof OutputNode) {
-                const start_segment = end_element.parent.wire_segments.find(
-                    segment => segment.connected_pos == end_element.parent.anchor_pos_
-                );
+                const start_segment = end_element.parent.wire_segments.find(segment => segment.is_connected_to(end_element.parent));
                 this.remove_wire_branch(start_segment);
 
                 this.set_parent([start_node], end_element.parent);
@@ -398,7 +396,39 @@ class Model {
     split_segment(segment) {
         console.assert(segment instanceof WireSegment);
 
-        // todo
+        const is_vertical = segment.is_vertical;
+        const prev_segment = new WireSegment;
+        prev_segment.is_vertical = is_vertical;
+
+        const next_segment = new WireSegment;
+        next_segment.is_vertical = is_vertical;
+
+        const prev_neighbor = segment.neighbor_segments[0];
+        const next_neighbor = segment.neighbor_segments[1];
+
+        this.deconnect_wire_segments(prev_neighbor, segment);
+        this.deconnect_wire_segments(next_neighbor, segment);
+
+        this.connect_wire_segments(prev_segment, prev_neighbor);
+        this.connect_wire_segments(prev_segment, segment);
+        this.connect_wire_segments(next_segment, segment);
+        this.connect_wire_segments(next_segment, next_neighbor);
+
+        segment.is_vertical = !is_vertical;
+
+        segment.parent.wire_segments.push(prev_segment);
+        segment.parent.wire_segments.push(next_segment);
+
+        prev_segment.parent = segment.parent;
+        next_segment.parent = segment.parent;
+
+        prev_segment.offset = segment.offset - segment.snap_size_;
+        next_segment.offset = segment.offset + segment.snap_size_;
+
+        prev_segment.anim_offset_ = segment.anim_offset_;
+        next_segment.anim_offset_ = segment.anim_offset_;
+
+        segment.offset = segment.anim_offset_ = prev_neighbor.offset/2 + next_neighbor.offset/2;
     }
 
     clear_node(node) {

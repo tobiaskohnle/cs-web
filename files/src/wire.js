@@ -16,36 +16,36 @@ class WireSegment extends Element {
 
         this.neighbor_segments = [];
 
-        this.connected_pos = null;
-        this.anim_connected_pos_ = null;
+        this.offset_pos = null;
+        this.normal_pos = null;
+        this.anim_offset_pos_ = null;
+        this.anim_normal_pos_ = null;
 
         this.color_outline_ = Color.from(config.colors.outline);
     }
 
     update() {
-        if (this.connected_pos) {
-            this.set_offset(this.connected_pos);
-            this.anim_connected_pos_ = anim_interpolate_vec(this.anim_connected_pos_, this.connected_pos);
+        if (this.offset_pos) {
+            this.set_offset(this.offset_pos);
         }
-        else {
-            this.anim_connected_pos_ = null;
-        }
+        this.anim_offset_pos_ = anim_interpolate_vec(this.anim_offset_pos_, this.offset_pos);
+        this.anim_normal_pos_ = anim_interpolate_vec(this.anim_normal_pos_, this.normal_pos);
 
         if (this.auto_offset_ &&
             this.neighbor_segments.length == 2 &&
-            this.neighbor_segments[0].connected_pos &&
-            this.neighbor_segments[1].connected_pos
+            this.neighbor_segments[0].normal_pos &&
+            this.neighbor_segments[1].normal_pos
         ) {
             let avg = 0;
 
             const offset_a = this.is_vertical
-                ? this.neighbor_segments[0].connected_pos.x
-                : this.neighbor_segments[0].connected_pos.y;
+                ? this.neighbor_segments[0].normal_pos.x
+                : this.neighbor_segments[0].normal_pos.y;
             avg += offset_a / 2;
 
             const offset_b = this.is_vertical
-                ? this.neighbor_segments[1].connected_pos.x
-                : this.neighbor_segments[1].connected_pos.y;
+                ? this.neighbor_segments[1].normal_pos.x
+                : this.neighbor_segments[1].normal_pos.y;
             avg += offset_b / 2;
 
             this.offset = avg;
@@ -70,6 +70,15 @@ class WireSegment extends Element {
     set_offset(pos) {
         if (this.is_vertical) this.offset = pos.x;
         else                  this.offset = pos.y;
+    }
+
+    set_connected_pos(pos) {
+        this.offset_pos = this.normal_pos = pos;
+    }
+
+    is_connected_to(node) {
+        return this.offset_pos == node.anchor_pos_
+            && this.normal_pos == node.anchor_pos_;
     }
 
     cancel_animation() {
@@ -122,10 +131,10 @@ class WireSegment extends Element {
                 anim_offset_: neighbor_segment.anim_offset_,
             });
         }
-        if (this.connected_pos) {
+        if (this.normal_pos) {
             neighbor_elements.push({
-                offset: this.is_vertical ? this.connected_pos.y : this.connected_pos.x,
-                anim_offset_: this.is_vertical ? this.anim_connected_pos_.y : this.anim_connected_pos_.x,
+                offset: this.is_vertical ? this.normal_pos.y : this.normal_pos.x,
+                anim_offset_: this.is_vertical ? this.anim_normal_pos_.y : this.anim_normal_pos_.x,
             });
         }
 

@@ -1,42 +1,68 @@
 'use strict';
 
 class KeyCombination {
-    constructor(key_code, key, modifier_keys) {
-        this.key = key;
-        this.key_code = key_code;
-        this.modifier_keys = modifier_keys;
+    constructor(key, modifiers=KeyCombination.Modifier_None) {
+        this.key = key.key;
+        this.code = key.code;
+        this.modifiers = modifiers;
     }
 
     matches_event(event) {
-        if (event.ctrlKey  == !(this.modifier_keys & KeyCombination.Modifier_Ctrl))  return false;
-        if (event.shiftKey == !(this.modifier_keys & KeyCombination.Modifier_Shift)) return false;
-        if (event.altKey   == !(this.modifier_keys & KeyCombination.Modifier_Alt))   return false;
+        if (event.shiftKey == !(this.modifiers & KeyCombination.Modifier_Shift)) return false;
+        if (event.ctrlKey  == !(this.modifiers & KeyCombination.Modifier_Ctrl))  return false;
+        if (event.altKey   == !(this.modifiers & KeyCombination.Modifier_Alt))   return false;
 
-        return this.key_code == event.keyCode;
+        return this.code == event.keyCode;
     }
 
     to_string() {
         let modifier_string = '';
 
-        if (this.modifier_keys & KeyCombination.Modifier_Ctrl)  modifier_string += 'Ctrl+';
-        if (this.modifier_keys & KeyCombination.Modifier_Shift) modifier_string += 'Shift+';
-        if (this.modifier_keys & KeyCombination.Modifier_Alt)   modifier_string += 'Alt+';
+        if (this.modifiers & KeyCombination.Modifier_Shift) modifier_string += 'Shift+';
+        if (this.modifiers & KeyCombination.Modifier_Ctrl)  modifier_string += 'Ctrl+';
+        if (this.modifiers & KeyCombination.Modifier_Alt)   modifier_string += 'Alt+';
 
-        return `${modifier_string}${this.key.substr(0,1).toUpperCase()}${this.key.substr(1).toLowerCase()}`;
+        return `${modifier_string}${this.key}`;
     }
 
-    static get Modifier_None() {
-        return 0x0;
-    }
-    static get Modifier_Shift() {
-        return 0x1;
-    }
-    static get Modifier_Ctrl() {
-        return 0x2;
-    }
-    static get Modifier_Alt() {
-        return 0x4;
-    }
+    static get Key_Tab()    { return { code:9,   key:'Tab',    }; }
+    static get Key_Enter()  { return { code:13,  key:'Enter',  }; }
+    static get Key_Escape() { return { code:27,  key:'Escape', }; }
+    static get Key_Space()  { return { code:32,  key:'Space',  }; }
+    static get Key_Delete() { return { code:46,  key:'Delete', }; }
+    static get Key_A()      { return { code:65,  key:'A',      }; }
+    static get Key_B()      { return { code:66,  key:'B',      }; }
+    static get Key_C()      { return { code:67,  key:'C',      }; }
+    static get Key_D()      { return { code:68,  key:'D',      }; }
+    static get Key_E()      { return { code:69,  key:'E',      }; }
+    static get Key_F()      { return { code:70,  key:'F',      }; }
+    static get Key_G()      { return { code:71,  key:'G',      }; }
+    static get Key_H()      { return { code:72,  key:'H',      }; }
+    static get Key_I()      { return { code:73,  key:'I',      }; }
+    static get Key_J()      { return { code:74,  key:'J',      }; }
+    static get Key_K()      { return { code:75,  key:'K',      }; }
+    static get Key_L()      { return { code:76,  key:'L',      }; }
+    static get Key_M()      { return { code:77,  key:'M',      }; }
+    static get Key_N()      { return { code:78,  key:'N',      }; }
+    static get Key_O()      { return { code:79,  key:'O',      }; }
+    static get Key_P()      { return { code:80,  key:'P',      }; }
+    static get Key_Q()      { return { code:81,  key:'Q',      }; }
+    static get Key_R()      { return { code:82,  key:'R',      }; }
+    static get Key_S()      { return { code:83,  key:'S',      }; }
+    static get Key_T()      { return { code:84,  key:'T',      }; }
+    static get Key_U()      { return { code:85,  key:'U',      }; }
+    static get Key_V()      { return { code:86,  key:'V',      }; }
+    static get Key_W()      { return { code:87,  key:'W',      }; }
+    static get Key_X()      { return { code:88,  key:'X',      }; }
+    static get Key_Y()      { return { code:89,  key:'Y',      }; }
+    static get Key_Z()      { return { code:90,  key:'Z',      }; }
+    static get Key_Plus()   { return { code:187, key:'+',      }; }
+    static get Key_Minus()  { return { code:189, key:'-',      }; }
+
+    static get Modifier_None()  { return 0; }
+    static get Modifier_Shift() { return 1; }
+    static get Modifier_Ctrl()  { return 2; }
+    static get Modifier_Alt()   { return 4; }
 }
 
 const commands = [
@@ -49,8 +75,16 @@ const commands = [
         },
     },
     {
+        name: 'add-xor-gate',
+        shortcuts: [],
+        command: function() {
+            current_tab.controller.save_state('(command) add-xor-gate');
+            current_tab.controller.init_element(new XorGate);
+        },
+    },
+    {
         name: 'add-input-node',
-        shortcuts: [new KeyCombination(187, '+', KeyCombination.Modifier_Shift)],
+        shortcuts: [new KeyCombination(KeyCombination.Key_Plus, KeyCombination.Modifier_Shift)],
         command: function() {
             current_tab.controller.save_state('(command) add-input-node');
             current_tab.model.add_input_node_to_selected_gates();
@@ -124,11 +158,13 @@ const commands = [
         },
     },
     {
-        name: 'add-text-label',
+        name: 'add-label',
         shortcuts: [],
         command: function() {
-            current_tab.controller.save_state('(command) add-text-label');
-            current_tab.controller.init_element(new Label);
+            current_tab.controller.save_state('(command) add-label');
+            const label = new Label;
+            label.text = 'Text...';
+            current_tab.controller.init_element(label);
         },
     },
     {
@@ -137,6 +173,14 @@ const commands = [
         command: function() {
             current_tab.controller.save_state('(command) change-type-and-gate');
             current_tab.controller.change_element(new AndGate);
+        },
+    },
+    {
+        name: 'change-type-xor-gate',
+        shortcuts: [],
+        command: function() {
+            current_tab.controller.save_state('(command) change-type-xor-gate');
+            current_tab.controller.change_element(new XorGate);
         },
     },
     {
@@ -235,14 +279,14 @@ const commands = [
     },
     {
         name: 'copy',
-        shortcuts: [new KeyCombination(67, 'c', KeyCombination.Modifier_Ctrl)],
+        shortcuts: [new KeyCombination(KeyCombination.Key_C, KeyCombination.Modifier_Ctrl)],
         command: function() {
             current_tab.controller.copy();
         },
     },
     {
         name: 'cut',
-        shortcuts: [new KeyCombination(88, 'x', KeyCombination.Modifier_Ctrl)],
+        shortcuts: [new KeyCombination(KeyCombination.Key_X, KeyCombination.Modifier_Ctrl)],
         command: function() {
             current_tab.controller.save_state('(command) cut');
             current_tab.controller.copy();
@@ -251,7 +295,7 @@ const commands = [
     },
     {
         name: 'delete',
-        shortcuts: [new KeyCombination(46, 'delete', KeyCombination.Modifier_None)],
+        shortcuts: [new KeyCombination(KeyCombination.Key_Delete)],
         command: function() {
             current_tab.controller.save_state('(command) delete');
             current_tab.controller.current_action = Enum.action.none;
@@ -260,7 +304,7 @@ const commands = [
     },
     {
         name: 'escape',
-        shortcuts: [new KeyCombination(27, 'escape', KeyCombination.Modifier_None)],
+        shortcuts: [new KeyCombination(KeyCombination.Key_Escape)],
         command: function() {
             close_menu();
 
@@ -280,7 +324,7 @@ const commands = [
     },
     {
         name: 'enter',
-        shortcuts: [new KeyCombination(13, 'enter', KeyCombination.Modifier_None)],
+        shortcuts: [new KeyCombination(KeyCombination.Key_Enter)],
         command: function() {
             current_tab.controller.current_action = Enum.action.none;
         },
@@ -308,7 +352,7 @@ const commands = [
     },
     {
         name: 'import',
-        shortcuts: [new KeyCombination(73, 'i', KeyCombination.Modifier_Ctrl)],
+        shortcuts: [new KeyCombination(KeyCombination.Key_I, KeyCombination.Modifier_Ctrl)],
         command: function() {
             current_tab.controller.save_state('(command) import');
             current_tab.controller.read_files(function(result) {
@@ -319,7 +363,7 @@ const commands = [
     },
     {
         name: 'instant-import',
-        shortcuts: [new KeyCombination(76, 'l', KeyCombination.Modifier_Ctrl)],
+        shortcuts: [new KeyCombination(KeyCombination.Key_L, KeyCombination.Modifier_Ctrl)],
         command: function() {
             const file_string = current_tab.controller.file_string();
             current_tab.controller.init_custom_gate(extended_parse(file_string));
@@ -328,7 +372,7 @@ const commands = [
     },
     {
         name: 'invert',
-        shortcuts: [new KeyCombination(73, 'i', KeyCombination.Modifier_Shift)],
+        shortcuts: [new KeyCombination(KeyCombination.Key_I, KeyCombination.Modifier_Shift)],
         command: function() {
             current_tab.controller.save_state('(command) invert');
             current_tab.model.invert_selected_connection_nodes();
@@ -336,7 +380,7 @@ const commands = [
     },
     {
         name: 'new',
-        shortcuts: [new KeyCombination(78, 'n', KeyCombination.Modifier_Shift|KeyCombination.Modifier_Ctrl)],
+        shortcuts: [new KeyCombination(KeyCombination.Key_N, KeyCombination.Modifier_Shift|KeyCombination.Modifier_Ctrl)],
         command: function() {
             current_tab.controller.save_state('(command) new');
             current_tab.reset();
@@ -345,7 +389,7 @@ const commands = [
     },
     {
         name: 'open-file',
-        shortcuts: [new KeyCombination(79, 'o', KeyCombination.Modifier_Ctrl)],
+        shortcuts: [new KeyCombination(KeyCombination.Key_O, KeyCombination.Modifier_Ctrl)],
         command: function() {
             current_tab.controller.read_files(function(result) {
                 current_tab.model.main_gate = extended_parse(result);
@@ -355,13 +399,13 @@ const commands = [
     },
     {
         name: 'open-folder',
-        shortcuts: [new KeyCombination(79, 'o', KeyCombination.Modifier_Shift|KeyCombination.Modifier_Ctrl)],
+        shortcuts: [new KeyCombination(KeyCombination.Key_O, KeyCombination.Modifier_Shift|KeyCombination.Modifier_Ctrl)],
         command: function() {
         },
     },
     {
         name: 'paste',
-        shortcuts: [new KeyCombination(86, 'v', KeyCombination.Modifier_Ctrl)],
+        shortcuts: [new KeyCombination(KeyCombination.Key_V, KeyCombination.Modifier_Ctrl)],
         command: function() {
             current_tab.controller.save_state('(command) paste');
             current_tab.controller.paste();
@@ -369,7 +413,7 @@ const commands = [
     },
     {
         name: 'undo',
-        shortcuts: [new KeyCombination(90, 'z', KeyCombination.Modifier_Ctrl)],
+        shortcuts: [new KeyCombination(KeyCombination.Key_Z, KeyCombination.Modifier_Ctrl)],
         command: function() {
             current_tab.controller.undo();
         },
@@ -377,8 +421,8 @@ const commands = [
     {
         name: 'redo',
         shortcuts: [
-            new KeyCombination(90, 'z', KeyCombination.Modifier_Shift|KeyCombination.Modifier_Ctrl),
-            new KeyCombination(89, 'y', KeyCombination.Modifier_Ctrl),
+            new KeyCombination(KeyCombination.Key_Z, KeyCombination.Modifier_Shift|KeyCombination.Modifier_Ctrl),
+            new KeyCombination(KeyCombination.Key_Y, KeyCombination.Modifier_Ctrl),
         ],
         command: function() {
             current_tab.controller.redo();
@@ -387,7 +431,7 @@ const commands = [
     {
         name: 'TEMP-SAVE-STATE',
         shortcuts: [
-            new KeyCombination(83, 's', KeyCombination.Modifier_None),
+            new KeyCombination(KeyCombination.Key_S),
         ],
         command: function() {
             current_tab.controller.save_state('COMMAND');
@@ -395,7 +439,7 @@ const commands = [
     },
     {
         name: 'TEMP-RELOAD',
-        shortcuts: [new KeyCombination(82, 'r', KeyCombination.Modifier_None)],
+        shortcuts: [new KeyCombination(KeyCombination.Key_R)],
         command: function() {
             localStorage.setItem('CS-RESTORE-ON-STARTUP', current_tab.controller.file_string());
             location.reload();
@@ -403,7 +447,7 @@ const commands = [
     },
     {
         name: 'reopen-last-file',
-        shortcuts: [new KeyCombination(84, 't', KeyCombination.Modifier_Shift|KeyCombination.Modifier_Ctrl)],
+        shortcuts: [new KeyCombination(KeyCombination.Key_T, KeyCombination.Modifier_Shift|KeyCombination.Modifier_Ctrl)],
         command: function() {
         },
     },
@@ -416,14 +460,14 @@ const commands = [
     },
     {
         name: 'save',
-        shortcuts: [new KeyCombination(83, 's', KeyCombination.Modifier_Ctrl)],
+        shortcuts: [new KeyCombination(KeyCombination.Key_S, KeyCombination.Modifier_Ctrl)],
         command: function() {
             download_string(current_tab.controller.file_string(), 'file.circ');
         },
     },
     {
         name: 'save-as',
-        shortcuts: [new KeyCombination(83, 's', KeyCombination.Modifier_Shift|KeyCombination.Modifier_Ctrl)],
+        shortcuts: [new KeyCombination(KeyCombination.Key_S, KeyCombination.Modifier_Shift|KeyCombination.Modifier_Ctrl)],
         command: function() {
             let file_name = prompt('Save file as...', 'file.circ');
             if (file_name) {
@@ -434,7 +478,7 @@ const commands = [
     },
     {
         name: 'select-all',
-        shortcuts: [new KeyCombination(65, 'a', KeyCombination.Modifier_Shift)],
+        shortcuts: [new KeyCombination(KeyCombination.Key_A, KeyCombination.Modifier_Shift)],
         command: function() {
             current_tab.model.select_all();
         },
@@ -465,7 +509,7 @@ const commands = [
     },
     {
         name: 'toggle-selection',
-        shortcuts: [new KeyCombination(65, 'a', KeyCombination.Modifier_Ctrl)],
+        shortcuts: [new KeyCombination(KeyCombination.Key_A, KeyCombination.Modifier_Ctrl)],
         command: function() {
             if (current_tab.model.elements().every(element => element.is_selected())) {
                 current_tab.model.deselect_all();
@@ -477,14 +521,14 @@ const commands = [
     },
     {
         name: 'deselect-all',
-        shortcuts: [new KeyCombination(65, 'a', KeyCombination.Modifier_Shift|KeyCombination.Modifier_Ctrl)],
+        shortcuts: [new KeyCombination(KeyCombination.Key_A, KeyCombination.Modifier_Shift|KeyCombination.Modifier_Ctrl)],
         command: function() {
             current_tab.model.deselect_all();
         },
     },
     {
         name: 'split-segment',
-        shortcuts: [new KeyCombination(65, 'g', KeyCombination.Modifier_Shift)],
+        shortcuts: [new KeyCombination(KeyCombination.Key_S, KeyCombination.Modifier_Shift)],
         command: function() {
             current_tab.controller.save_state('(command) split-segment');
             current_tab.model.split_selected_segments();
@@ -506,16 +550,42 @@ const commands = [
     },
     {
         name: 'zoom-in',
-        shortcuts: [new KeyCombination(187, '+', KeyCombination.Modifier_Ctrl)],
+        shortcuts: [new KeyCombination(KeyCombination.Key_Plus, KeyCombination.Modifier_Ctrl)],
         command: function() {
             current_tab.camera.scale_at(screen_center(), config.scale_factor);
         },
     },
     {
         name: 'zoom-out',
-        shortcuts: [new KeyCombination(189, '-', KeyCombination.Modifier_Ctrl)],
+        shortcuts: [new KeyCombination(KeyCombination.Key_Minus, KeyCombination.Modifier_Ctrl)],
         command: function() {
             current_tab.camera.scale_at(screen_center(), 1/config.scale_factor);
+        },
+    },
+    {
+        name: 'debug-toggle',
+        shortcuts: [],
+        command: function() {
+        },
+    },
+    {
+        name: 'debug-step',
+        shortcuts: [
+            new KeyCombination(KeyCombination.Key_Tab),
+            new KeyCombination(KeyCombination.Key_Space),
+        ],
+        command: function() {
+            console.log('debug-step');
+        },
+    },
+    {
+        name: 'debug-single-step',
+        shortcuts: [
+            new KeyCombination(KeyCombination.Key_Tab, KeyCombination.Modifier_Shift),
+            new KeyCombination(KeyCombination.Key_Space, KeyCombination.Modifier_Shift),
+        ],
+        command: function() {
+            console.log('debug-single-step');
         },
     },
 ];

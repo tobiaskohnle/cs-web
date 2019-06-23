@@ -238,8 +238,8 @@ class Controller {
                     segment_b.auto_offset_ = true;
                     const segment_c = this.model.add_wire_segment(this.new_wire_segments);
 
-                    segment_a.connected_pos = this.wire_start_node.anchor_pos_;
-                    segment_c.connected_pos = this.snapped_mouse_world_pos;
+                    segment_a.set_connected_pos(this.wire_start_node.anchor_pos_);
+                    segment_c.set_connected_pos(this.snapped_mouse_world_pos);
 
                     segment_a.cancel_animation();
                     segment_b.cancel_animation();
@@ -250,9 +250,19 @@ class Controller {
                 break;
 
             case Enum.action.create_wire:
+                // if (this.wire_start_node.anchor_pos_.x < this.mouse_world_pos.x && this.new_wire_segments.length == 3) {
+                //     this.new_wire_segments[0].is_vertical = true;
+                //     this.new_wire_segments[1].is_vertical = false;
+                //     this.new_wire_segments[2].is_vertical = true;
+                // }
+                // else {
+                //     this.new_wire_segments[0].is_vertical = false;
+                //     this.new_wire_segments[1].is_vertical = true;
+                //     this.new_wire_segments[2].is_vertical = false;
+                // }
+
             case Enum.action.create_wire_segment:
                 this.new_wire_segments.last().auto_offset_ = false;
-                this.new_wire_segments.last().set_offset(this.snapped_mouse_world_pos);
 
                 if (other_hovered_element) {
                     const last_snapped_mouse_world_pos = this.snapped_mouse_world_pos;
@@ -269,16 +279,20 @@ class Controller {
                     );
 
                     // TEMP
-                    for (let i = -1; i > -Math.min(this.new_wire_segments.length, last_new_wire_segments.length); i--) {
-                        const new_segment = this.new_wire_segments.at(i);
+                    // for (let i = -1; i > -Math.min(this.new_wire_segments.length, last_new_wire_segments.length); i--) {
+                    //     const new_segment = this.new_wire_segments.at(i);
+                    //     const last_new_segment = last_new_wire_segments.at(i);
 
-                        new_segment.anim_offset_ = last_new_wire_segments.at(i).anim_offset_;
+                    //     new_segment.anim_offset_ = last_new_segment.anim_offset_;
 
-                        if (new_segment.connected_pos) {
-                            new_segment.anim_connected_pos_ = last_new_wire_segments.at(i).anim_connected_pos_;
-                            new_segment.connected_pos.set(last_snapped_mouse_world_pos);
-                        }
-                    }
+                    //     if (new_segment.offset_pos) {
+                    //         new_segment.anim_offset_pos = last_new_segment.anim_offset_pos_;
+                    //     }
+                    //     if (new_segment.normal_pos) {
+                    //         new_segment.anim_normal_pos = last_new_segment.anim_normal_pos_;
+                    //     }
+                    //     new_segment.set_connected_pos(last_snapped_mouse_world_pos);
+                    // }
                     // /TEMP
                 }
                 break;
@@ -406,9 +420,16 @@ class Controller {
                 }
                 break;
 
-            case Enum.action.create_wire:
             case Enum.action.create_wire_segment:
+            case Enum.action.create_wire:
                 if (this.action_successful_create_wire) {
+                    if (this.new_wire_segments.last().offset_pos == this.snapped_mouse_world_pos) {
+                        this.new_wire_segments.last().offset_pos = null;
+                    }
+                    if (this.new_wire_segments.last().norma_pos == this.snapped_mouse_world_pos) {
+                        this.new_wire_segments.last().norma_pos = null;
+                    }
+
                     config.DEBUG_LOG && console.log('create_wire success');
                     this.current_action = Enum.action.none;
 
@@ -434,8 +455,8 @@ class Controller {
 
                     const segment_b = current_tab.model.add_wire_segment(this.new_wire_segments);
 
-                    segment_a.connected_pos = this.wire_start_node.anchor_pos_;
-                    segment_b.connected_pos = this.snapped_mouse_world_pos;
+                    segment_a.set_connected_pos(this.wire_start_node.anchor_pos_);
+                    segment_b.set_connected_pos(this.snapped_mouse_world_pos);
 
                     segment_a.cancel_animation();
                     segment_b.cancel_animation();
@@ -445,10 +466,10 @@ class Controller {
                 else {
                     config.DEBUG_LOG && console.log('create_wire_segment mouse_up');
 
-                    this.new_wire_segments.last().connected_pos = null;
+                    this.new_wire_segments.last().set_connected_pos(null);
 
                     const segment = this.model.add_wire_segment(this.new_wire_segments);
-                    segment.connected_pos = this.snapped_mouse_world_pos;
+                    segment.set_connected_pos(this.snapped_mouse_world_pos);
                     segment.cancel_animation();
 
                     current_tab.create_snapshot();
@@ -578,9 +599,10 @@ class Controller {
                     output.next_nodes = output.next_nodes.filter(next_node => copied_elements.includes(next_node.parent));
 
                     for (const segment of output.wire_segments.copy()) {
-                        if (segment.connected_pos &&
-                            output.anchor_pos_ != segment.connected_pos &&
-                            !output.next_nodes.find(node => node.anchor_pos_ == segment.connected_pos)
+                        if (segment.offset_pos &&
+                            segment.normal_pos &&
+                            !segment.is_connected_to(output) &&
+                            !output.next_nodes.find(node => segment.is_connected_to(node))
                         ) {
                             this.model.remove_wire_branch(segment);
                         }

@@ -57,9 +57,9 @@ const theme = {
         selection_outline:  new Color(210/360,.8,1,10/16)   , // #39fa
         node_init:          new Color(.5,1,1,0)             ,
         gate_init:          new Color(.5,1,1,0)             ,
-        label_text:         new Color(0, 0, .2)             , // #ccc
+        label_text:         new Color(0, 0, .1)             , // #ccc
         label_special_text: new Color(60/360, .91, .2)      , // #cc1
-        label_outline:      new Color(220/360, .2, .4, .7)  ,
+        label_outline:      new Color(220/360, .2, .4, 0)   ,
         label_caret:        new Color(212/360, 1, 1)        , // #07f
         label_selection:    new Color(204/360, 1, 1, 4/16)  , // #09f4
         wire_joint:         new Color(0, 0, .2)             , // #222
@@ -84,7 +84,7 @@ const theme = {
         gate_init:          new Color(.5,1,1,0)             ,
         label_text:         new Color(0, 0, .8)             , // #ccc
         label_special_text: new Color(60/360, .91, .8)      , // #cc1
-        label_outline:      new Color(220/360, .2, .4, .7)  ,
+        label_outline:      new Color(220/360, .2, .4, 0)   ,
         label_caret:        new Color(212/360, 1, 1)        , // #07f
         label_selection:    new Color(204/360, 1, 1, 4/16)  , // #09f4
         wire_joint:         new Color(60/360, .86, 1)       , // #ff2
@@ -105,11 +105,11 @@ const config = {
 
     use_system_clipboard: false,
 
-    anim_factor: .39,
+    anim_factor: .52,
     ticks_per_frame: 101,
     block_unused_key_combinations: false,
-    default_grid_size: 30,
-    default_rising_edge_pulse_length: 3,
+    default_grid_size: 32,
+    default_rising_edge_pulse_length: 32,
 
     colors: null,
     grid_style: Enum.grid_style.dots,
@@ -190,6 +190,10 @@ onmousedown = function(event) {
 }
 
 onmousemove = function(event) {
+    if (!current_tab) {
+        return;
+    }
+
     switch (current_tab.controller.element_mouse_captured || event.target) {
         case canvas:
             current_tab.controller.mouse_move(event);

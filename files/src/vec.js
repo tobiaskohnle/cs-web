@@ -44,12 +44,6 @@ class Vec {
         this.y /= vec.y;
         return this;
     }
-    rot(val) {
-        const sin = Math.sin(Math.PI/-2 * val);
-        const cos = Math.cos(Math.PI/-2 * val);
-        [this.x, this.y] = [cos*this.x - sin*this.y, sin*this.x + cos*this.y];
-        return this;
-    }
     floor() {
         this.x = Math.floor(this.x);
         this.y = Math.floor(this.y);
@@ -100,9 +94,6 @@ class Vec {
     }
     static div_vec(a, b) {
         return a.copy().div_vec(b);
-    }
-    static rot(a, val) {
-        return a.copy().rot(val);
     }
     static floor(a) {
         return a.copy().floor();

@@ -198,7 +198,7 @@ class InputNode extends ConnectionNode {
             return null;
         }
 
-        return this.previous_node().wire_segments.find(segment => segment.connected_pos == this.anchor_pos_);
+        return this.previous_node().wire_segments.find(segment => segment.is_connected_to(this));
     }
 
     draw() {
@@ -254,7 +254,7 @@ class OutputNode extends ConnectionNode {
     }
 
     attached_wire_segment() {
-        return this.wire_segments.find(segment => segment.connected_pos == this.anchor_pos_);
+        return this.wire_segments.find(segment => segment.is_connected_to(this));
     }
 
     draw() {
