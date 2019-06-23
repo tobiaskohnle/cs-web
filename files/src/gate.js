@@ -42,7 +42,7 @@ class Gate extends Element {
         node.clear();
         this.inputs.remove(node);
     }
-    remove_output_node() {
+    remove_output_node(node) {
         node.clear();
         this.outputs.remove(node);
     }

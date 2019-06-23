@@ -1,5 +1,3 @@
-assert = 0
-
 'use strict';
 
 function update() {

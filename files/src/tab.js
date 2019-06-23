@@ -15,7 +15,7 @@ class Tab {
     create_snapshot() {
         config.DEBUG_LOG && console.log(`%c>> CREATED SNAPSHOT`, 'color:#fb2; font-weight:bold');
 
-        this.snapshot = deep_copy({model:this.model, controller:this.controller});;
+        this.snapshot = deep_copy({model:this.model, controller:this.controller});
     }
 
     load_snapshot() {

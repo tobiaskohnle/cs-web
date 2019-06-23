@@ -1,4 +1,4 @@
-'use stict';
+'use strict';
 
 class Color {
     constructor(h=0, s=0, v=0, a=1) {
