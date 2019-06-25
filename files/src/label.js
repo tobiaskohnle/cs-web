@@ -113,28 +113,32 @@ class Label extends Element {
     }
 
     special_info() {
-        const unescape = string => {
+        function unescape(string) {
             return string.trim().replace(/(?:u\+|%u|\\u|\\)([0-9a-f]{4})/gi, (match, digits) => {
                 return String.fromCharCode(parseInt(digits, 16));
             });
-        };
-
-        if (/^tag\s*=/i.test(this.text)) {
-            return {tag: unescape(this.text.match(/^tag\s*=(?<tag>.*)/i).groups.tag)};
         }
 
-        if (/^name\s*=/i.test(this.text)) {
-            return {name: unescape(this.text.match(/^name\s*=(?<name>.*)/i).groups.name)};
+        const tag_match = this.text.match(/^tag\s*=(?<tag>.*)/i);
+        if (tag_match) {
+            return {tag: unescape(tag_match.groups.tag)};
         }
 
-        if (/^size\s*=/i.test(this.text)) {
-            if (/^size\s*=\s*\d+\s*,\s*\d+\s*/i.test(this.text)) {
-                const size = this.text.match(/^size\s*=\s*(?<x>\d+)\s*,\s*(?<y>\d+)\s*/i).groups;
-                return {size: new Vec(parseInt(size.x), parseInt(size.y))};
+        const name_match = this.text.match(/^name\s*=(?<name>.*)/i);
+        if (name_match) {
+            return {name: unescape(name_match.groups.name)};
+        }
+
+        const size_match = this.text.match(/^size\s*=(?<args>.*)/i);
+        if (size_match) {
+            const size_pair_match = size_match.groups.args.match(/(?<x>\d+)\s*,\s*(?<y>\d+)/);
+            if (size_pair_match) {
+                return {size: new Vec(parseInt(size_pair_match.groups.x), parseInt(size_pair_match.groups.y))};
             }
-            if (/^size\s*=\s*\d+\s*/i.test(this.text)) {
-                const size = this.text.match(/^size\s*=\s*(?<xy>\d+)\s*/i).groups;
-                return {size: new Vec(parseInt(size.xy))};
+
+            const size_single_match = size_match.groups.args.match(/(?<xy>\d+)/);
+            if (size_single_match) {
+                return {size: new Vec(parseInt(size_single_match.groups.xy))};
             }
 
             return {size: new Vec(3,4)};

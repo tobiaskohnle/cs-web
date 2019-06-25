@@ -344,6 +344,10 @@ class Model {
         if (this.nodes_connectable(start_node, end_element)) {
             this.connect_nodes(start_node, end_element);
 
+            if (new_wire_segments.last().is_vertical != end_element.is_vertical() && new_wire_segments.length > 2) {
+                this.remove_wire_segment(new_wire_segments);
+            }
+
             const output_node = start_node instanceof OutputNode ? start_node : end_element;
 
             output_node.wire_segments.push(...new_wire_segments);

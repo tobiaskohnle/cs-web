@@ -93,13 +93,14 @@ function add_menu_event_listeners() {
         const menu = menu_button.getAttribute('menu');
 
         menu_button.addEventListener('mouseenter', function(event) {
-            clearTimeout(timeout_id);
-
             timeout_id = setTimeout(function() {
                 if (menu) {
                     open_menu_next_to(menu, menu_button, false);
                 }
             }, 350);
+        });
+        menu_button.addEventListener('mouseleave', function(event) {
+            clearTimeout(timeout_id);
         });
     }
 }
