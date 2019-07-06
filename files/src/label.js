@@ -11,8 +11,8 @@ class Label extends Element {
 
         this.last_pos_ = new Vec;
 
-        this.anim_color_ = Color.from(config.colors.label_outline);
-        this.anim_text_color_ = Color.from(config.colors.label_text);
+        this.anim_color_ = Color.from(cs.theme.label_outline);
+        this.anim_text_color_ = Color.from(cs.theme.label_text);
 
         this.font_size = 1;
         this.anim_font_size_ = 1;
@@ -47,51 +47,51 @@ class Label extends Element {
         super.update_pos();
         super.update_size();
 
-        const color = this.current_color(config.colors.label_outline);
+        const color = this.current_color(cs.theme.label_outline);
 
         this.anim_color_.set_hsva(color);
         this.anim_color_.update();
 
-        this.anim_text_color_.set_hsva(this.special_info() ? config.colors.label_special_text : config.colors.label_text);
+        this.anim_text_color_.set_hsva(this.special_info() ? cs.theme.label_special_text : cs.theme.label_text);
         this.anim_text_color_.update();
 
-        this.anim_font_size_ = anim_interpolate(this.anim_font_size_, this.font_size, config.label_anim_factor);
+        this.anim_font_size_ = anim_interpolate(this.anim_font_size_, this.font_size, cs.config.label_anim_factor);
 
         let total_width = this.text_width(this.text);
-        this.anim_total_width_ = anim_interpolate(this.anim_total_width_, total_width, config.label_anim_factor);
+        this.anim_total_width_ = anim_interpolate(this.anim_total_width_, total_width, cs.config.label_anim_factor);
 
         const offset = new Vec(
             (this.size.x - total_width)    * [0, .5, 1][this.horizontal_text_align],
             (this.size.y - this.font_size) * [0, .5, 1][this.vertical_text_align] + this.font_size/2,
         );
-        this.anim_offset_ = anim_interpolate_vec(this.anim_offset_, offset, config.label_anim_factor);
+        this.anim_offset_ = anim_interpolate_vec(this.anim_offset_, offset, cs.config.label_anim_factor);
 
         const selection_bounds = this.text_bounds(this.selection_start, this.selection_width());
 
         if (!this.anim_selection_bounds_) this.anim_selection_bounds_ = selection_bounds;
-        this.anim_selection_bounds_.start = anim_interpolate(this.anim_selection_bounds_.start, selection_bounds.start, config.label_anim_factor);
-        this.anim_selection_bounds_.end = anim_interpolate(this.anim_selection_bounds_.end, selection_bounds.end, config.label_anim_factor);
+        this.anim_selection_bounds_.start = anim_interpolate(this.anim_selection_bounds_.start, selection_bounds.start, cs.config.label_anim_factor);
+        this.anim_selection_bounds_.end = anim_interpolate(this.anim_selection_bounds_.end, selection_bounds.end, cs.config.label_anim_factor);
 
         const caret_bounds = this.text_bounds(this.caret, 0);
-        caret_bounds.start -= config.label_caret_width/2 * this.font_size;
-        caret_bounds.end = config.label_caret_width * this.font_size + caret_bounds.start;
+        caret_bounds.start -= cs.config.label_caret_width/2 * this.font_size;
+        caret_bounds.end = cs.config.label_caret_width * this.font_size + caret_bounds.start;
 
         if (!this.anim_caret_bounds_) this.anim_caret_bounds_ = caret_bounds;
-        this.anim_caret_bounds_.start = anim_interpolate(this.anim_caret_bounds_.start, caret_bounds.start, config.label_anim_factor);
-        this.anim_caret_bounds_.end = anim_interpolate(this.anim_caret_bounds_.end, caret_bounds.end, config.label_anim_factor);
+        this.anim_caret_bounds_.start = anim_interpolate(this.anim_caret_bounds_.start, caret_bounds.start, cs.config.label_anim_factor);
+        this.anim_caret_bounds_.end = anim_interpolate(this.anim_caret_bounds_.end, caret_bounds.end, cs.config.label_anim_factor);
 
         let width = 0;
         for (let x = 0; x < this.text.length; x++) {
-            this.anim_chars_offset_[x] = anim_interpolate(this.anim_chars_offset_[x], width, config.label_anim_factor);
+            this.anim_chars_offset_[x] = anim_interpolate(this.anim_chars_offset_[x], width, cs.config.label_anim_factor);
             width += this.get_char_width(this.text[x]);
         }
 
         const delta_time = Date.now() - this.last_time_caret_moved_;
-        const sin = config.label_caret_smoothness * Math.sin(
-            Math.PI * (1/4 + 2*delta_time/config.label_caret_blink_rate + config.label_caret_blink_rate/2)
+        const sin = cs.config.label_caret_smoothness * Math.sin(
+            Math.PI * (1/4 + 2*delta_time/cs.config.label_caret_blink_rate + cs.config.label_caret_blink_rate/2)
         );
-        const alpha = delta_time < config.label_caret_blink_rate/2 ? 1 : map(clamp(sin, -1, 1), -1, 1, 0, 1);
-        this.caret_color_ = Color.from(config.colors.label_caret, {a:alpha}).to_string();
+        const alpha = delta_time < cs.config.label_caret_blink_rate/2 ? 1 : Util.map(Util.clamp(sin, -1, 1), -1, 1, 0, 1);
+        this.caret_color_ = Color.from(cs.theme.label_caret, {a:alpha}).to_string();
     }
 
     move(total_vec, snap_size_) {
@@ -148,8 +148,8 @@ class Label extends Element {
     }
 
     distance(pos) {
-        if (between(pos.x, this.pos.x, this.pos.x+this.size.x) &&
-            between(pos.y, this.pos.y, this.pos.y+this.size.y)
+        if (Util.between(pos.x, this.pos.x, this.pos.x+this.size.x) &&
+            Util.between(pos.y, this.pos.y, this.pos.y+this.size.y)
         ) {
             return 0;
         }
@@ -190,7 +190,7 @@ class Label extends Element {
     }
 
     draw() {
-        context.lineWidth = .1;
+        context.lineWidth = .1/2;
         context.strokeStyle = this.anim_color_.to_string();
         context.strokeRect(...this.anim_pos_.xy, ...this.anim_size_.xy);
 
@@ -208,8 +208,8 @@ class Label extends Element {
             context.fillText(char, this.anim_chars_offset_[x], 0);
         }
 
-        if (document.hasFocus() && this.is_selected() && C.current_action == Enum.action.edit_elements) {
-            context.fillStyle = config.colors.label_selection.to_string();
+        if (document.hasFocus() && this.is_selected() && cs.controller.current_action == Enum.action.edit_elements) {
+            context.fillStyle = cs.theme.label_selection.to_string();
             this.draw_text_bounds(this.anim_selection_bounds_);
 
             context.fillStyle = this.caret_color_;
@@ -283,7 +283,7 @@ class Label extends Element {
     }
 
     event_mouse_down(event) {
-        config.DEBUG_LOG && console.log('label mouse down');
+        cs.config.DEBUG_LOG && console.log('label mouse down');
 
         this.mousedown_caret_ = this.caret;
         this.mousedown_detail_ = event.detail;
@@ -303,9 +303,9 @@ class Label extends Element {
         }
     }
     event_mouse_move(event) {
-        config.DEBUG_LOG && console.log('label mouse move');
+        cs.config.DEBUG_LOG && console.log('label mouse move');
 
-        this.caret_hovered_ = this.get_text_index(current_tab.controller.mouse_world_pos);
+        this.caret_hovered_ = this.get_text_index(cs.controller.mouse_world_pos);
 
         if (event.buttons & 1) {
             switch ((this.mousedown_detail_-1) % 3) {
@@ -371,7 +371,7 @@ class Label extends Element {
                             return false;
                         case 'c':
                             this.clipboard = this.text.substring(this.selection_lower(), this.selection_upper()) || this.text;
-                            if (config.use_system_clipboard) {
+                            if (cs.config.use_system_clipboard) {
                                 navigator.clipboard.writeText(this.clipboard);
                             }
 
@@ -382,14 +382,14 @@ class Label extends Element {
                             }
 
                             this.clipboard = this.text.substring(this.selection_lower(), this.selection_upper());
-                            if (config.use_system_clipboard) {
+                            if (cs.config.use_system_clipboard) {
                                 navigator.clipboard.writeText(this.clipboard);
                             }
 
                             this.delete_selection();
                             return false;
                         case 'v':
-                            if (config.use_system_clipboard) {
+                            if (cs.config.use_system_clipboard) {
                                 navigator.clipboard.readText().then(string => {
                                     this.write_text(string);
                                 });

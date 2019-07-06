@@ -1,10 +1,8 @@
 'use strict';
 
 class WireSegment extends Element {
-    constructor(parent=null) {
+    constructor() {
         super();
-
-        this.parent = parent;
 
         this.offset = 0;
         this.anim_offset_ = 0;
@@ -21,7 +19,7 @@ class WireSegment extends Element {
         this.anim_offset_pos_ = null;
         this.anim_normal_pos_ = null;
 
-        this.color_outline_ = Color.from(config.colors.outline);
+        this.color_outline_ = Color.from(cs.theme.outline);
     }
 
     update() {
@@ -53,7 +51,7 @@ class WireSegment extends Element {
 
         this.anim_offset_ = anim_interpolate(this.anim_offset_, this.offset);
 
-        const default_color = this.parent && this.parent.state ? config.colors.wire_active : config.colors.wire_inactive;
+        const default_color = this.parent() && this.parent().state ? cs.theme.wire_active : cs.theme.wire_inactive;
         this.color_outline_.set_hsva(this.current_color(default_color));
         this.color_outline_.update();
     }
@@ -64,7 +62,11 @@ class WireSegment extends Element {
 
     move(total_vec, snap_size) {
         this.set_offset(Vec.round(total_vec, snap_size));
-        this.offset += round(this.last_offset_, this.snap_size_);
+        this.offset += Util.round(this.last_offset_, this.snap_size_);
+    }
+
+    parent() {
+        return ActionGet.elements().find(element => element instanceof OutputNode && element.wire_segments.includes(this));
     }
 
     set_offset(pos) {
@@ -100,7 +102,7 @@ class WireSegment extends Element {
 
         const distance = Math.abs(pos_offset - offset);
 
-        if (between(pos_normal_offset, normal_offset.min, normal_offset.max)) {
+        if (Util.between(pos_normal_offset, normal_offset.min, normal_offset.max)) {
             const mid_distance = distance - 2e-9;
 
             if (mid_distance > 1) return Infinity;
@@ -184,7 +186,7 @@ class WireSegment extends Element {
     }
 
     draw_joints() {
-        context.fillStyle = config.colors.wire_joint.to_string();
+        context.fillStyle = cs.theme.wire_joint.to_string();
 
         const neighbor_elements = this.neighbor_elements().sorted((a,b) => a.anim_offset_-b.anim_offset_);
 

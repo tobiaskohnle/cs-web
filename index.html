@@ -1,35 +1,31 @@
 <!DOCTYPE html>
 <html>
 <meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, user-scalable=no'>
 <title>cs &ndash; web</title>
 
-<link rel='icon' href='files/favicon.png'>
+<link rel='icon' href='files/icon/favicon.png'>
 
-<link rel='stylesheet' href='files/css/main.css'>
+<link rel='stylesheet' href='files/css/style.css'>
 <link rel='stylesheet' href='files/css/menu.css'>
+<link rel='stylesheet' id='theme-style'>
 
-<script src='files/src/util.js'></script>
-
-<script src='files/src/element.js'></script>
-
-<script src='files/src/camera.js'></script>
-<script src='files/src/color.js'></script>
-<script src='files/src/commands.js'></script>
-<script src='files/src/label.js'></script>
-<script src='files/src/menu.js'></script>
-<script src='files/src/model.js'></script>
-<script src='files/src/node.js'></script>
-<script src='files/src/tab.js'></script>
-<script src='files/src/vec.js'></script>
-<script src='files/src/view.js'></script>
-<script src='files/src/wire.js'></script>
-<script src='files/src/sidebar.js'></script>
-
-<script src='files/src/gate.js'></script>
-
-<script src='files/src/controller.js'></script>
-
-<script src='files/src/main.js'></script>
+<script src='files/src/util.js'>       </script>
+<script src='files/src/element.js'>    </script>
+<script src='files/src/actions.js'>    </script>
+<script src='files/src/camera.js'>     </script>
+<script src='files/src/color.js'>      </script>
+<script src='files/src/commands.js'>   </script>
+<script src='files/src/controller.js'> </script>
+<script src='files/src/gate.js'>       </script>
+<script src='files/src/label.js'>      </script>
+<script src='files/src/main.js'>       </script>
+<script src='files/src/menu.js'>       </script>
+<script src='files/src/node.js'>       </script>
+<script src='files/src/sidebar.js'>    </script>
+<script src='files/src/vec.js'>        </script>
+<script src='files/src/view.js'>       </script>
+<script src='files/src/wire.js'>       </script>
 
 <body>
     <div class='window'>
@@ -78,81 +74,81 @@
         <div class='menu-item' command='invert'>
             <span>Invert Connection Node</span>
         </div>
-        <div class='menu-item' command='view-content'>
+        <div class='menu-item' command='view_content'>
             <span>View Definition</span>
         </div>
     </div>
     <div class='menu' menu='context-menu-add-component'>
-        <div class='menu-item' command='add-and-gate'>
+        <div class='menu-item' command='add_and_gate'>
             <span>And Gate</span>
         </div>
-        <div class='menu-item' command='add-or-gate'>
+        <div class='menu-item' command='add_or_gate'>
             <span>Or Gate</span>
         </div>
-        <div class='menu-item' command='add-xor-gate'>
+        <div class='menu-item' command='add_xor_gate'>
             <span>Xor Gate</span>
         </div>
-        <div class='menu-item' command='add-not-gate'>
+        <div class='menu-item' command='add_not_gate'>
             <span>Not Gate</span>
         </div>
         <div class='menu-separator'></div>
-        <div class='menu-item' command='add-input-switch'>
+        <div class='menu-item' command='add_input_switch'>
             <span>Input Switch</span>
         </div>
-        <div class='menu-item' command='add-input-button'>
+        <div class='menu-item' command='add_input_button'>
             <span>Input Button</span>
         </div>
-        <div class='menu-item' command='add-input-pulse'>
+        <div class='menu-item' command='add_input_pulse'>
             <span>Input Pulse</span>
         </div>
-        <div class='menu-item' command='add-clock'>
+        <div class='menu-item' command='add_clock'>
             <span>Clock</span>
         </div>
-        <div class='menu-item' command='add-output-light'>
+        <div class='menu-item' command='add_output_light'>
             <span>Output Light</span>
         </div>
         <div class='menu-separator'></div>
-        <div class='menu-item' command='add-label'>
+        <div class='menu-item' command='add_label'>
             <span>Label</span>
         </div>
-        <div class='menu-item' command='add-segment-display'>
+        <div class='menu-item' command='add_segment_display'>
             <span>Segment Display</span>
         </div>
     </div>
     <div class='menu' menu='context-menu-change-type'>
-        <div class='menu-item' command='change-type-and-gate'>
+        <div class='menu-item' command='change_type_and_gate'>
             <span>And Gate</span>
         </div>
-        <div class='menu-item' command='change-type-or-gate'>
+        <div class='menu-item' command='change_type_or_gate'>
             <span>Or Gate</span>
         </div>
-        <div class='menu-item' command='change-type-xor-gate'>
+        <div class='menu-item' command='change_type_xor_gate'>
             <span>Xor Gate</span>
         </div>
-        <div class='menu-item' command='change-type-not-gate'>
+        <div class='menu-item' command='change_type_not_gate'>
             <span>Not Gate</span>
         </div>
         <div class='menu-separator'></div>
-        <div class='menu-item' command='change-type-input-switch'>
+        <div class='menu-item' command='change_type_input_switch'>
             <span>Input Switch</span>
         </div>
-        <div class='menu-item' command='change-type-input-button'>
+        <div class='menu-item' command='change_type_input_button'>
             <span>Input Button</span>
         </div>
-        <div class='menu-item' command='change-type-input-pulse'>
+        <div class='menu-item' command='change_type_input_pulse'>
             <span>Input Pulse</span>
         </div>
-        <div class='menu-item' command='change-type-clock'>
+        <div class='menu-item' command='change_type_clock'>
             <span>Clock</span>
         </div>
-        <div class='menu-item' command='change-type-output-light'>
+        <div class='menu-item' command='change_type_output_light'>
             <span>Output Light</span>
         </div>
         <div class='menu-separator'></div>
-        <div class='menu-item' command='change-type-text-label'>
+        <div class='menu-item' command='change_type_text_label'>
             <span>Label</span>
         </div>
-        <div class='menu-item' command='change-type-segment-display'>
+        <div class='menu-item' command='change_type_segment_display'>
             <span>Segment Display</span>
         </div>
     </div>
@@ -167,7 +163,7 @@
     </div>
 
     <div class='menu' menu='context-menu-add-custom-gate-recently-imported'>
-        <div class='menu-item' command='clear-recently-imported-list'>
+        <div class='menu-item' command='clear_recently_imported_list'>
             <span>Clear List</span>
         </div>
     </div>
@@ -176,11 +172,8 @@
         <div class='menu-item' command='new'>
             <span>New File</span>
         </div>
-        <div class='menu-item' command='open-file'>
+        <div class='menu-item' command='open_file'>
             <span>Open File...</span>
-        </div>
-        <div class='menu-item' command='open-folder'>
-            <span>Open Folder...</span>
         </div>
         <div class='menu-item' menu='file-open-recent'>
             <span>Open Recent</span>
@@ -192,16 +185,16 @@
         <div class='menu-item' command='save'>
             <span>Save</span>
         </div>
-        <div class='menu-item' command='save-as'>
+        <div class='menu-item' command='save_as'>
             <span>Save As...</span>
         </div>
     </div>
     <div class='menu' menu='file-open-recent'>
-        <div class='menu-item' command='reopen-last-file'>
+        <div class='menu-item' command='reopen_last_file'>
             <span>Reopen Closed File</span>
         </div>
         <div class='menu-separator'></div>
-        <div class='menu-item' command='clear-recent-file-list'>
+        <div class='menu-item' command='clear_recent_file_list'>
             <span>Clear List</span>
         </div>
     </div>
@@ -225,47 +218,20 @@
         <div class='menu-item' command='paste'>
             <span>Paste</span>
         </div>
-        <div class='menu-item' command='toggle-selection'>
+        <div class='menu-item' command='toggle_selection'>
             <span>Select All</span>
         </div>
     </div>
 
     <div class='menu' menu='view'>
-        <div class='menu-item' command='reset-view'>
+        <div class='menu-item' command='reset_view'>
             <span>Reset View</span>
         </div>
-        <div class='menu-item' command='zoom-in'>
+        <div class='menu-item' command='zoom_in'>
             <span>Zoom In</span>
         </div>
-        <div class='menu-item' command='zoom-out'>
+        <div class='menu-item' command='zoom_out'>
             <span>Zoom Out</span>
-        </div>
-        <div class='menu-item' menu='theme'>
-            <span>Theme</span>
-        </div>
-        <div class='menu-item' menu='grid'>
-            <span>Grid</span>
-        </div>
-    </div>
-
-    <div class='menu' menu='theme'>
-        <div class='menu-item' command='theme-light'>
-            <span>Light</span>
-        </div>
-        <div class='menu-item' command='theme-dark'>
-            <span>Dark</span>
-        </div>
-    </div>
-
-    <div class='menu' menu='grid'>
-        <div class='menu-item' command='grid-none'>
-            <span>None</span>
-        </div>
-        <div class='menu-item' command='grid-lines'>
-            <span>Solid</span>
-        </div>
-        <div class='menu-item' command='grid-dots'>
-            <span>Dots</span>
         </div>
     </div>
 
@@ -273,10 +239,10 @@
         <div class='menu-item' command='invert'>
             <span>Invert Connection Node</span>
         </div>
-        <div class='menu-item' command='add-input-node'>
+        <div class='menu-item' command='add_input_node'>
             <span>Add Input Node</span>
         </div>
-        <div class='menu-item' command='split-segment'>
+        <div class='menu-item' command='split_segment'>
             <span>Split Segment</span>
         </div>
     </div>

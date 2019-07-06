@@ -1,7 +1,7 @@
 'use strict';
 
 class Camera {
-    constructor(pos=new Vec, scale=config.default_grid_size) {
+    constructor(pos=new Vec, scale=1) {
         this.pos = Vec.copy(pos);
         this.scale = scale;
 
@@ -13,15 +13,15 @@ class Camera {
 
     reset() {
         this.pos.set(new Vec);
-        this.scale = config.default_grid_size;
+        this.scale = cs.config.default_grid_size;
     }
 
     update() {
-        this.pos.add(Vec.mult(this.motion_, config.camera_motion_anim_factor));
-        this.motion_.mult(config.camera_motion_falloff_factor);
+        this.pos.add(Vec.mult(this.motion_, cs.config.camera_motion_anim_factor));
+        this.motion_.mult(cs.config.camera_motion_falloff_factor);
 
-        this.anim_pos_ = anim_interpolate_vec(this.anim_pos_, this.pos, config.camera_anim_factor);
-        this.anim_scale_ = anim_interpolate(this.anim_scale_, this.scale, config.camera_anim_factor);
+        this.anim_pos_ = anim_interpolate_vec(this.anim_pos_, this.pos, cs.config.camera_anim_factor);
+        this.anim_scale_ = anim_interpolate(this.anim_scale_, this.scale, cs.config.camera_anim_factor);
     }
 
     move(vec) {

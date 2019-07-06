@@ -77,7 +77,7 @@ class Sidebar {
     }
 
     header_position(section, scroll) {
-        return clamp(
+        return Util.clamp(
             section.y-scroll,
             section.index * this.header_height,
             sidebar_canvas.height - (this.sections.length-section.index) * this.header_height,
@@ -105,19 +105,19 @@ class Sidebar {
             }
             else if (this.hovered_element) {
                 if (this.imported_element && this.imported_element == this.hovered_element) {
-                    current_tab.controller.current_action = Enum.action.none;
-                    current_tab.controller.imported_element = null;
+                    cs.controller.current_action = Enum.action.none;
+                    cs.controller.imported_element = null;
                     this.imported_element = null;
                 }
                 else {
-                    current_tab.controller.current_action = Enum.action.import_element;
-                    current_tab.controller.imported_element = deep_copy(this.hovered_element);
+                    cs.controller.current_action = Enum.action.import_element;
+                    cs.controller.imported_element = Util.deep_copy(this.hovered_element);
                     this.imported_element = this.hovered_element;
                 }
             }
         }
         else if (event.buttons & -2) {
-            current_tab.controller.capture_mouse(sidebar_canvas);
+            cs.controller.capture_mouse(sidebar_canvas);
         }
     }
     mouse_move(event) {
@@ -131,13 +131,13 @@ class Sidebar {
         this.hovered_element = null;
 
         for (const section of this.sections) {
-            if (between(y, section.scroll_y, section.scroll_y+this.header_height)) {
+            if (Util.between(y, section.scroll_y, section.scroll_y+this.header_height)) {
                 this.hovered_section = section;
                 break;
             }
 
             for (const element_section of section.elements_sections) {
-                if (between(y, element_section.scroll_y, element_section.scroll_y+element_section.height)) {
+                if (Util.between(y, element_section.scroll_y, element_section.scroll_y+element_section.height)) {
                     this.hovered_element = element_section.element;
                     break;
                 }
@@ -212,7 +212,6 @@ class Sidebar {
                 element.cancel_animation();
                 element.draw();
                 context = ctx;
-                // /TEMP
 
                 sidebar_context.restore();
 

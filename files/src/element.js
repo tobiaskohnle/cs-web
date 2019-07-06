@@ -11,14 +11,14 @@ class Element {
     }
 
     assign_id() {
-        this.id_ = config.next_id++;
+        this.id_ = cs.config.next_id++;
     }
 
     is_selected() {
-        return current_tab.model.selected_elements_.has(this);
+        return ActionGet.selected_elements().includes(this);
     }
     is_hovered() {
-        return this == current_tab.controller.hovered_element;
+        return this == cs.controller.hovered_element;
     }
 
     cancel_animation() {
@@ -26,20 +26,20 @@ class Element {
         this.anim_pos_.set(this.pos);
     }
 
-    current_color(default_color=config.colors.outline) {
+    current_color(default_color=cs.theme.outline) {
         if (this.is_selected()) {
-            if (current_tab.controller.current_action == Enum.action.edit_elements) {
-                return config.colors.edit_outline;
+            if (cs.controller.current_action == Enum.action.edit_elements) {
+                return cs.theme.edit_outline;
             }
 
             if (this.is_hovered()) {
-                return config.colors.hovered_selected;
+                return cs.theme.hovered_selected;
             }
 
-            return config.colors.selected;
+            return cs.theme.selected;
         }
         if (this.is_hovered()) {
-            return config.colors.hovered;
+            return cs.theme.hovered;
         }
 
         return this.color || default_color;
@@ -78,28 +78,20 @@ class Element {
 
     resize(total_vec, resize_vec) {
         if (this.size) {
-            // const pos_vec = new Vec(
-            //     resize_vec.x < 0 ? Math.min(total_vec.x, 0) : 0,
-            //     resize_vec.y < 0 ? Math.min(total_vec.y, 0) : 0,
-            // );
-
-            // this.pos = Vec.add(this.last_pos_, pos_vec).round();
-            // this.size = Vec.add(this.last_size_, Vec.mult_vec(total_vec, resize_vec)).round();
-
             if (resize_vec.x > 0) {
-                this.size.x = round(this.last_size_.x + total_vec.x);
+                this.size.x = Util.round(this.last_size_.x + total_vec.x);
             }
             if (resize_vec.y > 0) {
-                this.size.y = round(this.last_size_.y + total_vec.y);
+                this.size.y = Util.round(this.last_size_.y + total_vec.y);
             }
 
             if (resize_vec.x < 0) {
-                this.pos.x = round(this.last_pos_.x + total_vec.x);
-                this.size.x = round(this.last_size_.x - total_vec.x);
+                this.pos.x = Util.round(this.last_pos_.x + total_vec.x);
+                this.size.x = Util.round(this.last_size_.x - total_vec.x);
             }
             if (resize_vec.y < 0) {
-                this.pos.y = round(this.last_pos_.y + total_vec.y);
-                this.size.y = round(this.last_size_.y - total_vec.y);
+                this.pos.y = Util.round(this.last_pos_.y + total_vec.y);
+                this.size.y = Util.round(this.last_size_.y - total_vec.y);
             }
         }
     }

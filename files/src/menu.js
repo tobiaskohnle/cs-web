@@ -7,51 +7,49 @@ function update_menu() {
         for (const menu_item of menu_items) {
             menu_item.style.gridTemplateColumns = '22px min-content 10px min-content 10px';
 
-            update_shortcut_string(menu_item);
+            update_keybind_string(menu_item);
         }
 
         let text_column_width = 0;
-        let shortcut_column_width = 0;
+        let keybind_column_width = 0;
 
         for (const menu_item of menu_items) {
             const text_span = menu_item.querySelector('span:nth-child(1)');
-            const shortcut_span = menu_item.querySelector('span:nth-child(2)');
+            const keybind_span = menu_item.querySelector('span:nth-child(2)');
 
             text_column_width = Math.max(text_column_width, text_span.clientWidth);
-            if (shortcut_span) {
-                shortcut_column_width = Math.max(shortcut_column_width, shortcut_span.clientWidth);
+            if (keybind_span) {
+                keybind_column_width = Math.max(keybind_column_width, keybind_span.clientWidth);
             }
         }
 
         for (const menu_item of menu_items) {
-            menu_item.style.gridTemplateColumns = `22px ${text_column_width}px 10px ${shortcut_column_width}px 10px`;
+            menu_item.style.gridTemplateColumns = `22px ${text_column_width}px 10px ${keybind_column_width}px 10px`;
         }
     }
 }
 
-function update_shortcut_string(menu_item) {
+function update_keybind_string(menu_item) {
     const command_name = menu_item.getAttribute('command');
 
     if (command_name) {
-        const command = commands.find(command => command.name == command_name);
+        const display_keybind = cs.config.keybinds[command_name];
 
-        if (command) {
-            if (command.shortcuts.length) {
-                while (menu_item.childElementCount < 2) {
-                    const span = document.createElement('span');
-                    menu_item.appendChild(span);
-                }
-
-                menu_item.children[1].innerText = command.shortcuts[0].to_string();
-            }
-            else {
-                while (menu_item.childElementCount >= 2) {
-                    menu_item.removeChild(menu_item.lastChild);
-                }
+        if (display_keybind) {
+            while (menu_item.childElementCount < 2) {
+                const span = document.createElement('span');
+                menu_item.appendChild(span);
             }
 
-            menu_item.onclick = command.command;
+            menu_item.children[1].innerText = display_keybind;
         }
+        else {
+            while (menu_item.childElementCount >= 2) {
+                menu_item.removeChild(menu_item.lastChild);
+            }
+        }
+
+        menu_item.addEventListener('click', commands[command_name]);
     }
 }
 
@@ -68,9 +66,9 @@ function add_menu_event_listeners() {
             ? open_menu_next_to
             : open_menu_under;
 
-        menu_button.onmousedown = function() {
+        menu_button.addEventListener('mousedown', function() {
             open_menu_function(menu, menu_button);
-        }
+        });
     }
 
     for (const menu_button of document.querySelectorAll('.menu-item:not([menu])')) {
@@ -81,7 +79,7 @@ function add_menu_event_listeners() {
         const menu = menu_button.getAttribute('menu');
 
         menu_button.addEventListener('mouseenter', function(event) {
-            if (current_tab.controller.open_menu_stack.length) {
+            if (cs.controller.open_menu_stack.length) {
                 open_menu_under(menu, menu_button, false);
             }
         });
@@ -121,17 +119,17 @@ function open_menu(menu, x, y, toggle_menu=true) {
 
     let menu_is_enabled = false;
 
-    while (current_tab.controller.open_menu_stack.length) {
-        if (current_tab.controller.open_menu_stack.last() == menu_element) {
+    while (cs.controller.open_menu_stack.length) {
+        if (cs.controller.open_menu_stack.last() == menu_element) {
             menu_is_enabled = true;
         }
 
-        if (current_tab.controller.open_menu_stack.last() == parent_element) {
+        if (cs.controller.open_menu_stack.last() == parent_element) {
             break;
         }
 
-        set_menu_element_enabled(current_tab.controller.open_menu_stack.last(), false);
-        current_tab.controller.open_menu_stack.pop();
+        set_menu_element_enabled(cs.controller.open_menu_stack.last(), false);
+        cs.controller.open_menu_stack.pop();
     }
 
     const is_enabled = !toggle_menu || !menu_is_enabled;
@@ -139,10 +137,10 @@ function open_menu(menu, x, y, toggle_menu=true) {
     set_menu_element_enabled(menu_element, is_enabled, x, y);
 
     if (is_enabled) {
-        current_tab.controller.open_menu_stack.push(menu_element);
+        cs.controller.open_menu_stack.push(menu_element);
     }
     else {
-        current_tab.controller.open_menu_stack.remove(menu_element);
+        cs.controller.open_menu_stack.remove(menu_element);
     }
 }
 
@@ -195,11 +193,11 @@ function set_menu_element_enabled(menu_element, enabled, x, y) {
     }
 }
 function close_menu() {
-    for (const menu_element of current_tab.controller.open_menu_stack) {
+    for (const menu_element of cs.controller.open_menu_stack) {
         set_menu_element_enabled(menu_element, false);
     }
 
-    current_tab.controller.open_menu_stack = [];
+    cs.controller.open_menu_stack = [];
 }
 
 function menu_click(path) {

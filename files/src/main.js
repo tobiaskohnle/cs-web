@@ -6,7 +6,7 @@ let context;
 let sidebar_canvas;
 let sidebar_context;
 
-let current_tab;
+let cs;
 
 const Enum = {
     action: {
@@ -21,9 +21,9 @@ const Enum = {
         import_element:       Symbol('action_import_element'),
     },
     grid_style: {
-        none:  Symbol('grid_style_none'),
-        lines: Symbol('grid_style_lines'),
-        dots:  Symbol('grid_style_dots'),
+        none:  'none',
+        lines: 'lines',
+        dots:  'dots',
     },
     side: {
         east:  0,
@@ -40,62 +40,77 @@ const Enum = {
 
 const theme = {
     light: {
-        background:         new Color(0,0,0,0)              , // #0000
-        grid:               new Color(0,0,.67,7/16)         , // #aaa7
-        light_inactive:     new Color(0,0,1,4/16)           , // #fff4
-        light_active:       new Color(0,.8,1,4/16)          , // #f334
-        wire_inactive:      new Color(0,0,0)                , // #000
-        wire_active:        new Color(0,.8,1)               , // #f33
-        segment_inactive:   new Color(0,.8,1,4/16)          , // #f334
-        segment_active:     new Color(0,.8,1)               , // #f33
-        outline:            new Color(200/360,0,0)          , // #000
-        edit_outline:       new Color(353/360, .8, .9, .9)  ,
-        hovered:            new Color(204/360,.77,.87)      , // #39d
-        selected:           new Color(228/360,.83,.8)       , // #24c
-        hovered_selected:   new Color(220/360,.86,.93)      , // #26e
-        selection_fill:     new Color(210/360,.92,.87,3/16) , // #17d3
-        selection_outline:  new Color(210/360,.8,1,10/16)   , // #39fa
-        node_init:          new Color(.5,1,1,0)             ,
-        gate_init:          new Color(.5,1,1,0)             ,
-        label_text:         new Color(0, 0, .1)             , // #ccc
-        label_special_text: new Color(60/360, .91, .2)      , // #cc1
-        label_outline:      new Color(220/360, .2, .4, 0)   ,
-        label_caret:        new Color(212/360, 1, 1)        , // #07f
-        label_selection:    new Color(204/360, 1, 1, 4/16)  , // #09f4
-        wire_joint:         new Color(0, 0, .2)             , // #222
+        stylesheet:         'style-light.css',
+        grid:               Color.parse('#aaa7'),
+        light_inactive:     Color.parse('#fff4'),
+        light_active:       Color.parse('#f334'),
+        wire_inactive:      Color.parse('#000'),
+        wire_active:        Color.parse('#f33'),
+        segment_inactive:   Color.parse('#f334'),
+        segment_active:     Color.parse('#f33'),
+        outline:            Color.parse('#000'),
+        edit_outline:       Color.parse('#e34'),
+        hovered:            Color.parse('#39d'),
+        selected:           Color.parse('#24c'),
+        hovered_selected:   Color.parse('#26e'),
+        selection_fill:     Color.parse('#17d3'),
+        selection_outline:  Color.parse('#39fd'),
+        node_init:          Color.parse('#0ff0'),
+        gate_init:          Color.parse('#0ff0'),
+        label_text:         Color.parse('#222'),
+        label_special_text: Color.parse('#330'),
+        label_outline:      Color.parse('#5560'),
+        label_caret:        Color.parse('#07f'),
+        label_selection:    Color.parse('#09f4'),
+        wire_joint:         Color.parse('#333'),
     },
     dark: {
-        background:         new Color(240/360,.22,.03)      , // #070709
-        grid:               new Color(180/360,.33,1,5/16)   , // #aff5
-        light_inactive:     new Color(0,0,0,7/16)           , // #0007
-        light_active:       new Color(0,.8,1,7/16)          , // #f337
-        wire_inactive:      new Color(0,0,1)                , // #fff
-        wire_active:        new Color(0,.8,1)               , // #f33
-        segment_inactive:   new Color(210/360,.86,.47,3/16) , // #1473
-        segment_active:     new Color(201/360,.93,1)        , // #1af
-        outline:            new Color(200/360,0,1)          , // #fff
-        edit_outline:       new Color(353/360, .8, .9, .9)  ,
-        hovered:            new Color(195/360,.85,.93)      , // #2be // #39d
-        selected:           new Color(215/360,.85,.93)      , // #27e // #24c
-        hovered_selected:   new Color(216/360,.92,.93)      , // #16e // #26e
-        selection_fill:     new Color(210/360,.92,.87,3/16) , // #17d3
-        selection_outline:  new Color(210/360,.8,1)         , // #39fa
-        node_init:          new Color(.5,1,1,0)             ,
-        gate_init:          new Color(.5,1,1,0)             ,
-        label_text:         new Color(0, 0, .8)             , // #ccc
-        label_special_text: new Color(60/360, .91, .8)      , // #cc1
-        label_outline:      new Color(220/360, .2, .4, 0)   ,
-        label_caret:        new Color(212/360, 1, 1)        , // #07f
-        label_selection:    new Color(204/360, 1, 1, 4/16)  , // #09f4
-        wire_joint:         new Color(60/360, .86, 1)       , // #ff2
+        stylesheet:         'style-dark.css',
+        grid:               Color.parse('#aff5'),
+        light_inactive:     Color.parse('#0007'),
+        light_active:       Color.parse('#f337'),
+        wire_inactive:      Color.parse('#fff'),
+        wire_active:        Color.parse('#f33'),
+        segment_inactive:   Color.parse('#1473'),
+        segment_active:     Color.parse('#1af'),
+        outline:            Color.parse('#fff'),
+        edit_outline:       Color.parse('#e34'),
+        hovered:            Color.parse('#2be'), // #39d
+        selected:           Color.parse('#27e'), // #24c
+        hovered_selected:   Color.parse('#16e'), // #26e
+        selection_fill:     Color.parse('#17d3'),
+        selection_outline:  Color.parse('#39fd'),
+        node_init:          Color.parse('#0ff0'),
+        gate_init:          Color.parse('#0ff0'),
+        label_text:         Color.parse('#ccc'),
+        label_special_text: Color.parse('#cc1'),
+        label_outline:      Color.parse('#5560'),
+        label_caret:        Color.parse('#07f'),
+        label_selection:    Color.parse('#09f4'),
+        wire_joint:         Color.parse('#ff2'),
     },
 };
 
-const config = {
+const default_config = {
+    theme: 'light',
+    default_grid_size: 32,
+    grid_style: 'dots',
+    show_ui: true,
+
+    ticks_per_frame: 101,
     scale_factor: 1.14,
-    color_anim_factor: .57,
+    block_unused_key_combinations: false,
+    use_system_clipboard: false,
+    use_wire_restructuring: true,
+    gates_push_wires: true,
+    prevent_element_overlapping: true,
+
+    anim_factor: .52,
     camera_anim_factor: .42,
     camera_motion_anim_factor: .06,
+
+
+    color_anim_factor: .57,
     camera_motion_falloff_factor: .91,
 
     label_anim_factor: .425,
@@ -103,32 +118,68 @@ const config = {
     label_caret_smoothness: 3.1,
     label_caret_blink_rate: 1000,
 
-    use_system_clipboard: false,
-
-    anim_factor: .52,
-    ticks_per_frame: 101,
-    block_unused_key_combinations: false,
-    default_grid_size: 32,
     default_rising_edge_pulse_length: 32,
-
-    colors: null,
-    grid_style: Enum.grid_style.dots,
-
-    // TEMP
-    DEBUG_LOG: false,
-    DEBUG_DRAW_CONNECTIONS: false,
-    // /TEMP
-
     next_id: 0,
+
+
+    keybinds: {
+        add_input_node: 'shift+*',
+        remove_input_node: 'shift+_',
+        view_content: '',
+        copy: 'ctrl+c',
+        cut: 'ctrl+x',
+        paste: 'ctrl+v',
+        delete: 'delete',
+        import: 'ctrl+i',
+        instant_import: 'ctrl+l',
+        invert: 'shift+I',
+        new: '',
+        open_file: 'ctrl+o',
+        undo: 'ctrl+z',
+        redo: 'ctrl+y, ctrl+shift+Z',
+        reopen_last_file: 'ctrl+shift+T',
+        reset_view: '',
+        save: 'ctrl+s',
+        save_as: 'ctrl+shift+S',
+        select_all: 'shift+A',
+        next_vertical_align: '',
+        next_horizontal_align: '',
+        toggle_selection: 'ctrl+a',
+        deselect_all: 'ctrl+shift+A',
+        split_segment: 'shift+S',
+        zoom_in: 'ctrl+*',
+        zoom_out: 'ctrl+_',
+        debug_toggle: '',
+        debug_step: 'tab, space',
+        debug_single_step: 'shift+tab, shift+space',
+
+        escape: 'escape',
+        enter: 'enter',
+        TEMP_RELOAD: 'r',
+    },
 };
 
-function select_theme(colors) {
-    config.colors = colors;
+function select_theme(theme) {
+    cs.theme = theme;
+    document.querySelector('#theme-style').href = `files/css/${theme.stylesheet}`;
+}
 
-    const background_color = config.colors.background.to_string();
+function load_config() {
+    try {
+        const loaded_config = localStorage.getItem('cs_config');
 
-    document.documentElement.style.background = background_color;
-    document.querySelector('.menubar').style.background = '#eee';
+        if (loaded_config) {
+            cs.config = Object.assign(Object.assign({}, default_config), JSON.parse(loaded_config));
+            return;
+        }
+    }
+    catch {}
+
+    cs.config = Object.assign({}, default_config);
+    console.warn('localStorage is unavailable');
+}
+function save_config() {
+    localStorage.setItem('cs_config', JSON.stringify(cs.config));
 }
 
 onload = function() {
@@ -140,29 +191,54 @@ onload = function() {
 
     onresize();
 
-    select_theme(theme.dark);
+    cs = {};
 
-    current_tab = new Tab;
+    load_config();
 
-    canvas.onmouseleave = current_tab.controller.mouse_leave.bind(current_tab.controller);
-    sidebar_canvas.onmouseleave = current_tab.controller.sidebar_mouse_leave.bind(current_tab.controller);
+    // TEMP
+    cs.config.DEBUG_LOG = false;
+    cs.config.DEBUG_DRAW_CONNECTIONS = true;
+
+    select_theme(theme[cs.config.theme]);
+
+    cs.camera = new Camera(new Vec, cs.config.default_grid_size);
+
+    cs.context = new CustomGate;
+
+    cs.ticked_nodes = new Set;
+    cs.selected_elements = new Set;
+
+    cs.controller = new Controller;
+
+    cs.sidebar = new Sidebar;
+
+    canvas.addEventListener('mousedown',  cs.controller.mouse_down .bind(cs.controller), {passive:true});
+    canvas.addEventListener('mousemove',  cs.controller.mouse_move .bind(cs.controller), {passive:true});
+    canvas.addEventListener('mouseup',    cs.controller.mouse_up   .bind(cs.controller), {passive:true});
+    canvas.addEventListener('mouseleave', cs.controller.mouse_leave.bind(cs.controller), {passive:true});
+    canvas.addEventListener('wheel',      cs.controller.mouse_wheel.bind(cs.controller), {passive:true});
+
+    sidebar_canvas.addEventListener('mousedown',  cs.controller.sidebar_mouse_down .bind(cs.controller), {passive:true});
+    sidebar_canvas.addEventListener('mousemove',  cs.controller.sidebar_mouse_move .bind(cs.controller), {passive:true});
+    sidebar_canvas.addEventListener('mouseup',    cs.controller.sidebar_mouse_up   .bind(cs.controller), {passive:true});
+    sidebar_canvas.addEventListener('mouseleave', cs.controller.sidebar_mouse_leave.bind(cs.controller), {passive:true});
+    sidebar_canvas.addEventListener('wheel',      cs.controller.sidebar_mouse_wheel.bind(cs.controller), {passive:true});
 
     add_menu_event_listeners();
 
     requestAnimationFrame(update);
 
     // TEMP
-    const RESTORE_STATE = localStorage.getItem('CS-RESTORE-ON-STARTUP');
+    const RESTORE_STATE = localStorage.getItem('CS_RESTORE_ON_STARTUP');
 
     if (RESTORE_STATE) {
-        localStorage.removeItem('CS-RESTORE-ON-STARTUP');
-        current_tab.model.main_gate = extended_parse(RESTORE_STATE);
-        current_tab.model.tick_all();
+        localStorage.removeItem('CS_RESTORE_ON_STARTUP');
+        cs.context = Util.extended_parse(RESTORE_STATE);
+        ActionUtil.queue_tick_all();
     }
-    // /TEMP
 }
 
-onresize = function() {
+onresize = function(event) {
     canvas.width  = canvas.clientWidth;
     canvas.height = canvas.clientHeight;
 
@@ -171,61 +247,23 @@ onresize = function() {
 }
 
 onkeydown = function(event) {
-    if (event.key.match(/F\d{1,2}/)) return;
-
-    return current_tab.controller.key_down(event);
+    if (event.key.match(/f\d+/i)) return;
+    return cs.controller.key_down(event);
 }
 
 onmousedown = function(event) {
     menu_click(event.path || event.composedPath());
-
-    switch (current_tab.controller.element_mouse_captured || event.target) {
-        case canvas:
-            current_tab.controller.mouse_down(event);
-            break;
-        case sidebar_canvas:
-            current_tab.controller.sidebar_mouse_down(event);
-            break;
-    }
-}
-
-onmousemove = function(event) {
-    if (!current_tab) {
-        return;
-    }
-
-    switch (current_tab.controller.element_mouse_captured || event.target) {
-        case canvas:
-            current_tab.controller.mouse_move(event);
-            break;
-        case sidebar_canvas:
-            current_tab.controller.sidebar_mouse_move(event);
-            break;
-    }
-}
-
-onmouseup = function(event) {
-    switch (current_tab.controller.element_mouse_captured || event.target) {
-        case canvas:
-            current_tab.controller.mouse_up(event);
-            break;
-        case sidebar_canvas:
-            current_tab.controller.sidebar_mouse_up(event);
-            break;
-    }
-
-    current_tab.controller.release_mouse();
 }
 
 ondragenter = function(event) {
-    config.DEBUG_LOG && console.log('ONDRAGOVER', event);
+    cs.config.DEBUG_LOG && console.log('ondragenter', event);
 
     event.preventDefault();
     return false;
 }
 
 ondrop = function(event) {
-    config.DEBUG_LOG && console.log('ONDROP', event);
+    cs.config.DEBUG_LOG && console.log('ondrop', event);
 
     event.preventDefault();
     return false;
@@ -233,29 +271,19 @@ ondrop = function(event) {
 
 onwheel = function(event) {
     close_menu();
-
-    if (!event.ctrlKey) {
-        switch (event.target) {
-            case canvas:
-                current_tab.controller.mouse_wheel(event);
-                break;
-            case sidebar_canvas:
-                current_tab.controller.sidebar_mouse_wheel(event);
-                break;
-        }
-    }
-
-    // event.preventDefault();
-    // return false;
 }
 
 oncontextmenu = function(event) {
-    if (!current_tab.controller.mouse_moved()) {
+    if (!cs.controller.mouse_moved()) {
         open_menu('context-menu', event.x, event.y);
     }
     return false;
 }
 
-onblur = function() {
+onblur = function(event) {
     close_menu();
+}
+
+onbeforeunload = function(event) {
+    save_config();
 }

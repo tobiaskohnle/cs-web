@@ -1,7 +1,7 @@
 'use strict';
 
 class ConnectionNode extends Element {
-    constructor(parent, index) {
+    constructor() {
         super();
 
         this.update_priority_ = 1;
@@ -11,22 +11,21 @@ class ConnectionNode extends Element {
         this.anim_pos_ = new Vec;
 
         this.dir = new Vec(this instanceof OutputNode ? 1 : -1, 0);
-        this.parent = parent;
 
         this.anchor_pos_ = new Vec;
         this.anchor_anim_pos_ = new Vec;
 
         this.tag = null;
 
-        this.index = index;
+        this.index = Infinity;
 
         this.state = false;
         this.is_inverted = false;
 
         this.last_pos_ = new Vec;
 
-        this.color_line_ = Color.from(config.colors.wire_inactive);
-        this.color_dot_  = Color.from(config.colors.wire_inactive);
+        this.color_line_ = Color.from(cs.theme.wire_inactive);
+        this.color_dot_  = Color.from(cs.theme.wire_inactive);
     }
 
     update() {
@@ -36,8 +35,8 @@ class ConnectionNode extends Element {
         this.anchor_anim_pos_.set(Vec.add(this.anim_pos_, this.dir));
 
         const draw_line_active = this.display_state();
-        const color_line = this.current_color(draw_line_active ? config.colors.wire_active : config.colors.wire_inactive);
-        const color_dot  = this.current_color(draw_line_active ? config.colors.wire_inactive : config.colors.wire_active);
+        const color_line = this.current_color(draw_line_active ? cs.theme.wire_active : cs.theme.wire_inactive);
+        const color_dot  = this.current_color(draw_line_active ? cs.theme.wire_inactive : cs.theme.wire_active);
 
         this.color_line_.set_hsva(color_line);
         this.color_dot_.set_hsva(color_dot);
@@ -57,6 +56,13 @@ class ConnectionNode extends Element {
         this.set_index(this.eval_index());
     }
 
+    cancel_animation() {
+        super.cancel_animation();
+
+        this.color_dot_.set_anim_hsva(this.color_dot_);
+        this.color_line_.set_anim_hsva(this.color_line_);
+    }
+
     mouse_down() {
         this.grab_pos_ = Vec.copy(this.pos);
     }
@@ -64,20 +70,24 @@ class ConnectionNode extends Element {
         this.grab_pos_ = null;
     }
 
+    parent() {
+        return ActionGet.elements().find(element => element instanceof Gate && element.nodes().includes(this));
+    }
+
     set_dir(pos) {
-        this.dir = this.parent.get_dir(pos);
+        this.dir = this.parent().get_dir(pos);
     }
 
     eval_index() {
-        const nodes = this.parent.nodes_per_side()[side_index(this.dir)];
+        const nodes = this.parent().nodes_per_side()[Util.side_index(this.dir)];
 
         if (this.is_vertical())
-        return Math.floor(map((this.grab_pos_||this.pos).x, this.parent.pos.x, this.parent.pos.x+this.parent.size.x, 0, nodes.length));
-        return Math.floor(map((this.grab_pos_||this.pos).y, this.parent.pos.y, this.parent.pos.y+this.parent.size.y, 0, nodes.length));
+        return Math.floor(Util.map((this.grab_pos_||this.pos).x, this.parent().pos.x, this.parent().pos.x+this.parent().size.x, 0, nodes.length));
+        return Math.floor(Util.map((this.grab_pos_||this.pos).y, this.parent().pos.y, this.parent().pos.y+this.parent().size.y, 0, nodes.length));
     }
 
     set_index(index) {
-        const neighbors = this.parent.nodes_per_side()[side_index(this.dir)];
+        const neighbors = this.parent().nodes_per_side()[Util.side_index(this.dir)];
 
         neighbors.sort((a,b) => a.index-b.index);
 
@@ -92,7 +102,7 @@ class ConnectionNode extends Element {
     }
 
     previous_node() {
-        return all_inner_elements(current_tab.model.main_gate)
+        return Util.all_inner_elements(cs.context)
             .filter(element => element instanceof Gate)
             .flatMap(gate => [...gate.inputs, ...gate.outputs])
             .find(node => node.next_nodes && node.next_nodes.includes(this));
@@ -100,7 +110,7 @@ class ConnectionNode extends Element {
 
     invert() {
         this.is_inverted = !this.is_inverted;
-        current_tab.model.queue_tick(this);
+        Action.queue_tick(this);
     }
 
     distance(pos) {
@@ -138,7 +148,7 @@ class ConnectionNode extends Element {
             // context.arc(this.anim_pos_.x+this.dir.x/4+this.dir.x*.1/2, this.anim_pos_.y, 1/4, 0, Math.PI*2);
             context.arc(...Vec.add(this.anim_pos_, Vec.mult(this.dir, 1/4+.1/2)).xy, 1/4, 0, Math.PI*2);
 
-            // context.strokeStyle = !draw_line_active ? config.colors.wire_active : config.colors.wire_inactive;
+            // context.strokeStyle = !draw_line_active ? cs.theme.wire_active : cs.theme.wire_inactive;
             context.strokeStyle = this.color_dot_.to_string();
             context.stroke();
         }
@@ -146,11 +156,11 @@ class ConnectionNode extends Element {
 }
 
 class InputNode extends ConnectionNode {
-    constructor(parent, index) {
-        super(parent, index);
+    constructor() {
+        super();
 
         this.is_rising_edge = false;
-        this.rising_edge_pulse_length = config.default_rising_edge_pulse_length;
+        this.rising_edge_pulse_length = cs.config.default_rising_edge_pulse_length;
         this.rising_edge_ticks_active = 0;
     }
 
@@ -190,7 +200,7 @@ class InputNode extends ConnectionNode {
         if (!this.is_empty()) {
             this.previous_node().next_nodes.remove(this);
         }
-        current_tab.model.queue_tick(this);
+        Action.queue_tick(this);
     }
 
     attached_wire_segment() {
@@ -219,8 +229,8 @@ class InputNode extends ConnectionNode {
 }
 
 class OutputNode extends ConnectionNode {
-    constructor(parent, index) {
-        super(parent, index);
+    constructor() {
+        super();
 
         this.next_nodes = [];
 
@@ -238,7 +248,7 @@ class OutputNode extends ConnectionNode {
             return previous_node.state != this.is_inverted;
         }
 
-        return this.parent.eval_state() != this.is_inverted;
+        return this.parent().eval_state() != this.is_inverted;
     }
 
     is_empty() {
@@ -247,10 +257,9 @@ class OutputNode extends ConnectionNode {
 
     clear() {
         for (const next_node of this.next_nodes) {
-            current_tab.model.queue_tick(next_node);
+            Action.queue_tick(next_node);
         }
         this.next_nodes = [];
-        this.wire_segments = [];
     }
 
     attached_wire_segment() {
@@ -261,7 +270,7 @@ class OutputNode extends ConnectionNode {
         super.draw(true);
 
         // TEMP
-        if (config.DEBUG_DRAW_CONNECTIONS)
+        if (cs.config.DEBUG_DRAW_CONNECTIONS)
             for (const node of this.next_nodes) {
                 context.beginPath();
 
@@ -274,7 +283,6 @@ class OutputNode extends ConnectionNode {
                 context.stroke();
                 context.setLineDash([]);
             }
-        // /TEMP
 
         for (const segment of this.wire_segments) {
             segment.draw();

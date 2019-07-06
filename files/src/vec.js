@@ -55,8 +55,8 @@ class Vec {
         return this;
     }
     round(factor=1) {
-        this.x = round(this.x, factor);
-        this.y = round(this.y, factor);
+        this.x = Util.round(this.x, factor);
+        this.y = Util.round(this.y, factor);
         return this;
     }
     mirror(flags) {

@@ -1,0 +1,21 @@
+
+:root {
+    background: #070709;
+    color: #eee;
+}
+
+.menu {
+    background: #09090a;
+    border-color: #222;
+}
+
+.menu-separator {
+    background: #9993;
+}
+
+.menu-item:hover {
+    background: #333;
+}
+.menu-item.active {
+    background: #444;
+}

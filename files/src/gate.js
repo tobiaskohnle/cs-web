@@ -20,7 +20,7 @@ class Gate extends Element {
         this.outputs = [];
 
         this.color_outline_ = new Color;
-        this.color_outline_.set_hsva(config.colors.outline);
+        this.color_outline_.set_hsva(cs.theme.outline);
     }
 
     allow_new_input_nodes() {
@@ -28,13 +28,17 @@ class Gate extends Element {
     }
 
     add_input_node() {
-        const node = new InputNode(this, this.nodes_per_side()[Enum.side.west].length);
+        const node = new InputNode;
+        node.color_line_.set_anim_hsva(cs.theme.node_init);
         this.inputs.push(node);
+        this.update_nodes();
         return node;
     }
     add_output_node() {
-        const node = new OutputNode(this, this.nodes_per_side()[Enum.side.east].length);
+        const node = new OutputNode;
         this.outputs.push(node);
+        node.color_line_.set_anim_hsva(cs.theme.node_init);
+        this.update_nodes();
         return node;
     }
 
@@ -50,6 +54,8 @@ class Gate extends Element {
     cancel_animation() {
         super.cancel_animation();
 
+        this.color_outline_.set_anim_hsva(this.color_outline_);
+
         for (const node of this.nodes()) {
             node.cancel_animation();
         }
@@ -59,8 +65,10 @@ class Gate extends Element {
         return [...this.inputs, ...this.outputs];
     }
 
-    nodes_init_animation() {
+    init_animation() {
         this.set_nodes_pos();
+
+        this.color_outline_.set_anim_hsva(cs.theme.gate_init);
 
         for (const node of this.nodes())  {
             node.anim_pos_.add(node.dir);
@@ -71,7 +79,7 @@ class Gate extends Element {
         const nodes = [[],[],[],[]];
 
         for (const node of this.nodes()) {
-            nodes[side_index(node.dir)].push(node);
+            nodes[Util.side_index(node.dir)].push(node);
         }
 
         return nodes;
@@ -113,6 +121,13 @@ class Gate extends Element {
         super.update_pos();
         super.update_size();
 
+        this.update_nodes();
+
+        this.color_outline_.set_hsva(this.current_color());
+        this.color_outline_.update();
+    }
+
+    update_nodes() {
         for (const nodes of this.nodes_per_side()) {
             nodes.sorted((a,b) => a.index-b.index).forEach((node, i) => {
                 node.index = i;
@@ -120,9 +135,6 @@ class Gate extends Element {
         }
 
         this.set_nodes_pos();
-
-        this.color_outline_.set_hsva(this.current_color());
-        this.color_outline_.update();
     }
 
     update_last_pos() {
@@ -151,7 +163,7 @@ class Gate extends Element {
     }
 
     is_pressed() {
-        return this.is_hovered() && current_tab.controller.is_mouse_down;
+        return this.is_hovered() && cs.controller.is_mouse_down;
     }
 
     draw_outline() {
@@ -170,7 +182,7 @@ class Gate extends Element {
     draw_tag() {
         if (this.tag) {
             context.font = '2px consolas, monospace';
-            context.fillStyle = config.colors.wire_inactive.to_string();
+            context.fillStyle = cs.theme.wire_inactive.to_string();
             context.textAlign = 'center';
             context.textBaseline = 'middle';
             context.fillText(this.tag, ...Vec.add(this.anim_pos_, Vec.div(this.anim_size_, 2)).xy);
@@ -184,8 +196,8 @@ class Gate extends Element {
     }
 
     distance(pos) {
-        if (between(pos.x, this.pos.x, this.pos.x+this.size.x) &&
-            between(pos.y, this.pos.y, this.pos.y+this.size.y)
+        if (Util.between(pos.x, this.pos.x, this.pos.x+this.size.x) &&
+            Util.between(pos.y, this.pos.y, this.pos.y+this.size.y)
         ) {
             return 0;
         }
@@ -287,7 +299,7 @@ class InputSwitch extends Gate {
 
         this.is_enabled = false;
 
-        this.color_fill_ = Color.from(config.colors.light_inactive);
+        this.color_fill_ = Color.from(cs.theme.light_inactive);
     }
 
     toggle() {
@@ -300,10 +312,10 @@ class InputSwitch extends Gate {
 
     update() {
         if (this.eval_state()) {
-            this.color_fill_.set_hsva(config.colors.light_active);
+            this.color_fill_.set_hsva(cs.theme.light_active);
         }
         else {
-            this.color_fill_.set_hsva(config.colors.light_inactive);
+            this.color_fill_.set_hsva(cs.theme.light_inactive);
         }
         this.color_fill_.update();
 
@@ -325,16 +337,16 @@ class InputButton extends Gate {
 
         this.is_enabled = false;
 
-        this.color_fill_ = Color.from(config.colors.light_inactive);
+        this.color_fill_ = Color.from(cs.theme.light_inactive);
     }
 
     mouse_down() {
         this.is_enabled = true;
-        current_tab.model.queue_tick(this.outputs[0]);
+        Action.queue_tick(this.outputs[0]);
     }
     mouse_up() {
         this.is_enabled = false;
-        current_tab.model.queue_tick(this.outputs[0]);
+        Action.queue_tick(this.outputs[0]);
     }
 
     eval_state() {
@@ -343,10 +355,10 @@ class InputButton extends Gate {
 
     update() {
         if (this.eval_state()) {
-            this.color_fill_.set_hsva(config.colors.light_active);
+            this.color_fill_.set_hsva(cs.theme.light_active);
         }
         else {
-            this.color_fill_.set_hsva(config.colors.light_inactive);
+            this.color_fill_.set_hsva(cs.theme.light_inactive);
         }
         this.color_fill_.update();
 
@@ -403,20 +415,20 @@ class InputPulse extends Gate {
         super(pos, new Vec(2,2));
         this.add_output_node();
 
-        this.pulse_length = config.default_rising_edge_pulse_length;
+        this.pulse_length = cs.config.default_rising_edge_pulse_length;
         this.pulse_ticks_ = Infinity;
     }
 
     mouse_down() {
         if (!this.outputs[0].is_inverted) {
             this.pulse_ticks_ = 0;
-            current_tab.model.queue_tick(this.outputs[0]);
+            Action.queue_tick(this.outputs[0]);
         }
     }
     mouse_up() {
         if (this.outputs[0].is_inverted) {
             this.pulse_ticks_ = 0;
-            current_tab.model.queue_tick(this.outputs[0]);
+            Action.queue_tick(this.outputs[0]);
         }
     }
 
@@ -457,7 +469,7 @@ class Clock extends Gate {
     }
 
     eval_state() {
-        this.pulse_ticks_ = mod(this.pulse_ticks_+1, this.pulse_length);
+        this.pulse_ticks_ = Util.mod(this.pulse_ticks_+1, this.pulse_length);
         return this.pulse_ticks_ < this.pulse_width;
     }
 
@@ -489,7 +501,7 @@ class OutputLight extends Gate {
         super(pos, new Vec(2,2));
         this.add_input_node();
 
-        this.color_fill_ = Color.from(config.colors.light_inactive);
+        this.color_fill_ = Color.from(cs.theme.light_inactive);
     }
 
     eval_state() {
@@ -498,10 +510,10 @@ class OutputLight extends Gate {
 
     update() {
         if (this.eval_state()) {
-            this.color_fill_.set_hsva(config.colors.light_active);
+            this.color_fill_.set_hsva(cs.theme.light_active);
         }
         else {
-            this.color_fill_.set_hsva(config.colors.light_inactive);
+            this.color_fill_.set_hsva(cs.theme.light_inactive);
         }
 
         this.color_fill_.update();
@@ -529,13 +541,13 @@ class SegmentDisplay extends Gate {
         this.add_input_node();
 
         this.color_segments_ = [
-            Color.from(config.colors.segment_inactive),
-            Color.from(config.colors.segment_inactive),
-            Color.from(config.colors.segment_inactive),
-            Color.from(config.colors.segment_inactive),
-            Color.from(config.colors.segment_inactive),
-            Color.from(config.colors.segment_inactive),
-            Color.from(config.colors.segment_inactive),
+            Color.from(cs.theme.segment_inactive),
+            Color.from(cs.theme.segment_inactive),
+            Color.from(cs.theme.segment_inactive),
+            Color.from(cs.theme.segment_inactive),
+            Color.from(cs.theme.segment_inactive),
+            Color.from(cs.theme.segment_inactive),
+            Color.from(cs.theme.segment_inactive),
         ];
 
         this.options_ = {
@@ -551,10 +563,10 @@ class SegmentDisplay extends Gate {
     update() {
         for (let i = 0; i < 7; i++) {
             if (this.inputs[i].state) {
-                this.color_segments_[i].set_hsva(config.colors.segment_active);
+                this.color_segments_[i].set_hsva(cs.theme.segment_active);
             }
             else {
-                this.color_segments_[i].set_hsva(config.colors.segment_inactive);
+                this.color_segments_[i].set_hsva(cs.theme.segment_inactive);
             }
 
             this.color_segments_[i].update();
@@ -631,8 +643,8 @@ class SegmentDisplay extends Gate {
             context.beginPath();
 
             for (let i = 0; i < points.length; i++) {
-                const last_i = mod(i-1, points.length);
-                const next_i = mod(i+1, points.length);
+                const last_i = Util.mod(i-1, points.length);
+                const next_i = Util.mod(i+1, points.length);
 
                 const transformed_point = transform_point(intersection_point(
                     points[last_i],
