@@ -192,11 +192,11 @@ class Sidebar {
                 const element = element_section.element;
 
                 if (this.imported_element == element) {
-                    sidebar_context.fillStyle = '#28f7';
+                    sidebar_context.fillStyle = cs.theme.sidebar_imported_element.to_string();
                     sidebar_context.fillRect(0, element_section.anim_scroll_y, sidebar_canvas.width, element_section.height);
                 }
                 else if (this.hovered_element == element) {
-                    sidebar_context.fillStyle = '#49e4';
+                    sidebar_context.fillStyle = cs.theme.sidebar_hovered_element.to_string();
                     sidebar_context.fillRect(0, element_section.anim_scroll_y, sidebar_canvas.width, element_section.height);
                 }
 
@@ -222,13 +222,15 @@ class Sidebar {
         for (const section of this.sections) {
             const hovered = section == this.hovered_section;
 
-            sidebar_context.fillStyle = '#333';
+            sidebar_context.fillStyle = cs.theme.sidebar_header_outline.to_string();
             sidebar_context.fillRect(0, section.anim_scroll_y, sidebar_canvas.width, this.header_height);
 
-            sidebar_context.fillStyle = hovered ? '#9cf' : '#eee';
+            sidebar_context.fillStyle = hovered
+                ? cs.theme.sidebar_header_hovered.to_string()
+                : cs.theme.sidebar_header.to_string();
             sidebar_context.fillRect(1, section.anim_scroll_y+1, sidebar_canvas.width-2, this.header_height-2);
 
-            sidebar_context.fillStyle = '#222';
+            sidebar_context.fillStyle = cs.theme.sidebar_header_font.to_string();
             sidebar_context.font = `${this.header_height/1.9}px segoe ui, sans-serif`;
             sidebar_context.textAlign = 'center';
             sidebar_context.textBaseline = 'middle';

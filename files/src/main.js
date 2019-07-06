@@ -63,6 +63,12 @@ const theme = {
         label_caret:        Color.parse('#07f'),
         label_selection:    Color.parse('#09f4'),
         wire_joint:         Color.parse('#333'),
+        sidebar_imported_element: Color.parse('#28f7'),
+        sidebar_hovered_element:  Color.parse('#49e4'),
+        sidebar_header_outline:   Color.parse('#222'),
+        sidebar_header_hovered:   Color.parse('#9cf'),
+        sidebar_header:           Color.parse('#eee'),
+        sidebar_header_font:      Color.parse('#222'),
     },
     dark: {
         stylesheet:         'style-dark.css',
@@ -88,6 +94,12 @@ const theme = {
         label_caret:        Color.parse('#07f'),
         label_selection:    Color.parse('#09f4'),
         wire_joint:         Color.parse('#ff2'),
+        sidebar_imported_element: Color.parse('#2af6'),
+        sidebar_hovered_element:  Color.parse('#49e2'),
+        sidebar_header_outline:   Color.parse('#222'),
+        sidebar_header_hovered:   Color.parse('#333'),
+        sidebar_header:           Color.parse('#0b0b0d'),
+        sidebar_header_font:      Color.parse('#eee'),
     },
 };
 

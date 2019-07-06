@@ -305,6 +305,8 @@ class Controller {
                 if (!ActionGet.elements().includes(this.imported_element)) {
                     this.save_state('import element');
                     Action.add(this.imported_element);
+                    ActionUtil.deselect_all();
+                    Action.select(this.imported_element);
                 }
 
                 const element_pos = Vec.sub(this.mouse_world_pos, Vec.div(this.imported_element.size, 2));
