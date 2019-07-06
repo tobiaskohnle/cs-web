@@ -257,7 +257,63 @@ const Action = {
         return false;
     },
 
-    restructure_segments: function() {},
+    restructure_segments: function () {
+        Action.merge_segments();
+    },
+
+    merge_segments: function () {
+        const segments = ActionGet.elements().filter(element => element instanceof WireSegment);
+        for (const segment of segments) {
+            const offset_to_neighbors = new Map();
+            for (const neighbor of segment.neighbor_segments) {
+                const is_in = offset_to_neighbors.has(neighbor.offset);
+                if (!is_in) {
+                    offset_to_neighbors.set(neighbor.offset, [neighbor]);
+                } else {
+                    offset_to_neighbors.get(neighbor.offset).push(neighbor);
+                }
+            }
+            const remove_segment = offset_to_neighbors.size === 1 && segment.offset_pos === null;
+            for (const [offset, neighbors] of offset_to_neighbors) {
+                if (neighbors.length <= 1) continue;
+                const output_node = segment.parent();
+                const joined_segment = new WireSegment();
+                joined_segment.is_vertical = !segment.is_vertical;
+                joined_segment.offset = offset;
+                joined_segment.cancel_animation();
+                var would_be_single_segment_wire = false;
+                var has_node = false;
+                for (const replaced_neighbor of neighbors) {
+                    if (replaced_neighbor.offset_pos !== null) {
+                        if (has_node) {
+                            would_be_single_segment_wire = true;
+                            break;
+                        }
+                        joined_segment.set_connected_pos(replaced_neighbor.offset_pos);
+                        has_node = true;
+                    }
+                }
+                if (would_be_single_segment_wire) continue;
+                for (const replaced_neighbor of neighbors) {
+                    for (const extended_neighbor of replaced_neighbor.neighbor_segments) {
+                        if (extended_neighbor === segment) continue;
+                        const i = extended_neighbor.neighbor_segments.indexOf(replaced_neighbor);
+                        extended_neighbor.neighbor_segments[i] = joined_segment;
+                        joined_segment.neighbor_segments.push(extended_neighbor);
+                    }
+                    output_node.wire_segments.remove(replaced_neighbor);
+                    segment.neighbor_segments.remove(replaced_neighbor);
+                }
+                output_node.wire_segments.push(joined_segment);
+                if (remove_segment) {
+                    output_node.wire_segments.remove(segment);
+                } else {
+                    joined_segment.neighbor_segments.push(segment);
+                    segment.neighbor_segments.push(joined_segment);
+                }
+            }
+        }
+    },
 };
 
 const ActionUtil = {
