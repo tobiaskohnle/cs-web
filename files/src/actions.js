@@ -259,6 +259,7 @@ const Action = {
 
     restructure_segments: function () {
         Action.merge_segments();
+        Action.center_invisible_segment_step();
     },
 
     merge_segments: function () {
@@ -312,6 +313,20 @@ const Action = {
                     segment.neighbor_segments.push(joined_segment);
                 }
             }
+        }
+    },
+    center_invisible_segment_step: function (segments) {
+        for (const segment of segments) {
+            if (segment.neighbor_segments.length !== 2) continue;
+            const neighbor0 = segment.neighbor_segments[0];
+            const neighbor1 = segment.neighbor_segments[1];
+            if (neighbor0.offset !== neighbor1.offset) continue;
+            const offset_pos0 = neighbor0.offset_pos;
+            const offset_pos1 = neighbor1.offset_pos;
+            if (offset_pos0 === null || offset_pos1 === null) continue;
+            const offset0 = neighbor0.is_vertical ? offset_pos0.y : offset_pos0.x;
+            const offset1 = neighbor1.is_vertical ? offset_pos1.y : offset_pos1.x;
+            segment.offset = (offset0 + offset1) / 2;
         }
     },
 };
