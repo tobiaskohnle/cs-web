@@ -164,6 +164,7 @@ const default_config = {
         debug_toggle: '',
         debug_step: 'tab, space',
         debug_single_step: 'shift+tab, shift+space',
+        open_settings: '',
 
         escape: 'escape',
         enter: 'enter',
@@ -195,6 +196,8 @@ function save_config() {
 }
 
 onload = function() {
+    Settings.load();
+
     canvas = document.querySelector('.canvas');
     context = canvas.getContext('2d');
 
@@ -283,6 +286,7 @@ ondrop = function(event) {
 
 onwheel = function(event) {
     close_menu();
+    Settings.hide_tooltip();
 }
 
 oncontextmenu = function(event) {

@@ -34,6 +34,10 @@ class Controller {
     }
 
     key_down(event) {
+        if (Settings.is_open) {
+            return;
+        }
+
         if (this.current_action == Enum.action.edit_elements) {
             let result = true;
 

@@ -38,6 +38,9 @@ class Keybind {
 }
 
 const commands = {
+    open_settings: function() {
+        Settings.show();
+    },
     add_and_gate: function() {
         cs.controller.save_state('(command) add_and_gate');
         cs.controller.add_element(new AndGate);
@@ -164,6 +167,7 @@ const commands = {
     },
     escape: function() {
         close_menu();
+        Settings.hide();
 
         switch (cs.controller.current_action) {
             case Enum.action.import_element:

@@ -1,0 +1,251 @@
+.settings-container {
+    position: absolute;
+
+    background: #0009;
+
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.settings-container *:focus {
+    outline: 1px solid #5af;
+}
+
+#invalid-input-tooltip {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    background: #f43;
+    border: 1px solid #f11;
+
+    width: auto;
+    height: 32px;
+
+    padding: 4px;
+
+    display: none;
+
+    box-shadow: 0 0 10px 4px #0006;
+}
+#invalid-input-tooltip::after {
+    content: '';
+
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+
+    border: 5px solid;
+    border-color: #0000 #0000 #f32 #0000;
+}
+
+.settings-menu {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    grid-template-rows: 65px 1fr;
+
+    grid-template-areas: 'searchbar searchbar' 'sidebar window';
+
+    background: #09090a;
+
+    width: 770px;
+    height: 90vh;
+}
+
+.searchbar-container {
+    grid-area: searchbar;
+    width: 100%;
+    height: 100%;
+
+    padding: 12px;
+
+    z-index: 1;
+    box-shadow: 0 0 20px 15px #0004;
+}
+
+.searchbar {
+    width: 100%;
+    height: 100%;
+
+    color: #eee;
+    font-size: 100%;
+
+    padding: 12px;
+
+    background: #222;
+    border: none;
+}
+
+.sidebar-container {
+    grid-area: sidebar;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    font-size: 1.2em;
+
+    padding: 14px;
+
+    box-shadow: 0 0 20px 15px #0004;
+}
+.sidebar-container .top {
+    justify-content: normal;
+}
+
+.link {
+    cursor: pointer;
+}
+
+.sidebar-item {
+    color: #eee;
+    text-decoration: none;
+    cursor: pointer;
+}
+.sidebar-item:hover {
+    font-weight: 500;
+    color: #7df;
+}
+
+.window-container {
+    grid-area: window;
+
+    padding: 14px;
+
+    overflow: auto;
+
+    scroll-behavior: smooth;
+}
+
+.description {
+    color: #bbb;
+    margin-bottom: 8px;
+}
+.description .title {
+    font-weight: 600;
+    color: #fff;
+}
+.description .header {
+    font-size: 150%;
+    font-weight: 700;
+    color: #7df;
+}
+.description .code {
+    font-family: consolas, monospace;
+    color: #db7;
+}
+.description .link {
+    color: #39f;
+    text-decoration: underline;
+}
+
+.setting, .setting-header {
+    margin-bottom: 22px;
+}
+.setting-checkbox {
+    display: flex;
+    flex-direction: row;
+}
+
+label.checkbox {
+    margin-right: 8px;
+}
+label.checkbox input {
+    display: none;
+}
+label.checkbox span {
+    color: #eee;
+
+    width: 22px;
+    height: 22px;
+    border-radius: 1px;
+
+    text-align: center;
+
+    display: block;
+
+    background-color: #333;
+}
+label.checkbox span:hover {
+    background-color: #444;
+}
+label.checkbox input:checked + span::before {
+    content: '\2713';
+}
+
+.setting .setting-input {
+    height: 30px;
+    border: none;
+    background-color: #222;
+
+    padding: 5px;
+    color: #ccc;
+
+    width: 100%;
+}
+.setting .setting-input.recording {
+    outline-color: #f22;
+}
+.setting .setting-input input {
+    border: inherit;
+    background: inherit;
+    color: inherit;
+    font: inherit;
+
+    width: 100%;
+    height: 32px;
+}
+
+.keybind {
+    position: relative;
+}
+.keybind input:focus ~ .buttons button,
+.keybind .buttons:hover button {
+    display: unset;
+}
+
+.keybind .buttons {
+    position: absolute;
+    right: 4px;
+
+    top: 0;
+    bottom: 0;
+}
+.keybind .buttons button {
+    display: none;
+
+    outline: none;
+    border: 1px solid #237;
+
+    color: #000;
+    background: #5ae;
+}
+.keybind .buttons button:hover {
+    border-color: #5ae;
+    background: #7df;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background: #000;
+}
+::-webkit-scrollbar-button {
+    width: 0;
+    height: 0;
+}
+::-webkit-scrollbar-thumb {
+    background: #222;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #333c;
+}
+::-webkit-scrollbar-track {
+    width: 0;
+    height: 0;
+}

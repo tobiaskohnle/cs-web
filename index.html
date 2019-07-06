@@ -9,6 +9,7 @@
 <link rel='stylesheet' href='files/css/style.css'>
 <link rel='stylesheet' href='files/css/menu.css'>
 <link rel='stylesheet' id='theme-style'>
+<link rel='stylesheet' href='files/css/settings.css'>
 
 <script src='files/src/util.js'>       </script>
 <script src='files/src/element.js'>    </script>
@@ -26,6 +27,7 @@
 <script src='files/src/vec.js'>        </script>
 <script src='files/src/view.js'>       </script>
 <script src='files/src/wire.js'>       </script>
+<script src='files/src/settings.js'>   </script>
 
 <body>
     <div class='window'>
@@ -188,6 +190,10 @@
         <div class='menu-item' command='save_as'>
             <span>Save As...</span>
         </div>
+        <div class='menu-separator'></div>
+        <div class='menu-item' command='open_settings'>
+            <span>Open Settings</span>
+        </div>
     </div>
     <div class='menu' menu='file-open-recent'>
         <div class='menu-item' command='reopen_last_file'>
@@ -246,6 +252,634 @@
             <span>Split Segment</span>
         </div>
     </div>
+
+
+    <div class='settings-container'>
+        <div class='settings-menu'>
+            <div class='searchbar-container'>
+                <input class='searchbar' placeholder='Search settings'>
+            </div>
+
+            <div class='sidebar-container'>
+                <div class='top'>
+                    <span class='sidebar-item link' link='#appearance'>Appearance</span>
+                    <span class='sidebar-item link' link='#header'>Header</span>
+                    <span class='sidebar-item link' link='#animations'>Animations</span>
+                    <span class='sidebar-item link' link='#keybinds'>Keybinds</span>
+                </div>
+                <div class='bottom'>
+                    <span class='sidebar-item' onclick='reset_settings'>Reset settings</span>
+                    <span class='sidebar-item' onclick='import_settings'>Import settings</span>
+                    <span class='sidebar-item' onclick='export_settings'>Export settings</span>
+                </div>
+            </div>
+
+            <div class='window-container'>
+                <div class='setting-header' id='appearance'>
+                    <div class='description'>
+                        <span class='header'>Appearance</span>
+                    </div>
+                </div>
+
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Theme</span><br>
+                        setting: <span class='code'>theme</span>
+                    </div>
+
+                    <select class='setting-input'>
+                        <option value='light'>Light</option>
+                        <option value='dark'>Dark</option>
+                    </select>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Default Scale</span><br>
+                        setting: <span class='code'>default_grid_size</span>
+                    </div>
+
+                    <input class='setting-input'>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Grid</span><br>
+                        setting: <span class='code'>grid_style</span>
+                    </div>
+
+                    <select class='setting-input'>
+                        <option value='dots'>Dots</option>
+                        <option value='lines'>Lines</option>
+                        <option value='none'>Hidden</option>
+                    </select>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Show User Interface</span><br>
+                        setting: <span class='code'>show_ui</span>
+                    </div>
+
+                    <div class='setting-checkbox'>
+                        <label class='checkbox'>
+                            <input type='checkbox'>
+                            <span></span>
+                        </label>
+
+                        <div class='description'>
+                            Is ui visible.
+                        </div>
+                    </div>
+                </div>
+
+                <div class='setting-header' id='header'>
+                    <div class='description'>
+                        <span class='header'>Header...</span>
+                    </div>
+                </div>
+
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Title</span><br>
+                        setting: <span class='code'>ticks_per_frame</span>
+                    </div>
+
+                    <input class='setting-input'>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Title</span><br>
+                        setting: <span class='code'>scale_factor</span>
+                    </div>
+
+                    <input class='setting-input'>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Title</span><br>
+                        setting: <span class='code'>block_unused_key_combinations</span>
+                    </div>
+
+                    <div class='setting-checkbox'>
+                        <label class='checkbox'>
+                            <input type='checkbox'>
+                            <span></span>
+                        </label>
+
+                        <div class='description'>
+                            Next to checkbox.
+                        </div>
+                    </div>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Title</span><br>
+                        setting: <span class='code'>use_system_clipboard</span>
+                    </div>
+
+                    <div class='setting-checkbox'>
+                        <label class='checkbox'>
+                            <input type='checkbox'>
+                            <span></span>
+                        </label>
+
+                        <div class='description'>
+                            Next to checkbox.
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Title</span><br>
+                        setting: <span class='code'>use_wire_restructuring</span>
+                    </div>
+
+                    <div class='setting-checkbox'>
+                        <label class='checkbox'>
+                            <input type='checkbox'>
+                            <span></span>
+                        </label>
+
+                        <div class='description'>
+                            Next to checkbox.
+                        </div>
+                    </div>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Title</span><br>
+                        setting: <span class='code'>gates_push_wires</span>
+                    </div>
+
+                    <div class='setting-checkbox'>
+                        <label class='checkbox'>
+                            <input type='checkbox'>
+                            <span></span>
+                        </label>
+
+                        <div class='description'>
+                            Next to checkbox.
+                        </div>
+                    </div>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Title</span><br>
+                        setting: <span class='code'>prevent_element_overlapping</span>
+                    </div>
+
+                    <div class='setting-checkbox'>
+                        <label class='checkbox'>
+                            <input type='checkbox'>
+                            <span></span>
+                        </label>
+
+                        <div class='description'>
+                            Next to checkbox.
+                        </div>
+                    </div>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Title</span><br>
+                        setting: <span class='code'>load_custom_theme, download_custom_theme</span>
+                    </div>
+
+                    <input class='setting-input'>
+                </div>
+
+                <div class='setting-header' id='animations'>
+                    <div class='description'>
+                        <span class='header'>Animations</span>
+                    </div>
+                </div>
+
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Title</span><br>
+                        setting: <span class='code'>anim_factor</span>
+                    </div>
+
+                    <input class='setting-input'>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Title</span><br>
+                        setting: <span class='code'>camera_anim_factor</span>
+                    </div>
+
+                    <input class='setting-input'>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Title</span><br>
+                        setting: <span class='code'>camera_motion_anim_factor</span>
+                    </div>
+
+                    <input class='setting-input'>
+                </div>
+
+                <div class='setting-header' id='keybinds'>
+                    <div class='description'>
+                        <span class='header'>Keybinds</span>
+                    </div>
+                </div>
+
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Add Input Node</span><br>
+                        setting: <span class='code'>keybinds.add_input_node</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Remove Input Node</span><br>
+                        setting: <span class='code'>keybinds.remove_input_node</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>View Content</span><br>
+                        setting: <span class='code'>keybinds.view_content</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Copy</span><br>
+                        setting: <span class='code'>keybinds.copy</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Cut</span><br>
+                        setting: <span class='code'>keybinds.cut</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Paste</span><br>
+                        setting: <span class='code'>keybinds.paste</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Delete</span><br>
+                        setting: <span class='code'>keybinds.delete</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Import</span><br>
+                        setting: <span class='code'>keybinds.import</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Instant Import</span><br>
+                        setting: <span class='code'>keybinds.instant_import</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Invert</span><br>
+                        setting: <span class='code'>keybinds.invert</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>New</span><br>
+                        setting: <span class='code'>keybinds.new</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Open File</span><br>
+                        setting: <span class='code'>keybinds.open_file</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Open Folder</span><br>
+                        setting: <span class='code'>keybinds.open_folder</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Undo</span><br>
+                        setting: <span class='code'>keybinds.undo</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Redo</span><br>
+                        setting: <span class='code'>keybinds.redo</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Reopen Last File</span><br>
+                        setting: <span class='code'>keybinds.reopen_last_file</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Reset View</span><br>
+                        setting: <span class='code'>keybinds.reset_view</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Save</span><br>
+                        setting: <span class='code'>keybinds.save</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Save As...</span><br>
+                        setting: <span class='code'>keybinds.save_as</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Select All</span><br>
+                        setting: <span class='code'>keybinds.select_all</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Next Vertical Align</span><br>
+                        setting: <span class='code'>keybinds.next_vertical_align</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Next Horizontal Align</span><br>
+                        setting: <span class='code'>keybinds.next_horizontal_align</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Toggle Selection</span><br>
+                        setting: <span class='code'>keybinds.toggle_selection</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Deselect All</span><br>
+                        setting: <span class='code'>keybinds.deselect_all</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Split Segment</span><br>
+                        setting: <span class='code'>keybinds.split_segment</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Zoom In</span><br>
+                        setting: <span class='code'>keybinds.zoom_in</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Zoom Out</span><br>
+                        setting: <span class='code'>keybinds.zoom_out</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Debug Toggle</span><br>
+                        setting: <span class='code'>keybinds.debug_toggle</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Debug Step</span><br>
+                        setting: <span class='code'>keybinds.debug_step</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting'>
+                    <div class='description'>
+                        <span class='title'>Debug Single Step</span><br>
+                        setting: <span class='code'>keybinds.debug_single_step</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id='invalid-input-tooltip'></div>
 </body>
 
 </html>
