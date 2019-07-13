@@ -23,6 +23,19 @@ class Controller {
 
         this.undo_stack = [];
         this.redo_stack = [];
+
+        this.tick_nodes = true;
+    }
+
+    reset() {
+        cs.camera.reset();
+
+        cs.context = new CustomGate;
+
+        cs.ticked_nodes = new Set;
+        cs.selected_elements = new Set;
+
+        this.current_action = Enum.action.none;
     }
 
     capture_mouse(element) {
@@ -35,7 +48,11 @@ class Controller {
 
     key_down(event) {
         if (Settings.is_open) {
-            return;
+            const result = Settings.key_down(event);
+
+            if (!result) {
+                return result;
+            }
         }
 
         if (this.current_action == Enum.action.edit_elements) {
@@ -50,7 +67,7 @@ class Controller {
             }
 
             if (!result) {
-                return false;
+                return result;
             }
         }
 
@@ -60,6 +77,7 @@ class Controller {
             if (keybind) {
                 if (Keybind.parse_all(keybind).some(keybind => keybind.matches_event(event))) {
                     commands[command]();
+                    return false;
                 }
             }
         }
@@ -120,11 +138,18 @@ class Controller {
 
                     if (this.hovered_element instanceof ConnectionNode && !any_modifier) {
                         if (this.current_action != Enum.action.edit_elements) {
-                            this.current_action = Enum.action.start_wire;
-                            this.capture_mouse(canvas);
-                            this.wire_start_node = this.hovered_element;
+                            if (this.hovered_element.is_empty()) {
+                                this.saved_state_create_wire = Util.deep_copy(cs.context);
 
-                            this.saved_state_create_wire = Util.deep_copy(cs.context);
+                                this.current_action = Enum.action.start_wire;
+                                this.capture_mouse(canvas);
+                                this.wire_start_node = this.hovered_element;
+                            }
+                            else {
+                                this.saved_state_rewire = Util.deep_copy(cs.context);
+
+                                this.current_action = Enum.action.rewire;
+                            }
                         }
                     }
                     else {
@@ -177,8 +202,6 @@ class Controller {
     }
 
     mouse_move(event) {
-        document.documentElement.style.cursor = '';
-
         const move_vec = new Vec(event.movementX, event.movementY);
 
         this.abs_mouse_movement.add(Vec.abs(move_vec));
@@ -239,6 +262,21 @@ class Controller {
                 }
                 break;
 
+            case Enum.action.rewire:
+                if (other_hovered_element) {
+                    const last_hovered_element = this.hovered_element;
+
+                    Util.load_snapshot();
+
+                    this.hovered_element = last_hovered_element &&
+                        ActionGet.elements().find(element => element.id_ == last_hovered_element.id_);
+
+                    this.action_successful_create_wire = Action.create_wire(
+                        this.new_wire_segments, this.wire_start_node, this.hovered_element,
+                    );
+                }
+                break;
+
             case Enum.action.create_wire:
                 // if (this.wire_start_node.anchor_pos_.x < this.mouse_world_pos.x && this.new_wire_segments.length == 3) {
                 //     this.new_wire_segments[0].is_vertical = true;
@@ -266,6 +304,7 @@ class Controller {
 
                     this.action_successful_create_wire = Action.create_wire(
                         this.new_wire_segments, this.wire_start_node, this.hovered_element,
+                        this.current_action == Enum.action.create_wire,
                     );
                 }
                 break;
@@ -326,6 +365,7 @@ class Controller {
                     }
                 }
 
+                document.documentElement.style.cursor = '';
                 if (this.hovered_element instanceof Gate || this.hovered_element instanceof Label) {
                     this.resize = {
                         north: Math.abs(this.mouse_world_pos.y - this.hovered_element.pos.y                              ) < .5,
@@ -357,7 +397,9 @@ class Controller {
 
             case Enum.action.edit_elements_resize:
                 for (const element of ActionGet.selected_elements()) {
-                    element.resize(this.mouse_world_movement, this.resize.vec);
+                    if (element.resize && this.resize) {
+                        element.resize(this.mouse_world_movement, this.resize.vec);
+                    }
                 }
 
                 break;
@@ -395,14 +437,17 @@ class Controller {
                 }
                 break;
 
+            case Enum.action.rewire:
             case Enum.action.create_wire_segment:
             case Enum.action.create_wire:
                 if (this.action_successful_create_wire) {
-                    if (this.new_wire_segments.last().offset_pos == this.snapped_mouse_world_pos) {
-                        this.new_wire_segments.last().offset_pos = null;
-                    }
-                    if (this.new_wire_segments.last().norma_pos == this.snapped_mouse_world_pos) {
-                        this.new_wire_segments.last().norma_pos = null;
+                    if (this.new_wire_segments.length) {
+                        if (this.new_wire_segments.last().offset_pos == this.snapped_mouse_world_pos) {
+                            this.new_wire_segments.last().offset_pos = null;
+                        }
+                        if (this.new_wire_segments.last().normal_pos == this.snapped_mouse_world_pos) {
+                            this.new_wire_segments.last().normal_pos = null;
+                        }
                     }
 
                     cs.config.DEBUG_LOG && console.log('create_wire success');
@@ -643,26 +688,7 @@ class Controller {
     add_element(element) {
         element.pos.set(this.mouse_down_world_pos).round();
 
-        // if (element instanceof Gate) {
-        //     element.update();
-        //     element.set_nodes_pos();
-        //     element.cancel_animation();
-        //     element.init_animation();
-        //     element.color_outline_.set_anim_hsva(cs.theme.gate_init);
-
-        //     for (const node of element.nodes()) {
-        //         node.cancel_animation();
-        //         node.anim_pos_.add(node.dir);
-        //         node.color_line_.set_anim_hsva(cs.theme.node_init);
-        //     }
-        // }
-
-        // if (element instanceof Label) {
-        //     element.cancel_animation();
-        // }
-
-        element.cancel_animation();
-        element.init_animation && element.init_animation();
+        element.run_init_animation();
 
         Action.add(element);
     }
@@ -673,32 +699,34 @@ class Controller {
         const inner_elements = gate.inner_elements.sorted((a,b) => a.pos.y==b.pos.y ? a.pos.x-b.pos.x : a.pos.y-b.pos.y);
 
         for (const inner_element of inner_elements) {
-            if (inner_element instanceof InputSwitch ||
-                inner_element instanceof InputButton ||
-                inner_element instanceof InputPulse ||
-                inner_element instanceof Clock
-            ) {
-                const input = gate.add_input_node();
+            if (inner_element instanceof InputGate) {
+                for (const output of inner_element.outputs) {
+                    const input = gate.add_input_node();
 
-                input.is_inverted = inner_element.outputs[0].is_inverted;
+                    input.is_inverted = output.is_inverted;
 
-                input.next_nodes = inner_element.outputs[0].next_nodes;
-                inner_element.outputs[0].next_nodes = [];
+                    input.next_nodes = output.next_nodes;
+                    output.next_nodes = [];
 
-                if (inner_element instanceof InputPulse) {
-                    input.is_rising_edge = true;
+                    if (inner_element instanceof InputPulse) {
+                        input.is_rising_edge = true;
+                    }
                 }
             }
 
-            if (inner_element instanceof OutputLight) {
-                const output = gate.add_output_node();
+            if (inner_element instanceof OutputGate) {
+                for (const input of inner_element.inputs) {
+                    const output = gate.add_output_node();
 
-                output.is_inverted = inner_element.inputs[0].is_inverted;
+                    output.is_inverted = input.is_inverted;
 
-                const prev_node = inner_element.inputs[0].previous_node();
+                    const prev_node = input.previous_node();
 
-                prev_node.next_nodes.remove(inner_element.inputs[0]);
-                prev_node.next_nodes.push(output);
+                    if (prev_node) {
+                        prev_node.next_nodes.remove(input);
+                        prev_node.next_nodes.push(output);
+                    }
+                }
             }
 
             if (inner_element instanceof Label) {
@@ -714,6 +742,8 @@ class Controller {
                 }
             }
         }
+
+        gate.run_init_animation();
     }
 
     reset_view() {

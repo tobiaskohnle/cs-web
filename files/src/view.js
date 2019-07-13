@@ -5,8 +5,10 @@ function update() {
 
     cs.camera.update();
 
-    for (let i = 0; i < cs.config.ticks_per_frame; i++) {
-        Action.tick();
+    if (cs.controller.tick_nodes) {
+        for (let i = 0; i < cs.config.ticks_per_frame; i++) {
+            Action.tick();
+        }
     }
 
     Action.update();

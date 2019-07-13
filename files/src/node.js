@@ -63,6 +63,14 @@ class ConnectionNode extends Element {
         this.color_line_.set_anim_hsva(this.color_line_);
     }
 
+    run_init_animation() {
+        this.cancel_animation();
+
+        this.color_dot_.set_anim_hsva(cs.theme.node_init);
+        this.color_line_.set_anim_hsva(cs.theme.node_init);
+        this.anim_pos_.add(this.dir);
+    }
+
     mouse_down() {
         this.grab_pos_ = Vec.copy(this.pos);
     }
@@ -71,7 +79,7 @@ class ConnectionNode extends Element {
     }
 
     parent() {
-        return ActionGet.elements().find(element => element instanceof Gate && element.nodes().includes(this));
+        return ActionGet.all_elements().find(element => element instanceof Gate && element.nodes().includes(this));
     }
 
     set_dir(pos) {
@@ -102,7 +110,7 @@ class ConnectionNode extends Element {
     }
 
     previous_node() {
-        return Util.all_inner_elements(cs.context)
+        return ActionGet.all_elements()
             .filter(element => element instanceof Gate)
             .flatMap(gate => [...gate.inputs, ...gate.outputs])
             .find(node => node.next_nodes && node.next_nodes.includes(this));
@@ -160,7 +168,7 @@ class InputNode extends ConnectionNode {
         super();
 
         this.is_rising_edge = false;
-        this.rising_edge_pulse_length = cs.config.default_rising_edge_pulse_length;
+        this.rising_edge_pulse_length = parseFloat(cs.config.default_rising_edge_pulse_length);
         this.rising_edge_ticks_active = 0;
     }
 
@@ -248,7 +256,13 @@ class OutputNode extends ConnectionNode {
             return previous_node.state != this.is_inverted;
         }
 
-        return this.parent().eval_state() != this.is_inverted;
+        const parent = this.parent();
+
+        if (parent.eval_state) {
+            return parent.eval_state() != this.is_inverted;
+        }
+
+        return this.is_inverted;
     }
 
     is_empty() {

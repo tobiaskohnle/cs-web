@@ -3,17 +3,17 @@
 class Camera {
     constructor(pos=new Vec, scale=1) {
         this.pos = Vec.copy(pos);
-        this.scale = scale;
+        this.scale = parseFloat(scale);
 
         this.anim_pos_ = Vec.copy(pos);
-        this.anim_scale_ = scale;
+        this.anim_scale_ = parseFloat(scale);
 
         this.motion_ = new Vec;
     }
 
     reset() {
         this.pos.set(new Vec);
-        this.scale = cs.config.default_grid_size;
+        this.scale = parseFloat(cs.config.default_grid_size);
     }
 
     update() {

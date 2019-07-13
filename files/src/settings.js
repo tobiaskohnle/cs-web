@@ -2,6 +2,27 @@
 
 const Settings = {
     is_open: true,
+    currently_edited_setting: null,
+
+    reset: function() {
+        cs.config = Util.deep_copy(default_config);
+    },
+    update_config: function() {
+        select_theme(cs.config.theme);
+    },
+
+    update: function() {
+        for (const settings of document.querySelectorAll('.setting')) {
+            const input = settings.querySelector('input, select');
+
+            if (input.type == 'select' || input.type == 'text') {
+                input.value = Util.get_nested(cs.config, settings.getAttribute('setting'));
+            }
+            if (input.type == 'checkbox') {
+                input.checked = Util.get_nested(cs.config, settings.getAttribute('setting'));
+            }
+        }
+    },
 
     load: function() {
         Settings.add_event_listeners();
@@ -10,6 +31,7 @@ const Settings = {
 
     show: function() {
         Settings.is_open = true;
+        Settings.update();
         const settings_container = document.querySelector('.settings-container');
         settings_container.style.display = '';
     },
@@ -20,7 +42,28 @@ const Settings = {
         settings_container.style.display = 'none';
     },
 
+    key_down: function(event) {
+        if (Settings.currently_edited_setting) {
+            if (event.key == 'Escape' || event.key == 'Enter') {
+                Settings.set_recording_element(null);
+                document.activeElement.blur();
+
+                Util.set_nested(cs.config, Settings.currently_edited_setting, Settings.currently_edited_setting_previous_value);
+                Settings.currently_edited_setting = null;
+
+                Settings.update();
+                return false;
+            }
+
+            return;
+        }
+
+        return true;
+    },
+
     edit_keybind: function(event) {
+        console.log('EDIT KEYBIND');
+
         let modifier_string = '';
 
         if (event.ctrlKey)  modifier_string += 'Ctrl+';
@@ -108,17 +151,25 @@ const Settings = {
             });
         }
 
-        for (const element of document.querySelectorAll('input')) {
-            element.addEventListener('keydown', function(event) {
-                if (event.key == 'Escape' || event.key == 'Enter') {
-                    Settings.set_recording_element(null);
-                    document.activeElement.blur();
-                }
+        for (const element of document.querySelectorAll('.setting')) {
+            const input_element = element.querySelector('input, select');
+            const setting = element.getAttribute('setting');
+
+            input_element.addEventListener('focus', function(event) {
+                Settings.currently_edited_setting_previous_value = Util.get_nested(cs.config, setting);
+                Settings.currently_edited_setting = setting;
+            });
+            input_element.addEventListener('blur', function(event) {
+                Settings.currently_edited_setting = null;
+            });
+            input_element.addEventListener('change', function(event) {
+                Util.set_nested(cs.config, setting, this.value || this.checked);
+                Settings.update_config();
             });
         }
     },
 
-    match_pattern: function(pattern, text) {
+    match_fuzzy: function(pattern, text) {
         return new RegExp(pattern.split('').join('.*'), 'i').test(text);
     },
 
@@ -128,7 +179,7 @@ const Settings = {
         }
 
         for (const element of document.querySelectorAll('.setting')) {
-            const visible = Settings.match_pattern(pattern, element.innerText);
+            const visible = Settings.match_fuzzy(pattern, element.innerText);
             element.style.display = visible ? '' : 'none';
         }
     },

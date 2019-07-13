@@ -15,7 +15,7 @@ class Keybind {
         return key_combination;
     }
     static parse_all(string) {
-        return string.split(/,/g).map(string => Keybind.parse(string));
+        return string.split(',').map(string => Keybind.parse(string));
     }
 
     matches_event(event) {
@@ -198,13 +198,13 @@ const commands = {
         cs.controller.save_state('(command) import');
         cs.controller.read_files(function(result) {
             cs.controller.add_custom_gate(Util.extended_parse(result));
-            ActionUtil.tick_queue_all();
+            ActionUtil.queue_tick_all();
         });
     },
     instant_import: function() {
         const file_string = cs.controller.file_string();
         cs.controller.add_custom_gate(Util.extended_parse(file_string));
-        ActionUtil.tick_queue_all();
+        ActionUtil.queue_tick_all();
     },
     invert: function() {
         cs.controller.save_state('(command) invert');
@@ -212,13 +212,12 @@ const commands = {
     },
     new: function() {
         cs.controller.save_state('(command) new');
-        cs.reset();
-        cs.camera.reset();
+        cs.controller.reset();
     },
     open_file: function() {
         cs.controller.read_files(function(result) {
             cs.context = Util.extended_parse(result);
-            ActionUtil.tick_queue_all();
+            ActionUtil.queue_tick_all();
         });
     },
     paste: function() {
@@ -288,10 +287,10 @@ const commands = {
         ActionUtil.split_selected_segments();
     },
     theme_dark: function() {
-        select_theme(theme.dark);
+        select_theme('dark');
     },
     theme_light: function() {
-        select_theme(theme.light);
+        select_theme('light');
     },
     zoom_in: function() {
         cs.camera.scale_at(screen_center(), cs.config.scale_factor);
@@ -300,9 +299,12 @@ const commands = {
         cs.camera.scale_at(screen_center(), 1/cs.config.scale_factor);
     },
     debug_toggle: function() {
+        cs.controller.tick_nodes = !cs.controller.tick_nodes;
     },
     debug_step: function() {
+        Action.tick();
     },
     debug_single_step: function() {
+        Action.tick();
     },
 };

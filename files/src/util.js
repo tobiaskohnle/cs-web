@@ -25,7 +25,11 @@ const Util = {
     create_snapshot: function() {
         cs.config.DEBUG_LOG && console.log(`%c>> CREATED SNAPSHOT`, 'color:#fb2; font-weight:bold');
 
-        this.snapshot = Util.deep_copy(cs);
+        this.snapshot = Util.deep_copy({
+            controller:        cs.controller,
+            selected_elements: cs.selected_elements,
+            context:           cs.context,
+        });
     },
     load_snapshot: function() {
         if (this.snapshot) {
@@ -63,20 +67,38 @@ const Util = {
         return min <= v && v < max;
     },
 
+    get_nested: function(object, nested_key) {
+        let result = object;
+
+        for (const key of nested_key.split('.')) {
+            result = result[key];
+        }
+
+        return result;
+    },
+    set_nested: function(object, nested_key, value) {
+        let result = object;
+        let last_result = null;
+
+        if (!nested_key) {
+            return;
+        }
+
+        const keys = nested_key.split('.');
+
+        for (const key of keys) {
+            last_result = result;
+            result = result[key];
+        }
+
+        last_result[keys.last()] = value;
+    },
+
     side_index: function(vec) {
         if (vec.x > 0) return Enum.side.east;
         if (vec.y > 0) return Enum.side.south;
         if (vec.x < 0) return Enum.side.west;
         if (vec.y < 0) return Enum.side.north;
-    },
-
-    all_inner_elements: function(custom_gate) {
-        return [
-            ...custom_gate.inner_elements,
-            ...custom_gate.inner_elements
-                .filter(element => element instanceof CustomGate)
-                .flatMap(custom_gate => Util.all_inner_elements(custom_gate))
-        ];
     },
 
     rects_overlap: function(pos_a, size_a, pos_b, size_b) {

@@ -1,0 +1,35 @@
+:root {
+    --backdrop: #0009;
+    --background: #09090a;
+    --font-color: #eee;
+
+    --focus-outline: #5af;
+    --container-box-shadow: #0004;
+    --recording-input-outline: #f22;
+    --setting-input-background: #222;
+    --sidebar-item-color-hover: #7df;
+
+    --scrollbar-background: #000;
+    --scrollbar-thumb-background: #222;
+    --scrollbar-thumb-background-hover: #333c;
+
+    --checkbox-background: #333;
+    --checkbox-background-hover: #444;
+
+    --keybind-button-border: #237;
+    --keybind-button-color: #000;
+    --keybind-button-background: #5ae;
+    --keybind-button-border-hover: #5ae;
+    --keybind-button-background-hover: #7df;
+
+    --description-color: #bbb;
+    --description-title-color: #fff;
+    --description-header-color: #7df;
+    --description-code-color: #db7;
+    --description-link-color: #39f;
+
+    --tooltip-background: #f43;
+    --tooltip-border: #f11;
+    --tooltip-box-shadow: #0006;
+    --tooltip-arrow: #f32;
+}
