@@ -1,7 +1,7 @@
 .settings-container {
     position: absolute;
 
-    background: #0009;
+    background: var(--backdrop);
 
     top: 0;
     left: 0;
@@ -13,7 +13,7 @@
     justify-content: center;
 }
 .settings-container *:focus {
-    outline: 1px solid #5af;
+    outline: 1px solid var(--focus-outline);
 }
 
 #invalid-input-tooltip {
@@ -21,8 +21,8 @@
     top: 0;
     left: 0;
 
-    background: #f43;
-    border: 1px solid #f11;
+    background: var(--tooltip-background);
+    border: 1px solid var(--tooltip-border);
 
     width: auto;
     height: 32px;
@@ -31,7 +31,7 @@
 
     display: none;
 
-    box-shadow: 0 0 10px 4px #0006;
+    box-shadow: 0 0 10px 4px var(--tooltip-box-shadow);
 }
 #invalid-input-tooltip::after {
     content: '';
@@ -41,7 +41,7 @@
     left: 0;
 
     border: 5px solid;
-    border-color: #0000 #0000 #f32 #0000;
+    border-color: #0000 #0000 var(--tooltip-arrow) #0000;
 }
 
 .settings-menu {
@@ -51,7 +51,7 @@
 
     grid-template-areas: 'searchbar searchbar' 'sidebar window';
 
-    background: #09090a;
+    background: var(--background);
 
     width: 770px;
     height: 90vh;
@@ -65,19 +65,20 @@
     padding: 12px;
 
     z-index: 1;
-    box-shadow: 0 0 20px 15px #0004;
+    box-shadow: 0 0 20px 15px var(--container-box-shadow);
+    background: var(--background);
 }
 
 .searchbar {
     width: 100%;
     height: 100%;
 
-    color: #eee;
+    color: var(--font-color);
     font-size: 100%;
 
     padding: 12px;
 
-    background: #222;
+    background: var(--setting-input-background);
     border: none;
 }
 
@@ -92,7 +93,12 @@
 
     padding: 14px;
 
-    box-shadow: 0 0 20px 15px #0004;
+    box-shadow: 0 0 20px 15px var(--container-box-shadow);
+    background: var(--background);
+}
+.sidebar-container .top, .sidebar-container .bottom {
+    display: flex;
+    flex-direction: column;
 }
 .sidebar-container .top {
     justify-content: normal;
@@ -103,13 +109,13 @@
 }
 
 .sidebar-item {
-    color: #eee;
+    color: var(--font-color);
     text-decoration: none;
     cursor: pointer;
 }
 .sidebar-item:hover {
     font-weight: 500;
-    color: #7df;
+    color: var(--sidebar-item-color-hover);
 }
 
 .window-container {
@@ -123,24 +129,24 @@
 }
 
 .description {
-    color: #bbb;
+    color: var(--description-color);
     margin-bottom: 8px;
 }
 .description .title {
     font-weight: 600;
-    color: #fff;
+    color: var(--description-title-color);
 }
 .description .header {
     font-size: 150%;
     font-weight: 700;
-    color: #7df;
+    color: var(--description-header-color);
 }
 .description .code {
     font-family: consolas, monospace;
-    color: #db7;
+    color: var(--description-code-color);
 }
 .description .link {
-    color: #39f;
+    color: var(--description-link-color);
     text-decoration: underline;
 }
 
@@ -159,7 +165,7 @@ label.checkbox input {
     display: none;
 }
 label.checkbox span {
-    color: #eee;
+    color: var(--font-color);
 
     width: 22px;
     height: 22px;
@@ -169,10 +175,10 @@ label.checkbox span {
 
     display: block;
 
-    background-color: #333;
+    background-color: var(--checkbox-background);
 }
 label.checkbox span:hover {
-    background-color: #444;
+    background-color: var(--checkbox-background-hover);
 }
 label.checkbox input:checked + span::before {
     content: '\2713';
@@ -181,15 +187,15 @@ label.checkbox input:checked + span::before {
 .setting .setting-input {
     height: 30px;
     border: none;
-    background-color: #222;
+    background-color: var(--setting-input-background);
 
     padding: 5px;
-    color: #ccc;
+    color: var(--font-color);
 
     width: 100%;
 }
 .setting .setting-input.recording {
-    outline-color: #f22;
+    outline-color: var(--recording-input-outline);
 }
 .setting .setting-input input {
     border: inherit;
@@ -220,30 +226,30 @@ label.checkbox input:checked + span::before {
     display: none;
 
     outline: none;
-    border: 1px solid #237;
+    border: 1px solid var(--keybind-button-border)
 
-    color: #000;
-    background: #5ae;
+    color: var(--keybind-button-color);
+    background: var(--keybind-button-background);
 }
 .keybind .buttons button:hover {
-    border-color: #5ae;
-    background: #7df;
+    border-color: var(--keybind-button-border-hover);
+    background: var(--keybind-button-background-hover);
 }
 
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
-    background: #000;
+    background: var(--scrollbar-background);
 }
 ::-webkit-scrollbar-button {
     width: 0;
     height: 0;
 }
 ::-webkit-scrollbar-thumb {
-    background: #222;
+    background: var(--scrollbar-thumb-background);
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: #333c;
+    background: var(--scrollbar-thumb-background-hover);
 }
 ::-webkit-scrollbar-track {
     width: 0;

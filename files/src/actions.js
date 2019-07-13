@@ -59,6 +59,10 @@ const Action = {
                 for (const element of remove_segments_array) {
                     const parent = element.parent();
 
+                    if (!parent) {
+                        continue;
+                    }
+
                     parent.wire_segments.remove(element);
 
                     if (element.is_connected_to(parent)) {
@@ -166,7 +170,11 @@ const Action = {
         if (gate instanceof Gate == false) return;
 
         if (gate.allow_new_input_nodes()) {
-            gate.add_input_node();
+            const node = gate.add_input_node();
+
+            // node.cancel_animation();
+            // node.anim_pos_.add(node.dir);
+            // node.color_line_.set_anim_hsva(cs.theme.node_init);
         }
     },
     remove_input_node: function(gate) {
@@ -212,7 +220,7 @@ const Action = {
         segment.offset = segment.anim_offset_ = prev_neighbor.offset/2 + next_neighbor.offset/2;
     },
 
-    create_wire: function(new_wire_segments, start_element, end_element) {
+    create_wire: function(new_wire_segments, start_element, end_element, dragging_wire=false) {
         if (ActionGet.nodes_connectable(start_element, end_element)) {
             Action.connect_nodes(start_element, end_element);
 
@@ -229,10 +237,15 @@ const Action = {
         }
         else if (end_element instanceof WireSegment) {
             // TEMP
-            if (start_element instanceof OutputNode) return false;
+            // if (start_element instanceof OutputNode) return false;
             if (end_element.parent().next_nodes.includes(start_element)) return false;
 
             new_wire_segments.last().normal_pos = null;
+
+            if (dragging_wire) {
+                new_wire_segments.at(-2).offset_pos = new_wire_segments.at(-1).offset_pos;
+                Util.remove_segment(new_wire_segments);
+            }
 
             if (new_wire_segments.last().is_vertical == end_element.is_vertical) {
                 Util.remove_segment(new_wire_segments);
@@ -304,9 +317,9 @@ const ActionUtil = {
     remove_selected: function() {
         const selected_elements = ActionGet.selected_elements();
 
-        const soft = selected_elements.some(
-            element => element instanceof ConnectionNode && !element.is_empty()
-        );
+        const soft =
+            !selected_elements.some(element => element instanceof Gate || element instanceof Label)
+            && selected_elements.some(element => element instanceof ConnectionNode && !element.is_empty());
 
         if (soft) {
             for (const element of selected_elements) {
@@ -387,12 +400,24 @@ const ActionGet = {
         return elements_in_rect;
     },
 
+    all_inner_elements: function(custom_gate) {
+        return [
+            ...ActionGet.elements(custom_gate.inner_elements),
+            ...custom_gate.inner_elements
+                .filter(element => element instanceof CustomGate)
+                .flatMap(custom_gate => ActionGet.all_inner_elements(custom_gate)),
+        ];
+    },
+
     nodes_connectable: function(start_node, end_node) {
         return start_node instanceof ConnectionNode
             && end_node instanceof ConnectionNode
             && (start_node instanceof OutputNode) != (end_node instanceof OutputNode);
     },
 
+    all_elements: function() {
+        return ActionGet.all_inner_elements(cs.context);
+    },
     elements: function(element_list=cs.context.inner_elements) {
         const elements = [];
 

@@ -29,16 +29,16 @@ class Gate extends Element {
 
     add_input_node() {
         const node = new InputNode;
-        node.color_line_.set_anim_hsva(cs.theme.node_init);
         this.inputs.push(node);
         this.update_nodes();
+        node.run_init_animation();
         return node;
     }
     add_output_node() {
         const node = new OutputNode;
         this.outputs.push(node);
-        node.color_line_.set_anim_hsva(cs.theme.node_init);
         this.update_nodes();
+        node.run_init_animation();
         return node;
     }
 
@@ -65,13 +65,15 @@ class Gate extends Element {
         return [...this.inputs, ...this.outputs];
     }
 
-    init_animation() {
+    run_init_animation() {
+        this.cancel_animation();
         this.set_nodes_pos();
 
         this.color_outline_.set_anim_hsva(cs.theme.gate_init);
 
         for (const node of this.nodes())  {
-            node.anim_pos_.add(node.dir);
+            // node.anim_pos_.add(node.dir);
+            node.run_init_animation();
         }
     }
 
@@ -292,7 +294,10 @@ class CustomGate extends Gate {
     }
 }
 
-class InputSwitch extends Gate {
+class InputGate extends Gate {}
+class OutputGate extends Gate {}
+
+class InputSwitch extends InputGate {
     constructor(pos) {
         super(pos, new Vec(2,2));
         this.add_output_node();
@@ -330,7 +335,7 @@ class InputSwitch extends Gate {
     }
 }
 
-class InputButton extends Gate {
+class InputButton extends InputGate {
     constructor(pos) {
         super(pos, new Vec(2,2));
         this.add_output_node();
@@ -410,12 +415,12 @@ class InputButton extends Gate {
     }
 }
 
-class InputPulse extends Gate {
+class InputPulse extends InputGate {
     constructor(pos) {
         super(pos, new Vec(2,2));
         this.add_output_node();
 
-        this.pulse_length = cs.config.default_rising_edge_pulse_length;
+        this.pulse_length = parseFloat(cs.config.default_rising_edge_pulse_length);
         this.pulse_ticks_ = Infinity;
     }
 
@@ -458,7 +463,7 @@ class InputPulse extends Gate {
     }
 }
 
-class Clock extends Gate {
+class Clock extends InputGate {
     constructor(pos) {
         super(pos, new Vec(2,2));
         this.add_output_node();
@@ -496,7 +501,7 @@ class Clock extends Gate {
     }
 }
 
-class OutputLight extends Gate {
+class OutputLight extends OutputGate {
     constructor(pos) {
         super(pos, new Vec(2,2));
         this.add_input_node();
@@ -529,7 +534,7 @@ class OutputLight extends Gate {
     }
 }
 
-class SegmentDisplay extends Gate {
+class SegmentDisplay extends OutputGate {
     constructor(pos) {
         super(pos, new Vec(5,7));
         this.add_input_node();
@@ -595,7 +600,6 @@ class SegmentDisplay extends Gate {
 
         const C0 = new Vec(inner_width/2 + segment_center_length, 0                            );
         const M0 = new Vec(width/2,                               0                            );
-        const M1 = new Vec(width/2,                               height/2                     );
         const I0 = new Vec(inner_width/2,                         segment_width/2              );
         const I1 = new Vec(inner_width/2,                         segment_width/2 + inner_width);
         const A0 = new Vec(inner_width/2 + segment_center_length, height/2                     );

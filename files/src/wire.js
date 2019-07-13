@@ -66,7 +66,7 @@ class WireSegment extends Element {
     }
 
     parent() {
-        return ActionGet.elements().find(element => element instanceof OutputNode && element.wire_segments.includes(this));
+        return ActionGet.all_elements().find(element => element instanceof OutputNode && element.wire_segments.includes(this));
     }
 
     set_offset(pos) {

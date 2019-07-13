@@ -12,6 +12,7 @@ const Enum = {
     action: {
         none:                 Symbol('action_none'),
         start_wire:           Symbol('action_start_wire'),
+        rewire:               Symbol('action_rewire'),
         create_wire:          Symbol('action_create_wire'),
         create_wire_segment:  Symbol('action_create_wire_segment'),
         create_selection_box: Symbol('action_create_selection_box'),
@@ -40,7 +41,6 @@ const Enum = {
 
 const theme = {
     light: {
-        stylesheet:         'style-light.css',
         grid:               Color.parse('#aaa7'),
         light_inactive:     Color.parse('#fff4'),
         light_active:       Color.parse('#f334'),
@@ -55,8 +55,8 @@ const theme = {
         hovered_selected:   Color.parse('#26e'),
         selection_fill:     Color.parse('#17d3'),
         selection_outline:  Color.parse('#39fd'),
-        node_init:          Color.parse('#0ff0'),
-        gate_init:          Color.parse('#0ff0'),
+        node_init:          Color.parse('#0ef0'),
+        gate_init:          Color.parse('#0ef0'),
         label_text:         Color.parse('#222'),
         label_special_text: Color.parse('#330'),
         label_outline:      Color.parse('#5560'),
@@ -71,7 +71,6 @@ const theme = {
         sidebar_header_font:      Color.parse('#222'),
     },
     dark: {
-        stylesheet:         'style-dark.css',
         grid:               Color.parse('#aff5'),
         light_inactive:     Color.parse('#0007'),
         light_active:       Color.parse('#f337'),
@@ -86,8 +85,8 @@ const theme = {
         hovered_selected:   Color.parse('#16e'), // #26e
         selection_fill:     Color.parse('#17d3'),
         selection_outline:  Color.parse('#39fd'),
-        node_init:          Color.parse('#0ff0'),
-        gate_init:          Color.parse('#0ff0'),
+        node_init:          Color.parse('#0ef0'),
+        gate_init:          Color.parse('#0ef0'),
         label_text:         Color.parse('#ccc'),
         label_special_text: Color.parse('#cc1'),
         label_outline:      Color.parse('#5560'),
@@ -97,7 +96,7 @@ const theme = {
         sidebar_imported_element: Color.parse('#2af6'),
         sidebar_hovered_element:  Color.parse('#49e2'),
         sidebar_header_outline:   Color.parse('#222'),
-        sidebar_header_hovered:   Color.parse('#333'),
+        sidebar_header_hovered:   Color.parse('#222'),
         sidebar_header:           Color.parse('#0b0b0d'),
         sidebar_header_font:      Color.parse('#eee'),
     },
@@ -135,35 +134,35 @@ const default_config = {
 
 
     keybinds: {
-        add_input_node: 'shift+*',
-        remove_input_node: 'shift+_',
+        add_input_node: 'Shift+*',
+        remove_input_node: 'Shift+_',
         view_content: '',
-        copy: 'ctrl+c',
-        cut: 'ctrl+x',
-        paste: 'ctrl+v',
+        copy: 'Ctrl+c',
+        cut: 'Ctrl+x',
+        paste: 'Ctrl+v',
         delete: 'delete',
-        import: 'ctrl+i',
-        instant_import: 'ctrl+l',
-        invert: 'shift+I',
+        import: 'Ctrl+i',
+        instant_import: 'Ctrl+l',
+        invert: 'Shift+I',
         new: '',
-        open_file: 'ctrl+o',
-        undo: 'ctrl+z',
-        redo: 'ctrl+y, ctrl+shift+Z',
-        reopen_last_file: 'ctrl+shift+T',
+        open_file: 'Ctrl+o',
+        undo: 'Ctrl+z',
+        redo: 'Ctrl+y, Ctrl+Shift+Z',
+        reopen_last_file: 'Ctrl+Shift+T',
         reset_view: '',
-        save: 'ctrl+s',
-        save_as: 'ctrl+shift+S',
-        select_all: 'shift+A',
+        save: 'Ctrl+s',
+        save_as: 'Ctrl+Shift+S',
+        select_all: 'Shift+A',
         next_vertical_align: '',
         next_horizontal_align: '',
-        toggle_selection: 'ctrl+a',
-        deselect_all: 'ctrl+shift+A',
-        split_segment: 'shift+S',
-        zoom_in: 'ctrl+*',
-        zoom_out: 'ctrl+_',
+        toggle_selection: 'Ctrl+a',
+        deselect_all: 'Ctrl+Shift+A',
+        split_segment: 'Shift+S',
+        zoom_in: 'Ctrl+*',
+        zoom_out: 'Ctrl+_',
         debug_toggle: '',
         debug_step: 'tab, space',
-        debug_single_step: 'shift+tab, shift+space',
+        debug_single_step: 'Shift+tab, Shift+space',
         open_settings: '',
 
         escape: 'escape',
@@ -172,9 +171,10 @@ const default_config = {
     },
 };
 
-function select_theme(theme) {
-    cs.theme = theme;
-    document.querySelector('#theme-style').href = `files/css/${theme.stylesheet}`;
+function select_theme(theme_name) {
+    cs.theme = theme[theme_name];
+    document.querySelector('#theme-style').href = `files/css/style-${theme_name}.css`;
+    document.querySelector('#theme-settings-style').href = `files/css/settings-${theme_name}.css`;
 }
 
 function load_config() {
@@ -214,7 +214,7 @@ onload = function() {
     cs.config.DEBUG_LOG = false;
     cs.config.DEBUG_DRAW_CONNECTIONS = true;
 
-    select_theme(theme[cs.config.theme]);
+    select_theme(cs.config.theme);
 
     cs.camera = new Camera(new Vec, cs.config.default_grid_size);
 
