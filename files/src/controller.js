@@ -720,7 +720,7 @@ class Controller {
                     const nearby_elements = ActionGet.elements_in_rect(rect_pos, rect_size, inner_elements);
 
                     const nearby_gates = nearby_elements
-                        .filter(element => element instanceof InputGate || element instanceof OutputGate);
+                        .filter(element => element instanceof InputGate || element instanceof OutputGate)
                         .sorted(Util.compare_function(gate => Vec.sub(
                             Vec.add(gate.pos, Vec.div(gate.size, 2)),
                             Vec.add(inner_element.pos, Vec.div(inner_element.size, 2)),
