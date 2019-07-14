@@ -94,7 +94,7 @@ class ConnectionNode extends Element {
     set_index(index) {
         const neighbors = this.parent().nodes_per_side()[Util.side_index(this.dir)];
 
-        neighbors.sort((a,b) => a.index-b.index);
+        neighbors.sort(Util.compare_function(x=>x.index));
 
         neighbors.remove(this);
         neighbors.splice(Math.max(0,index), 0, this);
@@ -148,12 +148,35 @@ class ConnectionNode extends Element {
         context.lineWidth = .1;
         context.stroke();
 
+        if (this.tag) {
+            switch (Util.side_index(this.dir)) {
+                case Enum.side.east:
+                    context.textAlign = 'end';
+                    context.textBaseline = 'middle';
+                    break;
+                case Enum.side.west:
+                    context.textAlign = 'start';
+                    context.textBaseline = 'middle';
+                    break;
+                case Enum.side.south:
+                    context.textAlign = 'center';
+                    context.textBaseline = 'bottom';
+                    break;
+                case Enum.side.north:
+                    context.textAlign = 'center';
+                    context.textBaseline = 'top';
+                    break;
+            }
+
+            context.font = '.5px segoe ui, sans-serif';
+            context.fillStyle = cs.theme.wire_inactive.to_string();
+            context.fillText(this.tag, ...Vec.sub(this.anim_pos_, Vec.mult(this.dir, .1)).xy);
+        }
+
         if (this.is_inverted) {
             context.beginPath();
-            // context.arc(this.anim_pos_.x+this.dir.x/4+this.dir.x*.1/2, this.anim_pos_.y, 1/4, 0, Math.PI*2);
             context.arc(...Vec.add(this.anim_pos_, Vec.mult(this.dir, 1/4+.1/2)).xy, 1/4, 0, Math.PI*2);
 
-            // context.strokeStyle = !draw_line_active ? cs.theme.wire_active : cs.theme.wire_inactive;
             context.strokeStyle = this.color_dot_.to_string();
             context.stroke();
         }

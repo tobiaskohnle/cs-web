@@ -204,7 +204,7 @@ class WireSegment extends Element {
 
         context.fillStyle = this.base_color_.to_string();
 
-        const neighbor_elements = this.neighbor_elements().sorted((a,b) => a.anim_offset_-b.anim_offset_);
+        const neighbor_elements = this.neighbor_elements().sorted(Util.compare_function(x=>x.anim_offset_));
 
         for (let i = 1; i < neighbor_elements.length-1; i++) {
             const neighbor_offset = neighbor_elements[i].anim_offset_;

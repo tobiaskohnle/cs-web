@@ -53,6 +53,9 @@ const Action = {
 
             cs.context.inner_elements.remove(element);
         }
+        else if (element instanceof Label) {
+            cs.context.inner_elements.remove(element);
+        }
         else if (element instanceof WireSegment) {
             const parent_node = element.parent();
             if (!parent_node) return;
@@ -148,7 +151,7 @@ const Action = {
         cs.ticked_nodes = next_ticked_nodes;
     },
     update: function() {
-        for (const element of ActionGet.elements().sorted((a,b) => b.update_priority_-a.update_priority_)) {
+        for (const element of ActionGet.elements().sorted(Util.compare_function(x=>x.update_priority_))) {
             element.update();
         }
     },
@@ -214,7 +217,7 @@ const Action = {
 
         const segment_neighbors = segment.neighbor_segments.copy();
 
-        const neighbors = segment.neighbor_segments.sorted((a,b) => a.offset-b.offset);
+        const neighbors = segment.neighbor_segments.sorted(Util.compare_function(x=>x.offset));
         const prev_neighbor = neighbors[0];
         const next_neighbor = neighbors.last();
 
@@ -487,10 +490,10 @@ const ActionGet = {
 
         return nearest_element;
     },
-    elements_in_rect: function(pos, size) {
+    elements_in_rect: function(pos, size, elements=ActionGet.elements()) {
         const elements_in_rect = [];
 
-        for (const element of ActionGet.elements()) {
+        for (const element of elements) {
             const rect = element.hitbox_rect();
 
             if (Util.rects_overlap(rect.pos, rect.size, pos, size)) {

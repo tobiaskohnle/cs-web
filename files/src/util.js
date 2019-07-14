@@ -67,6 +67,12 @@ const Util = {
         return min <= v && v < max;
     },
 
+    compare_function(value_getter) {
+        return function(a, b) {
+            return value_getter(a) - value_getter(b);
+        };
+    },
+
     get_nested: function(object, nested_key) {
         let result = object;
 

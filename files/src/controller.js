@@ -702,11 +702,45 @@ class Controller {
         const inner_elements = gate.inner_elements.sorted((a,b) => a.pos.y==b.pos.y ? a.pos.x-b.pos.x : a.pos.y-b.pos.y);
 
         for (const inner_element of inner_elements) {
+            if (inner_element instanceof Label) {
+                const special_info = inner_element.special_info();
+
+                if (special_info) {
+                    if (special_info.tag) {
+                        gate.tag = special_info.tag;
+                    }
+                    if (special_info.size) {
+                        gate.size = special_info.size;
+                    }
+                }
+                else {
+                    const border = 2.2;
+                    const rect_pos = Vec.sub(inner_element.pos, new Vec(border));
+                    const rect_size = Vec.add(inner_element.size, new Vec(border*2));
+                    const nearby_gates = ActionGet.elements_in_rect(rect_pos, rect_size, inner_elements);
+
+                    const nearby_gates = nearby_gates
+                        .filter(element => element instanceof InputGate || element instanceof OutputGate);
+                        .sorted(Util.compare_function(gate => Vec.sub(
+                            Vec.add(gate.pos, Vec.div(gate.size, 2)),
+                            Vec.add(inner_element.pos, Vec.div(inner_element.size, 2)),
+                        ).length()));
+                    const nearest_gate = nearby_gates[0];
+
+                    if (nearest_gate) {
+                        nearest_gate.name = inner_element.text;
+                    }
+                }
+            }
+        }
+
+        for (const inner_element of inner_elements) {
             if (inner_element instanceof InputGate) {
                 for (const output of inner_element.outputs) {
                     const input = gate.add_input_node();
 
                     input.is_inverted = output.is_inverted;
+                    input.tag = inner_element.name || null;
 
                     input.next_nodes = output.next_nodes;
                     output.next_nodes = [];
@@ -722,25 +756,13 @@ class Controller {
                     const output = gate.add_output_node();
 
                     output.is_inverted = input.is_inverted;
+                    output.tag = inner_element.name || null;
 
                     const prev_node = input.previous_node();
 
                     if (prev_node) {
                         prev_node.next_nodes.remove(input);
                         prev_node.next_nodes.push(output);
-                    }
-                }
-            }
-
-            if (inner_element instanceof Label) {
-                const special_info = inner_element.special_info();
-
-                if (special_info) {
-                    if (special_info.tag) {
-                        gate.tag = special_info.tag;
-                    }
-                    if (special_info.size) {
-                        gate.size = special_info.size;
                     }
                 }
             }

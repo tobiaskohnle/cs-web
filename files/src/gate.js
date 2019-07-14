@@ -139,7 +139,7 @@ class Gate extends Element {
 
     update_nodes() {
         for (const nodes of this.nodes_per_side()) {
-            nodes.sorted((a,b) => a.index-b.index).forEach((node, i) => {
+            nodes.sorted(Util.compare_function(x=>x.index)).forEach((node, i) => {
                 node.index = i;
             });
         }
