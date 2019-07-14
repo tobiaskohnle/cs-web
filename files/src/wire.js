@@ -69,6 +69,17 @@ class WireSegment extends Element {
         return ActionGet.all_elements().find(element => element instanceof OutputNode && element.wire_segments.includes(this));
     }
 
+    attached_connection_node() {
+        const parent = this.parent();
+        if (!parent) {
+            return;
+        }
+
+        const nodes = [parent, ...parent.next_nodes];
+
+        return nodes.find(node => node.attached_wire_segment() == this);
+    }
+
     set_offset(pos) {
         if (this.is_vertical) this.offset = pos.x;
         else                  this.offset = pos.y;
