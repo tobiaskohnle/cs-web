@@ -72,13 +72,10 @@ class Sidebar {
                 return {height, element};
             });
 
-            category.elements.forEach(element => {
-                element.update();
-                element.cancel_animation();
-            });
-
             return {height:section_height, category, elements_sections};
         });
+
+        this.update_elements();
     }
 
     header_position(section, scroll) {
@@ -155,10 +152,18 @@ class Sidebar {
         this.imported_element = null;
     }
 
+    update_elements() {
+        this.categories.forEach(category => {
+            category.elements.forEach(element => {
+                element.update();
+                element.cancel_animation();
+            });
+        });
+    }
     update() {
         this.scroll = Math.max(0, Math.min(this.segments_height()-sidebar_canvas.height, this.scroll));
 
-        this.anim_scroll = anim_interpolate(this.anim_scroll, this.scroll, this.anim_factor);
+        this.anim_scroll = View.anim_interpolate(this.anim_scroll, this.scroll, this.anim_factor);
 
         let section_y = 0;
 

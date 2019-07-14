@@ -41,7 +41,8 @@ const Enum = {
 
 const theme = {
     light: {
-        grid:                     Color.parse('#aaa7'),
+        grid_dots:                Color.parse('#aaa8'),
+        grid_lines:               Color.parse('#aaa7'),
         light_inactive:           Color.parse('#fff4'),
         light_active:             Color.parse('#f334'),
         wire_inactive:            new Color(.6,1,0),
@@ -72,7 +73,8 @@ const theme = {
         sidebar_header_font:      Color.parse('#222'),
     },
     dark: {
-        grid:                     Color.parse('#aff5'),
+        grid_dots:                Color.parse('#acf6'),
+        grid_lines:               Color.parse('#cef1'),
         light_inactive:           Color.parse('#0007'),
         light_active:             Color.parse('#f337'),
         wire_inactive:            new Color(.6,0,1),
@@ -180,6 +182,7 @@ function select_theme(theme_name) {
     cs.theme = theme[theme_name];
     document.querySelector('#theme-style').href = `files/css/style-${theme_name}.css`;
     document.querySelector('#theme-settings-style').href = `files/css/settings-${theme_name}.css`;
+    if (cs.sidebar) cs.sidebar.update_elements();
 }
 
 function load_config() {
@@ -246,7 +249,7 @@ onload = function() {
 
     add_menu_event_listeners();
 
-    requestAnimationFrame(update);
+    requestAnimationFrame(View.update);
 
     // TEMP
     const RESTORE_STATE = localStorage.getItem('CS_RESTORE_ON_STARTUP');

@@ -44,32 +44,33 @@ class Element {
 
         return default_color;
     }
-    apply_current_color(color, default_color, ignore_anim_factor=false) {
+    apply_current_color(color, default_color) {
         const current_color = this.current_color(default_color);
         color.set_hsva(current_color);
 
-        if (ignore_anim_factor) {
-            return;
-        }
+        if (!this.previous_colors_) this.previous_colors_ = new Map;
 
-        if (this.previous_current_color_ != current_color) {
+        const previous_color = this.previous_colors_.get(color);
+
+        if (previous_color != current_color) {
             color.anim_factor(cs.config.default_color_anim_factor);
 
-            if (current_color == cs.theme.hovered) {
+            if (current_color == cs.theme.hovered || this.is_hovered()) {
                 color.anim_factor(cs.config.fast_color_anim_factor);
             }
-            else if (this.previous_current_color_ == cs.theme.hovered) {
+            else if (previous_color == cs.theme.hovered) {
                 color.anim_factor(cs.config.fade_color_anim_factor);
             }
         }
-        this.previous_current_color_ = current_color;
+
+        this.previous_colors_.set(color, current_color);
     }
 
     update_pos() {
-        this.anim_pos_ = anim_interpolate_vec(this.anim_pos_, this.pos);
+        this.anim_pos_ = View.anim_interpolate_vec(this.anim_pos_, this.pos);
     }
     update_size() {
-        this.anim_size_ = anim_interpolate_vec(this.anim_size_, this.size);
+        this.anim_size_ = View.anim_interpolate_vec(this.anim_size_, this.size);
     }
 
     snap_pos(last_pos, total_vec, snap_size_) {

@@ -20,8 +20,8 @@ class Camera {
         this.pos.add(Vec.mult(this.motion_, cs.config.camera_motion_anim_factor));
         this.motion_.mult(cs.config.camera_motion_falloff_factor);
 
-        this.anim_pos_ = anim_interpolate_vec(this.anim_pos_, this.pos, cs.config.camera_anim_factor);
-        this.anim_scale_ = anim_interpolate(this.anim_scale_, this.scale, cs.config.camera_anim_factor);
+        this.anim_pos_ = View.anim_interpolate_vec(this.anim_pos_, this.pos, cs.config.camera_anim_factor);
+        this.anim_scale_ = View.anim_interpolate(this.anim_scale_, this.scale, cs.config.camera_anim_factor);
     }
 
     move(vec) {

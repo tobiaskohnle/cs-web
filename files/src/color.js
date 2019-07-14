@@ -99,10 +99,10 @@ class Color {
     }
 
     update() {
-        this.anim_h = anim_interpolate_mod(this.anim_h, this.h, this.anim_factor_);
-        this.anim_s = anim_interpolate    (this.anim_s, this.s, this.anim_factor_);
-        this.anim_v = anim_interpolate    (this.anim_v, this.v, this.anim_factor_);
-        this.anim_a = anim_interpolate    (this.anim_a, this.a, this.anim_factor_);
+        this.anim_h = View.anim_interpolate_mod(this.anim_h, this.h, this.anim_factor_);
+        this.anim_s = View.anim_interpolate    (this.anim_s, this.s, this.anim_factor_);
+        this.anim_v = View.anim_interpolate    (this.anim_v, this.v, this.anim_factor_);
+        this.anim_a = View.anim_interpolate    (this.anim_a, this.a, this.anim_factor_);
     }
 
     to_string() {

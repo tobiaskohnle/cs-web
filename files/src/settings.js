@@ -6,16 +6,53 @@ const Settings = {
 
     reset: function() {
         cs.config = Util.deep_copy(default_config);
+        Settings.update_config();
+        Settings.update();
     },
     update_config: function() {
+        function update_config_using(setting, converter) {
+            const value = converter(Util.get_nested(cs.config, setting));
+            Util.set_nested(cs.config, setting, value);
+        }
+
+        function update_config_float(setting) {
+            return update_config_using(setting, parseFloat);
+        }
+        function update_config_boolean(setting) {
+            return update_config_using(setting, value => value=='on' ? true : value=='off' ? false : !!value);
+        }
+
         select_theme(cs.config.theme);
+
+        update_config_float('default_grid_size');
+        update_config_float('ticks_per_frame');
+        update_config_float('scale_factor');
+        update_config_float('anim_factor');
+        update_config_float('camera_anim_factor');
+        update_config_float('camera_motion_anim_factor');
+        update_config_float('default_color_anim_factor');
+        update_config_float('fade_color_anim_factor');
+        update_config_float('fast_color_anim_factor');
+        update_config_float('camera_motion_falloff_factor');
+        update_config_float('label_anim_factor');
+        update_config_float('label_caret_width');
+        update_config_float('label_caret_smoothness');
+        update_config_float('label_caret_blink_rate');
+        update_config_float('default_rising_edge_pulse_length');
+
+        update_config_boolean('show_ui');
+        update_config_boolean('block_unused_key_combinations');
+        update_config_boolean('use_system_clipboard');
+        update_config_boolean('use_wire_restructuring');
+        update_config_boolean('gates_push_wires');
+        update_config_boolean('prevent_element_overlapping');
     },
 
     update: function() {
         for (const settings of document.querySelectorAll('.setting')) {
             const input = settings.querySelector('input, select');
 
-            if (input.type == 'select' || input.type == 'text') {
+            if (input.type == 'select-one' || input.type == 'text') {
                 input.value = Util.get_nested(cs.config, settings.getAttribute('setting'));
             }
             if (input.type == 'checkbox') {
@@ -49,6 +86,7 @@ const Settings = {
                 document.activeElement.blur();
 
                 Util.set_nested(cs.config, Settings.currently_edited_setting, Settings.currently_edited_setting_previous_value);
+                Settings.update_config();
                 Settings.currently_edited_setting = null;
 
                 Settings.update();
@@ -165,6 +203,7 @@ const Settings = {
             input_element.addEventListener('change', function(event) {
                 Util.set_nested(cs.config, setting, this.value || this.checked);
                 Settings.update_config();
+                Settings.update();
             });
         }
     },

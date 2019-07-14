@@ -292,10 +292,10 @@ const commands = {
         select_theme('light');
     },
     zoom_in: function() {
-        cs.camera.scale_at(screen_center(), cs.config.scale_factor);
+        cs.camera.scale_at(View.screen_center(), cs.config.scale_factor);
     },
     zoom_out: function() {
-        cs.camera.scale_at(screen_center(), 1/cs.config.scale_factor);
+        cs.camera.scale_at(View.screen_center(), 1/cs.config.scale_factor);
     },
     debug_toggle: function() {
         cs.controller.tick_nodes = !cs.controller.tick_nodes;

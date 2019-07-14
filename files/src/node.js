@@ -29,14 +29,14 @@ class ConnectionNode extends Element {
     }
 
     update() {
-        this.anim_pos_ = anim_interpolate_vec(this.anim_pos_, this.grab_pos_||this.pos);
+        this.anim_pos_ = View.anim_interpolate_vec(this.anim_pos_, this.grab_pos_||this.pos);
 
         this.anchor_pos_.set(Vec.add(this.grab_pos_||this.pos, this.dir));
         this.anchor_anim_pos_.set(Vec.add(this.anim_pos_, this.dir));
 
         const draw_line_active = this.display_state();
-        this.apply_current_color(this.color_line_, draw_line_active ? cs.theme.wire_active : cs.theme.wire_inactive);
-        this.apply_current_color(this.color_dot_,  draw_line_active ? cs.theme.wire_inactive : cs.theme.wire_active, 'ignore');
+        this.apply_current_color(this.color_line_, draw_line_active ? cs.theme.wire_active : cs.theme.wire_inactive, 0);
+        this.apply_current_color(this.color_dot_,  draw_line_active ? cs.theme.wire_inactive : cs.theme.wire_active, 1);
 
         this.color_line_.update();
         this.color_dot_.update();

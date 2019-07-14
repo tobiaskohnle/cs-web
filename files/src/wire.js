@@ -26,8 +26,8 @@ class WireSegment extends Element {
         if (this.offset_pos) {
             this.set_offset(this.offset_pos);
         }
-        this.anim_offset_pos_ = anim_interpolate_vec(this.anim_offset_pos_, this.offset_pos);
-        this.anim_normal_pos_ = anim_interpolate_vec(this.anim_normal_pos_, this.normal_pos);
+        this.anim_offset_pos_ = View.anim_interpolate_vec(this.anim_offset_pos_, this.offset_pos);
+        this.anim_normal_pos_ = View.anim_interpolate_vec(this.anim_normal_pos_, this.normal_pos);
 
         if (this.auto_offset_ &&
             this.neighbor_segments.length == 2 &&
@@ -49,7 +49,7 @@ class WireSegment extends Element {
             this.offset = avg;
         }
 
-        this.anim_offset_ = anim_interpolate(this.anim_offset_, this.offset);
+        this.anim_offset_ = View.anim_interpolate(this.anim_offset_, this.offset);
 
         const default_color = this.parent() && this.parent().state ? cs.theme.wire_active : cs.theme.wire_inactive;
         this.apply_current_color(this.color_outline_, default_color);
