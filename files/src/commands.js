@@ -234,7 +234,7 @@ const commands = {
     },
     TEMP_RELOAD: function() {
         localStorage.setItem('CS_RESTORE_ON_STARTUP', cs.controller.file_string());
-        location.reload();
+        location.reload(true);
     },
     reopen_last_file: function() {
     },

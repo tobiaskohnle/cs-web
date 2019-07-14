@@ -717,9 +717,9 @@ class Controller {
                     const border = 2.2;
                     const rect_pos = Vec.sub(inner_element.pos, new Vec(border));
                     const rect_size = Vec.add(inner_element.size, new Vec(border*2));
-                    const nearby_gates = ActionGet.elements_in_rect(rect_pos, rect_size, inner_elements);
+                    const nearby_elements = ActionGet.elements_in_rect(rect_pos, rect_size, inner_elements);
 
-                    const nearby_gates = nearby_gates
+                    const nearby_gates = nearby_elements
                         .filter(element => element instanceof InputGate || element instanceof OutputGate);
                         .sorted(Util.compare_function(gate => Vec.sub(
                             Vec.add(gate.pos, Vec.div(gate.size, 2)),
