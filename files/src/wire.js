@@ -19,7 +19,8 @@ class WireSegment extends Element {
         this.anim_offset_pos_ = null;
         this.anim_normal_pos_ = null;
 
-        this.color_outline_ = Color.from(cs.theme.outline);
+        this.anim_color_ = Color.from(cs.theme.outline);
+        this.base_color_ = Color.from(cs.theme.outline);
     }
 
     update() {
@@ -52,8 +53,12 @@ class WireSegment extends Element {
         this.anim_offset_ = View.anim_interpolate(this.anim_offset_, this.offset);
 
         const default_color = this.parent() && this.parent().state ? cs.theme.wire_active : cs.theme.wire_inactive;
-        this.apply_current_color(this.color_outline_, default_color);
-        this.color_outline_.update();
+
+        this.apply_current_color(this.anim_color_, default_color);
+        this.anim_color_.update();
+
+        this.base_color_.set_hsva(default_color);
+        this.base_color_.update();
     }
 
     update_last_pos() {
@@ -192,24 +197,31 @@ class WireSegment extends Element {
     draw() {
         const {min, max} = this.anim_normal_offset();
 
-        context.fillStyle = this.color_outline_.to_string();
+        context.fillStyle = this.anim_color_.to_string();
 
         if (this.is_vertical) context.fillRect(this.anim_offset_ - .1/2, min - .1/2, .1, max - min + .2/2);
         else                  context.fillRect(min - .1/2, this.anim_offset_ - .1/2, max - min + .2/2, .1);
 
-        this.draw_joints();
-    }
-
-    draw_joints() {
-        context.fillStyle = cs.theme.wire_joint.to_string();
+        context.fillStyle = this.base_color_.to_string();
 
         const neighbor_elements = this.neighbor_elements().sorted((a,b) => a.anim_offset_-b.anim_offset_);
 
         for (let i = 1; i < neighbor_elements.length-1; i++) {
             const neighbor_offset = neighbor_elements[i].anim_offset_;
 
-            if (this.is_vertical) context.fillRect(this.anim_offset_ - .4/2, neighbor_offset - .4/2, .4, .4);
-            else                  context.fillRect(neighbor_offset - .4/2, this.anim_offset_ - .4/2, .4, .4);
+            switch (cs.config.joints_style) {
+                case Enum.joints_style.square:
+                    if (this.is_vertical) context.fillRect(this.anim_offset_ - .4/2, neighbor_offset - .4/2, .4, .4);
+                    else                  context.fillRect(neighbor_offset - .4/2, this.anim_offset_ - .4/2, .4, .4);
+                    break;
+
+                case Enum.joints_style.round:
+                    context.beginPath();
+                    if (this.is_vertical) context.arc(this.anim_offset_, neighbor_offset, .22, 0, Math.PI*2);
+                    else                  context.arc(neighbor_offset, this.anim_offset_, .22, 0, Math.PI*2);
+                    context.fill();
+                    break;
+            }
         }
     }
 }

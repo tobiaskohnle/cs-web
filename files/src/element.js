@@ -44,13 +44,12 @@ class Element {
 
         return default_color;
     }
-    apply_current_color(color, default_color) {
+    apply_current_color(color, default_color, label=0) {
         const current_color = this.current_color(default_color);
         color.set_hsva(current_color);
 
-        if (!this.previous_colors_) this.previous_colors_ = new Map;
-
-        const previous_color = this.previous_colors_.get(color);
+        this.previous_colors_ = this.previous_colors_ || {};
+        const previous_color = this.previous_colors_[label];
 
         if (previous_color != current_color) {
             color.anim_factor(cs.config.default_color_anim_factor);
@@ -63,7 +62,7 @@ class Element {
             }
         }
 
-        this.previous_colors_.set(color, current_color);
+        this.previous_colors_[label] = current_color;
     }
 
     update_pos() {

@@ -137,8 +137,11 @@ const Action = {
 
             node.state = eval_node_state;
 
-            for (const next_node of node.next_nodes||node.parent().outputs) {
-                next_ticked_nodes.add(next_node);
+            const parent = node.parent();
+            if (node.next_nodes || parent) {
+                for (const next_node of node.next_nodes||parent.outputs) {
+                    next_ticked_nodes.add(next_node);
+                }
             }
         }
 
@@ -200,36 +203,44 @@ const Action = {
     split_segment: function(segment) {
         if (segment instanceof WireSegment == false) return;
 
-        const is_vertical = segment.is_vertical;
+        // TEMP
+        if (segment.attached_connection_node()) return;
+
         const prev_segment = new WireSegment;
-        prev_segment.is_vertical = is_vertical;
+        prev_segment.is_vertical = segment.is_vertical;
 
         const next_segment = new WireSegment;
-        next_segment.is_vertical = is_vertical;
+        next_segment.is_vertical = segment.is_vertical;
 
-        const prev_neighbor = segment.neighbor_segments[0];
-        const next_neighbor = segment.neighbor_segments[1];
+        const segment_neighbors = segment.neighbor_segments.copy();
 
-        Util.detach_segments(prev_neighbor, segment);
-        Util.detach_segments(next_neighbor, segment);
+        const neighbors = segment.neighbor_segments.sorted((a,b) => a.offset-b.offset);
+        const prev_neighbor = neighbors[0];
+        const next_neighbor = neighbors.last();
 
-        Util.attach_segments(prev_segment, prev_neighbor);
         Util.attach_segments(prev_segment, segment);
         Util.attach_segments(next_segment, segment);
-        Util.attach_segments(next_segment, next_neighbor);
 
-        segment.is_vertical = !is_vertical;
-
-        segment.parent().wire_segments.push(prev_segment);
-        segment.parent().wire_segments.push(next_segment);
-
-        prev_segment.offset = segment.offset - segment.snap_size_;
-        next_segment.offset = segment.offset + segment.snap_size_;
+        for (const neighbor of segment_neighbors) {
+            Util.detach_segments(segment, neighbor);
+        }
 
         prev_segment.anim_offset_ = segment.anim_offset_;
         next_segment.anim_offset_ = segment.anim_offset_;
+        prev_segment.offset = segment.offset - segment.snap_size_;
+        next_segment.offset = segment.offset + segment.snap_size_;
 
         segment.offset = segment.anim_offset_ = prev_neighbor.offset/2 + next_neighbor.offset/2;
+
+        for (const neighbor of segment_neighbors) {
+            Util.attach_segments(neighbor.offset > segment.offset ? prev_segment : next_segment, neighbor);
+        }
+
+        segment.is_vertical = !segment.is_vertical;
+        segment.parent().wire_segments.push(prev_segment);
+        segment.parent().wire_segments.push(next_segment);
+
+        Action.restructure_segments();
     },
 
     create_wire: function(new_wire_segments, start_element, end_element, dragging_wire=false) {
@@ -308,7 +319,7 @@ const Action = {
                 joined_segment.offset = offset;
                 joined_segment.cancel_animation();
 
-                joined_segment.color_outline_.set_anim_hsva(cs.theme.merge_segment_flash).anim_factor(cs.config.fade_color_anim_factor);
+                joined_segment.anim_color_.set_anim_hsva(cs.theme.merge_segment_flash).anim_factor(cs.config.fade_color_anim_factor);
 
                 var would_be_single_segment_wire = false;
                 var has_node = false;

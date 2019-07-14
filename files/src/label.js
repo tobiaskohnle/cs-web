@@ -190,7 +190,7 @@ class Label extends Element {
     }
 
     draw() {
-        context.lineWidth = .1/2;
+        context.lineWidth = .1;
         context.strokeStyle = this.anim_color_.to_string();
         context.strokeRect(...this.anim_pos_.xy, ...this.anim_size_.xy);
 

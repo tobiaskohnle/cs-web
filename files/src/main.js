@@ -26,6 +26,11 @@ const Enum = {
         lines: 'lines',
         dots:  'dots',
     },
+    joints_style: {
+        none:   'none',
+        square: 'square',
+        round:  'round',
+    },
     side: {
         east:  0,
         south: 1,
@@ -64,7 +69,6 @@ const theme = {
         label_outline:            Color.parse('#5560'),
         label_caret:              Color.parse('#07f'),
         label_selection:          Color.parse('#09f4'),
-        wire_joint:               Color.parse('#333'),
         sidebar_imported_element: Color.parse('#28f7'),
         sidebar_hovered_element:  Color.parse('#49e4'),
         sidebar_header_outline:   Color.parse('#222'),
@@ -96,7 +100,6 @@ const theme = {
         label_outline:            Color.parse('#5560'),
         label_caret:              Color.parse('#07f'),
         label_selection:          Color.parse('#09f4'),
-        wire_joint:               Color.parse('#ff2'),
         sidebar_imported_element: Color.parse('#2af6'),
         sidebar_hovered_element:  Color.parse('#49e2'),
         sidebar_header_outline:   Color.parse('#222'),
@@ -109,7 +112,8 @@ const theme = {
 const default_config = {
     theme: 'light',
     default_grid_size: 32,
-    grid_style: 'dots',
+    grid_style: Enum.grid_style.lines,
+    joints_style: Enum.joints_style.square,
     show_ui: true,
 
     ticks_per_frame: 101,
