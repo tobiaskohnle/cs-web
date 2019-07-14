@@ -48,41 +48,57 @@ const Action = {
             for (const node of element.nodes()) {
                 Action.clear_node(node);
             }
+
+            cs.context.inner_elements.remove(element);
         }
         else if (element instanceof WireSegment) {
-            const remove_segments_queue = new Set([element]);
+            const parent_node = element.parent();
+            const root_segment = parent_node.attached_wire_segment();
 
-            while (remove_segments_queue.size) {
-                const remove_segments_array = Array.from(remove_segments_queue);
-                remove_segments_queue.clear();
+            for (const segment of parent_node.wire_segments) {
+                segment.depth = -1;
+            }
 
-                for (const element of remove_segments_array) {
-                    const parent = element.parent();
+            const queue = new Set([root_segment]);
+            let current_depth = 0;
 
-                    if (!parent) {
-                        continue;
+            while (queue.size) {
+                const current_queue = Array.from(queue);
+                queue.clear();
+
+                for (const segment of current_queue) {
+                    segment.depth = current_depth;
+
+                    for (const neighbor of segment.neighbor_segments) {
+                        if (neighbor.depth < 0) {
+                            queue.add(neighbor);
+                        }
+                    }
+                }
+
+                current_depth++;
+            }
+
+
+            const queue_remove = new Set([element]);
+
+            while (queue_remove.size) {
+                const current_queue = Array.from(queue_remove);
+                queue_remove.clear();
+
+                for (const segment of current_queue) {
+                    const attached_node = segment.attached_connection_node();
+                    if (attached_node) {
+                        attached_node.clear();
                     }
 
-                    parent.wire_segments.remove(element);
+                    parent_node.wire_segments.remove(segment);
 
-                    if (element.is_connected_to(parent)) {
-                        parent.clear();
-                    }
+                    for (const neighbor of segment.neighbor_segments.copy()) {
+                        Util.detach_segments(segment, neighbor);
 
-                    const input_node = parent.next_nodes.find(node => element.is_connected_to(node));
-                    if (input_node) {
-                        input_node.clear();
-                    }
-
-                    const neighbor_segments = element.neighbor_segments.copy();
-
-                    for (const neighbor_segment of neighbor_segments) {
-                        Util.detach_segments(element, neighbor_segment);
-                    }
-
-                    for (const neighbor_segment of neighbor_segments) {
-                        if (neighbor_segment.neighbor_elements().length == 1) {
-                            remove_segments_queue.add(neighbor_segment);
+                        if (neighbor.depth > segment.depth || neighbor.neighbor_elements().length == 1) {
+                            queue_remove.add(neighbor);
                         }
                     }
                 }
@@ -90,8 +106,6 @@ const Action = {
         }
 
         Action.deselect(element);
-
-        cs.context.inner_elements.remove(element);
     },
 
     tick: function() {
