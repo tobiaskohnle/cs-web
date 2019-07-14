@@ -35,11 +35,8 @@ class ConnectionNode extends Element {
         this.anchor_anim_pos_.set(Vec.add(this.anim_pos_, this.dir));
 
         const draw_line_active = this.display_state();
-        const color_line = this.current_color(draw_line_active ? cs.theme.wire_active : cs.theme.wire_inactive);
-        const color_dot  = this.current_color(draw_line_active ? cs.theme.wire_inactive : cs.theme.wire_active);
-
-        this.color_line_.set_hsva(color_line);
-        this.color_dot_.set_hsva(color_dot);
+        this.apply_current_color(this.color_line_, draw_line_active ? cs.theme.wire_active : cs.theme.wire_inactive);
+        this.apply_current_color(this.color_dot_,  draw_line_active ? cs.theme.wire_inactive : cs.theme.wire_active, 'ignore');
 
         this.color_line_.update();
         this.color_dot_.update();
@@ -168,7 +165,7 @@ class InputNode extends ConnectionNode {
         super();
 
         this.is_rising_edge = false;
-        this.rising_edge_pulse_length = parseFloat(cs.config.default_rising_edge_pulse_length);
+        this.rising_edge_pulse_length = cs.config.default_rising_edge_pulse_length;
         this.rising_edge_ticks_active = 0;
     }
 
@@ -229,7 +226,7 @@ class InputNode extends ConnectionNode {
             context.lineTo(this.anim_pos_.x - .5*this.dir.x, this.anim_pos_.y - .5*this.dir.y);
             context.lineTo(this.anim_pos_.x - .3*this.dir.y, this.anim_pos_.y - .3*this.dir.x);
 
-            context.strokeStyle = this.current_color().to_string();
+            context.strokeStyle = this.color_line_.to_string();
             context.lineWidth = .1;
             context.stroke();
         }
@@ -258,7 +255,7 @@ class OutputNode extends ConnectionNode {
 
         const parent = this.parent();
 
-        if (parent.eval_state) {
+        if (parent && parent.eval_state) {
             return parent.eval_state() != this.is_inverted;
         }
 
@@ -270,9 +267,7 @@ class OutputNode extends ConnectionNode {
     }
 
     clear() {
-        for (const next_node of this.next_nodes) {
-            Action.queue_tick(next_node);
-        }
+        ActionUtil.queue_tick_for(this.next_nodes);
         this.next_nodes = [];
     }
 

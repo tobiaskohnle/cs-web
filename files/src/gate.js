@@ -19,8 +19,7 @@ class Gate extends Element {
         this.inputs = [];
         this.outputs = [];
 
-        this.color_outline_ = new Color;
-        this.color_outline_.set_hsva(cs.theme.outline);
+        this.color_outline_ = Color.from(cs.theme.outline);
     }
 
     allow_new_input_nodes() {
@@ -32,6 +31,8 @@ class Gate extends Element {
         this.inputs.push(node);
         this.update_nodes();
         node.run_init_animation();
+
+        ActionUtil.queue_tick_for(this.outputs);
         return node;
     }
     add_output_node() {
@@ -39,16 +40,22 @@ class Gate extends Element {
         this.outputs.push(node);
         this.update_nodes();
         node.run_init_animation();
+
+        ActionUtil.queue_tick_for(this.outputs);
         return node;
     }
 
     remove_input_node(node) {
         node.clear();
         this.inputs.remove(node);
+
+        ActionUtil.queue_tick_for(this.outputs);
     }
     remove_output_node(node) {
         node.clear();
         this.outputs.remove(node);
+
+        ActionUtil.queue_tick_for(this.outputs);
     }
 
     cancel_animation() {
@@ -125,7 +132,8 @@ class Gate extends Element {
 
         this.update_nodes();
 
-        this.color_outline_.set_hsva(this.current_color());
+        this.apply_current_color(this.color_outline_);
+
         this.color_outline_.update();
     }
 
@@ -347,11 +355,11 @@ class InputButton extends InputGate {
 
     mouse_down() {
         this.is_enabled = true;
-        Action.queue_tick(this.outputs[0]);
+        ActionUtil.queue_tick_for(this.outputs);
     }
     mouse_up() {
         this.is_enabled = false;
-        Action.queue_tick(this.outputs[0]);
+        ActionUtil.queue_tick_for(this.outputs);
     }
 
     eval_state() {
@@ -420,20 +428,20 @@ class InputPulse extends InputGate {
         super(pos, new Vec(2,2));
         this.add_output_node();
 
-        this.pulse_length = parseFloat(cs.config.default_rising_edge_pulse_length);
+        this.pulse_length = cs.config.default_rising_edge_pulse_length;
         this.pulse_ticks_ = Infinity;
     }
 
     mouse_down() {
         if (!this.outputs[0].is_inverted) {
             this.pulse_ticks_ = 0;
-            Action.queue_tick(this.outputs[0]);
+            ActionUtil.queue_tick_for(this.outputs);
         }
     }
     mouse_up() {
         if (this.outputs[0].is_inverted) {
             this.pulse_ticks_ = 0;
-            Action.queue_tick(this.outputs[0]);
+            ActionUtil.queue_tick_for(this.outputs);
         }
     }
 

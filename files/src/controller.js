@@ -112,14 +112,12 @@ class Controller {
         if ((event.detail-1) & 1) {
             if (this.hovered_element instanceof ConnectionNode) {
                 this.hovered_element.invert();
-                // return;
             }
 
-            // if (this.current_action == Enum.action.move_elements) {
+            if (this.hovered_element instanceof Gate || this.hovered_element instanceof Label) {
                 this.current_action = Enum.action.edit_elements;
                 cs.config.DEBUG_LOG && console.log('EDIT');
-                // return;
-            // }
+            }
         }
 
         switch (this.current_action) {
@@ -424,7 +422,7 @@ class Controller {
         if (this.elements_moved == false) {
             if (this.hovered_element instanceof InputSwitch) {
                 this.hovered_element.toggle();
-                Action.queue_tick(this.hovered_element.outputs[0]);
+                ActionUtil.queue_tick_for(this.hovered_element.outputs);
             }
         }
 
@@ -684,9 +682,7 @@ class Controller {
                 Util.replace_reference(prev_element, prev_element, new_element);
 
                 if (element instanceof Gate) {
-                    for (const node of new_element.outputs) {
-                        Action.queue_tick(node);
-                    }
+                    ActionUtil.queue_tick_for(new_element.outputs);
                 }
             }
         }

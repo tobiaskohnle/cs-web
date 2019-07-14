@@ -4,6 +4,13 @@ class Color {
     constructor(h=0, s=0, v=0, a=1) {
         this.set_anim_hsva({h, s, v, a});
         this.set_hsva({h, s, v, a});
+
+        this.anim_factor_ = .5;
+    }
+
+    anim_factor(anim_factor) {
+        this.anim_factor_ = anim_factor;
+        return this;
     }
 
     static from(...colors) {
@@ -65,7 +72,7 @@ class Color {
             }
         }
 
-        return null;
+        throw 'invalid color code @Color.parse';
     }
 
     from_hsva({h, s, v, a}) {
@@ -73,6 +80,7 @@ class Color {
         if (s !== undefined) this.anim_s = this.s = s;
         if (v !== undefined) this.anim_v = this.v = v;
         if (a !== undefined) this.anim_a = this.a = a;
+        return this;
     }
 
     set_anim_hsva({h=0, s=0, v=0, a=1}) {
@@ -80,19 +88,21 @@ class Color {
         this.anim_s = s;
         this.anim_v = v;
         this.anim_a = a;
+        return this;
     }
     set_hsva({h=0, s=0, v=0, a=1}) {
         this.h = h;
         this.s = s;
         this.v = v;
         this.a = a;
+        return this;
     }
 
     update() {
-        this.anim_h = anim_interpolate_mod(this.anim_h, this.h, cs.config.color_anim_factor);
-        this.anim_s = anim_interpolate    (this.anim_s, this.s, cs.config.color_anim_factor);
-        this.anim_v = anim_interpolate    (this.anim_v, this.v, cs.config.color_anim_factor);
-        this.anim_a = anim_interpolate    (this.anim_a, this.a, cs.config.color_anim_factor);
+        this.anim_h = anim_interpolate_mod(this.anim_h, this.h, this.anim_factor_);
+        this.anim_s = anim_interpolate    (this.anim_s, this.s, this.anim_factor_);
+        this.anim_v = anim_interpolate    (this.anim_v, this.v, this.anim_factor_);
+        this.anim_a = anim_interpolate    (this.anim_a, this.a, this.anim_factor_);
     }
 
     to_string() {

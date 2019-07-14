@@ -47,9 +47,7 @@ class Label extends Element {
         super.update_pos();
         super.update_size();
 
-        const color = this.current_color(cs.theme.label_outline);
-
-        this.anim_color_.set_hsva(color);
+        this.apply_current_color(this.anim_color_, cs.theme.label_outline);
         this.anim_color_.update();
 
         this.anim_text_color_.set_hsva(this.special_info() ? cs.theme.label_special_text : cs.theme.label_text);
@@ -97,6 +95,8 @@ class Label extends Element {
     move(total_vec, snap_size_) {
         super.snap_pos(this.last_pos_, total_vec, snap_size_);
     }
+
+    run_init_animation() {}
 
     next_vertical_align() {
         this.vertical_text_align = [Enum.align.center, Enum.align.end, Enum.align.start][this.vertical_text_align];

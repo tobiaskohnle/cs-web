@@ -78,8 +78,7 @@ const commands = {
         let nop_gate = new NopGate;
         cs.controller.add_element(nop_gate);
 
-        nop_gate.outputs[0].is_inverted = true;
-        Action.queue_tick(nop_gate.outputs[0]);
+        ActionUtil.queue_tick_for(nop_gate.outputs);
     },
     add_or_gate: function() {
         cs.controller.save_state('(command) add_or_gate');

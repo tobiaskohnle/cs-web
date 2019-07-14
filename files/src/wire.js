@@ -52,7 +52,7 @@ class WireSegment extends Element {
         this.anim_offset_ = anim_interpolate(this.anim_offset_, this.offset);
 
         const default_color = this.parent() && this.parent().state ? cs.theme.wire_active : cs.theme.wire_inactive;
-        this.color_outline_.set_hsva(this.current_color(default_color));
+        this.apply_current_color(this.color_outline_, default_color);
         this.color_outline_.update();
     }
 
@@ -145,6 +145,10 @@ class WireSegment extends Element {
             });
         }
         if (this.normal_pos) {
+            if (!this.anim_normal_pos_) {
+                this.anim_normal_pos_ = this.normal_pos;
+            }
+
             neighbor_elements.push({
                 offset: this.is_vertical ? this.normal_pos.y : this.normal_pos.x,
                 anim_offset_: this.is_vertical ? this.anim_normal_pos_.y : this.anim_normal_pos_.x,

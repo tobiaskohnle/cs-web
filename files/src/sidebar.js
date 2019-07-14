@@ -72,6 +72,11 @@ class Sidebar {
                 return {height, element};
             });
 
+            category.elements.forEach(element => {
+                element.update();
+                element.cancel_animation();
+            });
+
             return {height:section_height, category, elements_sections};
         });
     }
@@ -208,8 +213,6 @@ class Sidebar {
                 // TEMP
                 const ctx = context;
                 context = sidebar_context;
-                element.update();
-                element.cancel_animation();
                 element.draw();
                 context = ctx;
 

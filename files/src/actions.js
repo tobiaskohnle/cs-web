@@ -39,6 +39,8 @@ const Action = {
     remove: function(element) {
         if (element instanceof Element == false) return;
 
+        Action.deselect(element);
+
         if (element instanceof ConnectionNode) {
             if (element.parent() && element.parent().allow_new_input_nodes()) {
                 element.parent().remove_input_node(element);
@@ -53,6 +55,8 @@ const Action = {
         }
         else if (element instanceof WireSegment) {
             const parent_node = element.parent();
+            if (!parent_node) return;
+
             const root_segment = parent_node.attached_wire_segment();
 
             for (const segment of parent_node.wire_segments) {
@@ -104,8 +108,6 @@ const Action = {
                 }
             }
         }
-
-        Action.deselect(element);
     },
 
     tick: function() {
@@ -184,11 +186,7 @@ const Action = {
         if (gate instanceof Gate == false) return;
 
         if (gate.allow_new_input_nodes()) {
-            const node = gate.add_input_node();
-
-            // node.cancel_animation();
-            // node.anim_pos_.add(node.dir);
-            // node.color_line_.set_anim_hsva(cs.theme.node_init);
+            gate.add_input_node();
         }
     },
     remove_input_node: function(gate) {
@@ -309,6 +307,9 @@ const Action = {
                 joined_segment.is_vertical = !segment.is_vertical;
                 joined_segment.offset = offset;
                 joined_segment.cancel_animation();
+
+                joined_segment.color_outline_.set_anim_hsva(cs.theme.merge_segment_flash).anim_factor(cs.config.fade_color_anim_factor);
+
                 var would_be_single_segment_wire = false;
                 var has_node = false;
                 for (const replaced_neighbor of neighbors) {
@@ -382,10 +383,13 @@ const ActionUtil = {
         }
     },
 
-    queue_tick_all: function() {
-        for (const element of ActionGet.elements()) {
+    queue_tick_for: function(elements) {
+        for (const element of elements) {
             Action.queue_tick(element);
         }
+    },
+    queue_tick_all: function() {
+        ActionUtil.queue_tick_for(ActionGet.all_elements());
     },
 
     move_elements: function(elements, vec) {

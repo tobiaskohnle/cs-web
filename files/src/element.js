@@ -42,7 +42,27 @@ class Element {
             return cs.theme.hovered;
         }
 
-        return this.color || default_color;
+        return default_color;
+    }
+    apply_current_color(color, default_color, ignore_anim_factor=false) {
+        const current_color = this.current_color(default_color);
+        color.set_hsva(current_color);
+
+        if (ignore_anim_factor) {
+            return;
+        }
+
+        if (this.previous_current_color_ != current_color) {
+            color.anim_factor(cs.config.default_color_anim_factor);
+
+            if (current_color == cs.theme.hovered) {
+                color.anim_factor(cs.config.fast_color_anim_factor);
+            }
+            else if (this.previous_current_color_ == cs.theme.hovered) {
+                color.anim_factor(cs.config.fade_color_anim_factor);
+            }
+        }
+        this.previous_current_color_ = current_color;
     }
 
     update_pos() {
