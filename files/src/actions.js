@@ -342,7 +342,8 @@ const Action = {
             }
         }
     },
-    center_invisible_segment_step: function (segments) {
+    center_invisible_segment_step: function () {
+        const segments = ActionGet.elements().filter(element => element instanceof WireSegment);
         for (const segment of segments) {
             if (segment.neighbor_segments.length !== 2) continue;
             const neighbor0 = segment.neighbor_segments[0];

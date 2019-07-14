@@ -124,7 +124,7 @@ class Controller {
 
         switch (this.current_action) {
             default:
-                const any_modifier = event.shiftKey || event.ctrlKey || event.altKey;
+                const any_modifier = event.shiftKey || event.ctrlKey;
 
                 if (!any_modifier && (!this.hovered_element || !this.hovered_element.is_selected())) {
                     ActionUtil.deselect_all();
@@ -136,7 +136,7 @@ class Controller {
                         this.is_selected(this.hovered_element.is_selected(), event.shiftKey, event.ctrlKey),
                     );
 
-                    if (this.hovered_element instanceof ConnectionNode && !any_modifier) {
+                    if (this.hovered_element instanceof ConnectionNode && !(any_modifier || event.altKey)) {
                         if (this.current_action != Enum.action.edit_elements) {
                             if (this.hovered_element.is_empty()) {
                                 this.saved_state_create_wire = Util.deep_copy(cs.context);
@@ -148,6 +148,8 @@ class Controller {
                             else {
                                 this.saved_state_rewire = Util.deep_copy(cs.context);
 
+                                this.wire_start_node = this.hovered_element;
+                                Util.create_snapshot();
                                 this.current_action = Enum.action.rewire;
                             }
                         }
@@ -458,6 +460,8 @@ class Controller {
                     }
                     this.new_wire_segments = [];
 
+                    Action.restructure_segments();
+
                     this.save_state('create wire', this.saved_state_create_wire);
                 }
                 else if (this.current_action == Enum.action.create_wire) {
@@ -483,19 +487,22 @@ class Controller {
                 else {
                     cs.config.DEBUG_LOG && console.log('create_wire_segment mouse_up');
 
-                    this.new_wire_segments.last().set_connected_pos(null);
+                    if (this.new_wire_segments.length) {
+                        this.new_wire_segments.last().set_connected_pos(null);
 
-                    const segment = Util.add_segment(this.new_wire_segments);
-                    segment.set_connected_pos(this.snapped_mouse_world_pos);
-                    segment.cancel_animation();
+                        const segment = Util.add_segment(this.new_wire_segments);
+                        segment.set_connected_pos(this.snapped_mouse_world_pos);
+                        segment.cancel_animation();
 
-                    Util.create_snapshot();
+                        Util.create_snapshot();
+                    }
                 }
                 break;
 
             case Enum.action.move_elements:
                 if (this.elements_moved) {
                     this.save_state('moved elements', this.saved_state_move_elements);
+                    Action.restructure_segments();
                 }
                 this.current_action = Enum.action.none;
                 break;
