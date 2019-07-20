@@ -26,22 +26,22 @@ const Util = {
         cs.config.DEBUG_LOG && console.log(`%c>> CREATED SNAPSHOT`, 'color:#fb2; font-weight:bold');
 
         this.snapshot = Util.deep_copy({
-            controller:        cs.controller,
-            selected_elements: cs.selected_elements,
-            context:           cs.context,
+            context: cs.context,
+            wire_start_node: cs.controller.wire_start_node,
+            new_wire_segments: cs.controller.new_wire_segments,
+            snapped_mouse_world_pos: cs.controller.snapped_mouse_world_pos,
         });
     },
     load_snapshot: function() {
         if (this.snapshot) {
             cs.config.DEBUG_LOG && console.log(`%c<< LOADED SNAPSHOT`, 'color:#2d2; font-weight:bold');
+
             const snapshot = Util.deep_copy(this.snapshot);
 
             cs.context = snapshot.context;
-            cs.selected_elements = snapshot.selected_elements;
-
-            for (const key in snapshot.controller) {
-                cs.controller[key] = snapshot.controller[key];
-            }
+            cs.controller.wire_start_node = snapshot.wire_start_node;
+            cs.controller.new_wire_segments = snapshot.new_wire_segments;
+            cs.controller.snapped_mouse_world_pos = snapshot.snapped_mouse_world_pos;
         }
         else {
             cs.config.DEBUG_LOG && console.log(`%c<< LOADED SNAPSHOT (FAILED)`, 'color:#c229; font-weight:bold');
