@@ -30,9 +30,23 @@ class ConnectionNode extends Element {
 
     update() {
         this.anim_pos_ = View.anim_interpolate_vec(this.anim_pos_, this.grab_pos_||this.pos);
-
         this.anchor_pos_.set(Vec.add(this.grab_pos_||this.pos, this.dir));
         this.anchor_anim_pos_.set(Vec.add(this.anim_pos_, this.dir));
+
+        if (cs.config.gates_push_wires) {
+            const attached_segment = this.attached_wire_segment();
+
+            if (attached_segment && attached_segment.is_vertical == this.is_vertical()) {
+                for (const neighbor of attached_segment.neighbor_segments) {
+                    const offset = this.is_vertical() ? this.anchor_pos_.y : this.anchor_pos_.x;
+                    const dir_offset = this.is_vertical() ? this.dir.y : this.dir.x;
+
+                    if (dir_offset<0 ? neighbor.offset > offset : neighbor.offset < offset) {
+                        neighbor.offset = offset;
+                    }
+                }
+            }
+        }
 
         const draw_line_active = this.display_state();
         this.apply_current_color(this.color_line_, draw_line_active ? cs.theme.wire_active : cs.theme.wire_inactive, 0);

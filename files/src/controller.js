@@ -166,12 +166,14 @@ class Controller {
                             this.moving_elements = selected_elements.filter(element => element instanceof ConnectionNode == false);
                         }
 
-                        for (const element of this.moving_elements.copy()) {
-                            if (element instanceof Gate) {
-                                for (const context_element of cs.context.inner_elements) {
-                                    if (context_element instanceof Label) {
-                                        if (this.moving_elements.includes(context_element.nearest_gate())) {
-                                            this.moving_elements.push(context_element);
+                        if (cs.config.gates_move_labels) {
+                            for (const element of this.moving_elements.copy()) {
+                                if (element instanceof Gate) {
+                                    for (const context_element of cs.context.inner_elements) {
+                                        if (context_element instanceof Label) {
+                                            if (this.moving_elements.includes(context_element.nearest_gate())) {
+                                                this.moving_elements.push(context_element);
+                                            }
                                         }
                                     }
                                 }
@@ -475,7 +477,9 @@ class Controller {
                     }
                     this.new_wire_segments = [];
 
-                    Action.restructure_segments();
+                    if (cs.config.use_wire_restructuring) {
+                        Action.restructure_segments();
+                    }
 
                     this.save_state('create wire', this.saved_state_create_wire);
                 }
@@ -517,7 +521,9 @@ class Controller {
             case Enum.action.move_elements:
                 if (this.elements_moved) {
                     this.save_state('moved elements', this.saved_state_move_elements);
-                    Action.restructure_segments();
+                    if (cs.config.use_wire_restructuring) {
+                        Action.restructure_segments();
+                    }
                 }
                 this.current_action = Enum.action.none;
                 break;

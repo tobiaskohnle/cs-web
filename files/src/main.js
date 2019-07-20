@@ -122,18 +122,18 @@ const default_config = {
     use_system_clipboard: false,
     use_wire_restructuring: true,
     gates_push_wires: true,
-    prevent_element_overlapping: true,
+    prevent_element_overlapping: false,
+    gates_move_labels: true,
 
     anim_factor: .52,
     camera_anim_factor: .42,
     camera_motion_anim_factor: .06,
+    camera_motion_falloff_factor: .91,
 
 
     default_color_anim_factor: .57,
     fade_color_anim_factor: .02,
     fast_color_anim_factor: .79,
-
-    camera_motion_falloff_factor: .91,
 
     label_anim_factor: .425,
     label_caret_width: .07,
@@ -175,7 +175,6 @@ const default_config = {
         debug_step:            'tab, space',
         debug_single_step:     'Shift+tab, Shift+space',
         open_settings:         '',
-
         escape:                'escape',
         enter:                 'enter',
         TEMP_RELOAD:           'r',
