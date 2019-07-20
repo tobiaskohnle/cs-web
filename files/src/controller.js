@@ -403,6 +403,13 @@ class Controller {
     }
 
     mouse_up(event) {
+        if (!this.mouse_moved()) {
+            if (this.hovered_element && !this.hovered_element.is_selected()) {
+                ActionUtil.deselect_all();
+                Action.select(this.hovered_element);
+            }
+        }
+
         if (event.button != 0) {
             return;
         }
