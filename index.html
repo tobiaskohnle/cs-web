@@ -258,14 +258,14 @@
             <div class='sidebar-container'>
                 <div class='top'>
                     <span class='sidebar-item link' link='#appearance'>Appearance</span>
-                    <span class='sidebar-item link' link='#header'>Header</span>
+                    <span class='sidebar-item link' link='#behavior'>Behavior</span>
                     <span class='sidebar-item link' link='#animations'>Animations</span>
                     <span class='sidebar-item link' link='#keybinds'>Keybinds</span>
                 </div>
                 <div class='bottom'>
-                    <span class='sidebar-item' onclick='Settings.reset()'>Reset settings</span>
-                    <span class='sidebar-item' onclick=''>Import settings</span>
-                    <span class='sidebar-item' onclick=''>Export settings</span>
+                    <span class='sidebar-item' tabindex='0' id='reset'>Reset settings</span>
+                    <!--span class='sidebar-item' id='import'>Import settings</span>
+                    <span class='sidebar-item' id='export'>Export settings</span-->
                 </div>
             </div>
 
@@ -279,6 +279,7 @@
                 <div class='setting' setting='theme'>
                     <div class='description'>
                         <span class='title'>Theme</span><br>
+                        Color palette.<br>
                         setting: <span class='code'>theme</span>
                     </div>
 
@@ -290,6 +291,7 @@
                 <div class='setting' setting='default_grid_size'>
                     <div class='description'>
                         <span class='title'>Default Scale</span><br>
+                        Initial grid size.<br>
                         setting: <span class='code'>default_grid_size</span>
                     </div>
 
@@ -310,6 +312,7 @@
                 <div class='setting' setting='joints_style'>
                     <div class='description'>
                         <span class='title'>Wire Joints</span><br>
+                        Style of wire intersections.<br>
                         setting: <span class='code'>joints_style</span>
                     </div>
 
@@ -332,20 +335,21 @@
                         </label>
 
                         <div class='description'>
-                            Is ui visible.
+                            Show menu and sidebar.
                         </div>
                     </div>
                 </div>
 
-                <div class='setting-header' id='header'>
+                <div class='setting-header' id='behavior'>
                     <div class='description'>
-                        <span class='header'>Header...</span>
+                        <span class='header'>Behavior</span>
                     </div>
                 </div>
 
                 <div class='setting' setting='ticks_per_frame'>
                     <div class='description'>
-                        <span class='title'>Title</span><br>
+                        <span class='title'>Ticks per Frame</span><br>
+                        Amount of logic calculations before each redraw.<br>
                         setting: <span class='code'>ticks_per_frame</span>
                     </div>
 
@@ -353,7 +357,8 @@
                 </div>
                 <div class='setting' setting='scale_factor'>
                     <div class='description'>
-                        <span class='title'>Title</span><br>
+                        <span class='title'>Zoom Factor</span><br>
+                        Sensitivity when zooming.<br>
                         setting: <span class='code'>scale_factor</span>
                     </div>
 
@@ -361,7 +366,7 @@
                 </div>
                 <div class='setting' setting='block_unused_key_combinations'>
                     <div class='description'>
-                        <span class='title'>Title</span><br>
+                        <span class='title'>Block Keystrokes</span><br>
                         setting: <span class='code'>block_unused_key_combinations</span>
                     </div>
 
@@ -372,13 +377,13 @@
                         </label>
 
                         <div class='description'>
-                            Next to checkbox.
+                            Consume every keystroke.
                         </div>
                     </div>
                 </div>
                 <div class='setting' setting='use_system_clipboard'>
                     <div class='description'>
-                        <span class='title'>Title</span><br>
+                        <span class='title'>Clipboard</span><br>
                         setting: <span class='code'>use_system_clipboard</span>
                     </div>
 
@@ -389,7 +394,7 @@
                         </label>
 
                         <div class='description'>
-                            Next to checkbox.
+                            Use the builtin clipboard of your operating system.
                         </div>
                     </div>
                 </div>
@@ -397,7 +402,7 @@
 
                 <div class='setting' setting='use_wire_restructuring'>
                     <div class='description'>
-                        <span class='title'>Title</span><br>
+                        <span class='title'>Wire Restructuring</span><br>
                         setting: <span class='code'>use_wire_restructuring</span>
                     </div>
 
@@ -408,13 +413,13 @@
                         </label>
 
                         <div class='description'>
-                            Next to checkbox.
+                            Merge segments if they appear connected.
                         </div>
                     </div>
                 </div>
                 <div class='setting' setting='gates_push_wires'>
                     <div class='description'>
-                        <span class='title'>Title</span><br>
+                        <span class='title'>Push Wires</span><br>
                         setting: <span class='code'>gates_push_wires</span>
                     </div>
 
@@ -425,13 +430,13 @@
                         </label>
 
                         <div class='description'>
-                            Next to checkbox.
+                            Todo. Push wires.
                         </div>
                     </div>
                 </div>
                 <div class='setting' setting='prevent_element_overlapping'>
                     <div class='description'>
-                        <span class='title'>Title</span><br>
+                        <span class='title'>Prevent Overlapping</span><br>
                         setting: <span class='code'>prevent_element_overlapping</span>
                     </div>
 
@@ -442,7 +447,7 @@
                         </label>
 
                         <div class='description'>
-                            Next to checkbox.
+                            Todo.
                         </div>
                     </div>
                 </div>
@@ -455,7 +460,10 @@
 
                 <div class='setting' setting='anim_factor'>
                     <div class='description'>
-                        <span class='title'>Title</span><br>
+                        <span class='title'>Animation Speed</span><br>
+                        The speed of animations.<br>
+                        Close to 0: Slow<br>
+                        Close to 1: Fast<br>
                         setting: <span class='code'>anim_factor</span>
                     </div>
 
@@ -463,7 +471,10 @@
                 </div>
                 <div class='setting' setting='camera_anim_factor'>
                     <div class='description'>
-                        <span class='title'>Title</span><br>
+                        <span class='title'>Camera Animation Speed</span><br>
+                        The speed of the camera.<br>
+                        Close to 0: Slow<br>
+                        Close to 1: Fast<br>
                         setting: <span class='code'>camera_anim_factor</span>
                     </div>
 
@@ -471,7 +482,8 @@
                 </div>
                 <div class='setting' setting='camera_motion_anim_factor'>
                     <div class='description'>
-                        <span class='title'>Title</span><br>
+                        <span class='title'>Camera Motion</span><br>
+                        Level of motion when moving screen.<br>
                         setting: <span class='code'>camera_motion_anim_factor</span>
                     </div>
 
@@ -487,6 +499,7 @@
                 <div class='setting' setting='keybinds.add_input_node'>
                     <div class='description'>
                         <span class='title'>Add Input Node</span><br>
+                        Add an empty input node to any selected gate.<br>
                         setting: <span class='code'>keybinds.add_input_node</span>
                     </div>
 
@@ -500,6 +513,7 @@
                 <div class='setting' setting='keybinds.remove_input_node'>
                     <div class='description'>
                         <span class='title'>Remove Input Node</span><br>
+                        Remove an empty input node from any selected gate.<br>
                         setting: <span class='code'>keybinds.remove_input_node</span>
                     </div>
 
@@ -513,6 +527,7 @@
                 <div class='setting' setting='keybinds.view_content'>
                     <div class='description'>
                         <span class='title'>View Content</span><br>
+                        Todo. Show the inner circuit of a custom gate.<br>
                         setting: <span class='code'>keybinds.view_content</span>
                     </div>
 
@@ -526,6 +541,7 @@
                 <div class='setting' setting='keybinds.copy'>
                     <div class='description'>
                         <span class='title'>Copy</span><br>
+                        Copy an element to the clipboard.<br>
                         setting: <span class='code'>keybinds.copy</span>
                     </div>
 
@@ -539,6 +555,7 @@
                 <div class='setting' setting='keybinds.cut'>
                     <div class='description'>
                         <span class='title'>Cut</span><br>
+                        Copy an element to the clipboard and remove it.<br>
                         setting: <span class='code'>keybinds.cut</span>
                     </div>
 
@@ -552,6 +569,7 @@
                 <div class='setting' setting='keybinds.paste'>
                     <div class='description'>
                         <span class='title'>Paste</span><br>
+                        Paste an element from the clipboard.<br>
                         setting: <span class='code'>keybinds.paste</span>
                     </div>
 
@@ -565,6 +583,7 @@
                 <div class='setting' setting='keybinds.delete'>
                     <div class='description'>
                         <span class='title'>Delete</span><br>
+                        Remove an element.<br>
                         setting: <span class='code'>keybinds.delete</span>
                     </div>
 
@@ -578,6 +597,7 @@
                 <div class='setting' setting='keybinds.import'>
                     <div class='description'>
                         <span class='title'>Import</span><br>
+                        Create a custom gate from a file.<br>
                         setting: <span class='code'>keybinds.import</span>
                     </div>
 
@@ -591,7 +611,21 @@
                 <div class='setting' setting='keybinds.instant_import'>
                     <div class='description'>
                         <span class='title'>Instant Import</span><br>
+                        Temp.<br>
                         setting: <span class='code'>keybinds.instant_import</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting' setting='keybinds.open_settings'>
+                    <div class='description'>
+                        <span class='title'>Open Settings Menu</span><br>
+                        setting: <span class='code'>keybinds.open_settings</span>
                     </div>
 
                     <label class='keybind'>
@@ -604,6 +638,7 @@
                 <div class='setting' setting='keybinds.invert'>
                     <div class='description'>
                         <span class='title'>Invert</span><br>
+                        Invert any selected connection node.<br>
                         setting: <span class='code'>keybinds.invert</span>
                     </div>
 
@@ -616,7 +651,8 @@
                 </div>
                 <div class='setting' setting='keybinds.new'>
                     <div class='description'>
-                        <span class='title'>New</span><br>
+                        <span class='title'>New File</span><br>
+                        Create an create file.<br>
                         setting: <span class='code'>keybinds.new</span>
                     </div>
 
@@ -630,6 +666,7 @@
                 <div class='setting' setting='keybinds.open_file'>
                     <div class='description'>
                         <span class='title'>Open File</span><br>
+                        Open a file.<br>
                         setting: <span class='code'>keybinds.open_file</span>
                     </div>
 
@@ -643,6 +680,7 @@
                 <div class='setting' setting='keybinds.open_folder'>
                     <div class='description'>
                         <span class='title'>Open Folder</span><br>
+                        Todo.<br>
                         setting: <span class='code'>keybinds.open_folder</span>
                     </div>
 
@@ -656,6 +694,7 @@
                 <div class='setting' setting='keybinds.undo'>
                     <div class='description'>
                         <span class='title'>Undo</span><br>
+                        Undo the last action.<br>
                         setting: <span class='code'>keybinds.undo</span>
                     </div>
 
@@ -669,6 +708,7 @@
                 <div class='setting' setting='keybinds.redo'>
                     <div class='description'>
                         <span class='title'>Redo</span><br>
+                        Restore the last action.<br>
                         setting: <span class='code'>keybinds.redo</span>
                     </div>
 
@@ -682,6 +722,7 @@
                 <div class='setting' setting='keybinds.reopen_last_file'>
                     <div class='description'>
                         <span class='title'>Reopen Last File</span><br>
+                        Todo.<br>
                         setting: <span class='code'>keybinds.reopen_last_file</span>
                     </div>
 
@@ -695,6 +736,7 @@
                 <div class='setting' setting='keybinds.reset_view'>
                     <div class='description'>
                         <span class='title'>Reset View</span><br>
+                        Reset the visible area.<br>
                         setting: <span class='code'>keybinds.reset_view</span>
                     </div>
 
@@ -708,6 +750,7 @@
                 <div class='setting' setting='keybinds.save'>
                     <div class='description'>
                         <span class='title'>Save</span><br>
+                        Download the current file.<br>
                         setting: <span class='code'>keybinds.save</span>
                     </div>
 
@@ -721,6 +764,7 @@
                 <div class='setting' setting='keybinds.save_as'>
                     <div class='description'>
                         <span class='title'>Save As...</span><br>
+                        Name and download the current file.<br>
                         setting: <span class='code'>keybinds.save_as</span>
                     </div>
 
@@ -734,6 +778,7 @@
                 <div class='setting' setting='keybinds.select_all'>
                     <div class='description'>
                         <span class='title'>Select All</span><br>
+                        Select all elements.<br>
                         setting: <span class='code'>keybinds.select_all</span>
                     </div>
 
@@ -747,6 +792,7 @@
                 <div class='setting' setting='keybinds.next_vertical_align'>
                     <div class='description'>
                         <span class='title'>Next Vertical Align</span><br>
+                        Todo.<br>
                         setting: <span class='code'>keybinds.next_vertical_align</span>
                     </div>
 
@@ -760,6 +806,7 @@
                 <div class='setting' setting='keybinds.next_horizontal_align'>
                     <div class='description'>
                         <span class='title'>Next Horizontal Align</span><br>
+                        Todo.<br>
                         setting: <span class='code'>keybinds.next_horizontal_align</span>
                     </div>
 
@@ -773,6 +820,7 @@
                 <div class='setting' setting='keybinds.toggle_selection'>
                     <div class='description'>
                         <span class='title'>Toggle Selection</span><br>
+                        Select all elements. If all elements are selected, deselect all elements.<br>
                         setting: <span class='code'>keybinds.toggle_selection</span>
                     </div>
 
@@ -786,6 +834,7 @@
                 <div class='setting' setting='keybinds.deselect_all'>
                     <div class='description'>
                         <span class='title'>Deselect All</span><br>
+                        Deselect all elements.<br>
                         setting: <span class='code'>keybinds.deselect_all</span>
                     </div>
 
@@ -799,6 +848,7 @@
                 <div class='setting' setting='keybinds.split_segment'>
                     <div class='description'>
                         <span class='title'>Split Segment</span><br>
+                        Replace all selected segments with 3 new segments.<br>
                         setting: <span class='code'>keybinds.split_segment</span>
                     </div>
 
@@ -812,6 +862,7 @@
                 <div class='setting' setting='keybinds.zoom_in'>
                     <div class='description'>
                         <span class='title'>Zoom In</span><br>
+                        Zoom to the center of the screen.<br>
                         setting: <span class='code'>keybinds.zoom_in</span>
                     </div>
 
@@ -825,6 +876,7 @@
                 <div class='setting' setting='keybinds.zoom_out'>
                     <div class='description'>
                         <span class='title'>Zoom Out</span><br>
+                        Zoom out of the center of the screen.<br>
                         setting: <span class='code'>keybinds.zoom_out</span>
                     </div>
 
@@ -838,6 +890,7 @@
                 <div class='setting' setting='keybinds.debug_toggle'>
                     <div class='description'>
                         <span class='title'>Debug Toggle</span><br>
+                        Enter and leave manual tick mode.<br>
                         setting: <span class='code'>keybinds.debug_toggle</span>
                     </div>
 
@@ -851,6 +904,7 @@
                 <div class='setting' setting='keybinds.debug_step'>
                     <div class='description'>
                         <span class='title'>Debug Step</span><br>
+                        Calculate a tick.<br>
                         setting: <span class='code'>keybinds.debug_step</span>
                     </div>
 
@@ -864,6 +918,7 @@
                 <div class='setting' setting='keybinds.debug_single_step'>
                     <div class='description'>
                         <span class='title'>Debug Single Step</span><br>
+                        Todo. Calculate a manual tick.<br>
                         setting: <span class='code'>keybinds.debug_single_step</span>
                     </div>
 
@@ -878,7 +933,7 @@
         </div>
     </div>
 
-    <div id='invalid-input-tooltip'></div>
+    <div id='tooltip'></div>
 </body>
 
 </html>

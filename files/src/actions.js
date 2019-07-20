@@ -151,7 +151,7 @@ const Action = {
         cs.ticked_nodes = next_ticked_nodes;
     },
     update: function() {
-        for (const element of ActionGet.elements().sorted(Util.compare_function(x=>x.update_priority_))) {
+        for (const element of ActionGet.elements().sorted(Util.compare_function(x=>x.update_priority_)).reverse()) {
             element.update();
         }
     },
@@ -322,7 +322,7 @@ const Action = {
                 joined_segment.offset = offset;
                 joined_segment.cancel_animation();
 
-                joined_segment.anim_color_.set_anim_hsva(cs.theme.merge_segment_flash).anim_factor(cs.config.fade_color_anim_factor);
+                joined_segment.anim_color_.anim_hsva(cs.theme.merge_segment_flash).anim_factor(cs.config.fade_color_anim_factor);
 
                 var would_be_single_segment_wire = false;
                 var has_node = false;

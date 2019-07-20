@@ -72,7 +72,7 @@ function add_menu_event_listeners() {
     }
 
     for (const menu_button of document.querySelectorAll('.menu-item:not([menu])')) {
-        menu_button.addEventListener('click', close_menu);
+        menu_button.addEventListener('click', View.close_menu);
     }
 
     for (const menu_button of document.querySelectorAll('.menubar-item')) {
@@ -192,13 +192,6 @@ function set_menu_element_enabled(menu_element, enabled, x, y) {
         }
     }
 }
-function close_menu() {
-    for (const menu_element of cs.controller.open_menu_stack) {
-        set_menu_element_enabled(menu_element, false);
-    }
-
-    cs.controller.open_menu_stack = [];
-}
 
 function menu_click(path) {
     for (const class_name of ['menu', 'menubar-item', 'menu-item', 'menu-separator']) {
@@ -209,5 +202,5 @@ function menu_click(path) {
         }
     }
 
-    close_menu();
+    View.close_menu();
 }

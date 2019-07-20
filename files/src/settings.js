@@ -6,59 +6,97 @@ const Settings = {
 
     reset: function() {
         cs.config = Util.deep_copy(default_config);
-        Settings.update_config();
-        Settings.update();
+        Settings.import_all_settings();
     },
-    update_config: function() {
-        function update_config_using(setting, converter) {
-            const value = converter(Util.get_nested(cs.config, setting));
-            Util.set_nested(cs.config, setting, value);
+    import_all_settings: function(config=cs.config, key_prefix='') {
+        for (const key in config) {
+            const value = config[key];
+
+            if (value instanceof Object) {
+                Settings.import_all_settings(value, `${key_prefix}${key}.`);
+            }
+            else {
+                Settings.import_setting(`${key_prefix}${key}`);
+            }
         }
-
-        function update_config_float(setting) {
-            return update_config_using(setting, parseFloat);
-        }
-        function update_config_boolean(setting) {
-            return update_config_using(setting, value => value=='on' ? true : value=='off' ? false : !!value);
-        }
-
-        select_theme(cs.config.theme);
-
-        update_config_float('default_grid_size');
-        update_config_float('ticks_per_frame');
-        update_config_float('scale_factor');
-        update_config_float('anim_factor');
-        update_config_float('camera_anim_factor');
-        update_config_float('camera_motion_anim_factor');
-        update_config_float('default_color_anim_factor');
-        update_config_float('fade_color_anim_factor');
-        update_config_float('fast_color_anim_factor');
-        update_config_float('camera_motion_falloff_factor');
-        update_config_float('label_anim_factor');
-        update_config_float('label_caret_width');
-        update_config_float('label_caret_smoothness');
-        update_config_float('label_caret_blink_rate');
-        update_config_float('default_rising_edge_pulse_length');
-
-        update_config_boolean('show_ui');
-        update_config_boolean('block_unused_key_combinations');
-        update_config_boolean('use_system_clipboard');
-        update_config_boolean('use_wire_restructuring');
-        update_config_boolean('gates_push_wires');
-        update_config_boolean('prevent_element_overlapping');
     },
-
-    update: function() {
-        for (const settings of document.querySelectorAll('.setting')) {
-            const input = settings.querySelector('input, select');
+    import_setting: function(setting) {
+        const setting_element = document.querySelector(`.settings-container [setting='${setting}']`);
+        if (setting_element) {
+            const input = setting_element.querySelector('input, select');
+            const value = Util.get_nested(cs.config, setting);
 
             if (input.type == 'select-one' || input.type == 'text') {
-                input.value = Util.get_nested(cs.config, settings.getAttribute('setting'));
+                input.value = value;
             }
             if (input.type == 'checkbox') {
-                input.checked = Util.get_nested(cs.config, settings.getAttribute('setting'));
+                input.checked = value;
             }
         }
+    },
+    export_setting: function(setting) {
+        const setting_element = document.querySelector(`.settings-container [setting='${setting}']`);
+        const input = setting_element.querySelector('input, select');
+
+        let value;
+        if (input.type == 'select-one' || input.type == 'text') {
+            value = input.value;
+        }
+        if (input.type == 'checkbox') {
+            value = input.checked;
+        }
+
+        let converter;
+        switch (setting) {
+            case 'theme':
+                converter = value => {
+                    View.select_theme(value);
+                    return value;
+                };
+                break;
+
+            case 'default_grid_size':
+            case 'ticks_per_frame':
+            case 'scale_factor':
+            case 'anim_factor':
+            case 'camera_anim_factor':
+            case 'camera_motion_anim_factor':
+            case 'default_color_anim_factor':
+            case 'fade_color_anim_factor':
+            case 'fast_color_anim_factor':
+            case 'camera_motion_falloff_factor':
+            case 'label_anim_factor':
+            case 'label_caret_width':
+            case 'label_caret_smoothness':
+            case 'label_caret_blink_rate':
+            case 'default_rising_edge_pulse_length':
+                converter = value => parseFloat(value);
+                break;
+
+
+            case 'show_ui':
+                converter = value => {
+                    const is_visible = value == 'on';
+                    View.show_ui(is_visible);
+                    return is_visible;
+                };
+                break;
+
+            case 'block_unused_key_combinations':
+            case 'use_system_clipboard':
+            case 'use_wire_restructuring':
+            case 'gates_push_wires':
+            case 'prevent_element_overlapping':
+                converter = value => value == 'on';
+                break;
+
+            default:
+                converter = value => value;
+                break;
+        }
+
+        value = converter(value);
+        Util.set_nested(cs.config, setting, value);
     },
 
     load: function() {
@@ -68,7 +106,7 @@ const Settings = {
 
     show: function() {
         Settings.is_open = true;
-        Settings.update();
+        Settings.import_all_settings();
         const settings_container = document.querySelector('.settings-container');
         settings_container.style.display = '';
     },
@@ -81,15 +119,23 @@ const Settings = {
 
     key_down: function(event) {
         if (Settings.currently_edited_setting) {
-            if (event.key == 'Escape' || event.key == 'Enter') {
+            if (event.key == 'Escape') {
+                Util.set_nested(cs.config, Settings.currently_edited_setting, Settings.currently_edited_setting_previous_value);
+                Settings.export_setting(Settings.currently_edited_setting);
+
                 Settings.set_recording_element(null);
                 document.activeElement.blur();
-
-                Util.set_nested(cs.config, Settings.currently_edited_setting, Settings.currently_edited_setting_previous_value);
-                Settings.update_config();
                 Settings.currently_edited_setting = null;
 
-                Settings.update();
+                return false;
+            }
+            if (event.key == 'Enter') {
+                Settings.export_setting(Settings.currently_edited_setting);
+
+                Settings.set_recording_element(null);
+                document.activeElement.blur();
+                Settings.currently_edited_setting = null;
+
                 return false;
             }
 
@@ -100,17 +146,15 @@ const Settings = {
     },
 
     edit_keybind: function(event) {
-        console.log('EDIT KEYBIND');
+        if (event.key != 'Escape' && event.key != 'Enter') {
+            let modifier_string = '';
 
-        let modifier_string = '';
+            if (event.ctrlKey)  modifier_string += 'Ctrl+';
+            if (event.shiftKey) modifier_string += 'Shift+';
+            if (event.altKey)   modifier_string += 'Alt+';
 
-        if (event.ctrlKey)  modifier_string += 'Ctrl+';
-        if (event.shiftKey) modifier_string += 'Shift+';
-        if (event.altKey)   modifier_string += 'Alt+';
-
-        console.log(event);
-
-        this.value = `${modifier_string}${event.key}`;
+            this.value = `${modifier_string}${event.key}`;
+        }
 
         event.preventDefault();
         return false;
@@ -131,20 +175,20 @@ const Settings = {
         }
     },
 
-    show_invalid_input_tooltip: function(beneath_element, text) {
-        const tooltip = document.querySelector('#invalid-input-tooltip');
+    show_tooltip: function(beneath_element, text) {
+        const tooltip = document.querySelector('#tooltip');
 
         const bounds = beneath_element.getBoundingClientRect();
 
-        tooltip.style.top = bounds.bottom;
-        tooltip.style.left = bounds.left;
+        tooltip.style.top = `${bounds.bottom}px`;
+        tooltip.style.left = `${bounds.left}px`;
 
         tooltip.innerText = text;
 
-        tooltip.style.display = 'initial';
+        tooltip.style.display = '';
     },
     hide_tooltip: function() {
-        const tooltip = document.querySelector('#invalid-input-tooltip');
+        const tooltip = document.querySelector('#tooltip');
 
         tooltip.style.display = 'none';
     },
@@ -201,11 +245,30 @@ const Settings = {
                 Settings.currently_edited_setting = null;
             });
             input_element.addEventListener('change', function(event) {
-                Util.set_nested(cs.config, setting, this.value || this.checked);
-                Settings.update_config();
-                Settings.update();
+                Settings.export_setting(setting);
             });
         }
+
+        const reset_button = document.querySelector('.sidebar-item#reset');
+        reset_button.addEventListener('click', function(event) {
+            if (reset_button.hasAttribute('active')) {
+                Settings.reset();
+                View.select_theme(cs.config.theme);
+
+                reset_button.removeAttribute('active');
+            }
+            else {
+                reset_button.setAttribute('active', '');
+            }
+        });
+        reset_button.addEventListener('blur', function(event) {
+            reset_button.removeAttribute('active');
+        });
+        reset_button.addEventListener('mouseleave', function(event) {
+            if (reset_button.hasAttribute('active')) {
+                Settings.show_tooltip(reset_button, 'Click again to confirm');
+            }
+        });
     },
 
     match_fuzzy: function(pattern, text) {

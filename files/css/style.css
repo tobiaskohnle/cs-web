@@ -25,6 +25,10 @@ body {
     grid-template-rows: 23px 48px auto;
     grid-template-areas: 'menubar menubar' 'toolbar toolbar' 'sidebar canvas';
 }
+.window[hide-ui] {
+    grid-template-columns: 0 auto;
+    grid-template-rows: 0 0 auto;
+}
 
 .menubar {
     width: 100%;

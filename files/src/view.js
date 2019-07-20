@@ -145,4 +145,35 @@ const View = {
         if (value == null) return Vec.copy(target);
         return value.set(Vec.add(value, Vec.mult(Vec.sub(target, value), factor)));
     },
+
+    close_menu: function() {
+        for (const menu_element of cs.controller.open_menu_stack) {
+            set_menu_element_enabled(menu_element, false);
+        }
+
+        cs.controller.open_menu_stack = [];
+    },
+
+    select_theme: function(theme_name) {
+        cs.theme = theme[theme_name];
+        document.querySelector('#theme-style').href = `files/css/style-${theme_name}.css`;
+        document.querySelector('#theme-settings-style').href = `files/css/settings-${theme_name}.css`;
+        if (cs.sidebar) cs.sidebar.update_elements();
+    },
+    show_ui: function(is_visible) {
+        const window = document.querySelector('.window');
+        if (is_visible) {
+            window.removeAttribute('hide-ui');
+        }
+        else {
+            window.setAttribute('hide-ui', '');
+        }
+
+        const display = is_visible ? '' : 'none';
+        document.querySelector('.toolbar').style.display = display;
+        document.querySelector('.menubar').style.display = display;
+        document.querySelector('.sidebar').style.display = display;
+
+        onresize();
+    }
 };

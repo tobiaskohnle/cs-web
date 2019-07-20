@@ -57,7 +57,7 @@ class WireSegment extends Element {
         this.apply_current_color(this.anim_color_, default_color);
         this.anim_color_.update();
 
-        this.base_color_.set_hsva(default_color);
+        this.base_color_.hsva(default_color);
         this.base_color_.update();
     }
 

@@ -46,13 +46,12 @@ class Element {
     }
     apply_current_color(color, default_color, label=0) {
         const current_color = this.current_color(default_color);
-        color.set_hsva(current_color);
 
         this.previous_colors_ = this.previous_colors_ || {};
         const previous_color = this.previous_colors_[label];
 
         if (previous_color != current_color) {
-            color.anim_factor(cs.config.default_color_anim_factor);
+            color.hsva(current_color).anim_factor(cs.config.default_color_anim_factor);
 
             if (current_color == cs.theme.hovered || this.is_hovered()) {
                 color.anim_factor(cs.config.fast_color_anim_factor);

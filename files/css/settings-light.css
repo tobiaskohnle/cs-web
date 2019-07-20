@@ -8,6 +8,7 @@
     --recording-input-outline: #f22;
     --setting-input-background: #ddd;
     --sidebar-item-color-hover: #39f;
+    --sidebar-item-reset-active-color: #d44;
 
     --scrollbar-background: #ccc;
     --scrollbar-thumb-background: #aaa;
@@ -25,7 +26,7 @@
     --description-color: #111;
     --description-title-color: #000;
     --description-header-color: #19f;
-    --description-code-color: #fa1;
+    --description-code-color: #f31;
     --description-link-color: #39f;
 
     --tooltip-background: #f43;

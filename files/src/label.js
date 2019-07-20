@@ -50,7 +50,7 @@ class Label extends Element {
         this.apply_current_color(this.anim_color_, cs.theme.label_outline);
         this.anim_color_.update();
 
-        this.anim_text_color_.set_hsva(this.special_info() ? cs.theme.label_special_text : cs.theme.label_text);
+        this.anim_text_color_.hsva(this.special_info() ? cs.theme.label_special_text : cs.theme.label_text);
         this.anim_text_color_.update();
 
         this.anim_font_size_ = View.anim_interpolate(this.anim_font_size_, this.font_size, cs.config.label_anim_factor);

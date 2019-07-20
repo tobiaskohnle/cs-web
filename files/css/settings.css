@@ -16,7 +16,7 @@
     outline: 1px solid var(--focus-outline);
 }
 
-#invalid-input-tooltip {
+#tooltip {
     position: absolute;
     top: 0;
     left: 0;
@@ -33,7 +33,7 @@
 
     box-shadow: 0 0 10px 4px var(--tooltip-box-shadow);
 }
-#invalid-input-tooltip::after {
+#tooltip::after {
     content: '';
 
     position: absolute;
@@ -116,6 +116,13 @@
 .sidebar-item:hover {
     font-weight: 500;
     color: var(--sidebar-item-color-hover);
+}
+.sidebar-item:focus {
+    outline: none;
+}
+.sidebar-item#reset[active] {
+    color: var(--sidebar-item-reset-active-color);
+    font-weight: 600;
 }
 
 .window-container {

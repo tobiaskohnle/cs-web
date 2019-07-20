@@ -54,7 +54,7 @@ const theme = {
         wire_active:              Color.parse('#f33'),
         segment_inactive:         Color.parse('#f334'),
         segment_active:           Color.parse('#f33'),
-        merge_segment_flash:      Color.parse('#0ef'),
+        merge_segment_flash:      Color.parse('#0f1'),
         outline:                  new Color(.6,1,0),
         edit_outline:             Color.parse('#e34'),
         hovered:                  Color.parse('#39d'),
@@ -85,7 +85,7 @@ const theme = {
         wire_active:              Color.parse('#f33'),
         segment_inactive:         Color.parse('#1473'),
         segment_active:           Color.parse('#1af'),
-        merge_segment_flash:      Color.parse('#0ef'),
+        merge_segment_flash:      Color.parse('#0f1'),
         outline:                  new Color(.6,0,1),
         edit_outline:             Color.parse('#e34'),
         hovered:                  Color.parse('#2be'),
@@ -145,49 +145,43 @@ const default_config = {
 
 
     keybinds: {
-        add_input_node: 'Shift+*',
-        remove_input_node: 'Shift+_',
-        view_content: '',
-        copy: 'Ctrl+c',
-        cut: 'Ctrl+x',
-        paste: 'Ctrl+v',
-        delete: 'delete',
-        import: 'Ctrl+i',
-        instant_import: 'Ctrl+l',
-        invert: 'Shift+I',
-        new: '',
-        open_file: 'Ctrl+o',
-        undo: 'Ctrl+z',
-        redo: 'Ctrl+y, Ctrl+Shift+Z',
-        reopen_last_file: 'Ctrl+Shift+T',
-        reset_view: '',
-        save: 'Ctrl+s',
-        save_as: 'Ctrl+Shift+S',
-        select_all: 'Shift+A',
-        next_vertical_align: '',
+        add_input_node:        'Shift+*',
+        remove_input_node:     'Shift+_',
+        view_content:          '',
+        copy:                  'Ctrl+c',
+        cut:                   'Ctrl+x',
+        paste:                 'Ctrl+v',
+        delete:                'delete',
+        import:                'Ctrl+i',
+        instant_import:        'Ctrl+l',
+        invert:                'Shift+I',
+        new:                   '',
+        open_file:             'Ctrl+o',
+        undo:                  'Ctrl+z',
+        redo:                  'Ctrl+y, Ctrl+Shift+Z',
+        reopen_last_file:      'Ctrl+Shift+T',
+        reset_view:            '',
+        save:                  'Ctrl+s',
+        save_as:               'Ctrl+Shift+S',
+        select_all:            'Shift+A',
+        next_vertical_align:   '',
         next_horizontal_align: '',
-        toggle_selection: 'Ctrl+a',
-        deselect_all: 'Ctrl+Shift+A',
-        split_segment: 'Shift+S',
-        zoom_in: 'Ctrl+*',
-        zoom_out: 'Ctrl+_',
-        debug_toggle: '',
-        debug_step: 'tab, space',
-        debug_single_step: 'Shift+tab, Shift+space',
-        open_settings: '',
+        toggle_selection:      'Ctrl+a',
+        deselect_all:          'Ctrl+Shift+A',
+        split_segment:         'Shift+S',
+        zoom_in:               'Ctrl+*',
+        zoom_out:              'Ctrl+_',
+        debug_toggle:          '',
+        debug_step:            'tab, space',
+        debug_single_step:     'Shift+tab, Shift+space',
+        open_settings:         '',
 
-        escape: 'escape',
-        enter: 'enter',
-        TEMP_RELOAD: 'r',
+        escape:                'escape',
+        enter:                 'enter',
+        TEMP_RELOAD:           'r',
+        TEMP_REDRAW:           'd',
     },
 };
-
-function select_theme(theme_name) {
-    cs.theme = theme[theme_name];
-    document.querySelector('#theme-style').href = `files/css/style-${theme_name}.css`;
-    document.querySelector('#theme-settings-style').href = `files/css/settings-${theme_name}.css`;
-    if (cs.sidebar) cs.sidebar.update_elements();
-}
 
 function load_config() {
     try {
@@ -226,7 +220,7 @@ onload = function() {
     cs.config.DEBUG_LOG = false;
     cs.config.DEBUG_DRAW_CONNECTIONS = true;
 
-    select_theme(cs.config.theme);
+    View.select_theme(cs.config.theme);
 
     cs.camera = new Camera(new Vec, cs.config.default_grid_size);
 
@@ -280,6 +274,7 @@ onkeydown = function(event) {
 
 onmousedown = function(event) {
     menu_click(event.path || event.composedPath());
+    Settings.hide_tooltip();
 }
 
 ondragenter = function(event) {
@@ -297,7 +292,7 @@ ondrop = function(event) {
 }
 
 onwheel = function(event) {
-    close_menu();
+    View.close_menu();
     Settings.hide_tooltip();
 }
 
@@ -309,7 +304,8 @@ oncontextmenu = function(event) {
 }
 
 onblur = function(event) {
-    close_menu();
+    View.close_menu();
+    Settings.hide_tooltip();
 }
 
 onbeforeunload = function(event) {

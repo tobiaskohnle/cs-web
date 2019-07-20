@@ -220,10 +220,9 @@ class Controller {
         this.mouse_world_movement.add(world_move_vec);
 
         let filter;
-
         if (this.current_action == Enum.action.create_wire || this.current_action == Enum.action.create_wire_segment) {
-            filter = element => ActionGet.nodes_connectable(cs.controller.wire_start_node, element)
-                || element instanceof WireSegment && !cs.controller.new_wire_segments.includes(element);
+            filter = element => ActionGet.nodes_connectable(this.wire_start_node, element)
+                || element instanceof WireSegment && !this.new_wire_segments.includes(element);
         }
 
         const hovered_element = ActionGet.element_at(this.mouse_world_pos, filter);

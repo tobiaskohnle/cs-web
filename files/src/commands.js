@@ -2,17 +2,17 @@
 
 class Keybind {
     static parse(string) {
-        const key_combination = new Keybind;
+        const keybind = new Keybind;
 
-        key_combination.modifiers = {
+        keybind.modifiers = {
             ctrl  : string != (string = string.replace(/ctrl\s*\+/gi,  '')),
             shift : string != (string = string.replace(/shift\s*\+/gi, '')),
             alt   : string != (string = string.replace(/alt\s*\+/gi,   '')),
         };
 
-        key_combination.key = string.trim();
+        keybind.key = string.trim();
 
-        return key_combination;
+        return keybind;
     }
     static parse_all(string) {
         return string.split(',').map(string => Keybind.parse(string));
@@ -165,8 +165,9 @@ const commands = {
         ActionUtil.remove_selected();
     },
     escape: function() {
-        close_menu();
+        View.close_menu();
         Settings.hide();
+        View.show_ui(true);
 
         switch (cs.controller.current_action) {
             case Enum.action.import_element:
@@ -236,6 +237,9 @@ const commands = {
         localStorage.setItem('CS_RESTORE_ON_STARTUP', cs.controller.file_string());
         location.reload(true);
     },
+    TEMP_REDRAW: function() {
+        View.update();
+    },
     reopen_last_file: function() {
     },
     reset_view: function() {
@@ -286,10 +290,10 @@ const commands = {
         ActionUtil.split_selected_segments();
     },
     theme_dark: function() {
-        select_theme('dark');
+        View.select_theme('dark');
     },
     theme_light: function() {
-        select_theme('light');
+        View.select_theme('light');
     },
     zoom_in: function() {
         cs.camera.scale_at(View.screen_center(), cs.config.scale_factor);

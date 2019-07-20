@@ -61,7 +61,7 @@ class Gate extends Element {
     cancel_animation() {
         super.cancel_animation();
 
-        this.color_outline_.set_anim_hsva(this.color_outline_);
+        this.color_outline_.anim_hsva(this.color_outline_);
 
         for (const node of this.nodes()) {
             node.cancel_animation();
@@ -76,7 +76,7 @@ class Gate extends Element {
         this.cancel_animation();
         this.set_nodes_pos();
 
-        this.color_outline_.set_anim_hsva(cs.theme.gate_init);
+        this.color_outline_.anim_hsva(cs.theme.gate_init);
 
         for (const node of this.nodes())  {
             // node.anim_pos_.add(node.dir);
@@ -325,10 +325,10 @@ class InputSwitch extends InputGate {
 
     update() {
         if (this.eval_state()) {
-            this.color_fill_.set_hsva(cs.theme.light_active);
+            this.color_fill_.hsva(cs.theme.light_active);
         }
         else {
-            this.color_fill_.set_hsva(cs.theme.light_inactive);
+            this.color_fill_.hsva(cs.theme.light_inactive);
         }
         this.color_fill_.update();
 
@@ -368,10 +368,10 @@ class InputButton extends InputGate {
 
     update() {
         if (this.eval_state()) {
-            this.color_fill_.set_hsva(cs.theme.light_active);
+            this.color_fill_.hsva(cs.theme.light_active);
         }
         else {
-            this.color_fill_.set_hsva(cs.theme.light_inactive);
+            this.color_fill_.hsva(cs.theme.light_inactive);
         }
         this.color_fill_.update();
 
@@ -523,10 +523,10 @@ class OutputLight extends OutputGate {
 
     update() {
         if (this.eval_state()) {
-            this.color_fill_.set_hsva(cs.theme.light_active);
+            this.color_fill_.hsva(cs.theme.light_active);
         }
         else {
-            this.color_fill_.set_hsva(cs.theme.light_inactive);
+            this.color_fill_.hsva(cs.theme.light_inactive);
         }
 
         this.color_fill_.update();
@@ -576,10 +576,10 @@ class SegmentDisplay extends OutputGate {
     update() {
         for (let i = 0; i < 7; i++) {
             if (this.inputs[i].state) {
-                this.color_segments_[i].set_hsva(cs.theme.segment_active);
+                this.color_segments_[i].hsva(cs.theme.segment_active);
             }
             else {
-                this.color_segments_[i].set_hsva(cs.theme.segment_inactive);
+                this.color_segments_[i].hsva(cs.theme.segment_inactive);
             }
 
             this.color_segments_[i].update();

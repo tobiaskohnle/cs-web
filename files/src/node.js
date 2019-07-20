@@ -56,15 +56,15 @@ class ConnectionNode extends Element {
     cancel_animation() {
         super.cancel_animation();
 
-        this.color_dot_.set_anim_hsva(this.color_dot_);
-        this.color_line_.set_anim_hsva(this.color_line_);
+        this.color_dot_.anim_hsva(this.color_dot_);
+        this.color_line_.anim_hsva(this.color_line_);
     }
 
     run_init_animation() {
         this.cancel_animation();
 
-        this.color_dot_.set_anim_hsva(cs.theme.node_init);
-        this.color_line_.set_anim_hsva(cs.theme.node_init);
+        this.color_dot_.anim_hsva(cs.theme.node_init);
+        this.color_line_.anim_hsva(cs.theme.node_init);
         this.anim_pos_.add(this.dir);
     }
 

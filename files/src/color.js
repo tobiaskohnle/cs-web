@@ -2,8 +2,8 @@
 
 class Color {
     constructor(h=0, s=0, v=0, a=1) {
-        this.set_anim_hsva({h, s, v, a});
-        this.set_hsva({h, s, v, a});
+        this.anim_hsva({h, s, v, a});
+        this.hsva({h, s, v, a});
 
         this.anim_factor_ = .5;
     }
@@ -83,14 +83,14 @@ class Color {
         return this;
     }
 
-    set_anim_hsva({h=0, s=0, v=0, a=1}) {
+    anim_hsva({h=0, s=0, v=0, a=1}) {
         this.anim_h = h;
         this.anim_s = s;
         this.anim_v = v;
         this.anim_a = a;
         return this;
     }
-    set_hsva({h=0, s=0, v=0, a=1}) {
+    hsva({h=0, s=0, v=0, a=1}) {
         this.h = h;
         this.s = s;
         this.v = v;
