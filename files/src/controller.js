@@ -85,6 +85,12 @@ class Controller {
         return !cs.config.block_unused_key_combinations;
     }
 
+    mouse_double_click(event) {
+        if (this.hovered_element instanceof ConnectionNode) {
+            this.hovered_element.invert();
+        }
+    }
+
     mouse_down(event) {
         canvas.setPointerCapture(event.pointerId);
 
@@ -110,17 +116,6 @@ class Controller {
 
         this.mouse_movement = new Vec;
         this.mouse_world_movement = new Vec;
-
-        if ((event.detail-1) & 1) {
-            if (this.hovered_element instanceof ConnectionNode) {
-                this.hovered_element.invert();
-            }
-
-            if (this.hovered_element instanceof Gate || this.hovered_element instanceof Label) {
-                this.current_action = Enum.action.edit_elements;
-                cs.config.DEBUG_LOG && console.log('EDIT');
-            }
-        }
 
         switch (this.current_action) {
             default:
@@ -422,8 +417,10 @@ class Controller {
 
         if (this.elements_moved == false) {
             if (this.hovered_element instanceof InputSwitch) {
-                this.hovered_element.toggle();
-                ActionUtil.queue_tick_for(this.hovered_element.outputs);
+                if (!(event.ctrlKey || event.shiftKey)) {
+                    this.hovered_element.toggle();
+                    ActionUtil.queue_tick_for(this.hovered_element.outputs);
+                }
             }
         }
 

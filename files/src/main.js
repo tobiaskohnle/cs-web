@@ -233,11 +233,12 @@ onload = function() {
 
     cs.sidebar = new Sidebar;
 
-    canvas.addEventListener('pointerdown',  cs.controller.mouse_down .bind(cs.controller), {passive:true});
-    canvas.addEventListener('pointermove',  cs.controller.mouse_move .bind(cs.controller), {passive:true});
-    canvas.addEventListener('pointerup',    cs.controller.mouse_up   .bind(cs.controller), {passive:true});
-    canvas.addEventListener('pointerleave', cs.controller.mouse_leave.bind(cs.controller), {passive:true});
-    canvas.addEventListener('wheel',        cs.controller.mouse_wheel.bind(cs.controller), {passive:true});
+    canvas.addEventListener('dblclick',     cs.controller.mouse_double_click.bind(cs.controller), {passive:true});
+    canvas.addEventListener('pointerdown',  cs.controller.mouse_down        .bind(cs.controller), {passive:true});
+    canvas.addEventListener('pointermove',  cs.controller.mouse_move        .bind(cs.controller), {passive:true});
+    canvas.addEventListener('pointerup',    cs.controller.mouse_up          .bind(cs.controller), {passive:true});
+    canvas.addEventListener('pointerleave', cs.controller.mouse_leave       .bind(cs.controller), {passive:true});
+    canvas.addEventListener('wheel',        cs.controller.mouse_wheel       .bind(cs.controller), {passive:true});
 
     sidebar_canvas.addEventListener('pointerdown',  cs.controller.sidebar_mouse_down .bind(cs.controller), {passive:true});
     sidebar_canvas.addEventListener('pointermove',  cs.controller.sidebar_mouse_move .bind(cs.controller), {passive:true});
