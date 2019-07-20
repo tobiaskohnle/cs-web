@@ -166,6 +166,18 @@ class Controller {
                             this.moving_elements = selected_elements.filter(element => element instanceof ConnectionNode == false);
                         }
 
+                        for (const element of this.moving_elements.copy()) {
+                            if (element instanceof Gate) {
+                                for (const context_element of cs.context.inner_elements) {
+                                    if (context_element instanceof Label) {
+                                        if (this.moving_elements.includes(context_element.nearest_gate())) {
+                                            this.moving_elements.push(context_element);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
                         for (const element of this.moving_elements) {
                             if (element.mouse_down) element.mouse_down();
                         }
@@ -715,18 +727,7 @@ class Controller {
                     }
                 }
                 else {
-                    const border = 2.2;
-                    const rect_pos = Vec.sub(inner_element.pos, new Vec(border));
-                    const rect_size = Vec.add(inner_element.size, new Vec(border*2));
-                    const nearby_elements = ActionGet.elements_in_rect(rect_pos, rect_size, inner_elements);
-
-                    const nearby_gates = nearby_elements
-                        .filter(element => element instanceof InputGate || element instanceof OutputGate)
-                        .sorted(Util.compare_function(gate => Vec.sub(
-                            Vec.add(gate.pos, Vec.div(gate.size, 2)),
-                            Vec.add(inner_element.pos, Vec.div(inner_element.size, 2)),
-                        ).length()));
-                    const nearest_gate = nearby_gates[0];
+                    const nearest_gate = inner_element.nearest_gate(inner_elements);
 
                     if (nearest_gate) {
                         nearest_gate.name = inner_element.text;

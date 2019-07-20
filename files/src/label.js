@@ -96,6 +96,22 @@ class Label extends Element {
         super.snap_pos(this.last_pos_, total_vec, snap_size_);
     }
 
+    nearest_gate(elements=cs.context.inner_elements) {
+        const radius = 2.2;
+
+        const rect_pos = Vec.sub(this.pos, new Vec(radius));
+        const rect_size = Vec.add(this.size, new Vec(radius*2));
+
+        const nearby_gates = ActionGet.elements_in_rect(rect_pos, rect_size, elements)
+            .filter(element => element instanceof Gate)
+            .sorted(Util.compare_function(gate => Vec.sub(
+                Vec.add(gate.pos, Vec.div(gate.size, 2)),
+                Vec.add(this.pos, Vec.div(this.size, 2)),
+            ).length()));
+
+        return nearby_gates[0];
+    }
+
     run_init_animation() {}
 
     next_vertical_align() {
