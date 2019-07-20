@@ -611,30 +611,13 @@ class Controller {
 
         const copied_elements = Util.extended_parse(this.clipboard);
 
-        for (const element of copied_elements) {
-            if (element instanceof Gate) {
-                for (const output of element.outputs) {
-                    output.next_nodes = output.next_nodes.filter(next_node => copied_elements.includes(next_node.parent()));
-
-                    for (const segment of output.wire_segments.copy()) {
-                        if (segment.offset_pos &&
-                            segment.normal_pos &&
-                            !segment.is_connected_to(output) &&
-                            !output.next_nodes.find(node => segment.is_connected_to(node))
-                        ) {
-                            Action.remove(segment);
-                        }
-                    }
-                }
-            }
-        }
-
         const main_elements = copied_elements.filter(element => element instanceof Gate || element instanceof Label);
         const offset = Vec.sub(Vec.round(this.mouse_world_pos), Util.bounding_rect(main_elements).pos);
 
         const elements = ActionGet.elements(copied_elements);
 
         ActionUtil.update_all_last_pos(elements);
+        ActionUtil.queue_tick_for(elements);
 
         for (const element of elements) {
             Action.add(element);
@@ -644,6 +627,18 @@ class Controller {
             }
 
             Action.select(element);
+        }
+
+        for (const element of copied_elements) {
+            if (element instanceof Gate) {
+                for (const output of element.outputs) {
+                    for (const next_node of output.next_nodes.copy()) {
+                        if (!copied_elements.includes(next_node.parent())) {
+                            Action.remove(next_node.attached_wire_segment());
+                        }
+                    }
+                }
+            }
         }
     }
 
