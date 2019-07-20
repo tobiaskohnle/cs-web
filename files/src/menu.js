@@ -66,7 +66,7 @@ function add_menu_event_listeners() {
             ? open_menu_next_to
             : open_menu_under;
 
-        menu_button.addEventListener('mousedown', function() {
+        menu_button.addEventListener('mousedown', function(event) {
             open_menu_function(menu, menu_button);
         });
     }

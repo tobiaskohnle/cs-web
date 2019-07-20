@@ -1,7 +1,7 @@
 :root {
-    --backdrop: #0000;
-    --background: #eee;
-    --font-color: #000;
+    --settings-backdrop: #0004;
+    --settings-background: #eee;
+    --settings-font-color: #000;
 
     --focus-outline: #47f;
     --container-box-shadow: #0002;
@@ -29,6 +29,7 @@
     --description-code-color: #f31;
     --description-link-color: #39f;
 
+    --tooltip-color: #000;
     --tooltip-background: #f43;
     --tooltip-border: #f11;
     --tooltip-box-shadow: #0003;

@@ -1,7 +1,7 @@
 .settings-container {
     position: absolute;
 
-    background: var(--backdrop);
+    background: var(--settings-backdrop);
 
     top: 0;
     left: 0;
@@ -20,6 +20,8 @@
     position: absolute;
     top: 0;
     left: 0;
+
+    color: var(--tooltip-color);
 
     background: var(--tooltip-background);
     border: 1px solid var(--tooltip-border);
@@ -51,7 +53,7 @@
 
     grid-template-areas: 'searchbar searchbar' 'sidebar window';
 
-    background: var(--background);
+    background: var(--settings-background);
 
     width: 770px;
     height: 90vh;
@@ -66,14 +68,14 @@
 
     z-index: 1;
     box-shadow: 0 0 20px 15px var(--container-box-shadow);
-    background: var(--background);
+    background: var(--settings-background);
 }
 
 .searchbar {
     width: 100%;
     height: 100%;
 
-    color: var(--font-color);
+    color: var(--settings-font-color);
     font-size: 100%;
 
     padding: 12px;
@@ -94,7 +96,7 @@
     padding: 14px;
 
     box-shadow: 0 0 20px 15px var(--container-box-shadow);
-    background: var(--background);
+    background: var(--settings-background);
 }
 .sidebar-container .top, .sidebar-container .bottom {
     display: flex;
@@ -109,7 +111,7 @@
 }
 
 .sidebar-item {
-    color: var(--font-color);
+    color: var(--settings-font-color);
     text-decoration: none;
     cursor: pointer;
 }
@@ -172,7 +174,7 @@ label.checkbox input {
     display: none;
 }
 label.checkbox span {
-    color: var(--font-color);
+    color: var(--settings-font-color);
 
     width: 22px;
     height: 22px;
@@ -197,7 +199,7 @@ label.checkbox input:checked + span::before {
     background-color: var(--setting-input-background);
 
     padding: 5px;
-    color: var(--font-color);
+    color: var(--settings-font-color);
 
     width: 100%;
 }
@@ -244,8 +246,8 @@ label.checkbox input:checked + span::before {
 }
 
 ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 12px;
+    height: 12px;
     background: var(--scrollbar-background);
 }
 ::-webkit-scrollbar-button {

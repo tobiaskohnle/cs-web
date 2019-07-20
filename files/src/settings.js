@@ -185,7 +185,7 @@ const Settings = {
 
         tooltip.innerText = text;
 
-        tooltip.style.display = '';
+        tooltip.style.display = 'unset';
     },
     hide_tooltip: function() {
         const tooltip = document.querySelector('#tooltip');

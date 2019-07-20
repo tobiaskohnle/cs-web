@@ -1,0 +1,16 @@
+
+:root {
+    --background: #eee;
+    --color: #000;
+
+    --menu-background: #f2f2f2;
+    --menu-border-color: #bbb;
+    --menu-separator: #bbb9;
+    --menu-item-hover: #39f5;
+    --menu-item-active: #39f7;
+
+    --menubar-item-border-hover: #39fd;
+    --menubar-item-background-hover: #49f3;
+    --menubar-item-border-active: #39fe;
+    --menubar-item-background-active: #49f6;
+}

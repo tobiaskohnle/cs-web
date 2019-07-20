@@ -1,21 +1,16 @@
 
 :root {
-    background: #070709;
-    color: #eee;
-}
+    --background: #070709;
+    --color: #eee;
 
-.menu {
-    background: #09090a;
-    border-color: #222;
-}
+    --menu-background: #09090a;
+    --menu-border-color: #222;
+    --menu-separator: #9993;
+    --menu-item-hover: #333;
+    --menu-item-active: #444;
 
-.menu-separator {
-    background: #9993;
-}
-
-.menu-item:hover {
-    background: #333;
-}
-.menu-item.active {
-    background: #444;
+    --menubar-item-border-hover: #3afd;
+    --menubar-item-background-hover: #4af5;
+    --menubar-item-border-active: #3afe;
+    --menubar-item-background-active: #4af7;
 }

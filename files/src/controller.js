@@ -86,6 +86,8 @@ class Controller {
     }
 
     mouse_down(event) {
+        canvas.setPointerCapture(event.pointerId);
+
         this.abs_mouse_movement = new Vec;
 
         this.mouse_down_pos = new Vec(event.x-canvas.offsetLeft, event.y-canvas.offsetTop);
@@ -523,6 +525,7 @@ class Controller {
     }
 
     sidebar_mouse_down(event) {
+        sidebar_canvas.setPointerCapture(event.pointerId);
         cs.sidebar.mouse_down(event);
     }
 

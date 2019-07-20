@@ -6,7 +6,10 @@
 
 :root {
     box-sizing: border-box;
-    background: #eee;
+
+    background: var(--background);
+    color: var(--color);
+
     font: 14px segoe ui, sans-serif;
 
     overflow: hidden;
@@ -48,13 +51,6 @@ body {
     display: flex;
 
     box-shadow: 0 0 7px 1px #0003;
-}
-
-.toolbar-icon {
-    background: #eee;
-}
-.toolbar-icon:hover {
-    background: #eee6;
 }
 
 .sidebar {
