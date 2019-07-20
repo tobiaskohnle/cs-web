@@ -99,6 +99,11 @@ const Settings = {
         Util.set_nested(cs.config, setting, value);
     },
 
+    clear_filter: function() {
+        document.querySelector('.searchbar').value = '';
+        Settings.filter_settings('');
+    },
+
     load: function() {
         Settings.add_event_listeners();
         Settings.hide();
@@ -140,6 +145,15 @@ const Settings = {
             }
 
             return;
+        }
+
+        if (event.key == 'Escape') {
+            const searchbar = document.querySelector('.searchbar');
+
+            if (searchbar.value) {
+                Settings.clear_filter();
+                return false;
+            }
         }
 
         return true;
@@ -206,6 +220,7 @@ const Settings = {
             const linked_element = document.querySelector(element.getAttribute('link'));
 
             element.addEventListener('click', function(event) {
+                Settings.clear_filter();
                 linked_element.scrollIntoView();
             });
         }
