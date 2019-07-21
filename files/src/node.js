@@ -29,6 +29,38 @@ class ConnectionNode extends Element {
     }
 
     update() {
+        if (this.grab_pos_) {
+            const parent = this.parent();
+
+            const west = parent.pos.x;
+            const east = west+parent.size.x;
+
+            const north = parent.pos.y;
+            const south = north+parent.size.y;
+
+            const x = Util.clamp(this.grab_pos_.x, west, east);
+            const y = Util.clamp(this.grab_pos_.y, north, south);
+
+            switch (Util.side_index(this.dir)) {
+                case Enum.side.north:
+                    this.grab_pos_.y = north;
+                    this.grab_pos_.x = x;
+                    break;
+                case Enum.side.west:
+                    this.grab_pos_.x = west;
+                    this.grab_pos_.y = y;
+                    break;
+                case Enum.side.south:
+                    this.grab_pos_.y = south;
+                    this.grab_pos_.x = x;
+                    break;
+                case Enum.side.east:
+                    this.grab_pos_.x = east;
+                    this.grab_pos_.y = y;
+                    break;
+            }
+        }
+
         this.anim_pos_ = View.anim_interpolate_vec(this.anim_pos_, this.grab_pos_||this.pos);
         this.anchor_pos_.set(Vec.add(this.grab_pos_||this.pos, this.dir));
         this.anchor_anim_pos_.set(Vec.add(this.anim_pos_, this.dir));
