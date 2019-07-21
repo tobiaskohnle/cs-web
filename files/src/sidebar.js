@@ -115,11 +115,9 @@ class Sidebar {
                     cs.controller.current_action = Enum.action.import_element;
                     cs.controller.imported_element = Util.deep_copy(this.hovered_element);
                     this.imported_element = this.hovered_element;
+                    sidebar_canvas.releasePointerCapture(event.pointerId);
                 }
             }
-        }
-        else if (event.buttons & -2) {
-            cs.controller.capture_mouse(sidebar_canvas);
         }
     }
     mouse_move(event) {

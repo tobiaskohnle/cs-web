@@ -18,8 +18,6 @@ class Controller {
         this.wire_start_node = null;
         this.new_wire_segments = [];
 
-        this.element_mouse_captured = null;
-
         this.undo_stack = [];
         this.redo_stack = [];
 
@@ -35,14 +33,6 @@ class Controller {
         cs.selected_elements = new Set;
 
         this.current_action = Enum.action.none;
-    }
-
-    capture_mouse(element) {
-        this.element_mouse_captured = element;
-    }
-
-    release_mouse() {
-        this.element_mouse_captured = null;
     }
 
     key_down(event) {
@@ -99,9 +89,6 @@ class Controller {
         this.mouse_down_pos = new Vec(event.x-canvas.offsetLeft, event.y-canvas.offsetTop);
         this.mouse_down_world_pos = cs.camera.to_worldspace(this.mouse_down_pos);
 
-        if (event.button & -2) {
-            this.capture_mouse(canvas);
-        }
         if (event.button != 0) {
             return;
         }
@@ -162,7 +149,6 @@ class Controller {
                     this.saved_state_create_wire = Util.deep_copy(cs.context);
 
                     this.current_action = Enum.action.start_wire;
-                    this.capture_mouse(canvas);
                     this.wire_start_node = this.hovered_element;
                 }
                 else {
@@ -179,7 +165,6 @@ class Controller {
                 this.is_mouse_down = true;
 
                 this.current_action = Enum.action.move_elements;
-                this.capture_mouse(canvas);
 
                 const selected_elements = ActionGet.selected_elements();
 
@@ -211,7 +196,6 @@ class Controller {
         }
         else {
             this.current_action = Enum.action.create_selection_box;
-            this.capture_mouse(canvas);
 
             this.saved_selected_elements = ActionGet.selected_elements();
         }
@@ -310,7 +294,6 @@ class Controller {
             case Enum.action.start_wire:
                 if (this.mouse_moved()) {
                     this.current_action = Enum.action.create_wire;
-                    this.capture_mouse(canvas);
 
                     this.new_wire_segments = [];
 
@@ -511,7 +494,6 @@ class Controller {
                 else if (this.current_action == Enum.action.create_wire) {
                     cs.config.DEBUG_LOG && console.log('create_wire mouse_up');
                     this.current_action = Enum.action.create_wire_segment;
-                    this.capture_mouse(canvas);
 
                     this.new_wire_segments = [];
 
