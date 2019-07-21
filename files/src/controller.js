@@ -2,7 +2,6 @@
 
 class Controller {
     constructor() {
-        this.open_menu_stack = [];
         this.mouse_down_pos = new Vec;
         this.mouse_down_world_pos = new Vec;
         this.mouse_pos = new Vec;

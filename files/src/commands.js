@@ -37,6 +37,115 @@ class Keybind {
     }
 }
 
+function is_command_enabled(command) {
+    switch (command) {
+        case 'add_and_gate':
+        case 'add_xor_gate':
+        case 'add_input_switch':
+        case 'add_input_button':
+        case 'add_input_pulse':
+        case 'add_clock':
+        case 'add_not_gate':
+        case 'add_or_gate':
+        case 'add_output_light':
+        case 'add_segment_display':
+        case 'add_label':
+            return true;
+
+        case 'change_type_and_gate':
+        case 'change_type_xor_gate':
+        case 'change_type_input_switch':
+        case 'change_type_input_button':
+        case 'change_type_input_pulse':
+        case 'change_type_clock':
+        case 'change_type_not_gate':
+        case 'change_type_or_gate':
+        case 'change_type_output_light':
+        case 'change_type_segment_display':
+        case 'change_type_text_label':
+            return false;
+
+        case 'clear_recent_file_list':
+        case 'clear_recently_imported_list':
+            return false;
+
+        case 'deselect_all':
+            for (const element of cs.context.inner_elements) {
+                if (element.is_selected()) {
+                    return true;
+                }
+            }
+            return false;
+
+        case 'split_segment':
+            for (const element of ActionGet.selected_elements()) {
+                if (element instanceof WireSegment && !element.attached_connection_node()) {
+                    return true;
+                }
+            }
+            return false;
+
+        case 'view_content':
+            for (const element of ActionGet.selected_elements()) {
+                if (element instanceof CustomGate) {
+                    return true;
+                }
+            }
+            return false;
+
+        case 'add_input_node':
+            for (const element of ActionGet.selected_elements()) {
+                if (element instanceof Gate && element.allow_new_input_nodes()) {
+                    return true;
+                }
+            }
+            return false;
+        case 'remove_input_node':
+            for (const element of ActionGet.selected_elements()) {
+                if (element instanceof Gate && element.allow_new_input_nodes() && element.inputs.some(input => input.is_empty())) {
+                    return true;
+                }
+            }
+            return false;
+
+        case 'invert':
+            for (const element of ActionGet.selected_elements()) {
+                if (element instanceof ConnectionNode) {
+                    return true;
+                }
+            }
+            return false;
+
+        case 'next_vertical_align':
+        case 'next_horizontal_align':
+            for (const element of ActionGet.selected_elements()) {
+                if (element instanceof Label) {
+                    return true;
+                }
+            }
+            return false;
+
+        case 'debug_toggle':
+        case 'debug_step':
+        case 'debug_single_step':
+            return true;
+
+        case 'undo':
+            return !!cs.controller.undo_stack.length;
+        case 'redo':
+            return !!cs.controller.redo_stack.length;
+
+        case 'copy':
+        case 'cut':
+        case 'delete':
+            return !!ActionGet.selected_elements().length;
+        case 'paste':
+            return !!cs.controller.clipboard;
+    }
+
+    return true;
+}
+
 const commands = {
     open_settings: function() {
         Settings.show();
@@ -165,9 +274,9 @@ const commands = {
         ActionUtil.remove_selected();
     },
     escape: function() {
-        View.close_menu();
+        Menu.close();
         Settings.hide();
-        View.show_ui(true);
+        Menu.show_ui(true);
 
         switch (cs.controller.current_action) {
             case Enum.action.import_element:
@@ -299,10 +408,10 @@ const commands = {
         ActionUtil.split_selected_segments();
     },
     theme_dark: function() {
-        View.select_theme('dark');
+        Menu.select_theme('dark');
     },
     theme_light: function() {
-        View.select_theme('light');
+        Menu.select_theme('light');
     },
     zoom_in: function() {
         cs.camera.scale_at(View.screen_center(), cs.config.scale_factor);

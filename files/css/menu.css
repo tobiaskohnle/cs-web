@@ -43,6 +43,16 @@
     content: '\0203a';
 }
 
+.menu-item.disabled {
+    color: var(--menu-item-disabled-color);
+}
+.menu-item.disabled:hover {
+    background: var(--menu-item-disabled-hover);
+}
+.menu-item.disabled:active, .menu-item.disabled.active {
+    background: var(--menu-item-disabled-active);
+}
+
 .menu-separator {
     pointer-events: none;
 

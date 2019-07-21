@@ -9,6 +9,10 @@
     --menu-item-hover: #39f5;
     --menu-item-active: #39f7;
 
+    --menu-item-disabled-color: #0005;
+    --menu-item-disabled-hover: #0001;
+    --menu-item-disabled-active: #0001;
+
     --menubar-item-border-hover: #39fd;
     --menubar-item-background-hover: #49f3;
     --menubar-item-border-active: #39fe;

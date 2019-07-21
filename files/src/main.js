@@ -217,7 +217,7 @@ onload = function() {
     cs.config.DEBUG_LOG = false;
     cs.config.DEBUG_DRAW_CONNECTIONS = true;
 
-    View.select_theme(cs.config.theme);
+    Menu.select_theme(cs.config.theme);
 
     cs.camera = new Camera(new Vec, cs.config.default_grid_size);
 
@@ -243,7 +243,7 @@ onload = function() {
     sidebar_canvas.addEventListener('pointerleave', cs.controller.sidebar_mouse_leave.bind(cs.controller), {passive:true});
     sidebar_canvas.addEventListener('wheel',        cs.controller.sidebar_mouse_wheel.bind(cs.controller), {passive:true});
 
-    add_menu_event_listeners();
+    Menu.add_event_listeners();
 
     requestAnimationFrame(View.update);
 
@@ -272,10 +272,10 @@ onkeydown = function(event) {
 
 onpointerdown = function(event) {
     if (event.buttons & -2) {
-        View.close_menu();
+        Menu.close();
     }
     else {
-        menu_click(event.path || event.composedPath());
+        Menu.click(event.path || event.composedPath());
         Settings.hide_tooltip();
     }
 }
@@ -295,19 +295,19 @@ ondrop = function(event) {
 }
 
 onwheel = function(event) {
-    View.close_menu();
+    Menu.close();
     Settings.hide_tooltip();
 }
 
 oncontextmenu = function(event) {
     if (!cs.controller.mouse_moved()) {
-        open_menu('context-menu', event.x, event.y);
+        Menu.open('context-menu', event.x, event.y);
     }
     return false;
 }
 
 onblur = function(event) {
-    View.close_menu();
+    Menu.close();
     Settings.hide_tooltip();
 }
 

@@ -50,7 +50,7 @@ const Settings = {
         switch (setting) {
             case 'theme':
                 converter = value => {
-                    View.select_theme(value);
+                    Menu.select_theme(value);
                     return value;
                 };
                 break;
@@ -77,7 +77,7 @@ const Settings = {
             case 'show_ui':
                 converter = value => {
                     const is_visible = value == 'on';
-                    View.show_ui(is_visible);
+                    Menu.show_ui(is_visible);
                     return is_visible;
                 };
                 break;
@@ -268,7 +268,7 @@ const Settings = {
         reset_button.addEventListener('click', function(event) {
             if (reset_button.hasAttribute('active')) {
                 Settings.reset();
-                View.select_theme(cs.config.theme);
+                Menu.select_theme(cs.config.theme);
 
                 reset_button.removeAttribute('active');
             }
