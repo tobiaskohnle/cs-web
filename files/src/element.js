@@ -28,10 +28,6 @@ class Element {
 
     current_color(default_color=cs.theme.outline) {
         if (this.is_selected()) {
-            if (cs.controller.current_action == Enum.action.edit_elements) {
-                return cs.theme.edit_outline;
-            }
-
             if (this.is_hovered()) {
                 return cs.theme.hovered_selected;
             }
@@ -96,22 +92,27 @@ class Element {
     }
 
     resize(total_vec, resize_vec) {
+        const previous_pos = Vec.copy(this.pos);
+        const previous_size = Vec.copy(this.size);
+
         if (this.size) {
             if (resize_vec.x > 0) {
-                this.size.x = Util.round(this.last_size_.x + total_vec.x);
+                this.size.x = Math.max(1, Util.round(this.last_size_.x + total_vec.x));
             }
             if (resize_vec.y > 0) {
-                this.size.y = Util.round(this.last_size_.y + total_vec.y);
+                this.size.y = Math.max(1, Util.round(this.last_size_.y + total_vec.y));
             }
 
             if (resize_vec.x < 0) {
                 this.pos.x = Util.round(this.last_pos_.x + total_vec.x);
-                this.size.x = Util.round(this.last_size_.x - total_vec.x);
+                this.size.x = Math.max(1, Util.round(this.last_size_.x - total_vec.x));
             }
             if (resize_vec.y < 0) {
                 this.pos.y = Util.round(this.last_pos_.y + total_vec.y);
-                this.size.y = Util.round(this.last_size_.y - total_vec.y);
+                this.size.y = Math.max(1, Util.round(this.last_size_.y - total_vec.y));
             }
         }
+
+        return !previous_pos.equals(this.pos) || !previous_size.equals(this.size);
     }
 }

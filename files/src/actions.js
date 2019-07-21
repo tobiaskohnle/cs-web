@@ -165,6 +165,11 @@ const Action = {
         if (!element.update_last_pos) return;
         element.update_last_pos();
     },
+    update_last_size: function(element) {
+        if (element instanceof Element == false) return;
+        if (!element.update_last_size) return;
+        element.update_last_size();
+    },
 
     connect_nodes: function(start_node, end_node) {
         if (ActionGet.nodes_connectable(start_node, end_node) == false) return;
@@ -440,6 +445,11 @@ const ActionUtil = {
     update_all_last_pos: function(elements=ActionGet.elements()) {
         for (const element of elements) {
             Action.update_last_pos(element);
+        }
+    },
+    update_all_last_size: function(elements=ActionGet.elements()) {
+        for (const element of elements) {
+            Action.update_last_size(element);
         }
     },
 

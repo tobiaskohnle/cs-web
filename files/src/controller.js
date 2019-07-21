@@ -55,7 +55,7 @@ class Controller {
             }
         }
 
-        if (this.current_action == Enum.action.edit_elements) {
+        if (this.current_action == Enum.action.edit_labels) {
             let result = true;
 
             for (const element of ActionGet.selected_elements()) {
@@ -67,6 +67,7 @@ class Controller {
             }
 
             if (!result) {
+                this.any_label_changed = true;
                 return result;
             }
         }
@@ -111,104 +112,117 @@ class Controller {
         }
 
         this.elements_moved = false;
+        this.elements_resized = false;
 
         ActionUtil.update_all_last_pos();
 
         this.mouse_movement = new Vec;
         this.mouse_world_movement = new Vec;
 
-        switch (this.current_action) {
-            default:
-                const any_modifier = event.shiftKey || event.ctrlKey;
+        const any_modifier = event.shiftKey || event.ctrlKey;
 
-                if (!any_modifier && (!this.hovered_element || !this.hovered_element.is_selected())) {
-                    ActionUtil.deselect_all();
-                }
+        if (!any_modifier && (!this.hovered_element || !this.hovered_element.is_selected())) {
+            ActionUtil.deselect_all();
+        }
 
-                if (this.hovered_element) {
-                    ActionUtil.set_selected(
-                        this.hovered_element,
-                        this.is_selected(this.hovered_element.is_selected(), event.shiftKey, event.ctrlKey),
-                    );
+        if (this.current_action == Enum.action.edit_labels) {
+            if (this.any_label_changed) {
+                this.save_state('edit label', this.saved_state_edit_labels);
+            }
+        }
 
-                    if (this.hovered_element instanceof ConnectionNode && !(any_modifier || event.altKey)) {
-                        if (this.current_action != Enum.action.edit_elements) {
-                            if (this.hovered_element.is_empty()) {
-                                this.saved_state_create_wire = Util.deep_copy(cs.context);
-
-                                this.current_action = Enum.action.start_wire;
-                                this.capture_mouse(canvas);
-                                this.wire_start_node = this.hovered_element;
-                            }
-                            else {
-                                this.saved_state_rewire = Util.deep_copy(cs.context);
-
-                                this.wire_start_node = this.hovered_element;
-                                Util.create_snapshot();
-                                this.current_action = Enum.action.rewire;
-                            }
-                        }
-                    }
-                    else {
-                        this.saved_state_move_elements = Util.deep_copy(cs.context);
-
-                        this.is_mouse_down = true;
-
-                        this.current_action = Enum.action.move_elements;
-                        this.capture_mouse(canvas);
-
-                        const selected_elements = ActionGet.selected_elements();
-
-                        if (selected_elements.every(element => element instanceof ConnectionNode)) {
-                            this.moving_elements = selected_elements;
-                        }
-                        else {
-                            this.moving_elements = selected_elements.filter(element => element instanceof ConnectionNode == false);
-                        }
-
-                        if (cs.config.gates_move_labels) {
-                            for (const element of this.moving_elements.copy()) {
-                                if (element instanceof Gate) {
-                                    for (const context_element of cs.context.inner_elements) {
-                                        if (context_element instanceof Label) {
-                                            if (this.moving_elements.includes(context_element.nearest_gate())) {
-                                                this.moving_elements.push(context_element);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        for (const element of this.moving_elements) {
-                            if (element.mouse_down) element.mouse_down();
-                        }
-                    }
-                }
-                else {
-                    this.current_action = Enum.action.create_selection_box;
-                    this.capture_mouse(canvas);
-
-                    this.saved_selected_elements = ActionGet.selected_elements();
-                }
-                break;
-
-            case Enum.action.edit_elements:
-            case Enum.action.edit_elements_resize:
-                this.current_action = Enum.action.edit_elements;
-
-                if (this.hovered_element instanceof Label) {
+        if (this.hovered_element) {
+            if (this.hovered_element instanceof Label) {
+                if (this.current_action == Enum.action.edit_labels) {
                     for (const element of ActionGet.selected_elements()) {
                         if (element instanceof Label) {
                             element.event_mouse_down(event);
                         }
                     }
+                    return;
                 }
-                if (this.hovered_element instanceof Gate || this.hovered_element instanceof Label) {
-                    this.current_action = Enum.action.edit_elements_resize;
+                else if (this.hovered_element.is_selected() && !this.resizing) {
+                    this.current_action = Enum.action.edit_labels;
+
+                    this.any_label_changed = false;
+                    this.saved_state_edit_labels = Util.deep_copy(cs.context);
+
+                    this.hovered_element.event_mouse_move(event);
+                    this.hovered_element.event_mouse_down(event);
+                    return;
+                }
+            }
+
+            ActionUtil.set_selected(
+                this.hovered_element,
+                this.is_selected(this.hovered_element.is_selected(), event.shiftKey, event.ctrlKey),
+            );
+
+            if (this.hovered_element instanceof ConnectionNode && !(any_modifier || event.altKey)) {
+                if (this.hovered_element.is_empty()) {
+                    this.saved_state_create_wire = Util.deep_copy(cs.context);
+
+                    this.current_action = Enum.action.start_wire;
+                    this.capture_mouse(canvas);
+                    this.wire_start_node = this.hovered_element;
+                }
+                else {
+                    this.saved_state_rewire = Util.deep_copy(cs.context);
+
+                    this.wire_start_node = this.hovered_element;
+                    Util.create_snapshot();
+                    this.current_action = Enum.action.rewire;
+                }
+            }
+            else {
+                this.saved_state_move_elements = Util.deep_copy(cs.context);
+
+                this.is_mouse_down = true;
+
+                this.current_action = Enum.action.move_elements;
+                this.capture_mouse(canvas);
+
+                const selected_elements = ActionGet.selected_elements();
+
+                if (selected_elements.every(element => element instanceof ConnectionNode)) {
+                    this.moving_elements = selected_elements;
+                }
+                else {
+                    this.moving_elements = selected_elements.filter(element => element instanceof ConnectionNode == false);
                 }
 
-                break;
+                if (cs.config.gates_move_labels) {
+                    for (const element of this.moving_elements.copy()) {
+                        if (element instanceof Gate) {
+                            for (const context_element of cs.context.inner_elements) {
+                                if (context_element instanceof Label) {
+                                    if (this.moving_elements.includes(context_element.nearest_gate())) {
+                                        this.moving_elements.push(context_element);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                for (const element of this.moving_elements) {
+                    if (element.mouse_down) element.mouse_down();
+                }
+            }
+        }
+        else {
+            this.current_action = Enum.action.create_selection_box;
+            this.capture_mouse(canvas);
+
+            this.saved_selected_elements = ActionGet.selected_elements();
+        }
+
+        if (this.resizing) {
+            this.saved_state_resize_elements = Util.deep_copy(cs.context);
+
+            this.current_action = Enum.action.resize_elements;
+
+            ActionUtil.update_all_last_size();
         }
     }
 
@@ -247,7 +261,53 @@ class Controller {
             );
         }
 
+
         switch (this.current_action) {
+            case Enum.action.none:
+                let cursor = '';
+                this.resizing = false;
+
+                if (this.hovered_element instanceof Gate || this.hovered_element instanceof Label) {
+                    this.resize = {
+                        north: Math.abs(this.mouse_world_pos.y - this.hovered_element.pos.y                              ) < .15,
+                        south: Math.abs(this.mouse_world_pos.y - this.hovered_element.pos.y - this.hovered_element.size.y) < .15,
+                        east:  Math.abs(this.mouse_world_pos.x - this.hovered_element.pos.x - this.hovered_element.size.x) < .15,
+                        west:  Math.abs(this.mouse_world_pos.x - this.hovered_element.pos.x                              ) < .15,
+                    };
+
+                    cursor =
+                        this.resize.east && this.resize.south ? 'se-resize' :
+                        this.resize.south && this.resize.west ? 'sw-resize' :
+                        this.resize.north && this.resize.east ? 'ne-resize' :
+                        this.resize.north && this.resize.west ? 'nw-resize' :
+                        this.resize.east                      ? 'e-resize'  :
+                        this.resize.south                     ? 's-resize'  :
+                        this.resize.north                     ? 'n-resize'  :
+                        this.resize.west                      ? 'w-resize'  :
+                        '';
+
+                    this.resize_vec = new Vec(
+                        this.resize.east  ? 1 : this.resize.west  ? -1 : 0,
+                        this.resize.south ? 1 : this.resize.north ? -1 : 0,
+                    );
+
+                    this.resizing = this.resize.north || this.resize.south || this.resize.east || this.resize.west;
+                }
+
+                if (document.documentElement.style.cursor != cursor) {
+                    document.documentElement.style.cursor = cursor;
+                }
+
+                break;
+
+            case Enum.action.edit_labels:
+                for (const element of ActionGet.selected_elements()) {
+                    if (element instanceof Label) {
+                        element.event_mouse_move(event);
+                    }
+                }
+                break;
+
             case Enum.action.start_wire:
                 if (this.mouse_moved()) {
                     this.current_action = Enum.action.create_wire;
@@ -367,51 +427,14 @@ class Controller {
 
                 break;
 
-
-            case Enum.action.edit_elements:
-                for (const element of ActionGet.selected_elements()) {
-                    if (element instanceof Label) {
-                        element.event_mouse_move(event);
-                    }
-                }
-
-                document.documentElement.style.cursor = '';
-                if (this.hovered_element instanceof Gate || this.hovered_element instanceof Label) {
-                    this.resize = {
-                        north: Math.abs(this.mouse_world_pos.y - this.hovered_element.pos.y                              ) < .5,
-                        south: Math.abs(this.mouse_world_pos.y - this.hovered_element.pos.y - this.hovered_element.size.y) < .5,
-                        east:  Math.abs(this.mouse_world_pos.x - this.hovered_element.pos.x - this.hovered_element.size.x) < .5,
-                        west:  Math.abs(this.mouse_world_pos.x - this.hovered_element.pos.x                              ) < .5,
-                    };
-
-                    this.resize.cursor =
-                        this.resize.east && this.resize.south ? 'se-resize' :
-                        this.resize.south && this.resize.west ? 'sw-resize' :
-                        this.resize.north && this.resize.east ? 'ne-resize' :
-                        this.resize.north && this.resize.west ? 'nw-resize' :
-                        this.resize.east                      ? 'e-resize'  :
-                        this.resize.south                     ? 's-resize'  :
-                        this.resize.north                     ? 'n-resize'  :
-                        this.resize.west                      ? 'w-resize'  :
-                        '';
-
-                    this.resize.vec = new Vec(
-                        this.resize.east  ? 1 : this.resize.west  ? -1 : 0,
-                        this.resize.south ? 1 : this.resize.north ? -1 : 0,
-                    );
-
-                    document.documentElement.style.cursor = this.resize.cursor;
-                }
-
-                break;
-
-            case Enum.action.edit_elements_resize:
+            case Enum.action.resize_elements:
                 for (const element of ActionGet.selected_elements()) {
                     if (element.resize && this.resize) {
-                        element.resize(this.mouse_world_movement, this.resize.vec);
+                        if (element.resize(this.mouse_world_movement, this.resize_vec)) {
+                            this.elements_resized = true;
+                        }
                     }
                 }
-
                 break;
         }
     }
@@ -446,14 +469,17 @@ class Controller {
         }
 
         switch (this.current_action) {
-            case Enum.action.edit_elements_resize:
-                this.current_action = Enum.action.edit_elements;
+            case Enum.action.edit_labels:
                 break;
 
-            case Enum.action.edit_elements:
-                if (!this.hovered_element) {
-                    this.current_action = Enum.action.none;
+            case Enum.action.resize_elements:
+                ActionUtil.update_all_last_size();
+
+                if (this.elements_resized) {
+                    this.save_state('resize element', this.saved_state_resize_elements);
                 }
+
+                this.current_action = Enum.action.none;
                 break;
 
             case Enum.action.rewire:

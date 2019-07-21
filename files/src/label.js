@@ -40,6 +40,8 @@ class Label extends Element {
 
     update_last_pos() {
         this.last_pos_ = Vec.copy(this.pos);
+    }
+    update_last_size() {
         this.last_size_ = Vec.copy(this.size);
     }
 
@@ -224,7 +226,7 @@ class Label extends Element {
             context.fillText(char, this.anim_chars_offset_[x], 0);
         }
 
-        if (document.hasFocus() && this.is_selected() && cs.controller.current_action == Enum.action.edit_elements) {
+        if (document.hasFocus() && this.is_selected() && cs.controller.current_action == Enum.action.edit_labels) {
             context.fillStyle = cs.theme.label_selection.to_string();
             this.draw_text_bounds(this.anim_selection_bounds_);
 
@@ -304,6 +306,10 @@ class Label extends Element {
         this.mousedown_caret_ = this.caret;
         this.mousedown_detail_ = event.detail;
 
+
+                                            this.set_caret(this.caret_hovered_, event.shiftKey);
+                                            return;
+
         switch ((event.detail-1) % 3) {
             case 0:
                 this.set_caret(this.caret_hovered_, event.shiftKey);
@@ -322,6 +328,11 @@ class Label extends Element {
         cs.config.DEBUG_LOG && console.log('label mouse move');
 
         this.caret_hovered_ = this.get_text_index(cs.controller.mouse_world_pos);
+
+                    if (event.buttons & 1) {
+                        this.set_caret(this.caret_hovered_, true);
+                    }
+                    return;
 
         if (event.buttons & 1) {
             switch ((this.mousedown_detail_-1) % 3) {

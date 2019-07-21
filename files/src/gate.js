@@ -149,6 +149,8 @@ class Gate extends Element {
 
     update_last_pos() {
         this.last_pos_ = Vec.copy(this.pos);
+    }
+    update_last_size() {
         this.last_size_ = Vec.copy(this.size);
     }
 
@@ -179,6 +181,8 @@ class Gate extends Element {
     draw_outline() {
         context.strokeStyle = this.color_outline_.to_string();
         context.lineWidth = .1;
+
+        if (!this.last_size_) this.last_size_ = Vec.copy(this.size);
 
         if (this.is_pressed()) {
             context.lineWidth = .12;

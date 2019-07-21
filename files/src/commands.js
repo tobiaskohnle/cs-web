@@ -173,9 +173,18 @@ const commands = {
             case Enum.action.import_element:
                 Action.remove(cs.controller.imported_element);
                 break;
+
             case Enum.action.create_wire:
             case Enum.action.create_wire_segment:
                 Util.load_snapshot();
+                break;
+
+            case Enum.action.resize_elements:
+                for (const element of ActionGet.selected_elements()) {
+                    if (element.last_size_) {
+                        element.size = Vec.copy(element.last_size_);
+                    }
+                }
                 break;
         }
 
