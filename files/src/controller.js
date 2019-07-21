@@ -105,9 +105,7 @@ class Controller {
         this.mouse_movement = new Vec;
         this.mouse_world_movement = new Vec;
 
-        const any_modifier = event.shiftKey || event.ctrlKey;
-
-        if (!any_modifier && (!this.hovered_element || !this.hovered_element.is_selected())) {
+        if (!(event.shiftKey || event.ctrlKey) && (!this.hovered_element || !this.hovered_element.is_selected())) {
             ActionUtil.deselect_all();
         }
 
@@ -144,7 +142,7 @@ class Controller {
                 this.is_selected(this.hovered_element.is_selected(), event.shiftKey, event.ctrlKey),
             );
 
-            if (this.hovered_element instanceof ConnectionNode && !(any_modifier || event.altKey)) {
+            if (this.hovered_element instanceof ConnectionNode && !(event.shiftKey || event.ctrlKey || event.altKey)) {
                 if (this.hovered_element.is_empty()) {
                     this.saved_state_create_wire = Util.deep_copy(cs.context);
 
@@ -422,14 +420,13 @@ class Controller {
     }
 
     mouse_up(event) {
-        if (!this.mouse_moved()) {
-            if (this.hovered_element && !this.hovered_element.is_selected()) {
-                ActionUtil.deselect_all();
-                Action.select(this.hovered_element);
-            }
-        }
-
         if (event.button != 0) {
+            if (!this.mouse_moved()) {
+                if (this.hovered_element && !this.hovered_element.is_selected()) {
+                    ActionUtil.deselect_all();
+                    Action.select(this.hovered_element);
+                }
+            }
             return;
         }
 
