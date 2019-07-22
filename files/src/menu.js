@@ -235,7 +235,9 @@ const Menu = {
         cs.theme = theme[theme_name];
         document.querySelector('#theme-style').href = `files/css/style-${theme_name}.css`;
         document.querySelector('#theme-settings-style').href = `files/css/settings-${theme_name}.css`;
-        if (cs.sidebar) cs.sidebar.update_elements();
+        if (cs.sidebar) {
+            cs.sidebar.update_elements();
+        }
     },
     show_ui: function(is_visible) {
         const window = document.querySelector('.window');

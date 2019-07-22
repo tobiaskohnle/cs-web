@@ -327,6 +327,11 @@ class InputSwitch extends InputGate {
         return this.is_enabled;
     }
 
+    cancel_animation() {
+        super.cancel_animation();
+        this.color_fill_.anim_hsva(this.color_fill_);
+    }
+
     update() {
         if (this.eval_state()) {
             this.color_fill_.hsva(cs.theme.light_active);
@@ -368,6 +373,11 @@ class InputButton extends InputGate {
 
     eval_state() {
         return this.is_enabled;
+    }
+
+    cancel_animation() {
+        super.cancel_animation();
+        this.color_fill_.anim_hsva(this.color_fill_);
     }
 
     update() {
@@ -525,6 +535,11 @@ class OutputLight extends OutputGate {
         return this.inputs[0].state;
     }
 
+    cancel_animation() {
+        super.cancel_animation();
+        this.color_fill_.anim_hsva(this.color_fill_);
+    }
+
     update() {
         if (this.eval_state()) {
             this.color_fill_.hsva(cs.theme.light_active);
@@ -575,6 +590,13 @@ class SegmentDisplay extends OutputGate {
             segment_distance:      21,
             segment_center_length: 70,
         };
+    }
+
+    cancel_animation() {
+        super.cancel_animation();
+        for (const color of this.color_segments_) {
+            color.anim_hsva(color);
+        }
     }
 
     update() {

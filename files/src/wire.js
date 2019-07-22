@@ -102,6 +102,8 @@ class WireSegment extends Element {
     cancel_animation() {
         this.update();
         this.anim_offset_ = this.offset;
+
+        this.anim_color_.anim_hsva(this.anim_color_);
     }
 
     distance(pos) {
