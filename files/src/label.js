@@ -137,26 +137,26 @@ class Label extends Element {
             });
         }
 
-        const tag_match = this.text.match(/^tag\s*=(?<tag>.*)/i);
+        const tag_match = this.text.match(/^tag\s*=(.*)/i);
         if (tag_match) {
-            return {tag: unescape(tag_match.groups.tag)};
+            return {tag: unescape(tag_match[1])};
         }
 
-        const name_match = this.text.match(/^name\s*=(?<name>.*)/i);
+        const name_match = this.text.match(/^name\s*=(.*)/i);
         if (name_match) {
-            return {name: unescape(name_match.groups.name)};
+            return {name: unescape(name_match[1])};
         }
 
-        const size_match = this.text.match(/^size\s*=(?<args>.*)/i);
+        const size_match = this.text.match(/^size\s*=(.*)/i);
         if (size_match) {
-            const size_pair_match = size_match.groups.args.match(/(?<x>\d+)\s*,\s*(?<y>\d+)/);
+            const size_pair_match = size_match[1].match(/(\d+)\s*,\s*(\d+)/);
             if (size_pair_match) {
-                return {size: new Vec(parseInt(size_pair_match.groups.x), parseInt(size_pair_match.groups.y))};
+                return {size: new Vec(parseInt(size_pair_match[1]), parseInt(size_pair_match[2]))};
             }
 
-            const size_single_match = size_match.groups.args.match(/(?<xy>\d+)/);
+            const size_single_match = size_match[1].match(/(\d+)/);
             if (size_single_match) {
-                return {size: new Vec(parseInt(size_single_match.groups.xy))};
+                return {size: new Vec(parseInt(size_single_match[1]))};
             }
 
             return {size: new Vec(3,4)};

@@ -152,6 +152,10 @@ class WireSegment extends Element {
             });
         }
         if (this.normal_pos) {
+            // TEMP
+            if (!this.anim_normal_pos_) {
+                this.anim_normal_pos_ = Vec.copy(this.normal_pos);
+            }
             neighbor_elements.push({
                 offset: this.is_vertical ? this.normal_pos.y : this.normal_pos.x,
                 anim_offset_: this.is_vertical ? this.anim_normal_pos_.y : this.anim_normal_pos_.x,

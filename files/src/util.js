@@ -20,6 +20,19 @@ Array.prototype.remove = function(element) {
     }
 }
 
+if (!String.prototype.matchAll) {
+    String.prototype.matchAll = function(regex) {
+        const matches = [];
+
+        let match;
+        while ((match = regex.exec(this)) !== null) {
+            matches.push(match[0]);
+        }
+
+        return matches;
+    }
+}
+
 const Util = {
     // TEMP
     create_snapshot: function() {
