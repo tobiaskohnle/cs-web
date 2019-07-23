@@ -16,4 +16,13 @@
     "url": "https://github.com/tobiaskohnle/cs-web/issues"
   },
   "homepage": "https://github.com/tobiaskohnle/cs-web#readme",
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "grunt": "^1.0.4",
+    "grunt-babel": "^8.0.0",
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-copy": "^1.0.0",
+    "load-grunt-tasks": "^5.0.0"
+  }
 }

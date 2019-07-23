@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html>
+<meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, user-scalable=no'>
+<title>cs &ndash; web</title>
+
+<link rel='icon' href='favicon.png'>
+
+<link rel='stylesheet' href='files/css/style.css'>
+<link rel='stylesheet' href='files/css/menu.css'>
+<link rel='stylesheet' id='theme-style'>
+<link rel='stylesheet' href='files/css/settings.css'>
+<link rel='stylesheet' id='theme-settings-style'>
+
+<script src='cs.js'></script>
+
+<body>
+    <div class='window'>
+        <div class='menubar'>
+            <div class='menubar-item' menu='file'>
+                <span>File</span>
+            </div>
+            <div class='menubar-item' menu='edit'>
+                <span>Edit</span>
+            </div>
+            <div class='menubar-item' menu='view'>
+                <span>View</span>
+            </div>
+            <div class='menubar-item' menu='tools'>
+                <span>Tools</span>
+            </div>
+        </div>
+        <div class='toolbar'></div>
+        <canvas class='sidebar'></canvas>
+        <canvas class='canvas'></canvas>
+    </div>
+
+    <div class='menu' menu='context-menu'>
+        <div class='menu-item' menu='context-menu-add-component'>
+            <span>Add Component</span>
+        </div>
+        <div class='menu-item' menu='context-menu-add-custom-gate'>
+            <span>Add Custom Gate</span>
+        </div>
+        <div class='menu-item' menu='context-menu-change-type'>
+            <span>Change Type</span>
+        </div>
+        <div class='menu-separator'></div>
+        <div class='menu-item' command='copy'>
+            <span>Copy</span>
+        </div>
+        <div class='menu-item' command='paste'>
+            <span>Paste</span>
+        </div>
+        <div class='menu-item' command='delete'>
+            <span>Delete</span>
+        </div>
+        <div class='menu-separator'></div>
+        <div class='menu-item' command='invert'>
+            <span>Invert Connection Node</span>
+        </div>
+        <div class='menu-item' command='add_input_node'>
+            <span>Add Input Node</span>
+        </div>
+        <div class='menu-item' command='split_segment'>
+            <span>Split Segment</span>
+        </div>
+    </div>
+    <div class='menu' menu='context-menu-add-component'>
+        <div class='menu-item' command='add_and_gate'>
+            <span>And Gate</span>
+        </div>
+        <div class='menu-item' command='add_or_gate'>
+            <span>Or Gate</span>
+        </div>
+        <div class='menu-item' command='add_xor_gate'>
+            <span>Xor Gate</span>
+        </div>
+        <div class='menu-item' command='add_not_gate'>
+            <span>Not Gate</span>
+        </div>
+        <div class='menu-separator'></div>
+        <div class='menu-item' command='add_input_switch'>
+            <span>Input Switch</span>
+        </div>
+        <div class='menu-item' command='add_input_button'>
+            <span>Input Button</span>
+        </div>
+        <div class='menu-item' command='add_input_pulse'>
+            <span>Input Pulse</span>
+        </div>
+        <div class='menu-item' command='add_clock'>
+            <span>Clock</span>
+        </div>
+        <div class='menu-separator'></div>
+        <div class='menu-item' command='add_output_light'>
+            <span>Output Light</span>
+        </div>
+        <div class='menu-item' command='add_segment_display'>
+            <span>Segment Display</span>
+        </div>
+        <div class='menu-separator'></div>
+        <div class='menu-item' command='add_label'>
+            <span>Label</span>
+        </div>
+    </div>
+    <div class='menu' menu='context-menu-change-type'>
+        <div class='menu-item' command='change_type_and_gate'>
+            <span>And Gate</span>
+        </div>
+        <div class='menu-item' command='change_type_or_gate'>
+            <span>Or Gate</span>
+        </div>
+        <div class='menu-item' command='change_type_xor_gate'>
+            <span>Xor Gate</span>
+        </div>
+        <div class='menu-item' command='change_type_not_gate'>
+            <span>Not Gate</span>
+        </div>
+        <div class='menu-separator'></div>
+        <div class='menu-item' command='change_type_input_switch'>
+            <span>Input Switch</span>
+        </div>
+        <div class='menu-item' command='change_type_input_button'>
+            <span>Input Button</span>
+        </div>
+        <div class='menu-item' command='change_type_input_pulse'>
+            <span>Input Pulse</span>
+        </div>
+        <div class='menu-item' command='change_type_clock'>
+            <span>Clock</span>
+        </div>
+        <div class='menu-item' command='change_type_output_light'>
+            <span>Output Light</span>
+        </div>
+        <div class='menu-separator'></div>
+        <div class='menu-item' command='change_type_text_label'>
+            <span>Label</span>
+        </div>
+        <div class='menu-item' command='change_type_segment_display'>
+            <span>Segment Display</span>
+        </div>
+    </div>
+    <div class='menu' menu='context-menu-add-custom-gate'>
+        <div class='menu-item' command='import'>
+            <span>Import From File</span>
+        </div>
+        <div class='menu-separator'></div>
+        <div class='menu-item' menu='context-menu-add-custom-gate-recently-imported'>
+            <span>Recently Imported</span>
+        </div>
+    </div>
+
+    <div class='menu' menu='context-menu-add-custom-gate-recently-imported'>
+        <div class='menu-item' command='clear_recently_imported_list'>
+            <span>Clear List</span>
+        </div>
+    </div>
+
+    <div class='menu' menu='file'>
+        <div class='menu-item' command='new'>
+            <span>New File</span>
+        </div>
+        <div class='menu-item' command='open_file'>
+            <span>Open File...</span>
+        </div>
+        <div class='menu-item' menu='file-open-recent'>
+            <span>Open Recent</span>
+        </div>
+        <div class='menu-item' command='import'>
+            <span>Import...</span>
+        </div>
+        <div class='menu-separator'></div>
+        <div class='menu-item' command='save'>
+            <span>Save</span>
+        </div>
+        <div class='menu-item' command='save_as'>
+            <span>Save As...</span>
+        </div>
+        <div class='menu-separator'></div>
+        <div class='menu-item' command='open_settings'>
+            <span>Settings</span>
+        </div>
+    </div>
+    <div class='menu' menu='file-open-recent'>
+        <div class='menu-item' command='reopen_last_file'>
+            <span>Reopen Closed File</span>
+        </div>
+        <div class='menu-separator'></div>
+        <div class='menu-item' command='clear_recent_file_list'>
+            <span>Clear List</span>
+        </div>
+    </div>
+
+    <div class='menu' menu='edit'>
+        <div class='menu-item' command='undo'>
+            <span>Undo</span>
+        </div>
+        <div class='menu-item' command='redo'>
+            <span>Redo</span>
+        </div>
+        <div class='menu-item' command='copy'>
+            <span>Copy</span>
+        </div>
+        <div class='menu-item' command='cut'>
+            <span>Cut</span>
+        </div>
+        <div class='menu-item' command='delete'>
+            <span>Delete</span>
+        </div>
+        <div class='menu-item' command='paste'>
+            <span>Paste</span>
+        </div>
+        <div class='menu-item' command='toggle_selection'>
+            <span>Select All</span>
+        </div>
+    </div>
+
+    <div class='menu' menu='view'>
+        <div class='menu-item' command='reset_view'>
+            <span>Reset View</span>
+        </div>
+        <div class='menu-item' command='zoom_in'>
+            <span>Zoom In</span>
+        </div>
+        <div class='menu-item' command='zoom_out'>
+            <span>Zoom Out</span>
+        </div>
+    </div>
+
+    <div class='menu' menu='tools'>
+        <div class='menu-item' command='invert'>
+            <span>Invert Connection Node</span>
+        </div>
+        <div class='menu-item' command='add_input_node'>
+            <span>Add Input Node</span>
+        </div>
+        <div class='menu-item' command='remove_input_node'>
+            <span>Remove Input Node</span>
+        </div>
+        <div class='menu-item' command='split_segment'>
+            <span>Split Segment</span>
+        </div>
+    </div>
+
+
+    <div class='settings-container'>
+        <div class='settings-menu'>
+            <div class='searchbar-container'>
+                <input class='searchbar' placeholder='Search settings'>
+            </div>
+
+            <div class='sidebar-container'>
+                <div class='top'>
+                    <span class='sidebar-item link' link='#appearance'>Appearance</span>
+                    <span class='sidebar-item link' link='#behavior'>Behavior</span>
+                    <span class='sidebar-item link' link='#animations'>Animations</span>
+                    <span class='sidebar-item link' link='#keybinds'>Keybinds</span>
+                </div>
+                <div class='bottom'>
+                    <span class='sidebar-item' tabindex='0' id='reset'>Reset settings</span>
+                    <!--span class='sidebar-item' id='import'>Import settings</span>
+                    <span class='sidebar-item' id='export'>Export settings</span-->
+                </div>
+            </div>
+
+            <div class='window-container'>
+                <div class='setting-header' id='appearance'>
+                    <div class='description'>
+                        <span class='header'>Appearance</span>
+                    </div>
+                </div>
+
+                <div class='setting' setting='theme'>
+                    <div class='description'>
+                        <span class='title'>Theme</span><br>
+                        Color palette.<br>
+                        setting: <span class='code'>theme</span>
+                    </div>
+
+                    <select class='setting-input'>
+                        <option value='light'>Light</option>
+                        <option value='dark'>Dark</option>
+                    </select>
+                </div>
+                <div class='setting' setting='default_grid_size'>
+                    <div class='description'>
+                        <span class='title'>Default Scale</span><br>
+                        Initial grid size.<br>
+                        setting: <span class='code'>default_grid_size</span>
+                    </div>
+
+                    <input class='setting-input'>
+                </div>
+                <div class='setting' setting='grid_style'>
+                    <div class='description'>
+                        <span class='title'>Grid</span><br>
+                        setting: <span class='code'>grid_style</span>
+                    </div>
+
+                    <select class='setting-input'>
+                        <option value='dots'>Dots</option>
+                        <option value='lines'>Lines</option>
+                        <option value='none'>Hidden</option>
+                    </select>
+                </div>
+                <div class='setting' setting='joints_style'>
+                    <div class='description'>
+                        <span class='title'>Wire Joints</span><br>
+                        Style of wire intersections.<br>
+                        setting: <span class='code'>joints_style</span>
+                    </div>
+
+                    <select class='setting-input'>
+                        <option value='square'>Square</option>
+                        <option value='round'>Round</option>
+                        <option value='none'>Hidden</option>
+                    </select>
+                </div>
+                <div class='setting' setting='show_ui'>
+                    <div class='description'>
+                        <span class='title'>Show User Interface</span><br>
+                        setting: <span class='code'>show_ui</span>
+                    </div>
+
+                    <div class='setting-checkbox'>
+                        <label class='checkbox'>
+                            <input type='checkbox'>
+                            <span></span>
+                        </label>
+
+                        <div class='description'>
+                            Show menu and sidebar.
+                        </div>
+                    </div>
+                </div>
+
+                <div class='setting-header' id='behavior'>
+                    <div class='description'>
+                        <span class='header'>Behavior</span>
+                    </div>
+                </div>
+
+                <div class='setting' setting='ticks_per_frame'>
+                    <div class='description'>
+                        <span class='title'>Ticks per Frame</span><br>
+                        Amount of logic calculations before each redraw.<br>
+                        setting: <span class='code'>ticks_per_frame</span>
+                    </div>
+
+                    <input class='setting-input'>
+                </div>
+                <div class='setting' setting='scale_factor'>
+                    <div class='description'>
+                        <span class='title'>Zoom Factor</span><br>
+                        Sensitivity when zooming.<br>
+                        setting: <span class='code'>scale_factor</span>
+                    </div>
+
+                    <input class='setting-input'>
+                </div>
+                <div class='setting' setting='block_unused_key_combinations'>
+                    <div class='description'>
+                        <span class='title'>Block Keystrokes</span><br>
+                        setting: <span class='code'>block_unused_key_combinations</span>
+                    </div>
+
+                    <div class='setting-checkbox'>
+                        <label class='checkbox'>
+                            <input type='checkbox'>
+                            <span></span>
+                        </label>
+
+                        <div class='description'>
+                            Consume every keystroke.
+                        </div>
+                    </div>
+                </div>
+                <div class='setting' setting='use_system_clipboard'>
+                    <div class='description'>
+                        <span class='title'>Clipboard</span><br>
+                        setting: <span class='code'>use_system_clipboard</span>
+                    </div>
+
+                    <div class='setting-checkbox'>
+                        <label class='checkbox'>
+                            <input type='checkbox'>
+                            <span></span>
+                        </label>
+
+                        <div class='description'>
+                            Use the builtin clipboard of your operating system.
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class='setting' setting='use_wire_restructuring'>
+                    <div class='description'>
+                        <span class='title'>Wire Restructuring</span><br>
+                        setting: <span class='code'>use_wire_restructuring</span>
+                    </div>
+
+                    <div class='setting-checkbox'>
+                        <label class='checkbox'>
+                            <input type='checkbox'>
+                            <span></span>
+                        </label>
+
+                        <div class='description'>
+                            Merge segments if they appear connected.
+                        </div>
+                    </div>
+                </div>
+                <div class='setting' setting='gates_push_wires'>
+                    <div class='description'>
+                        <span class='title'>Push Wires</span><br>
+                        setting: <span class='code'>gates_push_wires</span>
+                    </div>
+
+                    <div class='setting-checkbox'>
+                        <label class='checkbox'>
+                            <input type='checkbox'>
+                            <span></span>
+                        </label>
+
+                        <div class='description'>
+                            Todo. Push wires.
+                        </div>
+                    </div>
+                </div>
+                <div class='setting' setting='prevent_element_overlapping'>
+                    <div class='description'>
+                        <span class='title'>Prevent Overlapping</span><br>
+                        setting: <span class='code'>prevent_element_overlapping</span>
+                    </div>
+
+                    <div class='setting-checkbox'>
+                        <label class='checkbox'>
+                            <input type='checkbox'>
+                            <span></span>
+                        </label>
+
+                        <div class='description'>
+                            Todo.
+                        </div>
+                    </div>
+                </div>
+
+                <div class='setting-header' id='animations'>
+                    <div class='description'>
+                        <span class='header'>Animations</span>
+                    </div>
+                </div>
+
+                <div class='setting' setting='anim_factor'>
+                    <div class='description'>
+                        <span class='title'>Animation Speed</span><br>
+                        The speed of animations.<br>
+                        Close to 0: Slow<br>
+                        Close to 1: Fast<br>
+                        setting: <span class='code'>anim_factor</span>
+                    </div>
+
+                    <input class='setting-input'>
+                </div>
+                <div class='setting' setting='camera_anim_factor'>
+                    <div class='description'>
+                        <span class='title'>Camera Animation Speed</span><br>
+                        The speed of the camera.<br>
+                        Close to 0: Slow<br>
+                        Close to 1: Fast<br>
+                        setting: <span class='code'>camera_anim_factor</span>
+                    </div>
+
+                    <input class='setting-input'>
+                </div>
+                <div class='setting' setting='camera_motion_anim_factor'>
+                    <div class='description'>
+                        <span class='title'>Camera Motion</span><br>
+                        Level of motion when moving screen.<br>
+                        setting: <span class='code'>camera_motion_anim_factor</span>
+                    </div>
+
+                    <input class='setting-input'>
+                </div>
+
+                <div class='setting-header' id='keybinds'>
+                    <div class='description'>
+                        <span class='header'>Keybinds</span>
+                    </div>
+                </div>
+
+                <div class='setting' setting='keybinds.add_input_node'>
+                    <div class='description'>
+                        <span class='title'>Add Input Node</span><br>
+                        Add an empty input node to any selected gate.<br>
+                        setting: <span class='code'>keybinds.add_input_node</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting' setting='keybinds.remove_input_node'>
+                    <div class='description'>
+                        <span class='title'>Remove Input Node</span><br>
+                        Remove an empty input node from any selected gate.<br>
+                        setting: <span class='code'>keybinds.remove_input_node</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting' setting='keybinds.view_content'>
+                    <div class='description'>
+                        <span class='title'>View Content</span><br>
+                        Todo. Show the inner circuit of a custom gate.<br>
+                        setting: <span class='code'>keybinds.view_content</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting' setting='keybinds.copy'>
+                    <div class='description'>
+                        <span class='title'>Copy</span><br>
+                        Copy an element to the clipboard.<br>
+                        setting: <span class='code'>keybinds.copy</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting' setting='keybinds.cut'>
+                    <div class='description'>
+                        <span class='title'>Cut</span><br>
+                        Copy an element to the clipboard and remove it.<br>
+                        setting: <span class='code'>keybinds.cut</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting' setting='keybinds.paste'>
+                    <div class='description'>
+                        <span class='title'>Paste</span><br>
+                        Paste an element from the clipboard.<br>
+                        setting: <span class='code'>keybinds.paste</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting' setting='keybinds.delete'>
+                    <div class='description'>
+                        <span class='title'>Delete</span><br>
+                        Remove an element.<br>
+                        setting: <span class='code'>keybinds.delete</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting' setting='keybinds.import'>
+                    <div class='description'>
+                        <span class='title'>Import</span><br>
+                        Create a custom gate from a file.<br>
+                        setting: <span class='code'>keybinds.import</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting' setting='keybinds.instant_import'>
+                    <div class='description'>
+                        <span class='title'>Instant Import</span><br>
+                        Temp.<br>
+                        setting: <span class='code'>keybinds.instant_import</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting' setting='keybinds.open_settings'>
+                    <div class='description'>
+                        <span class='title'>Open Settings Menu</span><br>
+                        setting: <span class='code'>keybinds.open_settings</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting' setting='keybinds.invert'>
+                    <div class='description'>
+                        <span class='title'>Invert</span><br>
+                        Invert any selected connection node.<br>
+                        setting: <span class='code'>keybinds.invert</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting' setting='keybinds.new'>
+                    <div class='description'>
+                        <span class='title'>New File</span><br>
+                        Create an create file.<br>
+                        setting: <span class='code'>keybinds.new</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting' setting='keybinds.open_file'>
+                    <div class='description'>
+                        <span class='title'>Open File</span><br>
+                        Open a file.<br>
+                        setting: <span class='code'>keybinds.open_file</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting' setting='keybinds.open_folder'>
+                    <div class='description'>
+                        <span class='title'>Open Folder</span><br>
+                        Todo.<br>
+                        setting: <span class='code'>keybinds.open_folder</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting' setting='keybinds.undo'>
+                    <div class='description'>
+                        <span class='title'>Undo</span><br>
+                        Undo the last action.<br>
+                        setting: <span class='code'>keybinds.undo</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting' setting='keybinds.redo'>
+                    <div class='description'>
+                        <span class='title'>Redo</span><br>
+                        Restore the last action.<br>
+                        setting: <span class='code'>keybinds.redo</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting' setting='keybinds.reopen_last_file'>
+                    <div class='description'>
+                        <span class='title'>Reopen Last File</span><br>
+                        Todo.<br>
+                        setting: <span class='code'>keybinds.reopen_last_file</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting' setting='keybinds.reset_view'>
+                    <div class='description'>
+                        <span class='title'>Reset View</span><br>
+                        Reset the visible area.<br>
+                        setting: <span class='code'>keybinds.reset_view</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting' setting='keybinds.save'>
+                    <div class='description'>
+                        <span class='title'>Save</span><br>
+                        Download the current file.<br>
+                        setting: <span class='code'>keybinds.save</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting' setting='keybinds.save_as'>
+                    <div class='description'>
+                        <span class='title'>Save As...</span><br>
+                        Name and download the current file.<br>
+                        setting: <span class='code'>keybinds.save_as</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting' setting='keybinds.select_all'>
+                    <div class='description'>
+                        <span class='title'>Select All</span><br>
+                        Select all elements.<br>
+                        setting: <span class='code'>keybinds.select_all</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting' setting='keybinds.next_vertical_align'>
+                    <div class='description'>
+                        <span class='title'>Next Vertical Align</span><br>
+                        Todo.<br>
+                        setting: <span class='code'>keybinds.next_vertical_align</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting' setting='keybinds.next_horizontal_align'>
+                    <div class='description'>
+                        <span class='title'>Next Horizontal Align</span><br>
+                        Todo.<br>
+                        setting: <span class='code'>keybinds.next_horizontal_align</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting' setting='keybinds.toggle_selection'>
+                    <div class='description'>
+                        <span class='title'>Toggle Selection</span><br>
+                        Select all elements. If all elements are selected, deselect all elements.<br>
+                        setting: <span class='code'>keybinds.toggle_selection</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting' setting='keybinds.deselect_all'>
+                    <div class='description'>
+                        <span class='title'>Deselect All</span><br>
+                        Deselect all elements.<br>
+                        setting: <span class='code'>keybinds.deselect_all</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting' setting='keybinds.split_segment'>
+                    <div class='description'>
+                        <span class='title'>Split Segment</span><br>
+                        Replace all selected segments with 3 new segments.<br>
+                        setting: <span class='code'>keybinds.split_segment</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting' setting='keybinds.zoom_in'>
+                    <div class='description'>
+                        <span class='title'>Zoom In</span><br>
+                        Zoom to the center of the screen.<br>
+                        setting: <span class='code'>keybinds.zoom_in</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting' setting='keybinds.zoom_out'>
+                    <div class='description'>
+                        <span class='title'>Zoom Out</span><br>
+                        Zoom out of the center of the screen.<br>
+                        setting: <span class='code'>keybinds.zoom_out</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting' setting='keybinds.debug_toggle'>
+                    <div class='description'>
+                        <span class='title'>Debug Toggle</span><br>
+                        Enter and leave manual tick mode.<br>
+                        setting: <span class='code'>keybinds.debug_toggle</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting' setting='keybinds.debug_step'>
+                    <div class='description'>
+                        <span class='title'>Debug Step</span><br>
+                        Calculate a tick.<br>
+                        setting: <span class='code'>keybinds.debug_step</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+                <div class='setting' setting='keybinds.debug_single_step'>
+                    <div class='description'>
+                        <span class='title'>Debug Single Step</span><br>
+                        Todo. Calculate a manual tick.<br>
+                        setting: <span class='code'>keybinds.debug_single_step</span>
+                    </div>
+
+                    <label class='keybind'>
+                        <input class='setting-input'>
+                        <div class='buttons'>
+                            <button class='record'>Record</button>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id='tooltip'></div>
+</body>
+
+</html>
