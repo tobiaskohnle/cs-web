@@ -1,0 +1,19 @@
+{
+  "name": "cs-web",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tobiaskohnle/cs-web.git"
+  },
+  "author": "Tobias Kohnle",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tobiaskohnle/cs-web/issues"
+  },
+  "homepage": "https://github.com/tobiaskohnle/cs-web#readme",
+}
