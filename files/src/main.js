@@ -212,10 +212,6 @@ onload = function() {
 
     load_config();
 
-    // TEMP
-    cs.config.DEBUG_LOG = false;
-    cs.config.DEBUG_DRAW_CONNECTIONS = true;
-
     Menu.select_theme(cs.config.theme);
 
     cs.camera = new Camera(new Vec, cs.config.default_grid_size);

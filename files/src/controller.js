@@ -584,19 +584,19 @@ class Controller {
     read_files(onload) {
         const input = document.createElement('input');
         input.type = 'file';
-        input.setAttribute('multiple', '');
+        // input.setAttribute('multiple', '');
         // input.setAttribute('directory', '');
         // input.setAttribute('webkitdirectory', '');
 
         input.click();
 
-        input.addEventListener('change', function(e) {
+        input.addEventListener('change', function(event) {
             const files = input.files;
 
             for (const file of files) {
                 const reader = new FileReader;
 
-                reader.addEventListener('load', function() {
+                reader.addEventListener('load', function(event) {
                     onload(reader.result);
                 });
 
