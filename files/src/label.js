@@ -130,13 +130,13 @@ class Label extends Element {
         this.font_size /= 1.2;
     }
 
-    special_info() {
-        function unescape(string) {
-            return string.trim().replace(/(?:u\+|%u|\\u|\\)([0-9a-f]{4})/gi, (match, digits) => {
-                return String.fromCharCode(parseInt(digits, 16));
-            });
-        }
+    unescape_text() {
+        return this.text = this.text.trim().replace(/(?:u\+|%u|\\u|\\)([0-9a-f]{4})/gi, (match, digits) => {
+            return String.fromCharCode(parseInt(digits, 16));
+        });
+    }
 
+    special_info() {
         const tag_match = this.text.match(/^tag\s*=(.*)/i);
         if (tag_match) {
             return {tag: unescape(tag_match[1])};
@@ -376,6 +376,9 @@ class Label extends Element {
         this.delete_selection();
     }
     move_direction(dir, shiftKey, ctrlKey) {
+        this.caret = Util.clamp(this.caret, 0, this.text.length);
+        this.selection_start = Util.clamp(this.selection_start, 0, this.text.length);
+
         if (!shiftKey && this.selection_width()) {
             this.set_caret(dir < 0 ? this.selection_lower() : this.selection_upper());
         }
@@ -395,14 +398,14 @@ class Label extends Element {
                     switch (event.key) {
                         case 'a':
                             this.select_all();
-                            return false;
+                            break;
                         case 'c':
                             this.clipboard = this.text.substring(this.selection_lower(), this.selection_upper()) || this.text;
                             if (cs.config.use_system_clipboard) {
                                 navigator.clipboard.writeText(this.clipboard);
                             }
 
-                            return false;
+                            break;
                         case 'x':
                             if (this.selection_width() == 0) {
                                 this.select_all();
@@ -414,7 +417,7 @@ class Label extends Element {
                             }
 
                             this.delete_selection();
-                            return false;
+                            break;
                         case 'v':
                             if (cs.config.use_system_clipboard) {
                                 navigator.clipboard.readText().then(string => {
@@ -424,36 +427,37 @@ class Label extends Element {
                             else {
                                 this.write_text(this.clipboard);
                             }
-                            return false;
+                            break;
                     }
-                    break;
                 }
-
-                this.write_text(event.key);
-                return false;
+                else {
+                    this.write_text(event.key);
+                }
+                break;
 
             case 'ArrowLeft':
                 this.move_direction(-1, event.shiftKey, event.ctrlKey);
-                return false;
+                break;
             case 'ArrowRight':
                 this.move_direction(1, event.shiftKey, event.ctrlKey);
-                return false;
+                break;
 
             case 'Home':
                 this.set_caret(0, event.shiftKey);
-                return false;
+                break;
             case 'End':
                 this.set_caret(this.text.length, event.shiftKey);
-                return false;
+                break;
 
             case 'Backspace':
                 this.delete_direction(-1, event.ctrlKey);
-                return false;
+                break;
             case 'Delete':
                 this.delete_direction(1, event.ctrlKey);
-                return false;
+                break;
         }
 
-        return true;
+        this.unescape_text();
+        return false;
     }
 }
