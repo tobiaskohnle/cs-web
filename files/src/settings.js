@@ -244,6 +244,7 @@ const Settings = {
             });
 
             input.addEventListener('blur', function(event) {
+                Settings.export_setting(Settings.currently_edited_setting);
                 Settings.set_recording_element(null);
             });
         }
