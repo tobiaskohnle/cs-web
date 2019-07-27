@@ -2,6 +2,7 @@
 
 const Menu = {
     open_menu_stack: [],
+    sidebar_open: true,
 
     update: function() {
         for (const menu_element of document.querySelectorAll('.menu')) {
@@ -238,5 +239,12 @@ const Menu = {
         if (cs.sidebar) {
             cs.sidebar.update_elements();
         }
+    },
+
+    show_sidebar: function(is_visible) {
+        Menu.sidebar_open = is_visible;
+
+        document.querySelector('.window').style.gridTemplateColumns=`${is_visible ? '250px' : '0'} auto`;
+        onresize();
     },
 };

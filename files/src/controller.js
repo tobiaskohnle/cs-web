@@ -37,11 +37,7 @@ class Controller {
 
     key_down(event) {
         if (Settings.is_open) {
-            const result = Settings.key_down(event);
-
-            if (!result) {
-                return result;
-            }
+            return Settings.key_down(event);
         }
 
         if (this.current_action == Enum.action.edit_labels) {

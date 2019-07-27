@@ -275,7 +275,6 @@ const commands = {
     },
     escape: function() {
         Menu.close();
-        Settings.hide();
 
         switch (cs.controller.current_action) {
             case Enum.action.import_element:
@@ -302,7 +301,7 @@ const commands = {
     enter: function() {
         cs.controller.current_action = Enum.action.none;
     },
-    fullscreen: function() {
+    toggle_fullscreen: function() {
         if (document.fullscreen) {
             document.exitFullscreen();
         }
@@ -312,6 +311,9 @@ const commands = {
         else {
             document.body.requestFullscreen();
         }
+    },
+    toggle_sidebar: function() {
+        Menu.show_sidebar(!Menu.sidebar_open);
     },
     grid_dots: function() {
         cs.config.grid_style = Enum.grid_style.dots;

@@ -7,6 +7,7 @@ const Settings = {
     reset: function() {
         cs.config = Util.deep_copy(default_config);
         Settings.import_all_settings();
+        Settings.clear_filter();
     },
     import_all_settings: function(config=cs.config, key_prefix='') {
         for (const key in config) {
@@ -46,39 +47,20 @@ const Settings = {
             value = input.checked;
         }
 
-        let converter;
-        switch (setting) {
+        switch (setting_element.getAttribute('type')) {
             case 'theme':
-                converter = value => {
-                    Menu.select_theme(value);
-                    return value;
-                };
+                Menu.select_theme(value);
                 break;
 
-            case 'default_grid_size':
-            case 'ticks_per_frame':
-            case 'scale_factor':
-            case 'anim_factor':
-            case 'camera_anim_factor':
-            case 'camera_motion_anim_factor':
-            case 'default_color_anim_factor':
-            case 'fade_color_anim_factor':
-            case 'fast_color_anim_factor':
-            case 'camera_motion_falloff_factor':
-            case 'label_anim_factor':
-            case 'label_caret_width':
-            case 'label_caret_smoothness':
-            case 'label_caret_blink_rate':
-            case 'default_rising_edge_pulse_length':
-                converter = value => parseFloat(value);
+            case 'float':
+                value = parseFloat(value);
                 break;
 
-            default:
-                converter = value => value;
+            case 'keybind':
+                value = Keybind.parse(value).to_string();
                 break;
         }
 
-        value = converter(value);
         Util.set_nested(cs.config, setting, value);
     },
 
@@ -117,6 +99,7 @@ const Settings = {
 
                 return false;
             }
+
             if (event.key == 'Enter') {
                 Settings.export_setting(Settings.currently_edited_setting);
 
@@ -126,8 +109,6 @@ const Settings = {
 
                 return false;
             }
-
-            return;
         }
 
         if (event.key == 'Escape') {
@@ -135,8 +116,12 @@ const Settings = {
 
             if (searchbar.value) {
                 Settings.clear_filter();
-                return false;
             }
+            else {
+                Settings.hide();
+            }
+
+            return false;
         }
 
         return true;
