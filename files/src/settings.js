@@ -73,21 +73,6 @@ const Settings = {
                 converter = value => parseFloat(value);
                 break;
 
-            case 'show_ui':
-                converter = value => {
-                    Menu.show_ui(value);
-                    return value;
-                };
-                break;
-
-            case 'block_unused_key_combinations':
-            case 'use_system_clipboard':
-            case 'use_wire_restructuring':
-            case 'gates_push_wires':
-            case 'prevent_element_overlapping':
-                converter = value => value == 'on';
-                break;
-
             default:
                 converter = value => value;
                 break;

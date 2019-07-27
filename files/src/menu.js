@@ -239,20 +239,4 @@ const Menu = {
             cs.sidebar.update_elements();
         }
     },
-    show_ui: function(is_visible) {
-        const window = document.querySelector('.window');
-        if (is_visible) {
-            window.removeAttribute('hide-ui');
-        }
-        else {
-            window.setAttribute('hide-ui', '');
-        }
-
-        const display = is_visible ? '' : 'none';
-        document.querySelector('.toolbar').style.display = display;
-        document.querySelector('.menubar').style.display = display;
-        document.querySelector('.sidebar').style.display = display;
-
-        onresize();
-    }
 };

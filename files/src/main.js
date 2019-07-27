@@ -113,7 +113,7 @@ const default_config = {
     default_grid_size: 32,
     grid_style: Enum.grid_style.lines,
     joints_style: Enum.joints_style.square,
-    show_ui: true,
+    hide_ui_in_fullscreen: true,
 
     ticks_per_frame: 101,
     scale_factor: 1.14,
@@ -183,6 +183,7 @@ const default_config = {
         debug_single_step:     'Shift+tab, Shift+space',
         open_settings:         '',
         escape:                'escape',
+        fullscreen:            'f11',
         enter:                 'enter',
         TEMP_RELOAD:           'r',
         TEMP_REDRAW:           'd',
@@ -271,7 +272,6 @@ onresize = function(event) {
 }
 
 onkeydown = function(event) {
-    if (event.key.match(/f\d+/i)) return;
     return cs.controller.key_down(event);
 }
 
