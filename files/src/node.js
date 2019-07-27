@@ -214,9 +214,11 @@ class ConnectionNode extends Element {
                     break;
             }
 
+            const text_dist = .1 + (this.is_rising_edge ? .55 : 0);
+
             context.font = '.5px segoe ui, sans-serif';
             context.fillStyle = cs.theme.wire_inactive.to_string();
-            context.fillText(this.tag, ...Vec.sub(this.anim_pos_, Vec.mult(this.dir, .1)).xy);
+            context.fillText(this.tag, ...Vec.sub(this.anim_pos_, Vec.mult(this.dir, text_dist)).xy);
         }
 
         if (this.is_inverted) {

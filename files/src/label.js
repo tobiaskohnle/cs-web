@@ -52,7 +52,11 @@ class Label extends Element {
         this.apply_current_color(this.anim_color_, cs.theme.label_outline);
         this.anim_color_.update();
 
-        this.anim_text_color_.hsva(this.special_info() ? cs.theme.label_special_text : cs.theme.label_text);
+        this.anim_text_color_.hsva(
+            this.special_info() ? cs.theme.label_special_text :
+            this.description_info() ? cs.theme.label_description_text :
+            cs.theme.label_text
+        );
         this.anim_text_color_.update();
 
         this.anim_font_size_ = View.anim_interpolate(this.anim_font_size_, this.font_size, cs.config.label_anim_factor);
@@ -131,7 +135,7 @@ class Label extends Element {
     }
 
     unescape_text() {
-        return this.text = this.text.trim().replace(/(?:u\+|%u|\\u|\\)([0-9a-f]{4})/gi, (match, digits) => {
+        return this.text = this.text.replace(/(?:u\+|%u|\\u|\\)([0-9a-f]{4})/gi, (match, digits) => {
             return String.fromCharCode(parseInt(digits, 16));
         });
     }
@@ -139,12 +143,12 @@ class Label extends Element {
     special_info() {
         const tag_match = this.text.match(/^tag\s*=(.*)/i);
         if (tag_match) {
-            return {tag: unescape(tag_match[1])};
+            return {tag: tag_match[1]};
         }
 
         const name_match = this.text.match(/^name\s*=(.*)/i);
         if (name_match) {
-            return {name: unescape(name_match[1])};
+            return {name: name_match[1]};
         }
 
         const size_match = this.text.match(/^size\s*=(.*)/i);
@@ -160,6 +164,75 @@ class Label extends Element {
             }
 
             return {size: new Vec(3,4)};
+        }
+
+        return null;
+    }
+
+    description_info() {
+        const clock = this.nearest_gate();
+
+        if (clock instanceof Clock) {
+            const time_match = this.text.match(/^([\d\.]+)\s*([A-Za-zµ]*)(s|Hz|t)(?:\s*[@/,\s]\s*([\d\.]+\s*%?))?$/);
+
+            if (time_match) {
+                const prefix = {
+                    ['µ']: 1e-6,
+                    u:  1e-6,
+                    m:  1e-3,
+                    c:  1e-2,
+                    d:  1e-1,
+                    da: 1e+1,
+                    h:  1e+2,
+                    k:  1e+3,
+                    M:  1e+6,
+                };
+
+                const frames_per_second = 60;
+
+                const [match, value_string, prefix_string, unit_string, width_string] = time_match;
+                const factor = prefix_string ? prefix[prefix_string] : 1;
+
+                if (factor) {
+                    let ticks;
+                    let width;
+
+                    const value = parseFloat(value_string) * factor;
+
+                    switch (unit_string) {
+                        case 't':
+                            ticks = value;
+                            break;
+                        case 's':
+                            ticks = frames_per_second*cs.config.ticks_per_frame * value;
+                            break;
+                        case 'Hz':
+                            ticks = frames_per_second*cs.config.ticks_per_frame / value
+                            break;
+                    }
+
+                    if (width_string) {
+                        if (width_string.endsWith('%')) {
+                            width = ticks * parseFloat(width_string)/100;
+                        }
+                        else {
+                            width = parseFloat(width_string);
+                        }
+                    }
+                    else {
+                        width = ticks/2;
+                    }
+
+                    clock.pulse_length = ticks;
+                    clock.pulse_width = width;
+
+                    if (clock.pulse_ticks_ >= clock.pulse_length) {
+                        clock.pulse_ticks_ = 0;
+                    }
+
+                    return {ticks, width};
+                }
+            }
         }
 
         return null;
@@ -350,13 +423,22 @@ class Label extends Element {
         }
     }
 
+    clamp_caret() {
+        this.caret = Util.clamp(this.caret, 0, this.text.length);
+        this.selection_start = Util.clamp(this.selection_start, 0, this.text.length);
+    }
+
     delete_selection() {
+        this.clamp_caret();
+
         this.anim_chars_offset_.splice(this.selection_lower(), this.selection_upper()-this.selection_lower());
 
         this.text = `${this.text.substr(0, this.selection_lower())}${this.text.substring(this.selection_upper(), this.text.length)}`;
         this.set_caret(this.selection_lower());
     }
     write_text(string) {
+        this.clamp_caret();
+
         let width = this.text_width(this.text.substr(0, this.selection_lower()));
         this.anim_chars_offset_.splice(this.caret, 0, ...Array.from(Array(string.length), (_,i) => {
             let prev_width = width;
@@ -370,14 +452,15 @@ class Label extends Element {
     }
 
     delete_direction(dir, ctrlKey) {
+        this.clamp_caret();
+
         if (this.selection_width() == 0) {
             this.set_caret(ctrlKey ? this.next_word_stop(this.caret,dir) : this.caret+dir, true);
         }
         this.delete_selection();
     }
     move_direction(dir, shiftKey, ctrlKey) {
-        this.caret = Util.clamp(this.caret, 0, this.text.length);
-        this.selection_start = Util.clamp(this.selection_start, 0, this.text.length);
+        this.clamp_caret();
 
         if (!shiftKey && this.selection_width()) {
             this.set_caret(dir < 0 ? this.selection_lower() : this.selection_upper());
