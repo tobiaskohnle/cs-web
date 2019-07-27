@@ -73,12 +73,10 @@ const Settings = {
                 converter = value => parseFloat(value);
                 break;
 
-
             case 'show_ui':
                 converter = value => {
-                    const is_visible = value == 'on';
-                    Menu.show_ui(is_visible);
-                    return is_visible;
+                    Menu.show_ui(value);
+                    return value;
                 };
                 break;
 
