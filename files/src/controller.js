@@ -501,7 +501,17 @@ class Controller {
 
             case Enum.action.move_elements:
                 if (this.elements_moved) {
-                    this.save_state('moved elements', this.saved_state_move_elements);
+                    if (this.mouse_pos.x<0 ||
+                        this.mouse_pos.y<0 ||
+                        this.mouse_pos.x>canvas.width ||
+                        this.mouse_pos.y>canvas.height)
+                    {
+                        ActionUtil.remove_selected();
+                    }
+                    else {
+                        this.save_state('moved elements', this.saved_state_move_elements);
+                    }
+
                     if (cs.config.use_wire_restructuring) {
                         Action.restructure_segments();
                     }

@@ -3,16 +3,9 @@
 class Sidebar {
     constructor() {
         this.offset = 0;
-        this.header_height = 40;
-        // this.sections = Array.from(Array(7), ()=>Math.random()*3+1).map(e => ({height: e*40*4|0}));
 
         this.scroll = 0;
         this.anim_scroll = 0;
-
-        this.anim_factor = .37;
-
-        this.margin = 2;
-        this.scale = 20;
 
         this.load_categories();
     }
@@ -67,7 +60,7 @@ class Sidebar {
             let section_height = 0;
 
             const elements_sections = category.elements.map(element => {
-                const height = (element.size.y+this.margin) * this.scale;
+                const height = (element.size.y+cs.config.sidebar_margin) * cs.config.sidebar_scale;
                 section_height += height;
                 return {height, element};
             });
@@ -81,8 +74,8 @@ class Sidebar {
     header_position(section, scroll) {
         return Util.clamp(
             section.y-scroll,
-            section.index * this.header_height,
-            sidebar_canvas.height - (this.sections.length-section.index) * this.header_height,
+            section.index * cs.config.sidebar_header_height,
+            sidebar_canvas.height - (this.sections.length-section.index) * cs.config.sidebar_header_height,
         );
     }
 
@@ -90,7 +83,7 @@ class Sidebar {
         return Math.max(sidebar_canvas.height, this.segments_height()) - sidebar_canvas.height;
     }
     segments_height() {
-        return this.sections.reduce((acc,val) => acc+val.height+this.header_height, 0);
+        return this.sections.reduce((acc,val) => acc+val.height+cs.config.sidebar_header_height, 0);
     }
 
     scroll_to(value) {
@@ -103,7 +96,7 @@ class Sidebar {
     mouse_down(event) {
         if (event.button == 0) {
             if (this.hovered_section) {
-                this.scroll_to(this.hovered_section.y - this.hovered_section.index*this.header_height);
+                this.scroll_to(this.hovered_section.y - this.hovered_section.index*cs.config.sidebar_header_height);
             }
             else if (this.hovered_element) {
                 if (this.imported_element && this.imported_element == this.hovered_element) {
@@ -131,7 +124,7 @@ class Sidebar {
         this.hovered_element = null;
 
         for (const section of this.sections) {
-            if (Util.between(y, section.scroll_y, section.scroll_y+this.header_height)) {
+            if (Util.between(y, section.scroll_y, section.scroll_y+cs.config.sidebar_header_height)) {
                 this.hovered_section = section;
                 break;
             }
@@ -161,14 +154,14 @@ class Sidebar {
     update() {
         this.scroll = Math.max(0, Math.min(this.segments_height()-sidebar_canvas.height, this.scroll));
 
-        this.anim_scroll = View.anim_interpolate(this.anim_scroll, this.scroll, this.anim_factor);
+        this.anim_scroll = View.anim_interpolate(this.anim_scroll, this.scroll, cs.config.sidebar_anim_factor);
 
         let section_y = 0;
 
         for (let i = 0; i < this.sections.length; i++) {
             const section = this.sections[i];
 
-            let elements_section_y = section_y + this.header_height;
+            let elements_section_y = section_y + cs.config.sidebar_header_height;
 
             for (let j = 0; j < section.elements_sections.length; j++) {
                 const elements_section = section.elements_sections[j];
@@ -183,7 +176,7 @@ class Sidebar {
 
             section.index = i;
             section.y = section_y;
-            section_y += section.height + this.header_height;
+            section_y += section.height + cs.config.sidebar_header_height;
 
             section.scroll_y      = this.header_position(section, this.scroll);
             section.anim_scroll_y = this.header_position(this.sections[i], this.anim_scroll);
@@ -194,7 +187,7 @@ class Sidebar {
         sidebar_context.clearRect(0, 0, sidebar_canvas.width, sidebar_canvas.height);
 
         for (const section of this.sections) {
-            let y = section.y - this.anim_scroll + this.header_height;
+            let y = section.y - this.anim_scroll + cs.config.sidebar_header_height;
 
             for (const element_section of section.elements_sections) {
                 const element = element_section.element;
@@ -210,18 +203,18 @@ class Sidebar {
 
                 sidebar_context.save();
 
-                sidebar_context.translate(sidebar_canvas.width/2 - element.size.x/2*this.scale, y + this.margin/2*this.scale);
-                sidebar_context.scale(this.scale, this.scale);
+                sidebar_context.translate(sidebar_canvas.width/2 - element.size.x/2*cs.config.sidebar_scale, y + cs.config.sidebar_margin/2*cs.config.sidebar_scale);
+                sidebar_context.scale(cs.config.sidebar_scale, cs.config.sidebar_scale);
 
                 // TEMP
-                const ctx = context;
+                const previous_context = context;
                 context = sidebar_context;
                 element.draw();
-                context = ctx;
+                context = previous_context;
 
                 sidebar_context.restore();
 
-                y += (element.size.y+this.margin) * this.scale;
+                y += (element.size.y+cs.config.sidebar_margin) * cs.config.sidebar_scale;
             }
         }
 
@@ -229,18 +222,18 @@ class Sidebar {
             const hovered = section == this.hovered_section;
 
             sidebar_context.fillStyle = cs.theme.sidebar_header_outline.to_string();
-            sidebar_context.fillRect(0, section.anim_scroll_y, sidebar_canvas.width, this.header_height);
+            sidebar_context.fillRect(0, section.anim_scroll_y, sidebar_canvas.width, cs.config.sidebar_header_height);
 
             sidebar_context.fillStyle = hovered
                 ? cs.theme.sidebar_header_hovered.to_string()
                 : cs.theme.sidebar_header.to_string();
-            sidebar_context.fillRect(1, section.anim_scroll_y+1, sidebar_canvas.width-2, this.header_height-2);
+            sidebar_context.fillRect(1, section.anim_scroll_y+1, sidebar_canvas.width-2, cs.config.sidebar_header_height-2);
 
             sidebar_context.fillStyle = cs.theme.sidebar_header_font.to_string();
-            sidebar_context.font = `${this.header_height/1.9}px segoe ui, sans-serif`;
+            sidebar_context.font = `${cs.config.sidebar_header_height/1.9}px segoe ui, sans-serif`;
             sidebar_context.textAlign = 'center';
             sidebar_context.textBaseline = 'middle';
-            sidebar_context.fillText(section.category.header, sidebar_canvas.width/2, section.anim_scroll_y + this.header_height/2);
+            sidebar_context.fillText(section.category.header, sidebar_canvas.width/2, section.anim_scroll_y + cs.config.sidebar_header_height/2);
         }
     }
 }

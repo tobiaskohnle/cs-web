@@ -130,6 +130,14 @@ const default_config = {
     camera_motion_falloff_factor: .91,
 
 
+    sidebar_header_height: 40,
+
+    sidebar_anim_factor: .37,
+
+    sidebar_margin: 2,
+    sidebar_scale: 20,
+
+
     default_color_anim_factor: .57,
     fade_color_anim_factor: .02,
     fast_color_anim_factor: .79,
