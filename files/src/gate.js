@@ -210,10 +210,19 @@ class Gate extends Element {
     }
 
     distance(pos) {
-        if (Util.between(pos.x, this.pos.x, this.pos.x+this.size.x) &&
-            Util.between(pos.y, this.pos.y, this.pos.y+this.size.y)
+        return Gate.distance(pos, this.pos, this.size);
+    }
+
+    static distance(pos, rect_pos, rect_size) {
+        if (Util.between(pos.x, rect_pos.x, rect_pos.x+rect_size.x) &&
+            Util.between(pos.y, rect_pos.y, rect_pos.y+rect_size.y)
         ) {
-            return 0;
+            return Util.map(Math.min(
+                Math.abs((pos.x - rect_pos.x)              / rect_size.x),
+                Math.abs((pos.y - rect_pos.y)              / rect_size.y),
+                Math.abs((pos.x - rect_pos.x-rect_size.x)  / rect_size.x),
+                Math.abs((pos.y - rect_pos.y-rect_size.y)  / rect_size.y),
+            ), .5, 0, 0, 1e-7);
         }
 
         return Infinity;

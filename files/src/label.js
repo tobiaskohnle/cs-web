@@ -239,13 +239,7 @@ class Label extends Element {
     }
 
     distance(pos) {
-        if (Util.between(pos.x, this.pos.x, this.pos.x+this.size.x) &&
-            Util.between(pos.y, this.pos.y, this.pos.y+this.size.y)
-        ) {
-            return 0;
-        }
-
-        return Infinity;
+        return Gate.distance(pos, this.pos, this.size);
     }
 
     hitbox_rect() {
