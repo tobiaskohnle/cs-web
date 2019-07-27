@@ -263,8 +263,8 @@ class Label extends Element {
     }
 
     get_char_width(char='') {
-        context.font = `${this.font_size}px sans-serif`;
-        return context.measureText(char).width;
+        context.font = `${this.font_size * 256}px sans-serif`;
+        return context.measureText(char).width / 256;
     }
     text_width(text) {
         let width = 0;
