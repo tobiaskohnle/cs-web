@@ -198,7 +198,7 @@ class Label extends Element {
                     clock.pulse_length = ticks;
                     clock.pulse_width = width;
 
-                    if (clock.pulse_ticks_ >= clock.pulse_length) {
+                    if (clock.pulse_ticks_ >= clock.pulse_length || !clock.pulse_ticks_) {
                         clock.pulse_ticks_ = 0;
                     }
 
