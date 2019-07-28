@@ -299,6 +299,7 @@ const commands = {
         cs.controller.current_action = Enum.action.none;
     },
     enter: function() {
+        ActionUtil.deselect_all();
         cs.controller.current_action = Enum.action.none;
     },
     toggle_fullscreen: function() {

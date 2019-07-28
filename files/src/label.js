@@ -532,6 +532,9 @@ class Label extends Element {
             case 'Delete':
                 this.delete_direction(1, event.ctrlKey);
                 break;
+
+            case 'Enter':
+                return true;
         }
 
         this.unescape_text();

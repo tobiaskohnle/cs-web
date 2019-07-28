@@ -227,6 +227,7 @@ class Controller {
             case Enum.action.none:
             case Enum.action.create_wire:
             case Enum.action.create_wire_segment:
+            case Enum.action.edit_labels:
                 if (other_hovered_element) {
                     this.hovered_element = hovered_element;
                     cs.config.DEBUG_LOG && console.log(`%cnew hovered element: %c${hovered_element && hovered_element.constructor.name}`,
