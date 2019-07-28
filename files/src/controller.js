@@ -223,12 +223,18 @@ class Controller {
         const hovered_element = ActionGet.element_at(this.mouse_world_pos, filter);
         const other_hovered_element = this.hovered_element != hovered_element;
 
-        if (other_hovered_element) {
-            this.hovered_element = hovered_element;
-            cs.config.DEBUG_LOG && console.log(`%cnew hovered element: %c${hovered_element && hovered_element.constructor.name}`,
-                'color:#f90',
-                hovered_element ? 'color:#fd4' : 'color:#777',
-            );
+        switch (this.current_action) {
+            case Enum.action.none:
+            case Enum.action.create_wire:
+            case Enum.action.create_wire_segment:
+                if (other_hovered_element) {
+                    this.hovered_element = hovered_element;
+                    cs.config.DEBUG_LOG && console.log(`%cnew hovered element: %c${hovered_element && hovered_element.constructor.name}`,
+                        'color:#f90',
+                        hovered_element ? 'color:#fd4' : 'color:#777',
+                    );
+                }
+                break;
         }
 
 

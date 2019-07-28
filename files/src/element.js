@@ -97,19 +97,35 @@ class Element {
 
         if (this.size) {
             if (resize_vec.x > 0) {
-                this.size.x = Math.max(1, Util.round(this.last_size_.x + total_vec.x));
+                const new_size_x = Util.round(this.last_size_.x + total_vec.x);
+
+                if (new_size_x > 0) {
+                    this.size.x = new_size_x;
+                }
             }
             if (resize_vec.y > 0) {
-                this.size.y = Math.max(1, Util.round(this.last_size_.y + total_vec.y));
+                const new_size_y = Util.round(this.last_size_.y + total_vec.y);
+
+                if (new_size_y > 0) {
+                    this.size.y = new_size_y;
+                }
             }
 
             if (resize_vec.x < 0) {
-                this.pos.x = Util.round(this.last_pos_.x + total_vec.x);
-                this.size.x = Math.max(1, Util.round(this.last_size_.x - total_vec.x));
+                const new_size_x = Util.round(this.last_size_.x - total_vec.x);
+
+                if (new_size_x > 0) {
+                    this.pos.x = Util.round(this.last_pos_.x + total_vec.x);
+                    this.size.x = new_size_x;
+                }
             }
             if (resize_vec.y < 0) {
-                this.pos.y = Util.round(this.last_pos_.y + total_vec.y);
-                this.size.y = Math.max(1, Util.round(this.last_size_.y - total_vec.y));
+                const new_size_y = Util.round(this.last_size_.y - total_vec.y);
+
+                if (new_size_y > 0) {
+                    this.pos.y = Util.round(this.last_pos_.y + total_vec.y);
+                    this.size.y = new_size_y;
+                }
             }
         }
 
