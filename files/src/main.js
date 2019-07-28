@@ -43,27 +43,33 @@ const theme = {
     light: {
         grid_dots:                Color.parse('#aaa8'),
         grid_lines:               Color.parse('#aaa7'),
-        light_inactive:           Color.parse('#fff4'),
+
+        light_inactive:           Color.parse('#f330'),
         light_active:             Color.parse('#f334'),
         wire_inactive:            new Color(.6,1,0),
         wire_active:              Color.parse('#f33'),
         segment_inactive:         Color.parse('#f334'),
         segment_active:           Color.parse('#f33'),
-        merge_segment_flash:      Color.parse('#0f1'),
+
         outline:                  new Color(.6,1,0),
         hovered:                  Color.parse('#39d'),
         selected:                 Color.parse('#24c'),
         hovered_selected:         Color.parse('#26e'),
+
         selection_fill:           Color.parse('#17d3'),
         selection_outline:        Color.parse('#39fd'),
+
         node_init:                Color.parse('#0ef0'),
         gate_init:                Color.parse('#0ef0'),
+        merge_segment_flash:      Color.parse('#0f1'),
+
         label_text:               Color.parse('#222'),
         label_special_text:       Color.parse('#330'),
         label_description_text:   Color.parse('#1ad'),
         label_outline:            Color.parse('#5560'),
         label_caret:              Color.parse('#07f'),
         label_selection:          Color.parse('#09f4'),
+
         sidebar_imported_element: Color.parse('#28f7'),
         sidebar_hovered_element:  Color.parse('#49e4'),
         sidebar_header_outline:   Color.parse('#222'),
@@ -74,27 +80,33 @@ const theme = {
     dark: {
         grid_dots:                Color.parse('#acf6'),
         grid_lines:               Color.parse('#cef1'),
-        light_inactive:           Color.parse('#0007'),
+
+        light_inactive:           Color.parse('#f330'),
         light_active:             Color.parse('#f337'),
         wire_inactive:            new Color(.6,0,1),
         wire_active:              Color.parse('#f33'),
         segment_inactive:         Color.parse('#1473'),
         segment_active:           Color.parse('#1af'),
-        merge_segment_flash:      Color.parse('#0f1'),
+
         outline:                  new Color(.6,0,1),
         hovered:                  Color.parse('#2be'),
         selected:                 Color.parse('#27e'),
         hovered_selected:         Color.parse('#16e'),
+
         selection_fill:           Color.parse('#17d3'),
         selection_outline:        Color.parse('#39fd'),
+
         node_init:                Color.parse('#0ef0'),
         gate_init:                Color.parse('#0ef0'),
+        merge_segment_flash:      Color.parse('#0f1'),
+
         label_text:               Color.parse('#ccc'),
         label_special_text:       Color.parse('#cc1'),
         label_description_text:   Color.parse('#2ce'),
         label_outline:            Color.parse('#5560'),
         label_caret:              Color.parse('#07f'),
         label_selection:          Color.parse('#09f4'),
+
         sidebar_imported_element: Color.parse('#2af6'),
         sidebar_hovered_element:  Color.parse('#49e2'),
         sidebar_header_outline:   Color.parse('#222'),
