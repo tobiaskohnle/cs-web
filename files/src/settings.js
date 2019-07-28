@@ -228,17 +228,13 @@ const Settings = {
                 Settings.currently_edited_setting = setting;
             });
             input_element.addEventListener('change', function(event) {
-                if (Settings.currently_edited_setting) {
-                    Settings.export_setting(Settings.currently_edited_setting);
-                }
+                Settings.export_setting(setting);
             });
             input_element.addEventListener('blur', function(event) {
-                if (Settings.currently_edited_setting) {
-                    Settings.export_setting(Settings.currently_edited_setting);
+                Settings.export_setting(setting);
 
-                    Settings.set_recording_element(null);
-                    Settings.currently_edited_setting = null;
-                }
+                Settings.set_recording_element(null);
+                Settings.currently_edited_setting = null;
             });
         }
 
