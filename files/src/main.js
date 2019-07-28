@@ -36,11 +36,6 @@ const Enum = {
         west:  2,
         north: 3,
     },
-    align: {
-        start:  0,
-        center: 1,
-        end:    2,
-    },
 };
 
 const theme = {
@@ -172,8 +167,6 @@ const default_config = {
         save:                  'Ctrl+s',
         save_as:               'Ctrl+Shift+S',
         select_all:            'Shift+A',
-        next_vertical_align:   '',
-        next_horizontal_align: '',
         toggle_selection:      'Ctrl+a',
         deselect_all:          'Ctrl+Shift+A',
         split_segment:         'Shift+S',

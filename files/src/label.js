@@ -12,15 +12,11 @@ class Label extends Element {
         this.last_pos_ = new Vec;
 
         this.anim_color_ = Color.from(cs.theme.label_outline);
-        this.anim_text_color_ = Color.from(cs.theme.label_text);
-
-        this.font_size = 1;
-        this.anim_font_size_ = 1;
+        this.text_color_ = Color.from(cs.theme.label_text);
 
         this.text = '';
 
-        this.vertical_text_align = Enum.align.center;
-        this.horizontal_text_align = Enum.align.center;
+        this.font_size = 1;
 
         this.selection_start = 0;
         this.caret = 0;
@@ -52,23 +48,13 @@ class Label extends Element {
         this.apply_current_color(this.anim_color_, cs.theme.label_outline);
         this.anim_color_.update();
 
-        this.anim_text_color_.hsva(
+        this.text_color_ =
             this.special_info() ? cs.theme.label_special_text :
             this.description_info() ? cs.theme.label_description_text :
-            cs.theme.label_text
-        );
-        this.anim_text_color_.update();
-
-        this.anim_font_size_ = View.anim_interpolate(this.anim_font_size_, this.font_size, cs.config.label_anim_factor);
+            cs.theme.label_text;
 
         let total_width = this.text_width(this.text);
         this.anim_total_width_ = View.anim_interpolate(this.anim_total_width_, total_width, cs.config.label_anim_factor);
-
-        const offset = new Vec(
-            (this.size.x - total_width)    * [0, .5, 1][this.horizontal_text_align],
-            (this.size.y - this.font_size) * [0, .5, 1][this.vertical_text_align] + this.font_size/2,
-        );
-        this.anim_offset_ = View.anim_interpolate_vec(this.anim_offset_, offset, cs.config.label_anim_factor);
 
         const selection_bounds = this.text_bounds(this.selection_start, this.selection_width());
 
@@ -119,20 +105,6 @@ class Label extends Element {
     }
 
     run_init_animation() {}
-
-    next_vertical_align() {
-        this.vertical_text_align = [Enum.align.center, Enum.align.end, Enum.align.start][this.vertical_text_align];
-    }
-    next_horizontal_align() {
-        this.horizontal_text_align = [Enum.align.center, Enum.align.end, Enum.align.start][this.horizontal_text_align];
-    }
-
-    increase_font_size() {
-        this.font_size *= 1.2;
-    }
-    decrease_font_size() {
-        this.font_size /= 1.2;
-    }
 
     unescape_text() {
         return this.text = this.text.replace(/(?:u\+|%u|\\u|\\)([0-9a-f]{4})/gi, (match, digits) => {
@@ -271,7 +243,7 @@ class Label extends Element {
     }
 
     draw_text_bounds(bounds) {
-        context.fillRect(bounds.start, this.anim_font_size_/-2, bounds.end-bounds.start, this.anim_font_size_);
+        context.fillRect(bounds.start, this.font_size/-2, bounds.end-bounds.start, this.font_size);
     }
 
     draw() {
@@ -281,10 +253,10 @@ class Label extends Element {
 
         context.save();
 
-        context.translate(...Vec.add(this.anim_pos_, this.anim_offset_).xy);
+        context.translate(...Vec.add(this.anim_pos_, Vec.div(this.anim_size_, 2).add(new Vec(this.anim_total_width_/-2, 0))).xy);
 
-        context.fillStyle = this.anim_text_color_.to_string();
-        context.font = `${this.anim_font_size_}px sans-serif`;
+        context.fillStyle = this.text_color_.to_string();
+        context.font = `${this.font_size}px sans-serif`;
         context.textAlign = 'start';
         context.textBaseline = 'middle';
 

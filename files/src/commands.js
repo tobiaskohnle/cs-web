@@ -116,15 +116,6 @@ function is_command_enabled(command) {
             }
             return false;
 
-        case 'next_vertical_align':
-        case 'next_horizontal_align':
-            for (const element of ActionGet.selected_elements()) {
-                if (element instanceof Label) {
-                    return true;
-                }
-            }
-            return false;
-
         case 'debug_toggle':
         case 'debug_step':
         case 'debug_single_step':
@@ -388,22 +379,6 @@ const commands = {
     },
     select_all: function() {
         ActionUtil.select_all();
-    },
-    next_vertical_align: function() {
-        cs.controller.save_state('(command) next_vertical_align');
-        for (const element of ActionGet.selected_elements()) {
-            if (element instanceof Label) {
-                element.next_vertical_align();
-            }
-        }
-    },
-    next_horizontal_align: function() {
-        cs.controller.save_state('(command) next_horizontal_align');
-        for (const element of ActionGet.selected_elements()) {
-            if (element instanceof Label) {
-                element.next_horizontal_align();
-            }
-        }
     },
     toggle_selection: function() {
         if (ActionGet.elements().every(element => element.is_selected())) {
