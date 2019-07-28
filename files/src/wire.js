@@ -149,6 +149,7 @@ class WireSegment extends Element {
             neighbor_elements.push({
                 offset: neighbor_segment.offset,
                 anim_offset_: neighbor_segment.anim_offset_,
+                element: neighbor_segment,
             });
         }
         if (this.normal_pos) {
@@ -159,6 +160,7 @@ class WireSegment extends Element {
             neighbor_elements.push({
                 offset: this.is_vertical ? this.normal_pos.y : this.normal_pos.x,
                 anim_offset_: this.is_vertical ? this.anim_normal_pos_.y : this.anim_normal_pos_.x,
+                element: this.attached_connection_node(),
             });
         }
 

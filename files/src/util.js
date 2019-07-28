@@ -144,12 +144,28 @@ const Util = {
     },
 
     attach_segments: function(segment_a, segment_b) {
-        segment_a.neighbor_segments.push(segment_b);
-        segment_b.neighbor_segments.push(segment_a);
+        if (segment_a instanceof WireSegment && segment_b instanceof WireSegment) {
+            segment_a.neighbor_segments.push(segment_b);
+            segment_b.neighbor_segments.push(segment_a);
+        }
+        else if (segment_a instanceof WireSegment && segment_b instanceof ConnectionNode) {
+            segment_a.set_connected_pos(segment_b.anchor_pos_);
+        }
+        else if (segment_b instanceof WireSegment && segment_a instanceof ConnectionNode) {
+            segment_b.set_connected_pos(segment_a.anchor_pos_);
+        }
     },
     detach_segments: function(segment_a, segment_b) {
-        segment_a.neighbor_segments.remove(segment_b);
-        segment_b.neighbor_segments.remove(segment_a);
+        if (segment_a instanceof WireSegment && segment_b instanceof WireSegment) {
+            segment_a.neighbor_segments.remove(segment_b);
+            segment_b.neighbor_segments.remove(segment_a);
+        }
+        else if (segment_a instanceof WireSegment && segment_b instanceof ConnectionNode) {
+            segment_a.set_connected_pos(null);
+        }
+        else if (segment_b instanceof WireSegment && segment_a instanceof ConnectionNode) {
+            segment_b.set_connected_pos(null);
+        }
     },
 
     add_segment: function(segments) {

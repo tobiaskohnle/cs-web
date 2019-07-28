@@ -211,26 +211,23 @@ const Action = {
     split_segment: function(segment) {
         if (segment instanceof WireSegment == false) return;
 
-        // TEMP
-        if (segment.attached_connection_node()) return;
-
         const prev_segment = new WireSegment;
         prev_segment.is_vertical = segment.is_vertical;
 
         const next_segment = new WireSegment;
         next_segment.is_vertical = segment.is_vertical;
 
-        const segment_neighbors = segment.neighbor_segments.copy();
+        const neighbor_elements = segment.neighbor_elements();
 
-        const neighbors = segment.neighbor_segments.sorted(Util.compare_function(x=>x.offset));
+        const neighbors = neighbor_elements.sorted(Util.compare_function(x=>x.offset));
         const prev_neighbor = neighbors[0];
         const next_neighbor = neighbors.last();
 
         Util.attach_segments(prev_segment, segment);
         Util.attach_segments(next_segment, segment);
 
-        for (const neighbor of segment_neighbors) {
-            Util.detach_segments(segment, neighbor);
+        for (const neighbor of neighbor_elements) {
+            Util.detach_segments(segment, neighbor.element);
         }
 
         prev_segment.anim_offset_ = segment.anim_offset_;
@@ -238,10 +235,10 @@ const Action = {
         prev_segment.offset = segment.offset - segment.snap_size_;
         next_segment.offset = segment.offset + segment.snap_size_;
 
-        segment.offset = segment.anim_offset_ = prev_neighbor.offset/2 + next_neighbor.offset/2;
+        segment.offset = segment.anim_offset_ = Util.round(prev_neighbor.offset/2 + next_neighbor.offset/2, segment.snap_size_);
 
-        for (const neighbor of segment_neighbors) {
-            Util.attach_segments(neighbor.offset > segment.offset ? prev_segment : next_segment, neighbor);
+        for (const neighbor of neighbor_elements) {
+            Util.attach_segments(neighbor.offset > segment.offset ? prev_segment : next_segment, neighbor.element);
         }
 
         segment.is_vertical = !segment.is_vertical;

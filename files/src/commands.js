@@ -79,7 +79,7 @@ function is_command_enabled(command) {
 
         case 'split_segment':
             for (const element of ActionGet.selected_elements()) {
-                if (element instanceof WireSegment && !element.attached_connection_node()) {
+                if (element instanceof WireSegment) {
                     return true;
                 }
             }
