@@ -373,7 +373,7 @@ const Action = {
                     output_node.wire_segments.remove(segment);
                 }
                 else {
-                    Action.attach_segments(segment, joined_segment);
+                    Util.attach_segments(segment, joined_segment);
                 }
             }
         }
