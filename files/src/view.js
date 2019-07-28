@@ -56,27 +56,43 @@ const View = {
 
         context.restore();
 
-        if (cs.controller.current_action == Enum.action.create_selection_box) {
-            View.draw_selection_rect(
-                cs.camera.to_screenspace(cs.controller.mouse_down_world_pos),
-                cs.controller.mouse_pos,
-            );
+        switch (cs.controller.current_action) {
+            case Enum.action.create_selection_box:
+                const pos_start =  cs.camera.to_screenspace(cs.controller.mouse_down_world_pos);
+                const pos_end = cs.controller.mouse_pos;
+
+                const size = Vec.sub(pos_end, pos_start);
+
+                context.fillStyle = cs.theme.selection_fill.to_string();
+                context.fillRect(...pos_start.xy, ...size.xy);
+
+                context.lineWidth = 2;
+                context.strokeStyle = cs.theme.selection_outline.to_string();
+                context.strokeRect(...Vec.floor(pos_start).xy, ...Vec.floor(size).xy);
+                break;
+
+            case Enum.action.move_elements_remove_mouse_up:
+                const pos = new Vec(
+                    Util.clamp(cs.controller.mouse_pos.x, 30, canvas.width-30),
+                    Util.clamp(cs.controller.mouse_pos.y, 30, canvas.height-30),
+                );
+
+                context.beginPath();
+
+                context.moveTo(pos.x-16, pos.y-16);
+                context.lineTo(pos.x+16, pos.y+16);
+                context.moveTo(pos.x-16, pos.y+16);
+                context.lineTo(pos.x+16, pos.y-16);
+
+                context.strokeStyle = '#e22';
+                context.lineWidth = 8;
+                context.stroke();
+                break;
         }
     },
 
     clear_screen: function() {
         context.clearRect(0, 0, canvas.width, canvas.height);
-    },
-
-    draw_selection_rect: function(pos_start, pos_end) {
-        const size = Vec.sub(pos_end, pos_start);
-
-        context.fillStyle = cs.theme.selection_fill.to_string();
-        context.fillRect(...pos_start.xy, ...size.xy);
-
-        context.lineWidth = 2;
-        context.strokeStyle = cs.theme.selection_outline.to_string();
-        context.strokeRect(...Vec.floor(pos_start).xy, ...Vec.floor(size).xy);
     },
 
     draw_grid_dots: function() {

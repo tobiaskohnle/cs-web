@@ -379,9 +379,15 @@ class Controller {
                 break;
 
             case Enum.action.move_elements:
+            case Enum.action.move_elements_remove_mouse_up:
                 const snap_size = ActionUtil.move_elements(this.moving_elements, this.mouse_world_movement);
                 const elements_moved = !Vec.sub(this.mouse_world_pos, this.mouse_down_world_pos).round(snap_size).equals(new Vec);
                 this.elements_moved = this.elements_moved || elements_moved;
+
+                this.current_action = this.mouse_pos.x<0 || this.mouse_pos.y<0
+                    || this.mouse_pos.x>canvas.width || this.mouse_pos.y>canvas.height
+                    ? Enum.action.move_elements_remove_mouse_up
+                    : Enum.action.move_elements;
                 break;
 
             case Enum.action.import_element:
@@ -516,21 +522,17 @@ class Controller {
 
             case Enum.action.move_elements:
                 if (this.elements_moved) {
-                    if (this.mouse_pos.x<0 ||
-                        this.mouse_pos.y<0 ||
-                        this.mouse_pos.x>canvas.width ||
-                        this.mouse_pos.y>canvas.height)
-                    {
-                        ActionUtil.remove_selected();
-                    }
-                    else {
-                        this.save_state('moved elements', this.saved_state_move_elements);
-                    }
+                    this.save_state('moved elements', this.saved_state_move_elements);
 
                     if (cs.config.use_wire_restructuring) {
                         Action.restructure_segments();
                     }
                 }
+                this.current_action = Enum.action.none;
+                break;
+
+            case Enum.action.move_elements_remove_mouse_up:
+                ActionUtil.remove_all(this.moving_elements);
                 this.current_action = Enum.action.none;
                 break;
 

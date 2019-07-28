@@ -420,23 +420,24 @@ const ActionUtil = {
     move_selected: function(vec) {
         ActionUtil.move_elements(ActionGet.selected_elements());
     },
-    remove_selected: function() {
-        const selected_elements = ActionGet.selected_elements();
-
+    remove_all: function(elements) {
         const soft =
-            !selected_elements.some(element => element instanceof Gate || element instanceof Label)
-            && selected_elements.some(element => element instanceof ConnectionNode && !element.is_empty());
+            !elements.some(element => element instanceof Gate || element instanceof Label)
+            && elements.some(element => element instanceof ConnectionNode && !element.is_empty());
 
         if (soft) {
-            for (const element of selected_elements) {
+            for (const element of elements) {
                 Action.clear_node(element);
             }
         }
         else {
-            for (const element of selected_elements) {
+            for (const element of elements) {
                 Action.remove(element);
             }
         }
+    },
+    remove_selected: function() {
+        ActionUtil.remove_all(ActionGet.selected_elements());
     },
 
     update_all_last_pos: function(elements=ActionGet.elements()) {

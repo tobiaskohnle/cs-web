@@ -10,15 +10,16 @@ let cs;
 
 const Enum = {
     action: {
-        none:                 Symbol('action_none'),
-        start_wire:           Symbol('action_start_wire'),
-        create_wire:          Symbol('action_create_wire'),
-        create_wire_segment:  Symbol('action_create_wire_segment'),
-        create_selection_box: Symbol('action_create_selection_box'),
-        move_elements:        Symbol('action_move_elements'),
-        edit_labels:          Symbol('action_edit_labels'),
-        resize_elements:      Symbol('action_resize_elements'),
-        import_element:       Symbol('action_import_element'),
+        none:                          Symbol('action_none'),
+        start_wire:                    Symbol('action_start_wire'),
+        create_wire:                   Symbol('action_create_wire'),
+        create_wire_segment:           Symbol('action_create_wire_segment'),
+        create_selection_box:          Symbol('action_create_selection_box'),
+        move_elements:                 Symbol('action_move_elements'),
+        move_elements_remove_mouse_up: Symbol('action_move_elements_remove_mouse_up'),
+        edit_labels:                   Symbol('action_edit_labels'),
+        resize_elements:               Symbol('action_resize_elements'),
+        import_element:                Symbol('action_import_element'),
     },
     grid_style: {
         none:  'none',
