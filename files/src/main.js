@@ -121,7 +121,6 @@ const default_config = {
     use_system_clipboard: false,
     use_wire_restructuring: true,
     gates_push_wires: true,
-    prevent_element_overlapping: false,
     gates_move_labels: true,
 
     anim_factor: .52,

@@ -11,6 +11,8 @@
     left: 0;
     top: 0;
 
+    z-index: 10;
+
     background: var(--menu-background);
     border: 1px solid var(--menu-border-color);
     padding: 2px;

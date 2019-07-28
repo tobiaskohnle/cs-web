@@ -9,6 +9,26 @@ const Settings = {
         Settings.import_all_settings();
         Settings.clear_filter();
     },
+    reset_current_setting: function() {
+        const setting = Settings.currently_edited_setting;
+
+        if (setting) {
+            Util.set_nested(cs.config, setting, Util.get_nested(default_config, setting));
+            Settings.import_setting(setting);
+            Settings.export_setting(setting);
+        }
+    },
+    record_current_keybind: function() {
+        const setting = Settings.currently_edited_setting;
+
+        if (setting) {
+            const input = document.querySelector(`.settings-container [setting='${setting}'] input`);
+
+            input.focus();
+            Settings.set_recording_element(input);
+        }
+    },
+
     import_all_settings: function(config=cs.config, key_prefix='') {
         for (const key in config) {
             const value = config[key];
@@ -199,24 +219,6 @@ const Settings = {
             Settings.filter_settings(searchbar.value);
         });
 
-        for (const element of document.querySelectorAll('.keybind')) {
-            const input = element.querySelector('input');
-
-            const buttons = element.querySelector('.buttons');
-            const record = buttons.querySelector('.record');
-            const next = buttons.querySelector('.next');
-
-            record.addEventListener('click', function(event) {
-                input.focus();
-                Settings.set_recording_element(input);
-            });
-
-            input.addEventListener('blur', function(event) {
-                Settings.export_setting(Settings.currently_edited_setting);
-                Settings.set_recording_element(null);
-            });
-        }
-
         for (const element of document.querySelectorAll('.setting')) {
             const input_element = element.querySelector('input, select');
             const setting = element.getAttribute('setting');
@@ -226,10 +228,25 @@ const Settings = {
                 Settings.currently_edited_setting = setting;
             });
             input_element.addEventListener('blur', function(event) {
-                Settings.currently_edited_setting = null;
+                if (Settings.currently_edited_setting) {
+                    Settings.export_setting(Settings.currently_edited_setting);
+
+                    Settings.set_recording_element(null);
+                    Settings.currently_edited_setting = null;
+                }
             });
-            input_element.addEventListener('change', function(event) {
-                Settings.export_setting(setting);
+        }
+
+        for (const element of document.querySelectorAll('.setting-dropdown')) {
+            const setting_element = element.parentElement.parentElement;
+            const setting = setting_element.getAttribute('setting');
+            const type = setting_element.getAttribute('type');
+
+            const menu_setting = type=='keybind' ? 'setting-menu-keybind' : 'setting-menu';
+
+            element.addEventListener('click', function(event) {
+                Menu.open_next_to(menu_setting, this);
+                Settings.currently_edited_setting = setting;
             });
         }
 

@@ -2,6 +2,7 @@
     --settings-backdrop: #0009;
     --settings-background: #09090a;
     --settings-font-color: #eee;
+    --setting-dropdown-background-image: url('../icon/setting_dropdown_dark.png');
 
     --focus-outline: #5af;
     --container-box-shadow: #0004;

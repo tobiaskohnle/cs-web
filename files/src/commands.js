@@ -440,4 +440,11 @@ const commands = {
     debug_single_step: function() {
         Action.tick();
     },
+
+    reset_setting: function() {
+        Settings.reset_current_setting();
+    },
+    record_keybind: function() {
+        Settings.record_current_keybind();
+    },
 };

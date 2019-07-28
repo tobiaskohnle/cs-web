@@ -267,6 +267,22 @@
     </div>
 
 
+    <div class='menu' menu='setting-menu'>
+        <div class='menu-item' command='reset_setting'>
+            <span>Reset Setting</span>
+        </div>
+    </div>
+
+    <div class='menu' menu='setting-menu-keybind'>
+        <div class='menu-item' command='reset_setting'>
+            <span>Reset Setting</span>
+        </div>
+        <div class='menu-item' command='record_keybind'>
+            <span>Record Keybind</span>
+        </div>
+    </div>
+
+
     <div class='settings-container'>
         <div class='settings-menu'>
             <div class='searchbar-container'>
@@ -301,10 +317,13 @@
                         setting: <span class='code'>theme</span>
                     </div>
 
-                    <select class='setting-input'>
-                        <option value='light'>Light</option>
-                        <option value='dark'>Dark</option>
-                    </select>
+                    <div class='setting-input-container'>
+                        <select class='setting-input'>
+                            <option value='light'>Light</option>
+                            <option value='dark'>Dark</option>
+                        </select>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='default_grid_size' type='float'>
                     <div class='description'>
@@ -313,7 +332,11 @@
                         setting: <span class='code'>default_grid_size</span>
                     </div>
 
-                    <input class='setting-input'>
+
+                    <div class='setting-input-container'>
+                        <input class='setting-input'>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='grid_style' type='select'>
                     <div class='description'>
@@ -321,11 +344,14 @@
                         setting: <span class='code'>grid_style</span>
                     </div>
 
-                    <select class='setting-input'>
-                        <option value='dots'>Dots</option>
-                        <option value='lines'>Lines</option>
-                        <option value='none'>Hidden</option>
-                    </select>
+                    <div class='setting-input-container'>
+                        <select class='setting-input'>
+                            <option value='dots'>Dots</option>
+                            <option value='lines'>Lines</option>
+                            <option value='none'>Hidden</option>
+                        </select>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='joints_style' type='select'>
                     <div class='description'>
@@ -334,11 +360,14 @@
                         setting: <span class='code'>joints_style</span>
                     </div>
 
-                    <select class='setting-input'>
-                        <option value='square'>Square</option>
-                        <option value='round'>Round</option>
-                        <option value='none'>Hidden</option>
-                    </select>
+                    <div class='setting-input-container'>
+                        <select class='setting-input'>
+                            <option value='square'>Square</option>
+                            <option value='round'>Round</option>
+                            <option value='none'>Hidden</option>
+                        </select>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='hide_ui_in_fullscreen' type='checkbox'>
                     <div class='description'>
@@ -346,15 +375,19 @@
                         setting: <span class='code'>hide_ui_in_fullscreen</span>
                     </div>
 
-                    <div class='setting-checkbox'>
-                        <label class='checkbox'>
-                            <input type='checkbox'>
-                            <span></span>
-                        </label>
 
-                        <div class='description'>
-                            Hide menu and sidebar when in fullscreen mode.
+                    <div class='setting-input-container'>
+                        <div class='setting-checkbox'>
+                            <label class='checkbox'>
+                                <input type='checkbox'>
+                                <span></span>
+                            </label>
+
+                            <div class='description'>
+                                Hide menu and sidebar when in fullscreen mode.
+                            </div>
                         </div>
+                        <div class='setting-dropdown'></div>
                     </div>
                 </div>
 
@@ -371,7 +404,10 @@
                         setting: <span class='code'>ticks_per_frame</span>
                     </div>
 
-                    <input class='setting-input'>
+                    <div class='setting-input-container'>
+                        <input class='setting-input'>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='scale_factor' type='float'>
                     <div class='description'>
@@ -380,7 +416,10 @@
                         setting: <span class='code'>scale_factor</span>
                     </div>
 
-                    <input class='setting-input'>
+                    <div class='setting-input-container'>
+                        <input class='setting-input'>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='block_unused_key_combinations' type='checkbox'>
                     <div class='description'>
@@ -388,15 +427,18 @@
                         setting: <span class='code'>block_unused_key_combinations</span>
                     </div>
 
-                    <div class='setting-checkbox'>
-                        <label class='checkbox'>
-                            <input type='checkbox'>
-                            <span></span>
-                        </label>
+                    <div class='setting-input-container'>
+                        <div class='setting-checkbox'>
+                            <label class='checkbox'>
+                                <input type='checkbox'>
+                                <span></span>
+                            </label>
 
-                        <div class='description'>
-                            Consume every keystroke.
+                            <div class='description'>
+                                Consume every keystroke.
+                            </div>
                         </div>
+                        <div class='setting-dropdown'></div>
                     </div>
                 </div>
                 <div class='setting' setting='use_system_clipboard' type='checkbox'>
@@ -405,18 +447,20 @@
                         setting: <span class='code'>use_system_clipboard</span>
                     </div>
 
-                    <div class='setting-checkbox'>
-                        <label class='checkbox'>
-                            <input type='checkbox'>
-                            <span></span>
-                        </label>
+                    <div class='setting-input-container'>
+                        <div class='setting-checkbox'>
+                            <label class='checkbox'>
+                                <input type='checkbox'>
+                                <span></span>
+                            </label>
 
-                        <div class='description'>
-                            Use the builtin clipboard of your operating system.
+                            <div class='description'>
+                                Use the builtin clipboard of your operating system.
+                            </div>
                         </div>
+                        <div class='setting-dropdown'></div>
                     </div>
                 </div>
-
 
                 <div class='setting' setting='use_wire_restructuring' type='checkbox'>
                     <div class='description'>
@@ -424,15 +468,18 @@
                         setting: <span class='code'>use_wire_restructuring</span>
                     </div>
 
-                    <div class='setting-checkbox'>
-                        <label class='checkbox'>
-                            <input type='checkbox'>
-                            <span></span>
-                        </label>
+                    <div class='setting-input-container'>
+                        <div class='setting-checkbox'>
+                            <label class='checkbox'>
+                                <input type='checkbox'>
+                                <span></span>
+                            </label>
 
-                        <div class='description'>
-                            Merge segments if they appear connected.
+                            <div class='description'>
+                                Merge segments if they appear connected.
+                            </div>
                         </div>
+                        <div class='setting-dropdown'></div>
                     </div>
                 </div>
                 <div class='setting' setting='gates_push_wires' type='checkbox'>
@@ -441,32 +488,18 @@
                         setting: <span class='code'>gates_push_wires</span>
                     </div>
 
-                    <div class='setting-checkbox'>
-                        <label class='checkbox'>
-                            <input type='checkbox'>
-                            <span></span>
-                        </label>
+                    <div class='setting-input-container'>
+                        <div class='setting-checkbox'>
+                            <label class='checkbox'>
+                                <input type='checkbox'>
+                                <span></span>
+                            </label>
 
-                        <div class='description'>
-                            Todo. Push wires.
+                            <div class='description'>
+                                Todo. Push wires.
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class='setting' setting='prevent_element_overlapping' type='checkbox'>
-                    <div class='description'>
-                        <span class='title'>Prevent Overlapping</span><br>
-                        setting: <span class='code'>prevent_element_overlapping</span>
-                    </div>
-
-                    <div class='setting-checkbox'>
-                        <label class='checkbox'>
-                            <input type='checkbox'>
-                            <span></span>
-                        </label>
-
-                        <div class='description'>
-                            Todo.
-                        </div>
+                        <div class='setting-dropdown'></div>
                     </div>
                 </div>
 
@@ -485,7 +518,10 @@
                         setting: <span class='code'>anim_factor</span>
                     </div>
 
-                    <input class='setting-input'>
+                    <div class='setting-input-container'>
+                        <input class='setting-input'>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='camera_anim_factor' type='float'>
                     <div class='description'>
@@ -496,7 +532,10 @@
                         setting: <span class='code'>camera_anim_factor</span>
                     </div>
 
-                    <input class='setting-input'>
+                    <div class='setting-input-container'>
+                        <input class='setting-input'>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='camera_motion_anim_factor' type='float'>
                     <div class='description'>
@@ -505,7 +544,10 @@
                         setting: <span class='code'>camera_motion_anim_factor</span>
                     </div>
 
-                    <input class='setting-input'>
+                    <div class='setting-input-container'>
+                        <input class='setting-input'>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
 
                 <div class='setting-header' id='keybinds'>
@@ -521,12 +563,12 @@
                         setting: <span class='code'>keybinds.add_input_node</span>
                     </div>
 
-                    <label class='keybind'>
-                        <input class='setting-input'>
-                        <div class='buttons'>
-                            <button class='record'>Record</button>
-                        </div>
-                    </label>
+                    <div class='setting-input-container'>
+                        <label class='keybind'>
+                            <input class='setting-input'>
+                        </label>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='keybinds.remove_input_node' type='keybind'>
                     <div class='description'>
@@ -535,12 +577,12 @@
                         setting: <span class='code'>keybinds.remove_input_node</span>
                     </div>
 
-                    <label class='keybind'>
-                        <input class='setting-input'>
-                        <div class='buttons'>
-                            <button class='record'>Record</button>
-                        </div>
-                    </label>
+                    <div class='setting-input-container'>
+                        <label class='keybind'>
+                            <input class='setting-input'>
+                        </label>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='keybinds.view_content' type='keybind'>
                     <div class='description'>
@@ -549,12 +591,12 @@
                         setting: <span class='code'>keybinds.view_content</span>
                     </div>
 
-                    <label class='keybind'>
-                        <input class='setting-input'>
-                        <div class='buttons'>
-                            <button class='record'>Record</button>
-                        </div>
-                    </label>
+                    <div class='setting-input-container'>
+                        <label class='keybind'>
+                            <input class='setting-input'>
+                        </label>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='keybinds.copy' type='keybind'>
                     <div class='description'>
@@ -563,12 +605,12 @@
                         setting: <span class='code'>keybinds.copy</span>
                     </div>
 
-                    <label class='keybind'>
-                        <input class='setting-input'>
-                        <div class='buttons'>
-                            <button class='record'>Record</button>
-                        </div>
-                    </label>
+                    <div class='setting-input-container'>
+                        <label class='keybind'>
+                            <input class='setting-input'>
+                        </label>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='keybinds.cut' type='keybind'>
                     <div class='description'>
@@ -577,12 +619,12 @@
                         setting: <span class='code'>keybinds.cut</span>
                     </div>
 
-                    <label class='keybind'>
-                        <input class='setting-input'>
-                        <div class='buttons'>
-                            <button class='record'>Record</button>
-                        </div>
-                    </label>
+                    <div class='setting-input-container'>
+                        <label class='keybind'>
+                            <input class='setting-input'>
+                        </label>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='keybinds.paste' type='keybind'>
                     <div class='description'>
@@ -591,12 +633,12 @@
                         setting: <span class='code'>keybinds.paste</span>
                     </div>
 
-                    <label class='keybind'>
-                        <input class='setting-input'>
-                        <div class='buttons'>
-                            <button class='record'>Record</button>
-                        </div>
-                    </label>
+                    <div class='setting-input-container'>
+                        <label class='keybind'>
+                            <input class='setting-input'>
+                        </label>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='keybinds.delete' type='keybind'>
                     <div class='description'>
@@ -605,12 +647,12 @@
                         setting: <span class='code'>keybinds.delete</span>
                     </div>
 
-                    <label class='keybind'>
-                        <input class='setting-input'>
-                        <div class='buttons'>
-                            <button class='record'>Record</button>
-                        </div>
-                    </label>
+                    <div class='setting-input-container'>
+                        <label class='keybind'>
+                            <input class='setting-input'>
+                        </label>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='keybinds.import' type='keybind'>
                     <div class='description'>
@@ -619,26 +661,12 @@
                         setting: <span class='code'>keybinds.import</span>
                     </div>
 
-                    <label class='keybind'>
-                        <input class='setting-input'>
-                        <div class='buttons'>
-                            <button class='record'>Record</button>
-                        </div>
-                    </label>
-                </div>
-                <div class='setting' setting='keybinds.instant_import' type='keybind'>
-                    <div class='description'>
-                        <span class='title'>Instant Import</span><br>
-                        Temp.<br>
-                        setting: <span class='code'>keybinds.instant_import</span>
+                    <div class='setting-input-container'>
+                        <label class='keybind'>
+                            <input class='setting-input'>
+                        </label>
+                        <div class='setting-dropdown'></div>
                     </div>
-
-                    <label class='keybind'>
-                        <input class='setting-input'>
-                        <div class='buttons'>
-                            <button class='record'>Record</button>
-                        </div>
-                    </label>
                 </div>
                 <div class='setting' setting='keybinds.open_settings' type='keybind'>
                     <div class='description'>
@@ -646,12 +674,12 @@
                         setting: <span class='code'>keybinds.open_settings</span>
                     </div>
 
-                    <label class='keybind'>
-                        <input class='setting-input'>
-                        <div class='buttons'>
-                            <button class='record'>Record</button>
-                        </div>
-                    </label>
+                    <div class='setting-input-container'>
+                        <label class='keybind'>
+                            <input class='setting-input'>
+                        </label>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='keybinds.invert' type='keybind'>
                     <div class='description'>
@@ -660,12 +688,12 @@
                         setting: <span class='code'>keybinds.invert</span>
                     </div>
 
-                    <label class='keybind'>
-                        <input class='setting-input'>
-                        <div class='buttons'>
-                            <button class='record'>Record</button>
-                        </div>
-                    </label>
+                    <div class='setting-input-container'>
+                        <label class='keybind'>
+                            <input class='setting-input'>
+                        </label>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='keybinds.new' type='keybind'>
                     <div class='description'>
@@ -674,12 +702,12 @@
                         setting: <span class='code'>keybinds.new</span>
                     </div>
 
-                    <label class='keybind'>
-                        <input class='setting-input'>
-                        <div class='buttons'>
-                            <button class='record'>Record</button>
-                        </div>
-                    </label>
+                    <div class='setting-input-container'>
+                        <label class='keybind'>
+                            <input class='setting-input'>
+                        </label>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='keybinds.open_file' type='keybind'>
                     <div class='description'>
@@ -688,26 +716,12 @@
                         setting: <span class='code'>keybinds.open_file</span>
                     </div>
 
-                    <label class='keybind'>
-                        <input class='setting-input'>
-                        <div class='buttons'>
-                            <button class='record'>Record</button>
-                        </div>
-                    </label>
-                </div>
-                <div class='setting' setting='keybinds.open_folder' type='keybind'>
-                    <div class='description'>
-                        <span class='title'>Open Folder</span><br>
-                        Todo.<br>
-                        setting: <span class='code'>keybinds.open_folder</span>
+                    <div class='setting-input-container'>
+                        <label class='keybind'>
+                            <input class='setting-input'>
+                        </label>
+                        <div class='setting-dropdown'></div>
                     </div>
-
-                    <label class='keybind'>
-                        <input class='setting-input'>
-                        <div class='buttons'>
-                            <button class='record'>Record</button>
-                        </div>
-                    </label>
                 </div>
                 <div class='setting' setting='keybinds.undo' type='keybind'>
                     <div class='description'>
@@ -716,12 +730,12 @@
                         setting: <span class='code'>keybinds.undo</span>
                     </div>
 
-                    <label class='keybind'>
-                        <input class='setting-input'>
-                        <div class='buttons'>
-                            <button class='record'>Record</button>
-                        </div>
-                    </label>
+                    <div class='setting-input-container'>
+                        <label class='keybind'>
+                            <input class='setting-input'>
+                        </label>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='keybinds.redo' type='keybind'>
                     <div class='description'>
@@ -730,12 +744,12 @@
                         setting: <span class='code'>keybinds.redo</span>
                     </div>
 
-                    <label class='keybind'>
-                        <input class='setting-input'>
-                        <div class='buttons'>
-                            <button class='record'>Record</button>
-                        </div>
-                    </label>
+                    <div class='setting-input-container'>
+                        <label class='keybind'>
+                            <input class='setting-input'>
+                        </label>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='keybinds.reopen_last_file' type='keybind'>
                     <div class='description'>
@@ -744,12 +758,12 @@
                         setting: <span class='code'>keybinds.reopen_last_file</span>
                     </div>
 
-                    <label class='keybind'>
-                        <input class='setting-input'>
-                        <div class='buttons'>
-                            <button class='record'>Record</button>
-                        </div>
-                    </label>
+                    <div class='setting-input-container'>
+                        <label class='keybind'>
+                            <input class='setting-input'>
+                        </label>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='keybinds.reset_view' type='keybind'>
                     <div class='description'>
@@ -758,12 +772,12 @@
                         setting: <span class='code'>keybinds.reset_view</span>
                     </div>
 
-                    <label class='keybind'>
-                        <input class='setting-input'>
-                        <div class='buttons'>
-                            <button class='record'>Record</button>
-                        </div>
-                    </label>
+                    <div class='setting-input-container'>
+                        <label class='keybind'>
+                            <input class='setting-input'>
+                        </label>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='keybinds.toggle_sidebar' type='keybind'>
                     <div class='description'>
@@ -772,12 +786,12 @@
                         setting: <span class='code'>keybinds.toggle_sidebar</span>
                     </div>
 
-                    <label class='keybind'>
-                        <input class='setting-input'>
-                        <div class='buttons'>
-                            <button class='record'>Record</button>
-                        </div>
-                    </label>
+                    <div class='setting-input-container'>
+                        <label class='keybind'>
+                            <input class='setting-input'>
+                        </label>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='keybinds.save' type='keybind'>
                     <div class='description'>
@@ -786,12 +800,12 @@
                         setting: <span class='code'>keybinds.save</span>
                     </div>
 
-                    <label class='keybind'>
-                        <input class='setting-input'>
-                        <div class='buttons'>
-                            <button class='record'>Record</button>
-                        </div>
-                    </label>
+                    <div class='setting-input-container'>
+                        <label class='keybind'>
+                            <input class='setting-input'>
+                        </label>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='keybinds.save_as' type='keybind'>
                     <div class='description'>
@@ -800,12 +814,12 @@
                         setting: <span class='code'>keybinds.save_as</span>
                     </div>
 
-                    <label class='keybind'>
-                        <input class='setting-input'>
-                        <div class='buttons'>
-                            <button class='record'>Record</button>
-                        </div>
-                    </label>
+                    <div class='setting-input-container'>
+                        <label class='keybind'>
+                            <input class='setting-input'>
+                        </label>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='keybinds.select_all' type='keybind'>
                     <div class='description'>
@@ -814,12 +828,12 @@
                         setting: <span class='code'>keybinds.select_all</span>
                     </div>
 
-                    <label class='keybind'>
-                        <input class='setting-input'>
-                        <div class='buttons'>
-                            <button class='record'>Record</button>
-                        </div>
-                    </label>
+                    <div class='setting-input-container'>
+                        <label class='keybind'>
+                            <input class='setting-input'>
+                        </label>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='keybinds.next_vertical_align' type='keybind'>
                     <div class='description'>
@@ -828,12 +842,12 @@
                         setting: <span class='code'>keybinds.next_vertical_align</span>
                     </div>
 
-                    <label class='keybind'>
-                        <input class='setting-input'>
-                        <div class='buttons'>
-                            <button class='record'>Record</button>
-                        </div>
-                    </label>
+                    <div class='setting-input-container'>
+                        <label class='keybind'>
+                            <input class='setting-input'>
+                        </label>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='keybinds.next_horizontal_align' type='keybind'>
                     <div class='description'>
@@ -842,12 +856,12 @@
                         setting: <span class='code'>keybinds.next_horizontal_align</span>
                     </div>
 
-                    <label class='keybind'>
-                        <input class='setting-input'>
-                        <div class='buttons'>
-                            <button class='record'>Record</button>
-                        </div>
-                    </label>
+                    <div class='setting-input-container'>
+                        <label class='keybind'>
+                            <input class='setting-input'>
+                        </label>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='keybinds.toggle_selection' type='keybind'>
                     <div class='description'>
@@ -856,12 +870,12 @@
                         setting: <span class='code'>keybinds.toggle_selection</span>
                     </div>
 
-                    <label class='keybind'>
-                        <input class='setting-input'>
-                        <div class='buttons'>
-                            <button class='record'>Record</button>
-                        </div>
-                    </label>
+                    <div class='setting-input-container'>
+                        <label class='keybind'>
+                            <input class='setting-input'>
+                        </label>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='keybinds.deselect_all' type='keybind'>
                     <div class='description'>
@@ -870,12 +884,12 @@
                         setting: <span class='code'>keybinds.deselect_all</span>
                     </div>
 
-                    <label class='keybind'>
-                        <input class='setting-input'>
-                        <div class='buttons'>
-                            <button class='record'>Record</button>
-                        </div>
-                    </label>
+                    <div class='setting-input-container'>
+                        <label class='keybind'>
+                            <input class='setting-input'>
+                        </label>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='keybinds.split_segment' type='keybind'>
                     <div class='description'>
@@ -884,12 +898,12 @@
                         setting: <span class='code'>keybinds.split_segment</span>
                     </div>
 
-                    <label class='keybind'>
-                        <input class='setting-input'>
-                        <div class='buttons'>
-                            <button class='record'>Record</button>
-                        </div>
-                    </label>
+                    <div class='setting-input-container'>
+                        <label class='keybind'>
+                            <input class='setting-input'>
+                        </label>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='keybinds.zoom_in' type='keybind'>
                     <div class='description'>
@@ -898,12 +912,12 @@
                         setting: <span class='code'>keybinds.zoom_in</span>
                     </div>
 
-                    <label class='keybind'>
-                        <input class='setting-input'>
-                        <div class='buttons'>
-                            <button class='record'>Record</button>
-                        </div>
-                    </label>
+                    <div class='setting-input-container'>
+                        <label class='keybind'>
+                            <input class='setting-input'>
+                        </label>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='keybinds.zoom_out' type='keybind'>
                     <div class='description'>
@@ -912,12 +926,12 @@
                         setting: <span class='code'>keybinds.zoom_out</span>
                     </div>
 
-                    <label class='keybind'>
-                        <input class='setting-input'>
-                        <div class='buttons'>
-                            <button class='record'>Record</button>
-                        </div>
-                    </label>
+                    <div class='setting-input-container'>
+                        <label class='keybind'>
+                            <input class='setting-input'>
+                        </label>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='keybinds.debug_toggle' type='keybind'>
                     <div class='description'>
@@ -926,12 +940,12 @@
                         setting: <span class='code'>keybinds.debug_toggle</span>
                     </div>
 
-                    <label class='keybind'>
-                        <input class='setting-input'>
-                        <div class='buttons'>
-                            <button class='record'>Record</button>
-                        </div>
-                    </label>
+                    <div class='setting-input-container'>
+                        <label class='keybind'>
+                            <input class='setting-input'>
+                        </label>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='keybinds.debug_step' type='keybind'>
                     <div class='description'>
@@ -940,12 +954,12 @@
                         setting: <span class='code'>keybinds.debug_step</span>
                     </div>
 
-                    <label class='keybind'>
-                        <input class='setting-input'>
-                        <div class='buttons'>
-                            <button class='record'>Record</button>
-                        </div>
-                    </label>
+                    <div class='setting-input-container'>
+                        <label class='keybind'>
+                            <input class='setting-input'>
+                        </label>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
                 <div class='setting' setting='keybinds.debug_single_step' type='keybind'>
                     <div class='description'>
@@ -954,12 +968,12 @@
                         setting: <span class='code'>keybinds.debug_single_step</span>
                     </div>
 
-                    <label class='keybind'>
-                        <input class='setting-input'>
-                        <div class='buttons'>
-                            <button class='record'>Record</button>
-                        </div>
-                    </label>
+                    <div class='setting-input-container'>
+                        <label class='keybind'>
+                            <input class='setting-input'>
+                        </label>
+                        <div class='setting-dropdown'></div>
+                    </div>
                 </div>
             </div>
         </div>

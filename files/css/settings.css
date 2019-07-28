@@ -159,6 +159,13 @@
     text-decoration: underline;
 }
 
+.setting-dropdown {
+    width: 30px;
+    height: 30px;
+
+    background-image: var(--setting-dropdown-background-image);
+}
+
 .setting, .setting-header {
     margin-bottom: 22px;
 }
@@ -191,6 +198,13 @@ label.checkbox span:hover {
 }
 label.checkbox input:checked + span::before {
     content: '\2713';
+}
+
+.setting-input-container {
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: auto min-content;
 }
 
 .setting .setting-input {
