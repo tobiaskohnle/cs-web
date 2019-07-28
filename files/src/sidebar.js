@@ -99,17 +99,10 @@ class Sidebar {
                 this.scroll_to(this.hovered_section.y - this.hovered_section.index*cs.config.sidebar_header_height);
             }
             else if (this.hovered_element) {
-                if (this.imported_element && this.imported_element == this.hovered_element) {
-                    cs.controller.current_action = Enum.action.none;
-                    cs.controller.imported_element = null;
-                    this.imported_element = null;
-                }
-                else {
-                    cs.controller.current_action = Enum.action.import_element;
-                    cs.controller.imported_element = Util.deep_copy(this.hovered_element);
-                    this.imported_element = this.hovered_element;
-                    sidebar_canvas.releasePointerCapture(event.pointerId);
-                }
+                cs.controller.current_action = Enum.action.import_element;
+                cs.controller.imported_element = Util.deep_copy(this.hovered_element);
+                this.imported_element = this.hovered_element;
+                sidebar_canvas.releasePointerCapture(event.pointerId);
             }
         }
     }
@@ -137,6 +130,12 @@ class Sidebar {
             }
         }
     }
+    mouse_up(event) {
+        cs.controller.current_action = Enum.action.none;
+        cs.controller.imported_element = null;
+        this.imported_element = null;
+    }
+
     mouse_leave(event) {
         this.hovered_section = null;
         this.hovered_element = null;

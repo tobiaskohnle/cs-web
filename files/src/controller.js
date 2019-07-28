@@ -7,8 +7,6 @@ class Controller {
         this.mouse_pos = new Vec;
         this.mouse_world_pos = new Vec;
         this.snapped_mouse_world_pos = new Vec;
-        this.mouse_movement = new Vec;
-        this.mouse_world_movement = new Vec;
         this.abs_mouse_movement = new Vec;
         this.current_action = Enum.action.none;
         this.hovered_element = null;
@@ -109,9 +107,6 @@ class Controller {
         this.elements_resized = false;
 
         ActionUtil.update_all_last_pos();
-
-        this.mouse_movement = new Vec;
-        this.mouse_world_movement = new Vec;
 
         if (!(event.shiftKey || event.ctrlKey) && (!this.hovered_element || !this.hovered_element.is_selected())) {
             ActionUtil.deselect_all();
@@ -222,9 +217,6 @@ class Controller {
         this.snapped_mouse_world_pos.set(Vec.round(this.mouse_world_pos, .5));
 
         const world_move_vec = Vec.div(move_vec, cs.camera.anim_scale_);
-
-        this.mouse_movement.add(move_vec);
-        this.mouse_world_movement.add(world_move_vec);
 
         let filter;
         if (this.current_action == Enum.action.create_wire || this.current_action == Enum.action.create_wire_segment) {
@@ -380,8 +372,10 @@ class Controller {
 
             case Enum.action.move_elements:
             case Enum.action.move_elements_remove_mouse_up:
-                const snap_size = ActionUtil.move_elements(this.moving_elements, this.mouse_world_movement);
-                const elements_moved = !Vec.sub(this.mouse_world_pos, this.mouse_down_world_pos).round(snap_size).equals(new Vec);
+                const mouse_world_movement = Vec.sub(this.mouse_world_pos, this.mouse_down_world_pos);
+
+                const snap_size = ActionUtil.move_elements(this.moving_elements, mouse_world_movement);
+                const elements_moved = !mouse_world_movement.round(snap_size).equals(new Vec);
                 this.elements_moved = this.elements_moved || elements_moved;
 
                 this.current_action = this.mouse_pos.x<0 || this.mouse_pos.y<0
@@ -391,25 +385,30 @@ class Controller {
                 break;
 
             case Enum.action.import_element:
-                // TEMP
-                console.assert(this.imported_element);
+                this.save_state('import element');
 
-                if (!ActionGet.elements().includes(this.imported_element)) {
-                    this.save_state('import element');
-                    Action.add(this.imported_element);
-                    ActionUtil.deselect_all();
-                    Action.select(this.imported_element);
-                }
+                Action.add(this.imported_element);
 
-                const element_pos = Vec.sub(this.mouse_world_pos, Vec.div(this.imported_element.size, 2));
-                this.imported_element.pos.set(Vec.round(element_pos, this.imported_element.snap_size_));
+                ActionUtil.deselect_all();
+                Action.select(this.imported_element);
 
+                const pos = Vec.sub(this.mouse_world_pos, Vec.div(this.imported_element.size, 2));
+                this.imported_element.pos.set(pos).sub(new Vec(2,0)).round(this.imported_element.snap_size_);
+                this.imported_element.cancel_animation();
+                this.imported_element.pos.add(new Vec(2,0));
+
+                this.moving_elements = [this.imported_element];
+                this.current_action = Enum.action.move_elements;
+
+                Action.update_last_pos(this.imported_element);
+                this.mouse_down_world_pos.set(this.mouse_world_pos);
+                canvas.setPointerCapture(event.pointerId);
                 break;
 
             case Enum.action.resize_elements:
                 for (const element of ActionGet.selected_elements()) {
                     if (element.resize && this.resize) {
-                        if (element.resize(this.mouse_world_movement, this.resize_vec)) {
+                        if (element.resize(Vec.sub(this.mouse_world_pos, this.mouse_down_world_pos), this.resize_vec)) {
                             this.elements_resized = true;
                         }
                     }
@@ -540,9 +539,6 @@ class Controller {
                 this.current_action = Enum.action.none;
                 break;
         }
-
-        this.mouse_movement = new Vec;
-        this.mouse_world_movement = new Vec;
     }
 
     mouse_wheel(event) {
@@ -564,6 +560,7 @@ class Controller {
     }
 
     sidebar_mouse_up(event) {
+        cs.sidebar.mouse_up(event);
     }
 
     sidebar_mouse_wheel(event) {
