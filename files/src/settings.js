@@ -209,7 +209,7 @@ const Settings = {
 
             element.addEventListener('click', function(event) {
                 Settings.clear_filter();
-                linked_element.scrollIntoView();
+                linked_element.scrollIntoView({behavior: 'smooth'});
             });
         }
 
