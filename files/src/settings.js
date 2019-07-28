@@ -227,6 +227,11 @@ const Settings = {
                 Settings.currently_edited_setting_previous_value = Util.get_nested(cs.config, setting);
                 Settings.currently_edited_setting = setting;
             });
+            input_element.addEventListener('change', function(event) {
+                if (Settings.currently_edited_setting) {
+                    Settings.export_setting(Settings.currently_edited_setting);
+                }
+            });
             input_element.addEventListener('blur', function(event) {
                 if (Settings.currently_edited_setting) {
                     Settings.export_setting(Settings.currently_edited_setting);
