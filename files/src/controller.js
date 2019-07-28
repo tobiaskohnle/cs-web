@@ -71,9 +71,11 @@ class Controller {
         return !cs.config.block_unused_key_combinations;
     }
 
-    mouse_double_click(event) {
-        if (this.hovered_element instanceof ConnectionNode) {
-            this.hovered_element.invert();
+    mouse_click(event) {
+        if (~event.detail & 1) {
+            if (this.hovered_element instanceof ConnectionNode) {
+                this.hovered_element.invert();
+            }
         }
     }
 
