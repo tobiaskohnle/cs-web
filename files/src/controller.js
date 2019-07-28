@@ -313,17 +313,6 @@ class Controller {
                 break;
 
             case Enum.action.create_wire:
-                // if (this.wire_start_node.anchor_pos_.x < this.mouse_world_pos.x && this.new_wire_segments.length == 3) {
-                //     this.new_wire_segments[0].is_vertical = true;
-                //     this.new_wire_segments[1].is_vertical = false;
-                //     this.new_wire_segments[2].is_vertical = true;
-                // }
-                // else {
-                //     this.new_wire_segments[0].is_vertical = false;
-                //     this.new_wire_segments[1].is_vertical = true;
-                //     this.new_wire_segments[2].is_vertical = false;
-                // }
-
             case Enum.action.create_wire_segment:
                 this.new_wire_segments.last().auto_offset_ = false;
 
@@ -608,9 +597,6 @@ class Controller {
     read_files(onload) {
         const input = document.createElement('input');
         input.type = 'file';
-        // input.setAttribute('multiple', '');
-        // input.setAttribute('directory', '');
-        // input.setAttribute('webkitdirectory', '');
 
         input.click();
 

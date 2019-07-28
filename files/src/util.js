@@ -134,7 +134,6 @@ const Util = {
         a.download = file_name;
         a.href = URL.createObjectURL(blob);
         a.dataset.downloadurl = `${a.download}:${a.href}`;
-        // a.href = `data:text/plain,${text}`;
 
         document.body.appendChild(a);
         a.click();
@@ -251,7 +250,7 @@ const Util = {
 
             references.push(element);
 
-            var result = new element.constructor();
+            const result = new element.constructor();
 
             cached_results.push(result);
 

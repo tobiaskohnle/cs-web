@@ -298,26 +298,33 @@ const Action = {
         return false;
     },
 
-    restructure_segments: function () {
-        Action.merge_segments();
-        Action.center_invisible_segment_step();
+    restructure_segments: function() {
+        const segments = ActionGet.elements().filter(element => element instanceof WireSegment);
+
+        Action.merge_segments(segments);
+        Action.center_invisible_segment(segments);
     },
 
-    merge_segments: function () {
-        const segments = ActionGet.elements().filter(element => element instanceof WireSegment);
+    merge_segments: function(segments) {
         for (const segment of segments) {
-            const offset_to_neighbors = new Map();
+            const offset_to_neighbors = new Map;
+
             for (const neighbor of segment.neighbor_segments) {
-                const is_in = offset_to_neighbors.has(neighbor.offset);
-                if (!is_in) {
+                if (!offset_to_neighbors.has(neighbor.offset)) {
                     offset_to_neighbors.set(neighbor.offset, [neighbor]);
-                } else {
+                }
+                else {
                     offset_to_neighbors.get(neighbor.offset).push(neighbor);
                 }
             }
-            const remove_segment = offset_to_neighbors.size === 1 && segment.offset_pos === null;
+
+            const remove_segment = offset_to_neighbors.size==1 && !segment.offset_pos;
+
             for (const [offset, neighbors] of offset_to_neighbors) {
-                if (neighbors.length <= 1) continue;
+                if (neighbors.length <= 1) {
+                    continue;
+                }
+
                 const output_node = segment.parent();
                 const joined_segment = new WireSegment();
                 joined_segment.is_vertical = !segment.is_vertical;
@@ -326,52 +333,74 @@ const Action = {
 
                 joined_segment.anim_color_.anim_hsva(cs.theme.merge_segment_flash).anim_factor(cs.config.fade_color_anim_factor);
 
-                var would_be_single_segment_wire = false;
-                var has_node = false;
+                let would_be_single_segment_wire = false;
+                let has_node = false;
+
                 for (const replaced_neighbor of neighbors) {
-                    if (replaced_neighbor.offset_pos !== null) {
+                    if (replaced_neighbor.offset_pos) {
                         if (has_node) {
                             would_be_single_segment_wire = true;
                             break;
                         }
+
                         joined_segment.set_connected_pos(replaced_neighbor.offset_pos);
                         has_node = true;
                     }
                 }
-                if (would_be_single_segment_wire) continue;
+
+                if (would_be_single_segment_wire) {
+                    continue;
+                }
+
                 for (const replaced_neighbor of neighbors) {
                     for (const extended_neighbor of replaced_neighbor.neighbor_segments) {
-                        if (extended_neighbor === segment) continue;
-                        const i = extended_neighbor.neighbor_segments.indexOf(replaced_neighbor);
-                        extended_neighbor.neighbor_segments[i] = joined_segment;
+                        if (extended_neighbor == segment) {
+                            continue;
+                        }
+
+                        const index = extended_neighbor.neighbor_segments.indexOf(replaced_neighbor);
+                        extended_neighbor.neighbor_segments[index] = joined_segment;
                         joined_segment.neighbor_segments.push(extended_neighbor);
                     }
+
                     output_node.wire_segments.remove(replaced_neighbor);
                     segment.neighbor_segments.remove(replaced_neighbor);
                 }
+
                 output_node.wire_segments.push(joined_segment);
+
                 if (remove_segment) {
                     output_node.wire_segments.remove(segment);
-                } else {
-                    joined_segment.neighbor_segments.push(segment);
-                    segment.neighbor_segments.push(joined_segment);
+                }
+                else {
+                    Action.attach_segments(segment, joined_segment);
                 }
             }
         }
     },
-    center_invisible_segment_step: function () {
-        const segments = ActionGet.elements().filter(element => element instanceof WireSegment);
+    center_invisible_segment: function(segments) {
         for (const segment of segments) {
-            if (segment.neighbor_segments.length !== 2) continue;
-            const neighbor0 = segment.neighbor_segments[0];
-            const neighbor1 = segment.neighbor_segments[1];
-            if (neighbor0.offset !== neighbor1.offset) continue;
-            const offset_pos0 = neighbor0.offset_pos;
-            const offset_pos1 = neighbor1.offset_pos;
-            if (offset_pos0 === null || offset_pos1 === null) continue;
-            const offset0 = neighbor0.is_vertical ? offset_pos0.y : offset_pos0.x;
-            const offset1 = neighbor1.is_vertical ? offset_pos1.y : offset_pos1.x;
-            segment.offset = (offset0 + offset1) / 2;
+            if (segment.neighbor_segments.length != 2) {
+                continue;
+            }
+
+            const neighbor_a = segment.neighbor_segments[0];
+            const neighbor_b = segment.neighbor_segments[1];
+
+            if (neighbor_a.offset != neighbor_b.offset) {
+                continue;
+            }
+
+            const offset_pos_a = neighbor_a.offset_pos;
+            const offset_pos_b = neighbor_b.offset_pos;
+
+            if (!offset_pos_a || !offset_pos_b) {
+                continue;
+            }
+
+            const offset_a = neighbor_a.is_vertical ? offset_pos_a.y : offset_pos_a.x;
+            const offset_b = neighbor_b.is_vertical ? offset_pos_b.y : offset_pos_b.x;
+            segment.offset = (offset_a + offset_b) / 2;
         }
     },
 };
