@@ -174,7 +174,7 @@ class Controller {
                     this.moving_elements = selected_elements.filter(element => element instanceof ConnectionNode == false);
                 }
 
-                if (cs.config.gates_move_labels) {
+                if (cs.config.sticky_labels) {
                     for (const element of this.moving_elements.copy()) {
                         if (element instanceof Gate) {
                             for (const context_element of cs.context.inner_elements) {

@@ -116,7 +116,7 @@ const default_config = {
     use_system_clipboard: false,
     use_wire_restructuring: true,
     gates_push_wires: true,
-    gates_move_labels: true,
+    sticky_labels: true,
 
     anim_factor: .52,
     camera_anim_factor: .42,
