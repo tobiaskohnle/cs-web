@@ -519,14 +519,14 @@ class Clock extends InputGate {
         context.beginPath();
         context.lineWidth = .1;
 
-        context.moveTo(this.anim_pos_.x,                      this.anim_pos_.y+this.anim_size_.y/2);
-        context.lineTo(this.anim_pos_.x+.3,                   this.anim_pos_.y+this.anim_size_.y/2);
-        context.lineTo(this.anim_pos_.x+.3,                   this.anim_pos_.y+this.anim_size_.y/2+.6);
-        context.lineTo(this.anim_pos_.x+this.anim_size_.x/2,  this.anim_pos_.y+this.anim_size_.y/2+.6);
-        context.lineTo(this.anim_pos_.x+this.anim_size_.x/2,  this.anim_pos_.y+this.anim_size_.y/2-.6);
-        context.lineTo(this.anim_pos_.x+this.anim_size_.x-.3, this.anim_pos_.y+this.anim_size_.y/2-.6);
-        context.lineTo(this.anim_pos_.x+this.anim_size_.x-.3, this.anim_pos_.y+this.anim_size_.y/2);
-        context.lineTo(this.anim_pos_.x+this.anim_size_.x,    this.anim_pos_.y+this.anim_size_.y/2);
+        context.moveTo(this.anim_pos_.x,                       this.anim_pos_.y+this.anim_size_.y*.5);
+        context.lineTo(this.anim_pos_.x+this.anim_size_.x*.15, this.anim_pos_.y+this.anim_size_.y*.5);
+        context.lineTo(this.anim_pos_.x+this.anim_size_.x*.15, this.anim_pos_.y+this.anim_size_.y*.8);
+        context.lineTo(this.anim_pos_.x+this.anim_size_.x*.5,  this.anim_pos_.y+this.anim_size_.y*.8);
+        context.lineTo(this.anim_pos_.x+this.anim_size_.x*.5,  this.anim_pos_.y+this.anim_size_.y*.2);
+        context.lineTo(this.anim_pos_.x+this.anim_size_.x*.85, this.anim_pos_.y+this.anim_size_.y*.2);
+        context.lineTo(this.anim_pos_.x+this.anim_size_.x*.85, this.anim_pos_.y+this.anim_size_.y*.5);
+        context.lineTo(this.anim_pos_.x+this.anim_size_.x,     this.anim_pos_.y+this.anim_size_.y*.5);
 
         context.stroke();
     }
