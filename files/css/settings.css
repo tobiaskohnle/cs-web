@@ -1,102 +1,102 @@
 .settings-container {
-    position: absolute;
-
-    background: var(--settings-backdrop);
-
-    top: 0;
-    left: 0;
     width: 100vw;
     height: 100vh;
+
+    position: absolute;
+    top: 0;
+    left: 0;
 
     display: flex;
     align-items: center;
     justify-content: center;
+
+    background: var(--settings-backdrop);
 }
 .settings-container *:focus {
     outline: 1px solid var(--focus-outline);
 }
 
 #tooltip {
+    width: auto;
+    height: 32px;
+
     position: absolute;
     top: 0;
     left: 0;
 
-    color: var(--tooltip-color);
-
-    background: var(--tooltip-background);
-    border: 1px solid var(--tooltip-border);
-
-    width: auto;
-    height: 32px;
+    display: none;
 
     padding: 4px;
 
-    display: none;
+    background: var(--tooltip-background);
+    color: var(--tooltip-color);
 
+    border: 1px solid var(--tooltip-border);
     box-shadow: 0 0 10px 4px var(--tooltip-box-shadow);
 }
 #tooltip::after {
-    content: '';
-
     position: absolute;
     bottom: 100%;
     left: 0;
 
     border: 5px solid;
     border-color: #0000 #0000 var(--tooltip-arrow) #0000;
+
+    content: '';
 }
 
 .settings-menu {
+    width: 770px;
+    height: 90vh;
+
     display: grid;
     grid-template-columns: 180px 1fr;
     grid-template-rows: 65px 1fr;
-
     grid-template-areas: 'searchbar searchbar' 'sidebar window';
 
     background: var(--settings-background);
-
-    width: 770px;
-    height: 90vh;
 }
 
 .searchbar-container {
-    grid-area: searchbar;
     width: 100%;
     height: 100%;
 
     padding: 12px;
 
     z-index: 1;
-    box-shadow: 0 0 20px 15px var(--container-box-shadow);
+
+    grid-area: searchbar;
+
     background: var(--settings-background);
+    box-shadow: 0 0 20px 15px var(--container-box-shadow);
 }
 
 .searchbar {
     width: 100%;
     height: 100%;
 
-    color: var(--settings-font-color);
-    font-size: 100%;
-
     padding: 12px;
 
     background: var(--setting-input-background);
+    color: var(--settings-font-color);
+
     border: none;
+
+    font-size: 100%;
 }
 
 .sidebar-container {
-    grid-area: sidebar;
-
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-
-    font-size: 1.2em;
+    grid-area: sidebar;
 
     padding: 14px;
 
-    box-shadow: 0 0 20px 15px var(--container-box-shadow);
     background: var(--settings-background);
+    box-shadow: 0 0 20px 15px var(--container-box-shadow);
+
+    font-size: 1.2em;
 }
 .sidebar-container .top, .sidebar-container .bottom {
     display: flex;
@@ -112,12 +112,13 @@
 
 .sidebar-item {
     color: var(--settings-font-color);
-    text-decoration: none;
+
     cursor: pointer;
+    text-decoration: none;
 }
 .sidebar-item:hover {
-    font-weight: 500;
     color: var(--sidebar-item-color-hover);
+    font-weight: 500;
 }
 .sidebar-item:focus {
     outline: none;
@@ -133,26 +134,26 @@
     padding: 14px;
 
     overflow: auto;
-
     scroll-behavior: smooth;
 }
 
 .description {
-    color: var(--description-color);
     margin-bottom: 8px;
+
+    color: var(--description-color);
 }
 .description .title {
-    font-weight: 600;
     color: var(--description-title-color);
+    font-weight: 600;
 }
 .description .header {
+    color: var(--description-header-color);
     font-size: 150%;
     font-weight: 700;
-    color: var(--description-header-color);
 }
 .description .code {
-    font-family: consolas, monospace;
     color: var(--description-code-color);
+    font-family: consolas, monospace;
 }
 .description .link {
     color: var(--description-link-color);
@@ -181,20 +182,20 @@ label.checkbox input {
     display: none;
 }
 label.checkbox span {
-    color: var(--settings-font-color);
-
     width: 22px;
     height: 22px;
-    border-radius: 1px;
-
-    text-align: center;
 
     display: block;
 
-    background-color: var(--checkbox-background);
+    border-radius: 1px;
+
+    color: var(--settings-font-color);
+    background: var(--checkbox-background);
+
+    text-align: center;
 }
 label.checkbox span:hover {
-    background-color: var(--checkbox-background-hover);
+    background: var(--checkbox-background-hover);
 }
 label.checkbox input:checked + span::before {
     content: '\2713';
@@ -208,60 +209,34 @@ label.checkbox input:checked + span::before {
 }
 
 .setting .setting-input {
+    width: 100%;
     height: 30px;
-    border: none;
-    background-color: var(--setting-input-background);
 
     padding: 5px;
+
+    background: var(--setting-input-background);
     color: var(--settings-font-color);
 
-    width: 100%;
+    border: none;
 }
 .setting .setting-input.recording {
     outline-color: var(--recording-input-outline);
 }
 .setting .setting-input input {
-    border: inherit;
-    background: inherit;
-    color: inherit;
-    font: inherit;
-
     width: 100%;
     height: 32px;
-}
 
-.keybind {
-    position: relative;
-}
-.keybind input:focus ~ .buttons button,
-.keybind .buttons:hover button {
-    display: unset;
-}
+    background: inherit;
+    color: inherit;
 
-.keybind .buttons {
-    position: absolute;
-    right: 4px;
-
-    top: 0;
-    bottom: 0;
-}
-.keybind .buttons button {
-    display: none;
-
-    outline: none;
-    border: 1px solid var(--keybind-button-border)
-
-    color: var(--keybind-button-color);
-    background: var(--keybind-button-background);
-}
-.keybind .buttons button:hover {
-    border-color: var(--keybind-button-border-hover);
-    background: var(--keybind-button-background-hover);
+    border: inherit;
+    font: inherit;
 }
 
 ::-webkit-scrollbar {
     width: 12px;
     height: 12px;
+
     background: var(--scrollbar-background);
 }
 ::-webkit-scrollbar-button {
