@@ -77,6 +77,16 @@ class Controller {
                 this.hovered_element.invert();
             }
         }
+
+        if (this.hovered_element instanceof Label) {
+            if (this.current_action == Enum.action.edit_labels) {
+                for (const element of ActionGet.selected_elements()) {
+                    if (element instanceof Label) {
+                        element.event_mouse_down(event);
+                    }
+                }
+            }
+        }
     }
 
     mouse_down(event) {

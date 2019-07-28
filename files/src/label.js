@@ -345,11 +345,8 @@ class Label extends Element {
         this.mousedown_caret_ = this.caret;
         this.mousedown_detail_ = event.detail;
 
-
-                                            this.set_caret(this.caret_hovered_, event.shiftKey);
-                                            return;
-
         switch ((event.detail-1) % 3) {
+            default:
             case 0:
                 this.set_caret(this.caret_hovered_, event.shiftKey);
                 break;
@@ -368,13 +365,9 @@ class Label extends Element {
 
         this.caret_hovered_ = this.get_text_index(cs.controller.mouse_world_pos);
 
-                    if (event.buttons & 1) {
-                        this.set_caret(this.caret_hovered_, true);
-                    }
-                    return;
-
         if (event.buttons & 1) {
             switch ((this.mousedown_detail_-1) % 3) {
+                default:
                 case 0:
                     this.set_caret(this.caret_hovered_, true);
                     break;
