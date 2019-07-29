@@ -74,6 +74,12 @@ class Controller {
             if (this.hovered_element instanceof ConnectionNode) {
                 this.hovered_element.invert();
             }
+
+            if (this.hovered_element instanceof WireSegment) {
+                this.save_state('split segment');
+                Action.split_segment(this.hovered_element);
+                this.hovered_element.update_last_pos();
+            }
         }
 
         if (this.hovered_element instanceof Label) {
@@ -140,12 +146,14 @@ class Controller {
                 }
             }
 
+            const was_selected = this.hovered_element.is_selected();
+
             ActionUtil.set_selected(
                 this.hovered_element,
-                this.is_selected(this.hovered_element.is_selected(), event.shiftKey, event.ctrlKey),
+                this.is_selected(was_selected, event.shiftKey, event.ctrlKey),
             );
 
-            if (this.hovered_element instanceof ConnectionNode && !(event.shiftKey || event.ctrlKey || event.altKey)) {
+            if (this.hovered_element instanceof ConnectionNode && !was_selected && !(event.shiftKey || event.ctrlKey || event.altKey)) {
                 this.saved_state_create_wire = Util.deep_copy(cs.context);
 
                 this.current_action = Enum.action.start_wire;
