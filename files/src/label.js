@@ -34,6 +34,10 @@ class Label extends Element {
         this.mousedown_detail_;
     }
 
+    resize(total_vec, resize_vec) {
+        Element.resize(this, total_vec, resize_vec);
+    }
+
     update_last_pos() {
         this.last_pos_ = Vec.copy(this.pos);
     }

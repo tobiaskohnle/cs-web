@@ -22,6 +22,10 @@ class Gate extends Element {
         this.color_outline_ = Color.from(cs.theme.outline);
     }
 
+    resize(total_vec, resize_vec) {
+        Element.resize(this, total_vec, resize_vec);
+    }
+
     allow_new_input_nodes() {
         return false;
     }

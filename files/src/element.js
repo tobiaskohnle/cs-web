@@ -91,44 +91,44 @@ class Element {
         throw 'implementation required @Element.move';
     }
 
-    resize(total_vec, resize_vec) {
-        const previous_pos = Vec.copy(this.pos);
-        const previous_size = Vec.copy(this.size);
+    static resize(element, total_vec, resize_vec) {
+        const previous_pos = Vec.copy(element.pos);
+        const previous_size = Vec.copy(element.size);
 
-        if (this.size) {
+        if (element.size) {
             if (resize_vec.x > 0) {
-                const new_size_x = Util.round(this.last_size_.x + total_vec.x);
+                const new_size_x = element.last_size_.x + Util.round(total_vec.x);
 
                 if (new_size_x > 0) {
-                    this.size.x = new_size_x;
+                    element.size.x = new_size_x;
                 }
             }
             if (resize_vec.y > 0) {
-                const new_size_y = Util.round(this.last_size_.y + total_vec.y);
+                const new_size_y = element.last_size_.y + Util.round(total_vec.y);
 
                 if (new_size_y > 0) {
-                    this.size.y = new_size_y;
+                    element.size.y = new_size_y;
                 }
             }
 
             if (resize_vec.x < 0) {
-                const new_size_x = Util.round(this.last_size_.x - total_vec.x);
+                const new_size_x = element.last_size_.x - Util.round(total_vec.x);
 
                 if (new_size_x > 0) {
-                    this.pos.x = Util.round(this.last_pos_.x + total_vec.x);
-                    this.size.x = new_size_x;
+                    element.pos.x = element.last_pos_.x + Util.round(total_vec.x);
+                    element.size.x = new_size_x;
                 }
             }
             if (resize_vec.y < 0) {
-                const new_size_y = Util.round(this.last_size_.y - total_vec.y);
+                const new_size_y = element.last_size_.y - Util.round(total_vec.y);
 
                 if (new_size_y > 0) {
-                    this.pos.y = Util.round(this.last_pos_.y + total_vec.y);
-                    this.size.y = new_size_y;
+                    element.pos.y = element.last_pos_.y + Util.round(total_vec.y);
+                    element.size.y = new_size_y;
                 }
             }
         }
 
-        return !previous_pos.equals(this.pos) || !previous_size.equals(this.size);
+        return !previous_pos.equals(element.pos) || !previous_size.equals(element.size);
     }
 }
