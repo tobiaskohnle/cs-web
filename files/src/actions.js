@@ -333,7 +333,7 @@ const Action = {
                 }
 
                 const output_node = segment.parent();
-                const joined_segment = new WireSegment();
+                const joined_segment = new WireSegment;
                 joined_segment.is_vertical = !segment.is_vertical;
                 joined_segment.offset = offset;
                 joined_segment.cancel_animation();
@@ -410,8 +410,6 @@ const Action = {
             const offset_a = neighbor_a.is_vertical ? offset_pos_a.y : offset_pos_a.x;
             const offset_b = neighbor_b.is_vertical ? offset_pos_b.y : offset_pos_b.x;
             segment.offset = (offset_a + offset_b) / 2;
-
-            return true;
         }
     },
 
