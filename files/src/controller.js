@@ -623,13 +623,6 @@ class Controller {
         }
     }
     paste() {
-        if (cs.config.use_system_clipboard) {
-            navigator.clipboard.readText().then(string => paste(string));
-        }
-        else {
-            paste(this.clipboard);
-        }
-
         const paste = clipboard => {
             if (!clipboard) {
                 return;
@@ -668,6 +661,13 @@ class Controller {
                     }
                 }
             }
+        }
+
+        if (cs.config.use_system_clipboard) {
+            navigator.clipboard.readText().then(string => paste(string));
+        }
+        else {
+            paste(this.clipboard);
         }
     }
 
