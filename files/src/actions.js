@@ -265,7 +265,7 @@ const Action = {
         }
         else if (end_element instanceof WireSegment) {
             // TEMP
-            // if (start_element instanceof OutputNode) return false;
+            if (start_element instanceof OutputNode) return false;
             if (end_element.parent().next_nodes.includes(start_element)) return false;
 
             new_wire_segments.last().normal_pos = null;
