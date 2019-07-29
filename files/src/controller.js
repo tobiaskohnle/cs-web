@@ -617,40 +617,53 @@ class Controller {
 
     copy() {
         this.clipboard = Util.extended_stringify(ActionGet.selected_elements());
+
+        if (cs.config.use_system_clipboard) {
+            navigator.clipboard.writeText(this.clipboard);
+        }
     }
     paste() {
-        if (!this.clipboard) {
-            return;
+        if (cs.config.use_system_clipboard) {
+            navigator.clipboard.readText().then(string => paste(string));
+        }
+        else {
+            paste(this.clipboard);
         }
 
-        ActionUtil.deselect_all();
-
-        const copied_elements = Util.extended_parse(this.clipboard);
-
-        const main_elements = copied_elements.filter(element => element instanceof Gate || element instanceof Label);
-        const offset = Vec.sub(Vec.round(this.mouse_world_pos), Util.bounding_rect(main_elements).pos);
-
-        const elements = ActionGet.elements(copied_elements);
-
-        ActionUtil.update_all_last_pos(elements);
-        ActionUtil.queue_tick_for(elements);
-
-        for (const element of elements) {
-            Action.add(element);
-
-            if (element instanceof ConnectionNode == false) {
-                element.move(offset);
+        const paste = clipboard => {
+            if (!clipboard) {
+                return;
             }
 
-            Action.select(element);
-        }
+            ActionUtil.deselect_all();
 
-        for (const element of copied_elements) {
-            if (element instanceof Gate) {
-                for (const output of element.outputs) {
-                    for (const next_node of output.next_nodes.copy()) {
-                        if (!copied_elements.includes(next_node.parent())) {
-                            Action.remove(next_node.attached_wire_segment());
+            const copied_elements = Util.extended_parse(clipboard);
+
+            const main_elements = copied_elements.filter(element => element instanceof Gate || element instanceof Label);
+            const offset = Vec.sub(Vec.round(this.mouse_world_pos), Util.bounding_rect(main_elements).pos);
+
+            const elements = ActionGet.elements(copied_elements);
+
+            ActionUtil.update_all_last_pos(elements);
+            ActionUtil.queue_tick_for(elements);
+
+            for (const element of elements) {
+                Action.add(element);
+
+                if (element instanceof ConnectionNode == false) {
+                    element.move(offset);
+                }
+
+                Action.select(element);
+            }
+
+            for (const element of copied_elements) {
+                if (element instanceof Gate) {
+                    for (const output of element.outputs) {
+                        for (const next_node of output.next_nodes.copy()) {
+                            if (!copied_elements.includes(next_node.parent())) {
+                                Action.remove(next_node.attached_wire_segment());
+                            }
                         }
                     }
                 }
