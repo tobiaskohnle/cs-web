@@ -146,12 +146,10 @@ class Controller {
             );
 
             if (this.hovered_element instanceof ConnectionNode && !(event.shiftKey || event.ctrlKey || event.altKey)) {
-                if (this.hovered_element.is_empty()) {
-                    this.saved_state_create_wire = Util.deep_copy(cs.context);
+                this.saved_state_create_wire = Util.deep_copy(cs.context);
 
-                    this.current_action = Enum.action.start_wire;
-                    this.wire_start_node = this.hovered_element;
-                }
+                this.current_action = Enum.action.start_wire;
+                this.wire_start_node = this.hovered_element;
             }
             else {
                 this.saved_state_move_elements = Util.deep_copy(cs.context);
@@ -219,9 +217,19 @@ class Controller {
         const world_move_vec = Vec.div(move_vec, cs.camera.anim_scale_);
 
         let filter;
-        if (this.current_action == Enum.action.create_wire || this.current_action == Enum.action.create_wire_segment) {
-            filter = element => ActionGet.nodes_connectable(this.wire_start_node, element)
-                || element instanceof WireSegment && !this.new_wire_segments.includes(element);
+        switch (this.current_action) {
+            case Enum.action.rewire_input:
+                filter = element => element instanceof InputNode;
+                break;
+            case Enum.action.rewire_output:
+                filter = element => element instanceof OutputNode;
+                break;
+
+            case Enum.action.create_wire:
+            case Enum.action.create_wire_segment:
+                filter = element => ActionGet.nodes_connectable(this.wire_start_node, element)
+                    || element instanceof WireSegment && !this.new_wire_segments.includes(element);
+                break;
         }
 
         const hovered_element = ActionGet.element_at(this.mouse_world_pos, filter);
@@ -229,6 +237,8 @@ class Controller {
 
         switch (this.current_action) {
             case Enum.action.none:
+            case Enum.action.rewire_input:
+            case Enum.action.rewire_output:
             case Enum.action.create_wire:
             case Enum.action.create_wire_segment:
             case Enum.action.edit_labels:
@@ -291,24 +301,85 @@ class Controller {
 
             case Enum.action.start_wire:
                 if (this.mouse_moved()) {
-                    this.current_action = Enum.action.create_wire;
+                    if (this.wire_start_node.is_empty()) {
+                        this.current_action = Enum.action.create_wire;
 
-                    this.new_wire_segments = [];
+                        this.new_wire_segments = [];
 
-                    const segment_a = Util.add_segment(this.new_wire_segments);
-                    segment_a.is_vertical = this.wire_start_node.is_vertical();
-                    const segment_b = Util.add_segment(this.new_wire_segments);
-                    segment_b.auto_offset_ = true;
-                    const segment_c = Util.add_segment(this.new_wire_segments);
+                        const segment_a = Util.add_segment(this.new_wire_segments);
+                        segment_a.is_vertical = this.wire_start_node.is_vertical();
+                        const segment_b = Util.add_segment(this.new_wire_segments);
+                        segment_b.auto_offset_ = true;
+                        const segment_c = Util.add_segment(this.new_wire_segments);
 
-                    segment_a.set_connected_pos(this.wire_start_node.anchor_pos_);
-                    segment_c.set_connected_pos(this.snapped_mouse_world_pos);
+                        segment_a.set_connected_pos(this.wire_start_node.anchor_pos_);
+                        segment_c.set_connected_pos(this.snapped_mouse_world_pos);
 
-                    segment_a.cancel_animation();
-                    segment_b.cancel_animation();
-                    segment_c.cancel_animation();
+                        segment_a.cancel_animation();
+                        segment_b.cancel_animation();
+                        segment_c.cancel_animation();
 
-                    Util.create_snapshot();
+                        Util.create_snapshot();
+                    }
+                    else if (this.wire_start_node instanceof InputNode) {
+                        this.current_action = Enum.action.rewire_input;
+                        Util.create_snapshot();
+                    }
+                    else if (this.wire_start_node instanceof OutputNode) {
+                        this.current_action = Enum.action.rewire_output;
+                        Util.create_snapshot();
+                    }
+                }
+                break;
+
+            case Enum.action.rewire_input:
+            case Enum.action.rewire_output:
+                if (other_hovered_element) {
+                    this.hovered_element = Util.load_snapshot(this.hovered_element);
+
+                    const rewired_segment = this.wire_start_node.attached_wire_segment();
+
+                    if (this.hovered_element) {
+                        if (this.hovered_element != this.wire_start_node) {
+                            switch (this.current_action) {
+                                case Enum.action.rewire_output:
+                                    this.hovered_element.wire_segments = this.wire_start_node.wire_segments;
+                                    this.wire_start_node.wire_segments = [];
+
+                                    this.hovered_element.next_nodes = this.wire_start_node.next_nodes;
+                                    this.wire_start_node.next_nodes = [];
+
+                                    ActionUtil.queue_tick_for(this.hovered_element.next_nodes);
+                                    break;
+
+                                case Enum.action.rewire_input:
+                                    const previous_node = this.wire_start_node.previous_node();
+
+                                    this.wire_start_node.clear();
+                                    Action.connect_nodes(previous_node, this.hovered_element);
+                                    break;
+                            }
+
+                            rewired_segment.set_connected_pos(this.hovered_element.anchor_pos_);
+                        }
+                    }
+                    else {
+                        switch (this.current_action) {
+                            case Enum.action.rewire_output:
+                                ActionUtil.queue_tick_for(this.wire_start_node.next_nodes);
+                                this.wire_start_node.next_nodes = [];
+
+                                this.new_wire_segments = this.wire_start_node.wire_segments;
+                                this.wire_start_node.wire_segments = [];
+                                break;
+
+                            case Enum.action.rewire_input:
+                                this.wire_start_node.clear();
+                                break;
+                        }
+
+                        rewired_segment.set_connected_pos(this.snapped_mouse_world_pos);
+                    }
                 }
                 break;
 
@@ -317,14 +388,7 @@ class Controller {
                 this.new_wire_segments.last().auto_offset_ = false;
 
                 if (other_hovered_element) {
-                    const last_snapped_mouse_world_pos = this.snapped_mouse_world_pos;
-                    const last_hovered_element = this.hovered_element;
-                    const last_new_wire_segments = Util.deep_copy(this.new_wire_segments);
-
-                    Util.load_snapshot();
-
-                    this.hovered_element = last_hovered_element &&
-                        ActionGet.elements().find(element => element.id_ == last_hovered_element.id_);
+                    this.hovered_element = Util.load_snapshot(this.hovered_element);
 
                     this.action_successful_create_wire = Action.create_wire(
                         this.new_wire_segments, this.wire_start_node, this.hovered_element,
@@ -448,8 +512,21 @@ class Controller {
                 this.current_action = Enum.action.none;
                 break;
 
-            case Enum.action.create_wire_segment:
+            case Enum.action.rewire_input:
+            case Enum.action.rewire_output:
+                if (!this.hovered_element) {
+                    Util.load_snapshot();
+                    Action.clear_node(this.wire_start_node);
+                }
+
+                this.save_state('rewire', this.saved_state_create_wire);
+
+                this.new_wire_segments = [];
+                this.current_action = Enum.action.none;
+                break;
+
             case Enum.action.create_wire:
+            case Enum.action.create_wire_segment:
                 if (this.action_successful_create_wire) {
                     if (this.new_wire_segments.length) {
                         if (this.new_wire_segments.last().offset_pos == this.snapped_mouse_world_pos) {

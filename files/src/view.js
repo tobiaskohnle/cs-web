@@ -43,15 +43,8 @@ const View = {
             gate.draw();
         }
 
-        // TEMP
-        if (cs.controller.current_action == Enum.action.create_wire_segment ||
-            cs.controller.current_action == Enum.action.create_wire
-        ) {
-            console.assert(cs.controller.wire_start_node);
-
-            for (const segment of cs.controller.new_wire_segments) {
-                segment.draw();
-            }
+        for (const segment of cs.controller.new_wire_segments) {
+            segment.draw();
         }
 
         context.restore();

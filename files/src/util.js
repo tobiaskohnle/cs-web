@@ -45,7 +45,7 @@ const Util = {
             snapped_mouse_world_pos: cs.controller.snapped_mouse_world_pos,
         });
     },
-    load_snapshot: function() {
+    load_snapshot: function(transfer_element) {
         if (this.snapshot) {
             cs.config.DEBUG_LOG && console.log(`%c<< LOADED SNAPSHOT`, 'color:#2d2; font-weight:bold');
 
@@ -55,9 +55,13 @@ const Util = {
             cs.controller.wire_start_node = snapshot.wire_start_node;
             cs.controller.new_wire_segments = snapshot.new_wire_segments;
             cs.controller.snapped_mouse_world_pos = snapshot.snapped_mouse_world_pos;
+
+            return transfer_element && ActionGet.elements().find(element => element.id_==transfer_element.id_);
         }
         else {
             cs.config.DEBUG_LOG && console.log(`%c<< LOADED SNAPSHOT (FAILED)`, 'color:#c229; font-weight:bold');
+
+            return transfer_element;
         }
     },
     clear_snapshot: function() {

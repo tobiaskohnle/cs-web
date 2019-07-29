@@ -12,6 +12,8 @@ const Enum = {
     action: {
         none:                          Symbol('action_none'),
         start_wire:                    Symbol('action_start_wire'),
+        rewire_input:                  Symbol('action_rewire_input'),
+        rewire_output:                 Symbol('action_rewire_output'),
         create_wire:                   Symbol('action_create_wire'),
         create_wire_segment:           Symbol('action_create_wire_segment'),
         create_selection_box:          Symbol('action_create_selection_box'),

@@ -272,9 +272,12 @@ const commands = {
                 Action.remove(cs.controller.imported_element);
                 break;
 
+            case Enum.action.rewire_input:
+            case Enum.action.rewire_output:
             case Enum.action.create_wire:
             case Enum.action.create_wire_segment:
                 Util.load_snapshot();
+                cs.controller.new_wire_segments = [];
                 break;
 
             case Enum.action.resize_elements:
