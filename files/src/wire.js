@@ -82,7 +82,7 @@ class WireSegment extends Element {
 
         const nodes = [parent, ...parent.next_nodes];
 
-        return nodes.find(node => node.attached_wire_segment() == this);
+        return nodes.find(node => this.is_connected_to(node));
     }
 
     set_offset(pos) {

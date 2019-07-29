@@ -299,10 +299,17 @@ const Action = {
     },
 
     restructure_segments: function() {
-        const segments = ActionGet.elements().filter(element => element instanceof WireSegment);
+        let segments;
 
-        Action.merge_segments(segments);
-        Action.center_invisible_segment(segments);
+        do {
+            segments = ActionGet.elements().filter(element => element instanceof WireSegment);
+        }
+        while(
+            Action.merge_segments             (segments) ||
+            Action.center_invisible_segment   (segments) ||
+            Action.merge_segments_same_output (segments) ||
+            Action.fix_sharp_corners          (segments)
+        );
     },
 
     merge_segments: function(segments) {
@@ -375,6 +382,8 @@ const Action = {
                 else {
                     Util.attach_segments(segment, joined_segment);
                 }
+
+                return true;
             }
         }
     },
@@ -401,6 +410,59 @@ const Action = {
             const offset_a = neighbor_a.is_vertical ? offset_pos_a.y : offset_pos_a.x;
             const offset_b = neighbor_b.is_vertical ? offset_pos_b.y : offset_pos_b.x;
             segment.offset = (offset_a + offset_b) / 2;
+
+            return true;
+        }
+    },
+
+    merge_segments_same_output: function(segments) {
+        for (const segment of segments) {
+            const attached_node = segment.attached_connection_node();
+
+            if (attached_node instanceof OutputNode == false) {
+                continue;
+            }
+
+            const attached_segment = attached_node.attached_wire_segment();
+
+            if (segment == attached_segment) {
+                continue;
+            }
+
+            Util.detach_segments(segment, attached_node);
+
+            for (const neighbor of segment.neighbor_segments) {
+                Util.detach_segments(neighbor, segment);
+                Util.attach_segments(neighbor, attached_segment);
+            }
+
+            return true;
+        }
+    },
+    fix_sharp_corners: function(segments) {
+        for (const segment of segments) {
+            const attached_node = segment.attached_connection_node();
+
+            if (!attached_node) {
+                continue;
+            }
+            if (segment.is_vertical == attached_node.is_vertical()) {
+                continue;
+            }
+
+            const new_segment = new WireSegment;
+            new_segment.is_vertical = attached_node.is_vertical();
+
+            Util.detach_segments(segment, attached_node);
+
+            Util.attach_segments(new_segment, segment);
+            Util.attach_segments(new_segment, attached_node);
+
+            segment.parent().wire_segments.push(new_segment);
+
+            new_segment.cancel_animation();
+
+            return true;
         }
     },
 };
