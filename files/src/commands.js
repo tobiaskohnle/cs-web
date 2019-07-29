@@ -370,6 +370,28 @@ const commands = {
     reset_view: function() {
         cs.controller.reset_view();
     },
+    zoom_to_selection: function() {
+        const elements = ActionGet.selected_elements().length ? ActionGet.selected_elements() : ActionGet.elements();
+
+        if (!elements.length) {
+            return;
+        }
+
+        const bounding_rect = Util.bounding_rect(elements);
+        const selection_center = Vec.div(bounding_rect.size, 2).add(bounding_rect.pos);
+
+        const camera_scale = Math.min(canvas.width/bounding_rect.size.x, canvas.height/bounding_rect.size.y);
+        cs.camera.scale = Math.min(camera_scale*.9, 42);
+
+        const camera_pos = Vec
+            .sub(
+                cs.camera.to_screenspace(selection_center),
+                cs.camera.to_screenspace(new Vec),
+            )
+            .mult(-1)
+            .add(View.screen_center());
+        cs.camera.pos.set(camera_pos);
+    },
     save: function() {
         Util.download_string(cs.controller.file_string(), 'file.circ');
     },

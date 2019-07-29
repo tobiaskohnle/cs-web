@@ -38,8 +38,11 @@ class Camera {
         context.scale(this.anim_scale_, this.anim_scale_);
     }
 
-    to_screenspace(vec) {
+    to_anim_screenspace(vec) {
         return Vec.mult(vec, this.anim_scale_).add(this.anim_pos_);
+    }
+    to_screenspace(vec) {
+        return Vec.mult(vec, this.scale).add(this.pos);
     }
 
     to_worldspace(vec) {

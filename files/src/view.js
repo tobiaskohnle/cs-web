@@ -51,7 +51,7 @@ const View = {
 
         switch (cs.controller.current_action) {
             case Enum.action.create_selection_box:
-                const pos_start =  cs.camera.to_screenspace(cs.controller.mouse_down_world_pos);
+                const pos_start =  cs.camera.to_anim_screenspace(cs.controller.mouse_down_world_pos);
                 const pos_end = cs.controller.mouse_pos;
 
                 const size = Vec.sub(pos_end, pos_start);

@@ -242,6 +242,9 @@
         <div class='menu-item' command='zoom_out'>
             <span>Zoom Out</span>
         </div>
+        <div class='menu-item' command='zoom_to_selection'>
+            <span>Zoom to Selection</span>
+        </div>
         <div class='menu-separator'></div>
         <div class='menu-item' command='toggle_sidebar'>
             <span>Toggle Sidebar</span>
@@ -781,20 +784,6 @@
                         <div class='setting-dropdown'></div>
                     </div>
                 </div>
-                <div class='setting' setting='keybinds.reset_view' type='keybind'>
-                    <div class='description'>
-                        <span class='title'>Reset View</span><br>
-                        Reset the visible area.<br>
-                        setting: <span class='code'>keybinds.reset_view</span>
-                    </div>
-
-                    <div class='setting-input-container'>
-                        <label class='keybind'>
-                            <input class='setting-input'>
-                        </label>
-                        <div class='setting-dropdown'></div>
-                    </div>
-                </div>
                 <div class='setting' setting='keybinds.toggle_sidebar' type='keybind'>
                     <div class='description'>
                         <span class='title'>Toggle Sidebar</span><br>
@@ -893,6 +882,20 @@
                         <div class='setting-dropdown'></div>
                     </div>
                 </div>
+                <div class='setting' setting='keybinds.reset_view' type='keybind'>
+                    <div class='description'>
+                        <span class='title'>Reset View</span><br>
+                        Reset the visible area.<br>
+                        setting: <span class='code'>keybinds.reset_view</span>
+                    </div>
+
+                    <div class='setting-input-container'>
+                        <label class='keybind'>
+                            <input class='setting-input'>
+                        </label>
+                        <div class='setting-dropdown'></div>
+                    </div>
+                </div>
                 <div class='setting' setting='keybinds.zoom_in' type='keybind'>
                     <div class='description'>
                         <span class='title'>Zoom In</span><br>
@@ -912,6 +915,20 @@
                         <span class='title'>Zoom Out</span><br>
                         Zoom out of the center of the screen.<br>
                         setting: <span class='code'>keybinds.zoom_out</span>
+                    </div>
+
+                    <div class='setting-input-container'>
+                        <label class='keybind'>
+                            <input class='setting-input'>
+                        </label>
+                        <div class='setting-dropdown'></div>
+                    </div>
+                </div>
+                <div class='setting' setting='keybinds.zoom_to_selection' type='keybind'>
+                    <div class='description'>
+                        <span class='title'>Zoom to Selection</span><br>
+                        Move and scale the camera to fit all selected elements on the screen.<br>
+                        setting: <span class='code'>keybinds.zoom_to_selection</span>
                     </div>
 
                     <div class='setting-input-container'>
