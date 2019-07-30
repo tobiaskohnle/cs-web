@@ -347,10 +347,13 @@ const commands = {
     },
     add_sidebar_elements: function() {
         cs.controller.read_files(function(result, file) {
-            // cs.context = Util.extended_parse(result);
-            // ActionUtil.queue_tick_all();
+            const file_path = file.webkitRelativePath.split('/');
 
-            const header = file.webkitRelativePath.split('/').at(-2);
+            if (!file_path.at(-1).endsWith('.circ')) {
+                return;
+            }
+
+            const header = file_path.at(-2);
 
             let category = cs.sidebar.categories.find(category => category.header==header);
             if (!category) {

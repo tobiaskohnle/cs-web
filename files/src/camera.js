@@ -7,8 +7,6 @@ class Camera {
 
         this.anim_pos_ = Vec.copy(pos);
         this.anim_scale_ = scale;
-
-        this.motion_ = new Vec;
     }
 
     reset() {
@@ -17,9 +15,6 @@ class Camera {
     }
 
     update(skip_animations=false) {
-        this.pos.add(Vec.mult(this.motion_, cs.config.camera_motion_anim_factor));
-        this.motion_.mult(cs.config.camera_motion_falloff_factor);
-
         this.anim_pos_ = View.anim_interpolate_vec(this.anim_pos_, this.pos, skip_animations||cs.config.camera_anim_factor);
         this.anim_scale_ = View.anim_interpolate(this.anim_scale_, this.scale, skip_animations||cs.config.camera_anim_factor);
     }

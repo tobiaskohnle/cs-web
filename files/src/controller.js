@@ -455,7 +455,7 @@ class Controller {
 
                 const pos = Vec.sub(this.mouse_world_pos, Vec.div(this.imported_element.size, 2));
                 this.imported_element.pos.set(pos).sub(new Vec(2,0)).round(this.imported_element.snap_size_);
-                this.imported_element.update(true);
+                ActionGet.elements([this.imported_element]).forEach(element => element.update(true));
                 this.imported_element.pos.add(new Vec(2,0));
 
                 this.moving_elements = [this.imported_element];

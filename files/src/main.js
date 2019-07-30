@@ -133,10 +133,9 @@ const default_config = {
     gates_push_wires: true,
     sticky_labels: true,
 
+    animations: true,
     anim_factor: .52,
     camera_anim_factor: .42,
-    camera_motion_anim_factor: .06,
-    camera_motion_falloff_factor: .91,
 
 
     sidebar_header_height: 40,
@@ -178,6 +177,7 @@ const default_config = {
         reopen_last_file:      'Ctrl+Shift+T',
         toggle_sidebar:        'Ctrl+b',
         toggle_fullscreen:     'f11',
+        download:              'Ctrl+d',
         save:                  'Ctrl+s',
         save_as:               'Ctrl+Shift+S',
         select_all:            'Shift+A',
@@ -188,9 +188,9 @@ const default_config = {
         zoom_in:               'Ctrl++',
         zoom_out:              'Ctrl+-',
         zoom_to_selection:     '',
-        debug_toggle:          '',
-        debug_step:            'tab, space',
-        debug_single_step:     'Shift+tab, Shift+space',
+        toggle_single_ticks:   '',
+        tick_step:             'tab, space',
+        tick_single_step:      'Shift+tab, Shift+space',
         open_settings:         '',
         escape:                'escape',
         enter:                 'enter',
