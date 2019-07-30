@@ -616,6 +616,13 @@ const ActionGet = {
             && (start_node instanceof OutputNode) != (end_node instanceof OutputNode);
     },
 
+    elements_connectable: function(start_element, end_element) {
+        return ActionGet.nodes_connectable(start_element, end_element)
+            || start_element instanceof InputNode
+            && end_element instanceof WireSegment
+            && !cs.controller.new_wire_segments.includes(end_element);
+    },
+
     all_elements: function() {
         return ActionGet.all_inner_elements(cs.context);
     },

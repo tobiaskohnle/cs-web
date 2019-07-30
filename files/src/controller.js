@@ -236,7 +236,7 @@ class Controller {
             case Enum.action.create_wire:
             case Enum.action.create_wire_segment:
                 filter = element => ActionGet.nodes_connectable(this.wire_start_node, element)
-                    || element instanceof WireSegment && !this.new_wire_segments.includes(element);
+                    || ActionGet.elements_connectable(this.wire_start_node, element);
                 break;
         }
 
