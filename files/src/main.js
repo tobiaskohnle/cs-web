@@ -203,6 +203,18 @@ function load_config() {
 
         if (loaded_config) {
             cs.config = Object.assign(Object.assign({}, default_config), JSON.parse(loaded_config));
+
+            setTimeout(function() {
+                const categories = Util.extended_parse(cs.config.sidebar);
+
+                if (categories instanceof Array) {
+                    cs.sidebar.categories = categories;
+                    cs.sidebar.update_sections();
+                }
+                else {
+                    console.log({categories});
+                }
+            });
             return;
         }
     }
@@ -212,6 +224,8 @@ function load_config() {
     console.warn('localStorage is unavailable');
 }
 function save_config() {
+    cs.config.sidebar = Util.extended_stringify(cs.sidebar.categories);
+
     localStorage.setItem('cs_config', JSON.stringify(cs.config));
 }
 

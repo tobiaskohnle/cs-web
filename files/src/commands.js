@@ -348,6 +348,9 @@ const commands = {
             ActionUtil.queue_tick_all();
         });
     },
+    reset_sidebar() {
+        cs.sidebar.load_categories();
+    },
     add_sidebar_elements() {
         cs.controller.read_files(function(result, file) {
             const file_path = file.webkitRelativePath.split('/');
