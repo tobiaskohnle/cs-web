@@ -780,9 +780,7 @@ class Controller {
 
     change_element(element) {
         for (const prev_element of ActionGet.selected_elements()) {
-            if (prev_element instanceof Gate ||
-                prev_element instanceof Label
-            ) {
+            if (prev_element instanceof Gate || prev_element instanceof Label) {
                 const new_element = Object.assign(Util.deep_copy(element), prev_element);
                 new_element.tag = element.tag;
 
