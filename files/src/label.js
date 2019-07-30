@@ -57,22 +57,22 @@ class Label extends Element {
             this.description_info() ? cs.theme.label_description_text :
             cs.theme.label_text;
 
-        let total_width = this.text_width(this.text);
-        this.anim_total_width_ = View.anim_interpolate(this.anim_total_width_, total_width, cs.config.label_anim_factor);
+        this.total_width_ = this.text_width(this.text);
+        this.anim_total_width_ = View.anim_interpolate(this.anim_total_width_, this.total_width_, cs.config.label_anim_factor);
 
-        const selection_bounds = this.text_bounds(this.selection_start, this.selection_width());
+        this.selection_bounds_ = this.text_bounds(this.selection_start, this.selection_width());
 
-        if (!this.anim_selection_bounds_) this.anim_selection_bounds_ = selection_bounds;
-        this.anim_selection_bounds_.start = View.anim_interpolate(this.anim_selection_bounds_.start, selection_bounds.start, cs.config.label_anim_factor);
-        this.anim_selection_bounds_.end = View.anim_interpolate(this.anim_selection_bounds_.end, selection_bounds.end, cs.config.label_anim_factor);
+        if (!this.anim_selection_bounds_) this.anim_selection_bounds_ = this.selection_bounds_;
+        this.anim_selection_bounds_.start = View.anim_interpolate(this.anim_selection_bounds_.start, this.selection_bounds_.start, cs.config.label_anim_factor);
+        this.anim_selection_bounds_.end = View.anim_interpolate(this.anim_selection_bounds_.end, this.selection_bounds_.end, cs.config.label_anim_factor);
 
-        const caret_bounds = this.text_bounds(this.caret, 0);
-        caret_bounds.start -= cs.config.label_caret_width/2 * this.font_size;
-        caret_bounds.end = cs.config.label_caret_width * this.font_size + caret_bounds.start;
+        this.caret_bounds_ = this.text_bounds(this.caret, 0);
+        this.caret_bounds_.start -= cs.config.label_caret_width/2 * this.font_size;
+        this.caret_bounds_.end = cs.config.label_caret_width * this.font_size + this.caret_bounds_.start;
 
-        if (!this.anim_caret_bounds_) this.anim_caret_bounds_ = caret_bounds;
-        this.anim_caret_bounds_.start = View.anim_interpolate(this.anim_caret_bounds_.start, caret_bounds.start, cs.config.label_anim_factor);
-        this.anim_caret_bounds_.end = View.anim_interpolate(this.anim_caret_bounds_.end, caret_bounds.end, cs.config.label_anim_factor);
+        if (!this.anim_caret_bounds_) this.anim_caret_bounds_ = this.caret_bounds_;
+        this.anim_caret_bounds_.start = View.anim_interpolate(this.anim_caret_bounds_.start, this.caret_bounds_.start, cs.config.label_anim_factor);
+        this.anim_caret_bounds_.end = View.anim_interpolate(this.anim_caret_bounds_.end, this.caret_bounds_.end, cs.config.label_anim_factor);
 
         let width = 0;
         for (let x = 0; x < this.text.length; x++) {

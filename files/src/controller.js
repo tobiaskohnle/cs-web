@@ -679,9 +679,14 @@ class Controller {
         return true;
     }
 
-    read_files(onload) {
+    read_files(onload, open_directory=false) {
         const input = document.createElement('input');
         input.type = 'file';
+
+        if (open_directory) {
+            input.setAttribute('directory', '');
+            input.setAttribute('webkitdirectory', '');
+        }
 
         input.click();
 
@@ -692,7 +697,7 @@ class Controller {
                 const reader = new FileReader;
 
                 reader.addEventListener('load', function(event) {
-                    onload(reader.result);
+                    onload(reader.result, file);
                 });
 
                 reader.readAsText(file);
@@ -796,74 +801,14 @@ class Controller {
 
     add_element(element) {
         element.pos.set(this.mouse_down_world_pos).round();
-
         element.run_init_animation();
-
         Action.add(element);
     }
 
     add_custom_gate(gate) {
-        this.add_element(gate);
-
-        const inner_elements = gate.inner_elements.sorted((a,b) => a.pos.y==b.pos.y ? a.pos.x-b.pos.x : a.pos.y-b.pos.y);
-
-        for (const inner_element of inner_elements) {
-            if (inner_element instanceof Label) {
-                const special_info = inner_element.special_info();
-
-                if (special_info) {
-                    if (special_info.tag) {
-                        gate.tag = special_info.tag;
-                    }
-                    if (special_info.size) {
-                        gate.size = special_info.size;
-                    }
-                }
-                else {
-                    const nearest_gate = inner_element.nearest_gate(inner_elements);
-
-                    if (nearest_gate) {
-                        nearest_gate.name = inner_element.text;
-                    }
-                }
-            }
-        }
-
-        for (const inner_element of inner_elements) {
-            if (inner_element instanceof InputGate) {
-                for (const output of inner_element.outputs) {
-                    const input = gate.add_input_node();
-
-                    input.is_inverted = output.is_inverted;
-                    input.tag = inner_element.name || null;
-
-                    input.next_nodes = output.next_nodes;
-                    output.next_nodes = [];
-
-                    if (inner_element instanceof InputPulse) {
-                        input.is_rising_edge = true;
-                    }
-                }
-            }
-
-            if (inner_element instanceof OutputGate) {
-                for (const input of inner_element.inputs) {
-                    const output = gate.add_output_node();
-
-                    output.is_inverted = input.is_inverted;
-                    output.tag = inner_element.name || null;
-
-                    const prev_node = input.previous_node();
-
-                    if (prev_node) {
-                        prev_node.next_nodes.remove(input);
-                        prev_node.next_nodes.push(output);
-                    }
-                }
-            }
-        }
-
+        Util.convert_to_custom_gate(gate);
         gate.run_init_animation();
+        this.add_element(gate);
     }
 
     reset_view() {

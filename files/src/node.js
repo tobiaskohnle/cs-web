@@ -152,8 +152,8 @@ class ConnectionNode extends Element {
         return !this.dir.x;
     }
 
-    previous_node() {
-        return ActionGet.all_elements()
+    previous_node(elements=ActionGet.all_elements()) {
+        return elements
             .filter(element => element instanceof Gate)
             .flatMap(gate => [...gate.inputs, ...gate.outputs])
             .find(node => node.next_nodes && node.next_nodes.includes(this));

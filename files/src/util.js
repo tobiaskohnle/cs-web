@@ -192,6 +192,66 @@ const Util = {
         }
     },
 
+    convert_to_custom_gate(custom_gate) {
+        const inner_elements = custom_gate.inner_elements.sorted((a,b) => a.pos.y==b.pos.y ? a.pos.x-b.pos.x : a.pos.y-b.pos.y);
+
+        for (const inner_element of inner_elements) {
+            if (inner_element instanceof Label) {
+                const special_info = inner_element.special_info();
+
+                if (special_info) {
+                    if (special_info.tag) {
+                        custom_gate.tag = special_info.tag;
+                    }
+                    if (special_info.size) {
+                        custom_gate.size = special_info.size;
+                    }
+                }
+                else {
+                    const nearest_gate = inner_element.nearest_gate(inner_elements);
+
+                    if (nearest_gate) {
+                        nearest_gate.name = inner_element.text;
+                    }
+                }
+            }
+        }
+
+        for (const inner_element of inner_elements) {
+            if (inner_element instanceof InputGate) {
+                for (const output of inner_element.outputs) {
+                    const input = custom_gate.add_input_node();
+
+                    input.is_inverted = output.is_inverted;
+                    input.tag = inner_element.name || null;
+
+                    input.next_nodes = output.next_nodes;
+                    output.next_nodes = [];
+
+                    if (inner_element instanceof InputPulse) {
+                        input.is_rising_edge = true;
+                    }
+                }
+            }
+
+            if (inner_element instanceof OutputGate) {
+                for (const input of inner_element.inputs) {
+                    const output = custom_gate.add_output_node();
+
+                    output.is_inverted = input.is_inverted;
+                    output.tag = inner_element.name || null;
+
+                    const prev_node = input.previous_node(inner_elements);
+
+                    if (prev_node) {
+                        prev_node.next_nodes.remove(input);
+                        prev_node.next_nodes.push(output);
+                    }
+                }
+            }
+        }
+    },
+
     bounding_rect: function(elements) {
         const min_pos = new Vec(Math.min());
         const max_pos = new Vec(Math.max());

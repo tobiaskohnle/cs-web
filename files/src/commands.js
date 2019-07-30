@@ -345,6 +345,30 @@ const commands = {
             ActionUtil.queue_tick_all();
         });
     },
+    add_sidebar_elements: function() {
+        cs.controller.read_files(function(result, file) {
+            // cs.context = Util.extended_parse(result);
+            // ActionUtil.queue_tick_all();
+
+            const header = file.webkitRelativePath.split('/').at(-2);
+
+            let category = cs.sidebar.categories.find(category => category.header==header);
+            if (!category) {
+                cs.sidebar.categories.push(category = {header, elements:[]});
+            }
+
+            let element = Util.extended_parse(result);
+
+            if (element instanceof CustomGate) {
+                Util.convert_to_custom_gate(element);
+            }
+
+            category.elements.push(element);
+
+            cs.sidebar.update_sections();
+            cs.sidebar.update_elements();
+        }, true);
+    },
     paste: function() {
         cs.controller.save_state('(command) paste');
         cs.controller.paste();

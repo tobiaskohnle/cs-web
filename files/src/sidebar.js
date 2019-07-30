@@ -56,6 +56,11 @@ class Sidebar {
             },
         ];
 
+        this.update_sections();
+        this.update_elements();
+    }
+
+    update_sections() {
         this.sections = this.categories.map(category => {
             let section_height = 0;
 
@@ -67,8 +72,6 @@ class Sidebar {
 
             return {height:section_height, category, elements_sections};
         });
-
-        this.update_elements();
     }
 
     header_position(section, scroll) {
