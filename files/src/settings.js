@@ -4,12 +4,12 @@ const Settings = {
     is_open: true,
     currently_edited_setting: null,
 
-    reset: function() {
+    reset() {
         cs.config = Util.deep_copy(default_config);
         Settings.import_all_settings();
         Settings.clear_filter();
     },
-    reset_current_setting: function() {
+    reset_current_setting() {
         const setting = Settings.currently_edited_setting;
 
         if (setting) {
@@ -18,7 +18,7 @@ const Settings = {
             Settings.export_setting(setting);
         }
     },
-    record_current_keybind: function() {
+    record_current_keybind() {
         const setting = Settings.currently_edited_setting;
 
         if (setting) {
@@ -29,7 +29,7 @@ const Settings = {
         }
     },
 
-    import_all_settings: function(config=cs.config, key_prefix='') {
+    import_all_settings(config=cs.config, key_prefix='') {
         for (const key in config) {
             const value = config[key];
 
@@ -41,7 +41,7 @@ const Settings = {
             }
         }
     },
-    import_setting: function(setting) {
+    import_setting(setting) {
         const setting_element = document.querySelector(`.settings-container [setting='${setting}']`);
         if (setting_element) {
             const input = setting_element.querySelector('input, select');
@@ -55,7 +55,7 @@ const Settings = {
             }
         }
     },
-    export_setting: function(setting) {
+    export_setting(setting) {
         const setting_element = document.querySelector(`.settings-container [setting='${setting}']`);
         const input = setting_element.querySelector('input, select');
 
@@ -84,30 +84,30 @@ const Settings = {
         Util.set_nested(cs.config, setting, value);
     },
 
-    clear_filter: function() {
+    clear_filter() {
         document.querySelector('.searchbar').value = '';
         Settings.filter_settings('');
     },
 
-    load: function() {
+    load() {
         Settings.add_event_listeners();
         Settings.hide();
     },
 
-    show: function() {
+    show() {
         Settings.is_open = true;
         Settings.import_all_settings();
         const settings_container = document.querySelector('.settings-container');
         settings_container.style.display = '';
     },
-    hide: function() {
+    hide() {
         Settings.is_open = false;
         Settings.hide_tooltip();
         const settings_container = document.querySelector('.settings-container');
         settings_container.style.display = 'none';
     },
 
-    key_down: function(event) {
+    key_down(event) {
         if (Settings.currently_edited_setting) {
             if (event.key == 'Escape') {
                 Util.set_nested(cs.config, Settings.currently_edited_setting, Settings.currently_edited_setting_previous_value);
@@ -147,7 +147,7 @@ const Settings = {
         return true;
     },
 
-    edit_keybind: function(event) {
+    edit_keybind(event) {
         if (event.key != 'Escape' && event.key != 'Enter') {
             let modifier_string = '';
 
@@ -163,7 +163,7 @@ const Settings = {
     },
 
     recording_element: null,
-    set_recording_element: function(element) {
+    set_recording_element(element) {
         if (Settings.recording_element) {
             Settings.recording_element.classList.remove('recording');
             Settings.recording_element.removeEventListener('keydown', Settings.edit_keybind);
@@ -177,7 +177,7 @@ const Settings = {
         }
     },
 
-    show_tooltip: function(beneath_element, text) {
+    show_tooltip(beneath_element, text) {
         const tooltip = document.querySelector('#tooltip');
 
         const bounds = beneath_element.getBoundingClientRect();
@@ -189,13 +189,13 @@ const Settings = {
 
         tooltip.style.display = 'unset';
     },
-    hide_tooltip: function() {
+    hide_tooltip() {
         const tooltip = document.querySelector('#tooltip');
 
         tooltip.style.display = 'none';
     },
 
-    add_event_listeners: function() {
+    add_event_listeners() {
         const settings_container = document.querySelector('.settings-container');
 
         settings_container.addEventListener('click', function(event) {
@@ -273,11 +273,11 @@ const Settings = {
         });
     },
 
-    match_fuzzy: function(pattern, text) {
+    match_fuzzy(pattern, text) {
         return new RegExp(pattern.split('').join('.*'), 'i').test(text);
     },
 
-    filter_settings: function(pattern) {
+    filter_settings(pattern) {
         for (const element of document.querySelectorAll('.setting-header')) {
             element.style.display = pattern ? 'none' : '';
         }

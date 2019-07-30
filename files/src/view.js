@@ -1,7 +1,7 @@
 'use strict';
 
 const View = {
-    update: function() {
+    update() {
         requestAnimationFrame(View.update);
 
         cs.camera.update();
@@ -24,7 +24,7 @@ const View = {
         View.draw();
     },
 
-    draw: function() {
+    draw() {
         View.clear_screen();
 
         switch (cs.config.grid_style) {
@@ -84,11 +84,11 @@ const View = {
         }
     },
 
-    clear_screen: function() {
+    clear_screen() {
         context.clearRect(0, 0, canvas.width, canvas.height);
     },
 
-    draw_grid_dots: function() {
+    draw_grid_dots() {
         const alpha = View.grid_alpha();
 
         if (alpha <= 0) {
@@ -106,7 +106,7 @@ const View = {
 
         context.globalAlpha = 1;
     },
-    draw_grid_lines: function() {
+    draw_grid_lines() {
         const alpha = View.grid_alpha();
 
         if (alpha <= 0) {
@@ -133,15 +133,15 @@ const View = {
         context.globalAlpha = 1;
     },
 
-    grid_alpha: function() {
+    grid_alpha() {
         return Util.map(cs.camera.anim_scale_, 7, 15, 0, 1);
     },
 
-    screen_center: function() {
+    screen_center() {
         return new Vec(canvas.width/2, canvas.height/2);
     },
 
-    update_title: function() {
+    update_title() {
         let title = 'cs \u2013 web';
 
         if (cs.config.current_file && cs.config.current_file.name) {
@@ -151,15 +151,15 @@ const View = {
         document.title = title;
     },
 
-    anim_interpolate: function(value, target, factor=false) {
+    anim_interpolate(value, target, factor=false) {
         if (value == null) return target;
         return value + (target-value) * (!cs.config.animations||factor||cs.config.anim_factor);
     },
-    anim_interpolate_mod: function(value, target, factor=false) {
+    anim_interpolate_mod(value, target, factor=false) {
         const offset = Util.mod(target-value-.5, 1)-.5;
         return value + offset * (!cs.config.animations||factor||cs.config.anim_factor);
     },
-    anim_interpolate_vec: function(value, target, factor=false) {
+    anim_interpolate_vec(value, target, factor=false) {
         if (target == null) return target;
         if (value == null || factor == true) return Vec.copy(target);
         return value.set(Vec.add(value, Vec.mult(Vec.sub(target, value), !cs.config.animations||factor||cs.config.anim_factor)));

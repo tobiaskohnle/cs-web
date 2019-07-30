@@ -35,7 +35,7 @@ if (!String.prototype.matchAll) {
 
 const Util = {
     // TEMP
-    create_snapshot: function() {
+    create_snapshot() {
         cs.config.DEBUG_LOG && console.log(`%c>> CREATED SNAPSHOT`, 'color:#fb2; font-weight:bold');
 
         this.snapshot = Util.deep_copy({
@@ -45,7 +45,7 @@ const Util = {
             snapped_mouse_world_pos: cs.controller.snapped_mouse_world_pos,
         });
     },
-    load_snapshot: function(transfer_element) {
+    load_snapshot(transfer_element) {
         if (this.snapshot) {
             cs.config.DEBUG_LOG && console.log(`%c<< LOADED SNAPSHOT`, 'color:#2d2; font-weight:bold');
 
@@ -64,23 +64,23 @@ const Util = {
             return transfer_element;
         }
     },
-    clear_snapshot: function() {
+    clear_snapshot() {
         this.snapshot = null;
     },
 
-    round: function(number, factor=1) {
+    round(number, factor=1) {
         return Math.round(number / factor) * factor;
     },
-    mod: function(a, n) {
+    mod(a, n) {
         return a - n * Math.floor(a / n);
     },
-    map: function(v, s0,s1, d0,d1) {
+    map(v, s0,s1, d0,d1) {
         return (d0-d1) / (s0-s1) * (v-s0) + d0;
     },
-    clamp: function(v, min,max) {
+    clamp(v, min,max) {
         return Math.min(max, Math.max(min, v));
     },
-    between: function(v, min,max) {
+    between(v, min,max) {
         return min <= v && v < max;
     },
 
@@ -90,7 +90,7 @@ const Util = {
         };
     },
 
-    get_nested: function(object, nested_key) {
+    get_nested(object, nested_key) {
         let result = object;
 
         for (const key of nested_key.split('.')) {
@@ -99,7 +99,7 @@ const Util = {
 
         return result;
     },
-    set_nested: function(object, nested_key, value) {
+    set_nested(object, nested_key, value) {
         let result = object;
         let last_result = null;
 
@@ -117,21 +117,21 @@ const Util = {
         last_result[keys.last()] = value;
     },
 
-    side_index: function(vec) {
+    side_index(vec) {
         if (vec.x > 0) return Enum.side.east;
         if (vec.y > 0) return Enum.side.south;
         if (vec.x < 0) return Enum.side.west;
         if (vec.y < 0) return Enum.side.north;
     },
 
-    rects_overlap: function(pos_a, size_a, pos_b, size_b) {
+    rects_overlap(pos_a, size_a, pos_b, size_b) {
         return Math.min(pos_a.x, pos_a.x+size_a.x) <= Math.max(pos_b.x, pos_b.x+size_b.x)
             && Math.max(pos_a.x, pos_a.x+size_a.x) >= Math.min(pos_b.x, pos_b.x+size_b.x)
             && Math.min(pos_a.y, pos_a.y+size_a.y) <= Math.max(pos_b.y, pos_b.y+size_b.y)
             && Math.max(pos_a.y, pos_a.y+size_a.y) >= Math.min(pos_b.y, pos_b.y+size_b.y);
     },
 
-    download_string: function(text, file_name) {
+    download_string(text, file_name) {
         const blob = new Blob([text], {type: 'txt'});
 
         const a = document.createElement('a');
@@ -146,7 +146,7 @@ const Util = {
         URL.revokeObjectURL(a.href);
     },
 
-    attach_segments: function(segment_a, segment_b) {
+    attach_segments(segment_a, segment_b) {
         if (segment_a instanceof WireSegment && segment_b instanceof WireSegment) {
             segment_a.neighbor_segments.push(segment_b);
             segment_b.neighbor_segments.push(segment_a);
@@ -158,7 +158,7 @@ const Util = {
             segment_b.set_connected_pos(segment_a.anchor_pos_);
         }
     },
-    detach_segments: function(segment_a, segment_b) {
+    detach_segments(segment_a, segment_b) {
         if (segment_a instanceof WireSegment && segment_b instanceof WireSegment) {
             segment_a.neighbor_segments.remove(segment_b);
             segment_b.neighbor_segments.remove(segment_a);
@@ -171,7 +171,7 @@ const Util = {
         }
     },
 
-    add_segment: function(segments) {
+    add_segment(segments) {
         const segment = new WireSegment;
 
         if (segments.length) {
@@ -183,7 +183,7 @@ const Util = {
         segments.push(segment);
         return segment;
     },
-    remove_segment: function(segments) {
+    remove_segment(segments) {
         if (segments.length >= 2) {
             Util.detach_segments(segments.pop(), segments.last());
         }
@@ -252,7 +252,7 @@ const Util = {
         }
     },
 
-    bounding_rect: function(elements) {
+    bounding_rect(elements) {
         const min_pos = new Vec(Math.min());
         const max_pos = new Vec(Math.max());
 
@@ -272,7 +272,7 @@ const Util = {
         };
     },
 
-    replace_reference: function(element, reference, new_reference) {
+    replace_reference(element, reference, new_reference) {
         const references = [];
 
         (function replace(element) {
@@ -298,7 +298,7 @@ const Util = {
         })(element);
     },
 
-    deep_copy: function(element) {
+    deep_copy(element) {
         const references = [canvas, sidebar_canvas];
         const cached_results = [canvas, sidebar_canvas];
 
@@ -333,7 +333,7 @@ const Util = {
         })(element);
     },
 
-    extended_stringify: function(value, replacer=null, space=null) {
+    extended_stringify(value, replacer=null, space=null) {
         const references = [];
 
         return JSON.stringify(function prepare(value) {
@@ -370,7 +370,7 @@ const Util = {
         }(Util.deep_copy(value)), replacer, space);
     },
 
-    extended_parse: function(value, reviver=null) {
+    extended_parse(value, reviver=null) {
         const references = [];
 
         return (function edit(value) {

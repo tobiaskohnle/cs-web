@@ -138,133 +138,133 @@ function is_command_enabled(command) {
 }
 
 const commands = {
-    open_settings: function() {
+    open_settings() {
         Settings.show();
     },
-    add_and_gate: function() {
+    add_and_gate() {
         cs.controller.save_state('(command) add_and_gate');
         cs.controller.add_element(new AndGate);
     },
-    add_xor_gate: function() {
+    add_xor_gate() {
         cs.controller.save_state('(command) add_xor_gate');
         cs.controller.add_element(new XorGate);
     },
-    add_input_node: function() {
+    add_input_node() {
         cs.controller.save_state('(command) add_input_node');
         ActionUtil.add_input_node_to_selected();
     },
-    remove_input_node: function() {
+    remove_input_node() {
         cs.controller.save_state('(command) remove_input_node');
         ActionUtil.remove_input_node_from_selected();
     },
-    add_input_switch: function() {
+    add_input_switch() {
         cs.controller.save_state('(command) add_input_switch');
         cs.controller.add_element(new InputSwitch);
     },
-    add_input_button: function() {
+    add_input_button() {
         cs.controller.save_state('(command) add_input_button');
         cs.controller.add_element(new InputButton);
     },
-    add_input_pulse: function() {
+    add_input_pulse() {
         cs.controller.save_state('(command) add_input_pulse');
         cs.controller.add_element(new InputPulse);
     },
-    add_clock: function() {
+    add_clock() {
         cs.controller.save_state('(command) add_clock');
         cs.controller.add_element(new Clock);
     },
-    add_not_gate: function() {
+    add_not_gate() {
         cs.controller.save_state('(command) add_not_gate');
         let nop_gate = new NopGate;
         cs.controller.add_element(nop_gate);
 
         ActionUtil.queue_tick_for(nop_gate.outputs);
     },
-    add_or_gate: function() {
+    add_or_gate() {
         cs.controller.save_state('(command) add_or_gate');
         cs.controller.add_element(new OrGate);
     },
-    add_output_light: function() {
+    add_output_light() {
         cs.controller.save_state('(command) add_output_light');
         cs.controller.add_element(new OutputLight);
     },
-    add_segment_display: function() {
+    add_segment_display() {
         cs.controller.save_state('(command) add_segment_display');
         cs.controller.add_element(new SegmentDisplay);
     },
-    add_label: function() {
+    add_label() {
         cs.controller.save_state('(command) add_label');
         const label = new Label;
         label.text = 'Text...';
         cs.controller.add_element(label);
     },
-    change_type_and_gate: function() {
+    change_type_and_gate() {
         cs.controller.save_state('(command) change_type_and_gate');
         cs.controller.change_element(new AndGate);
     },
-    change_type_xor_gate: function() {
+    change_type_xor_gate() {
         cs.controller.save_state('(command) change_type_xor_gate');
         cs.controller.change_element(new XorGate);
     },
-    change_type_input_switch: function() {
+    change_type_input_switch() {
         cs.controller.save_state('(command) change_type_input_switch');
         cs.controller.change_element(new InputSwitch);
     },
-    change_type_input_button: function() {
+    change_type_input_button() {
         cs.controller.save_state('(command) change_type_input_button');
         cs.controller.change_element(new InputButton);
     },
-    change_type_input_pulse: function() {
+    change_type_input_pulse() {
         cs.controller.save_state('(command) change_type_input_pulse');
         cs.controller.change_element(new InputPulse);
     },
-    change_type_clock: function() {
+    change_type_clock() {
         cs.controller.save_state('(command) change_type_clock');
         cs.controller.change_element(new Clock);
     },
-    change_type_not_gate: function() {
+    change_type_not_gate() {
         cs.controller.save_state('(command) change_type_not_gate');
         let nop_gate = new NopGate;
         nop_gate.outputs[0].is_inverted = true;
         cs.controller.change_element(nop_gate);
     },
-    change_type_or_gate: function() {
+    change_type_or_gate() {
         cs.controller.save_state('(command) change_type_or_gate');
         cs.controller.change_element(new OrGate);
     },
-    change_type_output_light: function() {
+    change_type_output_light() {
         cs.controller.save_state('(command) change_type_output_light');
         cs.controller.change_element(new OutputLight);
     },
-    change_type_segment_display: function() {
+    change_type_segment_display() {
         cs.controller.save_state('(command) change_type_segment_display');
         cs.controller.change_element(new SegmentDisplay);
     },
-    change_type_text_label: function() {
+    change_type_text_label() {
         cs.controller.save_state('(command) change_type_text_label');
         cs.controller.change_element(new Label);
     },
-    clear_recent_file_list: function() {
+    clear_recent_file_list() {
     },
-    clear_recently_imported_list: function() {
+    clear_recently_imported_list() {
     },
-    view_content: function() {
+    view_content() {
         cs.controller.view_content();
     },
-    copy: function() {
+    copy() {
         cs.controller.copy();
     },
-    cut: function() {
+    cut() {
         cs.controller.save_state('(command) cut');
         cs.controller.copy();
         ActionUtil.remove_selected();
     },
-    delete: function() {
+    delete() {
         cs.controller.save_state('(command) delete');
         cs.controller.current_action = Enum.action.none;
         ActionUtil.remove_selected();
     },
-    escape: function() {
+    escape() {
         Menu.close();
 
         switch (cs.controller.current_action) {
@@ -292,11 +292,11 @@ const commands = {
         ActionUtil.deselect_all();
         cs.controller.current_action = Enum.action.none;
     },
-    enter: function() {
+    enter() {
         ActionUtil.deselect_all();
         cs.controller.current_action = Enum.action.none;
     },
-    toggle_fullscreen: function() {
+    toggle_fullscreen() {
         if (document.fullscreen) {
             document.exitFullscreen();
         }
@@ -307,48 +307,48 @@ const commands = {
             document.body.requestFullscreen();
         }
     },
-    toggle_sidebar: function() {
+    toggle_sidebar() {
         Menu.show_sidebar(!Menu.sidebar_open);
     },
-    grid_dots: function() {
+    grid_dots() {
         cs.config.grid_style = Enum.grid_style.dots;
     },
-    grid_none: function() {
+    grid_none() {
         cs.config.grid_style = Enum.grid_style.none;
     },
-    grid_lines: function() {
+    grid_lines() {
         cs.config.grid_style = Enum.grid_style.lines;
     },
-    import: function() {
+    import() {
         cs.controller.save_state('(command) import');
         cs.controller.read_files(function(result) {
             cs.controller.add_custom_gate(Util.extended_parse(result));
             ActionUtil.queue_tick_all();
         });
     },
-    instant_import: function() {
+    instant_import() {
         const file_string = cs.controller.file_string();
         cs.controller.add_custom_gate(Util.extended_parse(file_string));
         ActionUtil.queue_tick_all();
     },
-    invert: function() {
+    invert() {
         cs.controller.save_state('(command) invert');
         ActionUtil.invert_selected_nodes();
     },
-    new: function() {
+    new() {
         cs.config.current_file = null;
         View.update_title();
 
         cs.controller.save_state('(command) new');
         cs.controller.reset();
     },
-    open_file: function() {
+    open_file() {
         cs.controller.read_files(function(result) {
             cs.context = Util.extended_parse(result);
             ActionUtil.queue_tick_all();
         });
     },
-    add_sidebar_elements: function() {
+    add_sidebar_elements() {
         cs.controller.read_files(function(result, file) {
             const file_path = file.webkitRelativePath.split('/');
 
@@ -375,22 +375,22 @@ const commands = {
             cs.sidebar.update_elements();
         }, true);
     },
-    paste: function() {
+    paste() {
         cs.controller.save_state('(command) paste');
         cs.controller.paste();
     },
-    undo: function() {
+    undo() {
         cs.controller.undo();
     },
-    redo: function() {
+    redo() {
         cs.controller.redo();
     },
-    reopen_last_file: function() {
+    reopen_last_file() {
     },
-    reset_view: function() {
+    reset_view() {
         cs.controller.reset_view();
     },
-    zoom_to_selection: function() {
+    zoom_to_selection() {
         const elements = ActionGet.selected_elements().length ? ActionGet.selected_elements() : ActionGet.elements();
 
         if (!elements.length) {
@@ -412,7 +412,7 @@ const commands = {
             .add(View.screen_center());
         cs.camera.pos.set(camera_pos);
     },
-    save: function(save_as) {
+    save(save_as) {
         if (!cs.config.current_file) {
             cs.config.current_file = {};
         }
@@ -439,18 +439,18 @@ const commands = {
 
         return true;
     },
-    save_as: function() {
+    save_as() {
         commands.save(true);
     },
-    download: function() {
+    download() {
         if (commands.save()) {
             Util.download_string(cs.config.current_file.content, cs.config.current_file.name);
         }
     },
-    select_all: function() {
+    select_all() {
         ActionUtil.select_all();
     },
-    toggle_selection: function() {
+    toggle_selection() {
         if (ActionGet.elements().every(element => element.is_selected())) {
             ActionUtil.deselect_all();
         }
@@ -458,39 +458,39 @@ const commands = {
             ActionUtil.select_all();
         }
     },
-    deselect_all: function() {
+    deselect_all() {
         ActionUtil.deselect_all();
     },
-    split_segment: function() {
+    split_segment() {
         cs.controller.save_state('(command) split_segment');
         ActionUtil.split_selected_segments();
     },
-    theme_dark: function() {
+    theme_dark() {
         Menu.select_theme('dark');
     },
-    theme_light: function() {
+    theme_light() {
         Menu.select_theme('light');
     },
-    zoom_in: function() {
+    zoom_in() {
         cs.camera.scale_at(View.screen_center(), cs.config.scale_factor);
     },
-    zoom_out: function() {
+    zoom_out() {
         cs.camera.scale_at(View.screen_center(), 1/cs.config.scale_factor);
     },
-    debug_toggle: function() {
+    debug_toggle() {
         cs.controller.tick_nodes = !cs.controller.tick_nodes;
     },
-    debug_step: function() {
+    debug_step() {
         Action.tick();
     },
-    debug_single_step: function() {
+    debug_single_step() {
         Action.tick();
     },
 
-    reset_setting: function() {
+    reset_setting() {
         Settings.reset_current_setting();
     },
-    record_keybind: function() {
+    record_keybind() {
         Settings.record_current_keybind();
     },
 };

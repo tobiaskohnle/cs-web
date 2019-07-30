@@ -4,7 +4,7 @@ const Menu = {
     open_menu_stack: [],
     sidebar_open: true,
 
-    update: function() {
+    update() {
         for (const menu_element of document.querySelectorAll('.menu')) {
             const menu_items = menu_element.querySelectorAll('.menu-item');
 
@@ -60,7 +60,7 @@ const Menu = {
         }
     },
 
-    add_event_listeners: function() {
+    add_event_listeners() {
         for (const menu_element of document.querySelectorAll('.menu')) {
             const menu = menu_element.getAttribute('menu');
             const menu_button = document.querySelector(`:not(.menu)[menu=${menu}]`);
@@ -113,15 +113,15 @@ const Menu = {
         }
     },
 
-    open_under: function(menu, element, toggle_menu=true) {
+    open_under(menu, element, toggle_menu=true) {
         const rect = element.getBoundingClientRect();
         Menu.open(menu, rect.left, rect.bottom, toggle_menu);
     },
-    open_next_to: function(menu, element, toggle_menu=true) {
+    open_next_to(menu, element, toggle_menu=true) {
         const rect = element.getBoundingClientRect();
         Menu.open(menu, rect.right-3, rect.top-3, toggle_menu);
     },
-    open: function(menu, x, y, toggle_menu=true) {
+    open(menu, x, y, toggle_menu=true) {
         const menu_element = document.querySelector(`.menu[menu=${menu}]`);
 
         const parent_button = document.querySelector(`.menu :not(.menu)[menu=${menu}]`);
@@ -154,7 +154,7 @@ const Menu = {
         }
     },
 
-    move_on_screen: function(menu_element, menu_button=null) {
+    move_on_screen(menu_element, menu_button=null) {
         if (menu_button == null) {
             if (menu_element.getBoundingClientRect().right > document.body.getBoundingClientRect().right) {
                 menu_element.style.left = `${document.body.getBoundingClientRect().right-menu_element.getBoundingClientRect().width}px`;
@@ -178,7 +178,7 @@ const Menu = {
         }
     },
 
-    set_element_enabled: function(menu_element, enabled, x, y) {
+    set_element_enabled(menu_element, enabled, x, y) {
         const menu = menu_element.getAttribute('menu');
         const menu_button = document.querySelector(`:not(.menu)[menu=${menu}]`);
 
@@ -203,7 +203,7 @@ const Menu = {
         }
     },
 
-    click: function(path) {
+    click(path) {
         for (const class_name of ['menu', 'menubar-item', 'menu-item', 'menu-separator']) {
             for (const element of path) {
                 if (element.classList && element.classList.contains(class_name)) {
@@ -215,14 +215,14 @@ const Menu = {
         Menu.close();
     },
 
-    close: function() {
+    close() {
         for (const menu_element of Menu.open_menu_stack) {
             Menu.set_element_enabled(menu_element, false);
         }
 
         Menu.open_menu_stack = [];
     },
-    close_from: function(menu_button) {
+    close_from(menu_button) {
         for (const menu_element of Menu.open_menu_stack.copy().reverse()) {
             if (Array.from(menu_element.childNodes).includes(menu_button)) {
                 break;
@@ -232,7 +232,7 @@ const Menu = {
         }
     },
 
-    select_theme: function(theme_name) {
+    select_theme(theme_name) {
         cs.theme = theme[theme_name];
         document.querySelector('#theme-style').href = `files/css/style-${theme_name}.css`;
         document.querySelector('#theme-settings-style').href = `files/css/settings-${theme_name}.css`;
@@ -241,7 +241,7 @@ const Menu = {
         }
     },
 
-    show_sidebar: function(is_visible) {
+    show_sidebar(is_visible) {
         Menu.sidebar_open = is_visible;
 
         document.querySelector('.window').style.gridTemplateColumns=`${is_visible ? '250px' : '0'} auto`;
