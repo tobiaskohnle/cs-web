@@ -336,6 +336,9 @@ const commands = {
         ActionUtil.invert_selected_nodes();
     },
     new: function() {
+        cs.config.current_file = null;
+        View.update_title();
+
         cs.controller.save_state('(command) new');
         cs.controller.reset();
     },
@@ -382,16 +385,6 @@ const commands = {
     redo: function() {
         cs.controller.redo();
     },
-    TEMP_SAVE_STATE: function() {
-        cs.controller.save_state('COMMAND');
-    },
-    TEMP_RELOAD: function() {
-        localStorage.setItem('CS_RESTORE_ON_STARTUP', cs.controller.file_string());
-        location.reload(true);
-    },
-    TEMP_REDRAW: function() {
-        View.update();
-    },
     reopen_last_file: function() {
     },
     reset_view: function() {
@@ -419,14 +412,39 @@ const commands = {
             .add(View.screen_center());
         cs.camera.pos.set(camera_pos);
     },
-    save: function() {
-        Util.download_string(cs.controller.file_string(), 'file.circ');
+    save: function(save_as) {
+        if (!cs.config.current_file) {
+            cs.config.current_file = {};
+        }
+
+        if (!cs.config.current_file.name || save_as) {
+            let file_name = prompt('Save file as...', cs.config.current_file.name||'file.circ');
+
+            if (file_name === undefined) {
+                return false;
+            }
+            if (!file_name) {
+                file_name = 'file.circ';
+            }
+            if (!file_name.endsWith('.circ')) {
+                file_name = `${file_name}.circ`;
+            }
+
+            cs.config.current_file.name = file_name;
+
+            View.update_title();
+        }
+
+        cs.config.current_file.content = cs.controller.file_string();
+
+        return true;
     },
     save_as: function() {
-        let file_name = prompt('Save file as...', 'file.circ');
-        if (file_name) {
-            file_name = file_name.endsWith('.circ') ? file_name : `${file_name}.circ`;
-            Util.download_string(cs.controller.file_string(), file_name);
+        commands.save(true);
+    },
+    download: function() {
+        if (commands.save()) {
+            Util.download_string(cs.config.current_file.content, cs.config.current_file.name);
         }
     },
     select_all: function() {

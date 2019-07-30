@@ -194,8 +194,6 @@ const default_config = {
         open_settings:         '',
         escape:                'escape',
         enter:                 'enter',
-        TEMP_RELOAD:           'r',
-        TEMP_REDRAW:           'd',
     },
 };
 
@@ -262,14 +260,12 @@ onload = function() {
 
     requestAnimationFrame(View.update);
 
-    // TEMP
-    const RESTORE_STATE = localStorage.getItem('CS_RESTORE_ON_STARTUP');
-
-    if (RESTORE_STATE) {
-        localStorage.removeItem('CS_RESTORE_ON_STARTUP');
-        cs.context = Util.extended_parse(RESTORE_STATE);
+    if (cs.config.current_file) {
+        cs.context = Util.extended_parse(cs.config.current_file.content);
         ActionUtil.queue_tick_all();
     }
+
+    View.update_title();
 }
 
 onresize = function(event) {

@@ -141,6 +141,16 @@ const View = {
         return new Vec(canvas.width/2, canvas.height/2);
     },
 
+    update_title: function() {
+        let title = 'cs \u2013 web';
+
+        if (cs.config.current_file && cs.config.current_file.name) {
+            title += ` ${cs.config.current_file.name}`;
+        }
+
+        document.title = title;
+    },
+
     anim_interpolate: function(value, target, factor=false) {
         if (value == null) return target;
         return value + (target-value) * (!cs.config.animations||factor||cs.config.anim_factor);
