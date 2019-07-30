@@ -147,9 +147,8 @@ class Sidebar {
 
     update_elements() {
         this.categories.forEach(category => {
-            category.elements.forEach(element => {
-                element.update();
-                element.cancel_animation();
+            ActionGet.elements(category.elements).forEach(element => {
+                element.update(true);
             });
         });
     }

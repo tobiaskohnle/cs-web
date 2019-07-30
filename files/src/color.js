@@ -98,11 +98,11 @@ class Color {
         return this;
     }
 
-    update() {
-        this.anim_h = View.anim_interpolate_mod(this.anim_h, this.h, this.anim_factor_);
-        this.anim_s = View.anim_interpolate    (this.anim_s, this.s, this.anim_factor_);
-        this.anim_v = View.anim_interpolate    (this.anim_v, this.v, this.anim_factor_);
-        this.anim_a = View.anim_interpolate    (this.anim_a, this.a, this.anim_factor_);
+    update(skip_animations=false) {
+        this.anim_h = View.anim_interpolate_mod(this.anim_h, this.h, skip_animations||this.anim_factor_);
+        this.anim_s = View.anim_interpolate    (this.anim_s, this.s, skip_animations||this.anim_factor_);
+        this.anim_v = View.anim_interpolate    (this.anim_v, this.v, skip_animations||this.anim_factor_);
+        this.anim_a = View.anim_interpolate    (this.anim_a, this.a, skip_animations||this.anim_factor_);
     }
 
     to_string() {

@@ -45,12 +45,12 @@ class Label extends Element {
         this.last_size_ = Vec.copy(this.size);
     }
 
-    update() {
+    update(skip_animations=false) {
         super.update_pos();
         super.update_size();
 
         this.apply_current_color(this.anim_color_, cs.theme.label_outline);
-        this.anim_color_.update();
+        this.anim_color_.update(skip_animations);
 
         this.text_color_ =
             this.special_info() ? cs.theme.label_special_text :
@@ -58,25 +58,25 @@ class Label extends Element {
             cs.theme.label_text;
 
         this.total_width_ = this.text_width(this.text);
-        this.anim_total_width_ = View.anim_interpolate(this.anim_total_width_, this.total_width_, cs.config.label_anim_factor);
+        this.anim_total_width_ = View.anim_interpolate(this.anim_total_width_, this.total_width_, skip_animations||cs.config.label_anim_factor);
 
         this.selection_bounds_ = this.text_bounds(this.selection_start, this.selection_width());
 
         if (!this.anim_selection_bounds_) this.anim_selection_bounds_ = this.selection_bounds_;
-        this.anim_selection_bounds_.start = View.anim_interpolate(this.anim_selection_bounds_.start, this.selection_bounds_.start, cs.config.label_anim_factor);
-        this.anim_selection_bounds_.end = View.anim_interpolate(this.anim_selection_bounds_.end, this.selection_bounds_.end, cs.config.label_anim_factor);
+        this.anim_selection_bounds_.start = View.anim_interpolate(this.anim_selection_bounds_.start, this.selection_bounds_.start, skip_animations||cs.config.label_anim_factor);
+        this.anim_selection_bounds_.end = View.anim_interpolate(this.anim_selection_bounds_.end, this.selection_bounds_.end, skip_animations||cs.config.label_anim_factor);
 
         this.caret_bounds_ = this.text_bounds(this.caret, 0);
         this.caret_bounds_.start -= cs.config.label_caret_width/2 * this.font_size;
         this.caret_bounds_.end = cs.config.label_caret_width * this.font_size + this.caret_bounds_.start;
 
         if (!this.anim_caret_bounds_) this.anim_caret_bounds_ = this.caret_bounds_;
-        this.anim_caret_bounds_.start = View.anim_interpolate(this.anim_caret_bounds_.start, this.caret_bounds_.start, cs.config.label_anim_factor);
-        this.anim_caret_bounds_.end = View.anim_interpolate(this.anim_caret_bounds_.end, this.caret_bounds_.end, cs.config.label_anim_factor);
+        this.anim_caret_bounds_.start = View.anim_interpolate(this.anim_caret_bounds_.start, this.caret_bounds_.start, skip_animations||cs.config.label_anim_factor);
+        this.anim_caret_bounds_.end = View.anim_interpolate(this.anim_caret_bounds_.end, this.caret_bounds_.end, skip_animations||cs.config.label_anim_factor);
 
         let width = 0;
         for (let x = 0; x < this.text.length; x++) {
-            this.anim_chars_offset_[x] = View.anim_interpolate(this.anim_chars_offset_[x], width, cs.config.label_anim_factor);
+            this.anim_chars_offset_[x] = View.anim_interpolate(this.anim_chars_offset_[x], width, skip_animations||cs.config.label_anim_factor);
             width += this.get_char_width(this.text[x]);
         }
 

@@ -62,22 +62,12 @@ class Gate extends Element {
         ActionUtil.queue_tick_for(this.outputs);
     }
 
-    cancel_animation() {
-        super.cancel_animation();
-
-        this.color_outline_.anim_hsva(this.color_outline_);
-
-        for (const node of this.nodes()) {
-            node.cancel_animation();
-        }
-    }
-
     nodes() {
         return [...this.inputs, ...this.outputs];
     }
 
     run_init_animation() {
-        this.cancel_animation();
+        this.update(true);
         this.set_nodes_pos();
 
         this.color_outline_.anim_hsva(cs.theme.gate_init);
@@ -130,15 +120,15 @@ class Gate extends Element {
         }
     }
 
-    update() {
-        super.update_pos();
-        super.update_size();
+    update(skip_animations=false) {
+        super.update_pos(skip_animations);
+        super.update_size(skip_animations);
 
         this.update_nodes();
 
         this.apply_current_color(this.color_outline_);
 
-        this.color_outline_.update();
+        this.color_outline_.update(skip_animations);
     }
 
     update_nodes() {
@@ -340,21 +330,16 @@ class InputSwitch extends InputGate {
         return this.is_enabled;
     }
 
-    cancel_animation() {
-        super.cancel_animation();
-        this.color_fill_.anim_hsva(this.color_fill_);
-    }
-
-    update() {
+    update(skip_animations=false) {
         if (this.eval_state()) {
             this.color_fill_.hsva(cs.theme.light_active);
         }
         else {
             this.color_fill_.hsva(cs.theme.light_inactive);
         }
-        this.color_fill_.update();
+        this.color_fill_.update(skip_animations);
 
-        super.update();
+        super.update(skip_animations);
     }
 
     draw() {
@@ -388,21 +373,16 @@ class InputButton extends InputGate {
         return this.is_enabled;
     }
 
-    cancel_animation() {
-        super.cancel_animation();
-        this.color_fill_.anim_hsva(this.color_fill_);
-    }
-
-    update() {
+    update(skip_animations=false) {
         if (this.eval_state()) {
             this.color_fill_.hsva(cs.theme.light_active);
         }
         else {
             this.color_fill_.hsva(cs.theme.light_inactive);
         }
-        this.color_fill_.update();
+        this.color_fill_.update(skip_animations);
 
-        super.update();
+        super.update(skip_animations);
     }
 
     draw() {
@@ -480,10 +460,6 @@ class InputPulse extends InputGate {
         return this.pulse_ticks_++ < this.pulse_length;
     }
 
-    update() {
-        super.update();
-    }
-
     draw() {
         super.draw();
 
@@ -511,10 +487,6 @@ class Clock extends InputGate {
     eval_state() {
         this.pulse_ticks_ = Util.mod(this.pulse_ticks_+1, this.pulse_length);
         return this.pulse_ticks_ < this.pulse_width;
-    }
-
-    update() {
-        super.update();
     }
 
     draw() {
@@ -548,12 +520,7 @@ class OutputLight extends OutputGate {
         return this.inputs[0].state;
     }
 
-    cancel_animation() {
-        super.cancel_animation();
-        this.color_fill_.anim_hsva(this.color_fill_);
-    }
-
-    update() {
+    update(skip_animations=false) {
         if (this.eval_state()) {
             this.color_fill_.hsva(cs.theme.light_active);
         }
@@ -561,9 +528,9 @@ class OutputLight extends OutputGate {
             this.color_fill_.hsva(cs.theme.light_inactive);
         }
 
-        this.color_fill_.update();
+        this.color_fill_.update(skip_animations);
 
-        super.update();
+        super.update(skip_animations);
     }
 
     draw() {
@@ -605,14 +572,7 @@ class SegmentDisplay extends OutputGate {
         };
     }
 
-    cancel_animation() {
-        super.cancel_animation();
-        for (const color of this.color_segments_) {
-            color.anim_hsva(color);
-        }
-    }
-
-    update() {
+    update(skip_animations=false) {
         for (let i = 0; i < 7; i++) {
             if (this.inputs[i].state) {
                 this.color_segments_[i].hsva(cs.theme.segment_active);
@@ -621,10 +581,10 @@ class SegmentDisplay extends OutputGate {
                 this.color_segments_[i].hsva(cs.theme.segment_inactive);
             }
 
-            this.color_segments_[i].update();
+            this.color_segments_[i].update(skip_animations);
         }
 
-        super.update();
+        super.update(skip_animations);
     }
 
     draw() {

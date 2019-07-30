@@ -141,17 +141,17 @@ const View = {
         return new Vec(canvas.width/2, canvas.height/2);
     },
 
-    anim_interpolate: function(value, target, factor=cs.config.anim_factor) {
+    anim_interpolate: function(value, target, factor=false) {
         if (value == null) return target;
-        return value + (target-value) * factor;
+        return value + (target-value) * (factor||cs.config.anim_factor);
     },
-    anim_interpolate_mod: function(value, target, factor=cs.config.anim_factor) {
+    anim_interpolate_mod: function(value, target, factor=false) {
         const offset = Util.mod(target-value-.5, 1)-.5;
-        return value + offset * factor;
+        return value + offset * (factor||cs.config.anim_factor);
     },
-    anim_interpolate_vec: function(value, target, factor=cs.config.anim_factor) {
+    anim_interpolate_vec: function(value, target, factor=false) {
         if (target == null) return target;
-        if (value == null) return Vec.copy(target);
-        return value.set(Vec.add(value, Vec.mult(Vec.sub(target, value), factor)));
+        if (value == null || factor == true) return Vec.copy(target);
+        return value.set(Vec.add(value, Vec.mult(Vec.sub(target, value), factor||cs.config.anim_factor)));
     },
 };

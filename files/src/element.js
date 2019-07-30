@@ -21,11 +21,6 @@ class Element {
         return this == cs.controller.hovered_element;
     }
 
-    cancel_animation() {
-        this.update();
-        this.anim_pos_.set(this.pos);
-    }
-
     current_color(default_color=cs.theme.outline) {
         if (this.is_selected()) {
             if (this.is_hovered()) {
@@ -60,11 +55,11 @@ class Element {
         this.previous_colors_[label] = current_color;
     }
 
-    update_pos() {
-        this.anim_pos_ = View.anim_interpolate_vec(this.anim_pos_, this.pos);
+    update_pos(skip_animations=false) {
+        this.anim_pos_ = View.anim_interpolate_vec(this.anim_pos_, this.pos, skip_animations);
     }
-    update_size() {
-        this.anim_size_ = View.anim_interpolate_vec(this.anim_size_, this.size);
+    update_size(skip_animations=false) {
+        this.anim_size_ = View.anim_interpolate_vec(this.anim_size_, this.size, skip_animations);
     }
 
     snap_pos(last_pos, total_vec, snap_size_) {
@@ -79,7 +74,7 @@ class Element {
         throw 'implementation required @Element.distance';
     }
 
-    update() {
+    update(skip_animations=false) {
         throw 'implementation required @Element.update';
     }
 

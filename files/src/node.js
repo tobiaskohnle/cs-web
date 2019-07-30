@@ -28,7 +28,7 @@ class ConnectionNode extends Element {
         this.color_dot_  = Color.from(cs.theme.wire_inactive);
     }
 
-    update() {
+    update(skip_animations=false) {
         if (this.grab_pos_) {
             const parent = this.parent();
 
@@ -61,7 +61,7 @@ class ConnectionNode extends Element {
             }
         }
 
-        this.anim_pos_ = View.anim_interpolate_vec(this.anim_pos_, this.grab_pos_||this.pos);
+        this.anim_pos_ = View.anim_interpolate_vec(this.anim_pos_, this.grab_pos_||this.pos, skip_animations);
         this.anchor_pos_.set(Vec.add(this.grab_pos_||this.pos, this.dir));
         this.anchor_anim_pos_.set(Vec.add(this.anim_pos_, this.dir));
 
@@ -84,8 +84,8 @@ class ConnectionNode extends Element {
         this.apply_current_color(this.color_line_, draw_line_active ? cs.theme.wire_active : cs.theme.wire_inactive, 0);
         this.apply_current_color(this.color_dot_,  draw_line_active ? cs.theme.wire_inactive : cs.theme.wire_active, 1);
 
-        this.color_line_.update();
-        this.color_dot_.update();
+        this.color_line_.update(skip_animations);
+        this.color_dot_.update(skip_animations);
     }
 
     update_last_pos() {
@@ -99,15 +99,8 @@ class ConnectionNode extends Element {
         this.set_index(this.eval_index());
     }
 
-    cancel_animation() {
-        super.cancel_animation();
-
-        this.color_dot_.anim_hsva(this.color_dot_);
-        this.color_line_.anim_hsva(this.color_line_);
-    }
-
     run_init_animation() {
-        this.cancel_animation();
+        this.update(true);
 
         this.color_dot_.anim_hsva(cs.theme.node_init);
         this.color_line_.anim_hsva(cs.theme.node_init);

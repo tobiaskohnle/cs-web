@@ -323,9 +323,9 @@ class Controller {
                         segment_a.set_connected_pos(this.wire_start_node.anchor_pos_);
                         segment_c.set_connected_pos(this.snapped_mouse_world_pos);
 
-                        segment_a.cancel_animation();
-                        segment_b.cancel_animation();
-                        segment_c.cancel_animation();
+                        segment_a.update(true);
+                        segment_b.update(true);
+                        segment_c.update(true);
 
                         Util.create_snapshot();
                     }
@@ -455,7 +455,7 @@ class Controller {
 
                 const pos = Vec.sub(this.mouse_world_pos, Vec.div(this.imported_element.size, 2));
                 this.imported_element.pos.set(pos).sub(new Vec(2,0)).round(this.imported_element.snap_size_);
-                this.imported_element.cancel_animation();
+                this.imported_element.update(true);
                 this.imported_element.pos.add(new Vec(2,0));
 
                 this.moving_elements = [this.imported_element];
@@ -573,8 +573,8 @@ class Controller {
                     segment_a.set_connected_pos(this.wire_start_node.anchor_pos_);
                     segment_b.set_connected_pos(this.snapped_mouse_world_pos);
 
-                    segment_a.cancel_animation();
-                    segment_b.cancel_animation();
+                    segment_a.update(true);
+                    segment_b.update(true);
 
                     Util.create_snapshot();
                 }
@@ -586,7 +586,7 @@ class Controller {
 
                         const segment = Util.add_segment(this.new_wire_segments);
                         segment.set_connected_pos(this.snapped_mouse_world_pos);
-                        segment.cancel_animation();
+                        segment.update(true);
 
                         Util.create_snapshot();
                     }

@@ -150,9 +150,9 @@ const Action = {
 
         cs.ticked_nodes = next_ticked_nodes;
     },
-    update: function() {
+    update: function(skip_animations=false) {
         for (const element of ActionGet.elements().sorted(Util.compare_function(x=>x.update_priority_)).reverse()) {
-            element.update();
+            element.update(skip_animations);
         }
     },
     queue_tick: function(node) {
@@ -336,7 +336,7 @@ const Action = {
                 const joined_segment = new WireSegment;
                 joined_segment.is_vertical = !segment.is_vertical;
                 joined_segment.offset = offset;
-                joined_segment.cancel_animation();
+                joined_segment.update(true);
 
                 joined_segment.anim_color_.anim_hsva(cs.theme.merge_segment_flash).anim_factor(cs.config.fade_color_anim_factor);
 
@@ -458,7 +458,7 @@ const Action = {
 
             segment.parent().wire_segments.push(new_segment);
 
-            new_segment.cancel_animation();
+            new_segment.update(true);
 
             return true;
         }

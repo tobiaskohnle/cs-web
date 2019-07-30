@@ -23,12 +23,12 @@ class WireSegment extends Element {
         this.base_color_ = Color.from(cs.theme.outline);
     }
 
-    update() {
+    update(skip_animations=false) {
         if (this.offset_pos) {
             this.set_offset(this.offset_pos);
         }
-        this.anim_offset_pos_ = View.anim_interpolate_vec(this.anim_offset_pos_, this.offset_pos);
-        this.anim_normal_pos_ = View.anim_interpolate_vec(this.anim_normal_pos_, this.normal_pos);
+        this.anim_offset_pos_ = View.anim_interpolate_vec(this.anim_offset_pos_, this.offset_pos, skip_animations);
+        this.anim_normal_pos_ = View.anim_interpolate_vec(this.anim_normal_pos_, this.normal_pos, skip_animations);
 
         if (this.auto_offset_ &&
             this.neighbor_segments.length == 2 &&
@@ -50,15 +50,15 @@ class WireSegment extends Element {
             this.offset = avg;
         }
 
-        this.anim_offset_ = View.anim_interpolate(this.anim_offset_, this.offset);
+        this.anim_offset_ = View.anim_interpolate(this.anim_offset_, this.offset, skip_animations);
 
         const default_color = this.parent() && this.parent().state ? cs.theme.wire_active : cs.theme.wire_inactive;
 
         this.apply_current_color(this.anim_color_, default_color);
-        this.anim_color_.update();
+        this.anim_color_.update(skip_animations);
 
         this.base_color_.hsva(default_color);
-        this.base_color_.update();
+        this.base_color_.update(skip_animations);
     }
 
     update_last_pos() {
@@ -97,13 +97,6 @@ class WireSegment extends Element {
     is_connected_to(node) {
         return this.offset_pos == node.anchor_pos_
             && this.normal_pos == node.anchor_pos_;
-    }
-
-    cancel_animation() {
-        this.update();
-        this.anim_offset_ = this.offset;
-
-        this.anim_color_.anim_hsva(this.anim_color_);
     }
 
     distance(pos) {
