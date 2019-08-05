@@ -72,8 +72,8 @@ const theme = {
         label_caret:              Color.parse('#07f'),
         label_selection:          Color.parse('#09f4'),
 
-        sidebar_imported_element: Color.parse('#28f7'),
-        sidebar_hovered_element:  Color.parse('#49e4'),
+        sidebar_imported_group:   Color.parse('#28f7'),
+        sidebar_hovered_group:    Color.parse('#49e4'),
         sidebar_header_outline:   Color.parse('#222'),
         sidebar_header_hovered:   Color.parse('#9cf'),
         sidebar_header:           Color.parse('#eee'),
@@ -109,8 +109,8 @@ const theme = {
         label_caret:              Color.parse('#07f'),
         label_selection:          Color.parse('#09f4'),
 
-        sidebar_imported_element: Color.parse('#2af6'),
-        sidebar_hovered_element:  Color.parse('#49e2'),
+        sidebar_imported_group:   Color.parse('#2af6'),
+        sidebar_hovered_group:    Color.parse('#49e2'),
         sidebar_header_outline:   Color.parse('#222'),
         sidebar_header_hovered:   Color.parse('#222'),
         sidebar_header:           Color.parse('#0b0b0d'),
@@ -209,9 +209,10 @@ function load_config() {
 
                 if (categories instanceof Array) {
                     cs.sidebar.categories = categories;
-                    cs.sidebar.update_sections();
+                    cs.sidebar.update();
                 }
                 else {
+                    console.error('Failed to load categories.');
                     console.log({categories});
                 }
             });

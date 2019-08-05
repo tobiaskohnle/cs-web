@@ -446,24 +446,26 @@ class Controller {
                 break;
 
             case Enum.action.import_element:
-                this.save_state('import element');
+                this.save_state('import elements');
 
-                Action.add(this.imported_element);
+                for (const element of this.imported_elements) {
+                    Action.add(element);
 
-                ActionUtil.deselect_all();
-                Action.select(this.imported_element);
+                    ActionUtil.deselect_all();
+                    Action.select(element);
 
-                const pos = Vec.sub(this.mouse_world_pos, Vec.div(this.imported_element.size, 2));
-                this.imported_element.pos.set(pos).sub(new Vec(2,0)).round(this.imported_element.snap_size_);
-                ActionGet.elements([this.imported_element]).forEach(element => element.update(true));
-                this.imported_element.pos.add(new Vec(2,0));
+                    const pos = Vec.sub(this.mouse_world_pos, Vec.div(element.size, 2));
+                    element.pos.set(pos).sub(new Vec(2,0)).round(element.snap_size_);
+                    ActionGet.elements([element]).forEach(element => element.update(true));
+                    element.pos.add(new Vec(2,0));
 
-                this.moving_elements = [this.imported_element];
-                this.current_action = Enum.action.move_elements;
+                    this.moving_elements = [element];
+                    this.current_action = Enum.action.move_elements;
 
-                Action.update_last_pos(this.imported_element);
-                this.mouse_down_world_pos.set(this.mouse_world_pos);
-                canvas.setPointerCapture(event.pointerId);
+                    Action.update_last_pos(element);
+                    this.mouse_down_world_pos.set(this.mouse_world_pos);
+                    canvas.setPointerCapture(event.pointerId);
+                }
                 break;
 
             case Enum.action.resize_elements:
@@ -638,7 +640,7 @@ class Controller {
     }
 
     sidebar_mouse_wheel(event) {
-        cs.sidebar.scroll_by(event.deltaY);
+        cs.sidebar.scroll_by(Math.sign(event.deltaY) * -100);
     }
 
     sidebar_mouse_leave(event) {

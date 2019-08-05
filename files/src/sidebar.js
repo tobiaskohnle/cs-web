@@ -2,8 +2,6 @@
 
 class Sidebar {
     constructor() {
-        this.offset = 0;
-
         this.scroll = 0;
         this.anim_scroll = 0;
 
@@ -26,67 +24,52 @@ class Sidebar {
         this.categories = [
             {
                 header: 'Default',
-                elements: [
-                    new AndGate,
-                    nand,
-                    new OrGate,
-                    nor,
-                    new XorGate,
-                    xnor,
-                    new NopGate,
-                    not,
+                groups: [
+                    {elements: [new AndGate]},
+                    {elements: [nand]},
+                    {elements: [new OrGate]},
+                    {elements: [nor]},
+                    {elements: [new XorGate]},
+                    {elements: [xnor]},
+                    {elements: [new NopGate]},
+                    {elements: [not]},
                 ],
             },
             {
                 header: 'In/Out',
-                elements: [
-                    new InputSwitch,
-                    new InputButton,
-                    new InputPulse,
-                    new Clock,
-                    new OutputLight,
-                    new SegmentDisplay,
+                groups: [
+                    {elements: [new InputSwitch]},
+                    {elements: [new InputButton]},
+                    {elements: [new InputPulse]},
+                    {elements: [new Clock]},
+                    {elements: [new OutputLight]},
+                    {elements: [new SegmentDisplay]},
                 ],
             },
             {
                 header: 'Other',
-                elements: [
-                    label,
+                groups: [
+                    {elements: [label]},
                 ],
             },
         ];
 
-        this.update_sections();
-        this.update_elements();
+        this.update();
     }
 
-    update_sections() {
-        this.sections = this.categories.map(category => {
-            let section_height = 0;
-
-            const elements_sections = category.elements.map(element => {
-                const height = (element.size.y+cs.config.sidebar_margin) * cs.config.sidebar_scale;
-                section_height += height;
-                return {height, element};
-            });
-
-            return {height:section_height, category, elements_sections};
-        });
-    }
-
-    header_position(section, scroll) {
+    header_screen_y(category, scroll) {
         return Util.clamp(
-            section.y-scroll,
-            section.index * cs.config.sidebar_header_height,
-            sidebar_canvas.height - (this.sections.length-section.index) * cs.config.sidebar_header_height,
+            category.y + scroll,
+            category.index * cs.config.sidebar_header_height,
+            sidebar_canvas.height - (this.categories.length-category.index) * cs.config.sidebar_header_height,
         );
     }
 
     scroll_height() {
-        return Math.max(sidebar_canvas.height, this.segments_height()) - sidebar_canvas.height;
+        return Math.max(sidebar_canvas.height, this.height()) - sidebar_canvas.height;
     }
-    segments_height() {
-        return this.sections.reduce((acc,val) => acc+val.height+cs.config.sidebar_header_height, 0);
+    height() {
+        return this.categories.reduce((total_height,category) => total_height+category.height+cs.config.sidebar_header_height, 0);
     }
 
     scroll_to(value) {
@@ -98,36 +81,36 @@ class Sidebar {
 
     mouse_down(event) {
         if (event.button == 0) {
-            if (this.hovered_section) {
-                this.scroll_to(this.hovered_section.y - this.hovered_section.index*cs.config.sidebar_header_height);
+            if (this.hovered_category) {
+                this.scroll_to(this.hovered_category.index*cs.config.sidebar_header_height - this.hovered_category.y);
             }
-            else if (this.hovered_element) {
+            else if (this.hovered_group) {
                 cs.controller.current_action = Enum.action.import_element;
-                cs.controller.imported_element = Util.deep_copy(this.hovered_element);
-                this.imported_element = this.hovered_element;
+                cs.controller.imported_elements = Util.deep_copy(this.hovered_group.elements);
+                this.imported_group = this.hovered_group;
                 sidebar_canvas.releasePointerCapture(event.pointerId);
             }
         }
     }
     mouse_move(event) {
-        if (event.buttons & -2) {
-            this.scroll_by(-event.movementY);
+        if (event.buttons & -23) {
+            this.scroll_by(event.movementY);
         }
 
-        const y = event.y - sidebar_canvas.offsetTop;
+        const layer_y = event.y - sidebar_canvas.offsetTop;
 
-        this.hovered_section = null;
-        this.hovered_element = null;
+        this.hovered_category = null;
+        this.hovered_group = null;
 
-        for (const section of this.sections) {
-            if (Util.between(y, section.scroll_y, section.scroll_y+cs.config.sidebar_header_height)) {
-                this.hovered_section = section;
+        for (const category of this.categories) {
+            if (Util.between(layer_y, category.screen_y, category.screen_y+cs.config.sidebar_header_height)) {
+                this.hovered_category = category;
                 break;
             }
 
-            for (const element_section of section.elements_sections) {
-                if (Util.between(y, element_section.scroll_y, element_section.scroll_y+element_section.height)) {
-                    this.hovered_element = element_section.element;
+            for (const group of category.groups) {
+                if (Util.between(layer_y, group.screen_y, group.screen_y+group.height)) {
+                    this.hovered_group = group;
                     break;
                 }
             }
@@ -135,106 +118,104 @@ class Sidebar {
     }
     mouse_up(event) {
         cs.controller.current_action = Enum.action.none;
-        cs.controller.imported_element = null;
-        this.imported_element = null;
+        cs.controller.imported_elements = null;
+        this.imported_group = null;
     }
 
     mouse_leave(event) {
-        this.hovered_section = null;
-        this.hovered_element = null;
-        this.imported_element = null;
+        this.hovered_category = null;
+        this.hovered_group = null;
+        this.imported_group = null;
     }
 
     update_elements() {
         this.categories.forEach(category => {
-            ActionGet.elements(category.elements).forEach(element => {
+            ActionGet.elements(category.groups.flat()).forEach(element => {
                 element.update(true);
             });
         });
     }
     update() {
-        this.scroll = Math.max(0, Math.min(this.segments_height()-sidebar_canvas.height, this.scroll));
+        let y = 0;
 
+        this.categories.forEach((category, index) => {
+            category.index = index;
+            category.y = y;
+            category.screen_y      = this.header_screen_y(category, this.scroll);
+            category.anim_screen_y = this.header_screen_y(category, this.anim_scroll);
+
+            let height = 0;
+            let groups_y = cs.config.sidebar_header_height;
+
+            category.groups.forEach((group, index) => {
+                group.index = index;
+                group.size = Util.bounding_rect(group.elements).size;
+                group.height = (group.size.y+cs.config.sidebar_margin) * cs.config.sidebar_scale;
+
+                group.screen_y = groups_y + category.y + this.scroll;
+                group.anim_screen_y = groups_y + category.y + this.anim_scroll;
+
+                height += group.height;
+                groups_y += group.height;
+
+                ActionGet.elements(group.elements).forEach(element => element.update(true));
+            });
+
+            category.height = height;
+            y += groups_y;
+        });
+
+        this.scroll = Util.clamp(this.scroll, Math.min(0, sidebar_canvas.height-this.height()), 0);
         this.anim_scroll = View.anim_interpolate(this.anim_scroll, this.scroll, cs.config.sidebar_anim_factor);
-
-        let section_y = 0;
-
-        for (let i = 0; i < this.sections.length; i++) {
-            const section = this.sections[i];
-
-            let elements_section_y = section_y + cs.config.sidebar_header_height;
-
-            for (let j = 0; j < section.elements_sections.length; j++) {
-                const elements_section = section.elements_sections[j];
-
-                elements_section.index = j;
-                elements_section.y = elements_section_y;
-                elements_section.scroll_y = elements_section_y - this.scroll;
-                elements_section.anim_scroll_y = elements_section_y - this.anim_scroll;
-
-                elements_section_y += elements_section.height;
-            }
-
-            section.index = i;
-            section.y = section_y;
-            section_y += section.height + cs.config.sidebar_header_height;
-
-            section.scroll_y      = this.header_position(section, this.scroll);
-            section.anim_scroll_y = this.header_position(this.sections[i], this.anim_scroll);
-        }
     }
 
     draw() {
-        sidebar_context.clearRect(0, 0, sidebar_canvas.width, sidebar_canvas.height);
+        const window_context = context;
+        context = sidebar_context;
 
-        for (const section of this.sections) {
-            let y = section.y - this.anim_scroll + cs.config.sidebar_header_height;
+        context.clearRect(0, 0, sidebar_canvas.width, sidebar_canvas.height);
 
-            for (const element_section of section.elements_sections) {
-                const element = element_section.element;
-
-                if (this.imported_element == element) {
-                    sidebar_context.fillStyle = cs.theme.sidebar_imported_element.to_string();
-                    sidebar_context.fillRect(0, element_section.anim_scroll_y, sidebar_canvas.width, element_section.height);
+        for (const category of this.categories) {
+            for (const group of category.groups) {
+                if (this.imported_group == group) {
+                    context.fillStyle = cs.theme.sidebar_imported_group.to_string();
+                    context.fillRect(0, group.anim_screen_y, sidebar_canvas.width, group.height);
                 }
-                else if (this.hovered_element == element) {
-                    sidebar_context.fillStyle = cs.theme.sidebar_hovered_element.to_string();
-                    sidebar_context.fillRect(0, element_section.anim_scroll_y, sidebar_canvas.width, element_section.height);
+                else if (this.hovered_group == group) {
+                    context.fillStyle = cs.theme.sidebar_hovered_group.to_string();
+                    context.fillRect(0, group.anim_screen_y, sidebar_canvas.width, group.height);
                 }
 
-                sidebar_context.save();
+                context.save();
 
-                sidebar_context.translate(sidebar_canvas.width/2 - element.size.x/2*cs.config.sidebar_scale, y + cs.config.sidebar_margin/2*cs.config.sidebar_scale);
-                sidebar_context.scale(cs.config.sidebar_scale, cs.config.sidebar_scale);
+                context.translate(
+                    sidebar_canvas.width/2 - group.size.x/2*cs.config.sidebar_scale,
+                    group.anim_screen_y + cs.config.sidebar_margin/2*cs.config.sidebar_scale,
+                );
+                context.scale(cs.config.sidebar_scale, cs.config.sidebar_scale);
 
-                // TEMP
-                const previous_context = context;
-                context = sidebar_context;
-                element.draw();
-                context = previous_context;
+                for (const element of ActionGet.elements(group.elements)) {
+                    element.draw();
+                }
 
-                sidebar_context.restore();
-
-                y += (element.size.y+cs.config.sidebar_margin) * cs.config.sidebar_scale;
+                context.restore();
             }
-        }
 
-        for (const section of this.sections) {
-            const hovered = section == this.hovered_section;
+            context.fillStyle = cs.theme.sidebar_header_outline.to_string();
+            context.fillRect(0, category.anim_screen_y, sidebar_canvas.width, cs.config.sidebar_header_height);
 
-            sidebar_context.fillStyle = cs.theme.sidebar_header_outline.to_string();
-            sidebar_context.fillRect(0, section.anim_scroll_y, sidebar_canvas.width, cs.config.sidebar_header_height);
-
-            sidebar_context.fillStyle = hovered
+            context.fillStyle = this.hovered_category == category
                 ? cs.theme.sidebar_header_hovered.to_string()
                 : cs.theme.sidebar_header.to_string();
-            sidebar_context.fillRect(1, section.anim_scroll_y+1, sidebar_canvas.width-2, cs.config.sidebar_header_height-2);
+            context.fillRect(1, category.anim_screen_y+1, sidebar_canvas.width-2, cs.config.sidebar_header_height-2);
 
-            sidebar_context.fillStyle = cs.theme.sidebar_header_font.to_string();
-            sidebar_context.font = `${cs.config.sidebar_header_height/1.9}px segoe ui, sans-serif`;
-            sidebar_context.textAlign = 'center';
-            sidebar_context.textBaseline = 'middle';
-            sidebar_context.fillText(section.category.header, sidebar_canvas.width/2, section.anim_scroll_y + cs.config.sidebar_header_height/2);
+            context.font = `${cs.config.sidebar_header_height/1.9}px segoe ui, sans-serif`;
+            context.textAlign = 'center';
+            context.textBaseline = 'middle';
+            context.fillStyle = cs.theme.sidebar_header_font.to_string();
+            context.fillText(category.header, sidebar_canvas.width/2, category.anim_screen_y + cs.config.sidebar_header_height/2);
         }
+
+        context = window_context;
     }
 }

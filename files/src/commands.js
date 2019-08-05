@@ -363,7 +363,7 @@ const commands = {
 
             let category = cs.sidebar.categories.find(category => category.header==header);
             if (!category) {
-                cs.sidebar.categories.push(category = {header, elements:[]});
+                cs.sidebar.categories.push(category = {header, groups:[]});
             }
 
             let element = Util.extended_parse(result);
@@ -372,10 +372,9 @@ const commands = {
                 Util.convert_to_custom_gate(element);
             }
 
-            category.elements.push(element);
+            category.groups.push({elements: [element]});
 
-            cs.sidebar.update_sections();
-            cs.sidebar.update_elements();
+            cs.sidebar.update();
         }, true);
     },
     paste() {

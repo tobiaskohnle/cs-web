@@ -237,7 +237,7 @@ const Menu = {
         document.querySelector('#theme-style').href = `files/css/style-${theme_name}.css`;
         document.querySelector('#theme-settings-style').href = `files/css/settings-${theme_name}.css`;
         if (cs.sidebar) {
-            cs.sidebar.update_elements();
+            cs.sidebar.update();
         }
     },
 

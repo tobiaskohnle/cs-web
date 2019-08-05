@@ -197,6 +197,10 @@
             <span>Save As...</span>
         </div>
         <div class='menu-separator'></div>
+        <div class='menu-item' command='download'>
+            <span>Download File</span>
+        </div>
+        <div class='menu-separator'></div>
         <div class='menu-item' command='open_settings'>
             <span>Settings</span>
         </div>
@@ -825,6 +829,20 @@
                         <span class='title'>Save As...</span><br>
                         Save the current file and download it.<br>
                         setting: <span class='code'>keybinds.save_as</span>
+                    </div>
+
+                    <div class='setting-input-container'>
+                        <label class='keybind'>
+                            <input class='setting-input'>
+                        </label>
+                        <div class='setting-dropdown'></div>
+                    </div>
+                </div>
+                <div class='setting' setting='keybinds.download' type='keybind'>
+                    <div class='description'>
+                        <span class='title'>Download</span><br>
+                        Download the current file.<br>
+                        setting: <span class='code'>keybinds.download</span>
                     </div>
 
                     <div class='setting-input-container'>
