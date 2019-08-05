@@ -472,7 +472,10 @@ class Controller {
                         this.moving_elements.push(element);
                     }
 
-                    Action.select(element);
+                    if (element instanceof Gate || element instanceof Label) {
+                        Action.select(element);
+                    }
+
                     Action.update_last_pos(element);
 
                     if (element.pos) {

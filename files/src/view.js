@@ -145,7 +145,7 @@ const View = {
         let title = 'cs \u2013 web';
 
         if (cs.config.current_file && cs.config.current_file.name) {
-            title += ` ${cs.config.current_file.name}`;
+            title += ` \u2022 ${cs.config.current_file.name}`;
         }
 
         document.title = title;

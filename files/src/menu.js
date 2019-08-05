@@ -3,6 +3,7 @@
 const Menu = {
     open_menu_stack: [],
     sidebar_open: true,
+    timeout_id: 0,
 
     update() {
         for (const menu_element of document.querySelectorAll('.menu')) {
@@ -72,7 +73,9 @@ const Menu = {
                 : Menu.open_under;
 
             menu_button.addEventListener('mousedown', function(event) {
-                open_menu_function(menu, menu_button);
+                if (event.button == 0) {
+                    open_menu_function(menu, menu_button);
+                }
             });
         }
 
@@ -95,13 +98,11 @@ const Menu = {
             });
         }
 
-        let timeout_id;
-
         for (const menu_button of document.querySelectorAll('.menu-item')) {
             const menu = menu_button.getAttribute('menu');
 
             menu_button.addEventListener('mouseenter', function(event) {
-                timeout_id = setTimeout(function() {
+                Menu.timeout_id = setTimeout(function() {
                     if (menu) {
                         Menu.open_next_to(menu, menu_button, false);
                     }
@@ -111,7 +112,7 @@ const Menu = {
                 }, 350);
             });
             menu_button.addEventListener('mouseleave', function(event) {
-                clearTimeout(timeout_id);
+                clearTimeout(Menu.timeout_id);
             });
         }
     },
@@ -222,6 +223,8 @@ const Menu = {
         for (const menu_element of Menu.open_menu_stack) {
             Menu.set_element_enabled(menu_element, false);
         }
+
+        clearTimeout(Menu.timeout_id);
 
         Menu.open_menu_stack = [];
     },
