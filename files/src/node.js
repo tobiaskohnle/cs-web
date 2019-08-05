@@ -175,11 +175,14 @@ class ConnectionNode extends Element {
         };
     }
 
-    draw() {
-        const off = this.is_inverted ? 1/2+.1/2 : 0;
+    draw(is_output) {
+        const has_arrow = !!cs.config.input_arrows && (!cs.config.hide_ui_in_fullscreen||!document.fullscreen) && !is_output;
+
+        const base_offset = this.is_inverted * (1/2+.1/2);
+        const offset = base_offset + has_arrow * .1;
 
         context.beginPath();
-        context.moveTo(...Vec.add(this.anim_pos_, Vec.mult(this.dir, off)).xy);
+        context.moveTo(...Vec.add(this.anim_pos_, Vec.mult(this.dir, offset)).xy);
         context.lineTo(...Vec.add(this.anim_pos_, this.dir).xy);
 
         context.strokeStyle = this.color_line_.to_string();
@@ -212,6 +215,26 @@ class ConnectionNode extends Element {
             context.font = '.5px segoe ui, sans-serif';
             context.fillStyle = cs.theme.wire_inactive.to_string();
             context.fillText(this.tag, ...Vec.sub(this.anim_pos_, Vec.mult(this.dir, text_dist)).xy);
+        }
+
+        if (has_arrow) {
+            context.beginPath();
+
+            context.moveTo(
+                this.anim_pos_.x + .2*this.dir.y + .25*this.dir.x + base_offset*this.dir.x,
+                this.anim_pos_.y + .2*this.dir.x + .25*this.dir.y + base_offset*this.dir.y,
+            );
+            context.lineTo(
+                this.anim_pos_.x                 + .01*this.dir.x + base_offset*this.dir.x,
+                this.anim_pos_.y                 + .01*this.dir.y + base_offset*this.dir.y,
+            );
+            context.lineTo(
+                this.anim_pos_.x - .2*this.dir.y + .25*this.dir.x + base_offset*this.dir.x,
+                this.anim_pos_.y - .2*this.dir.x + .25*this.dir.y + base_offset*this.dir.y,
+            );
+
+            context.fillStyle = this.color_line_.to_string();
+            context.fill();
         }
 
         if (this.is_inverted) {

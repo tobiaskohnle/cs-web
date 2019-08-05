@@ -124,6 +124,7 @@ const default_config = {
     grid_style: Enum.grid_style.lines,
     joints_style: Enum.joints_style.square,
     hide_ui_in_fullscreen: true,
+    input_arrows: true,
 
     ticks_per_frame: 101,
     scale_factor: 1.14,
