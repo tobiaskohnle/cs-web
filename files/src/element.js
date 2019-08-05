@@ -23,10 +23,6 @@ class Element {
 
     current_color(default_color=cs.theme.outline) {
         if (this.is_selected()) {
-            if (this.is_hovered()) {
-                return cs.theme.hovered_selected;
-            }
-
             return cs.theme.selected;
         }
         if (this.is_hovered()) {

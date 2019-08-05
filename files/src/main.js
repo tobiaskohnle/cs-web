@@ -55,8 +55,7 @@ const theme = {
 
         outline:                  new Color(.6,1,0),
         hovered:                  Color.parse('#39d'),
-        selected:                 Color.parse('#24c'),
-        hovered_selected:         Color.parse('#26e'),
+        selected:                 Color.parse('#14d'),
 
         selection_fill:           Color.parse('#17d3'),
         selection_outline:        Color.parse('#39fd'),
@@ -92,8 +91,7 @@ const theme = {
 
         outline:                  new Color(.6,0,1),
         hovered:                  Color.parse('#2be'),
-        selected:                 Color.parse('#27e'),
-        hovered_selected:         Color.parse('#16e'),
+        selected:                 Color.parse('#16f'),
 
         selection_fill:           Color.parse('#17d3'),
         selection_outline:        Color.parse('#39fd'),
