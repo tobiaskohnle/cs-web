@@ -415,7 +415,7 @@ const commands = {
             .add(View.screen_center());
         cs.camera.pos.set(camera_pos);
     },
-    save(save_as) {
+    save(save_as=false) {
         if (!cs.config.current_file) {
             cs.config.current_file = {};
         }
@@ -440,15 +440,12 @@ const commands = {
 
         cs.config.current_file.content = cs.controller.file_string();
 
+        Util.download_string(cs.config.current_file.content, cs.config.current_file.name);
+
         return true;
     },
     save_as() {
         commands.save(true);
-    },
-    download() {
-        if (commands.save()) {
-            Util.download_string(cs.config.current_file.content, cs.config.current_file.name);
-        }
     },
     select_all() {
         ActionUtil.select_all();

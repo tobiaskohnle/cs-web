@@ -178,7 +178,6 @@ const default_config = {
         reopen_last_file:      'Ctrl+Shift+T',
         toggle_sidebar:        'Ctrl+b',
         toggle_fullscreen:     'f11',
-        download:              'Ctrl+d',
         save:                  'Ctrl+s',
         save_as:               'Ctrl+Shift+S',
         select_all:            'Shift+A',
