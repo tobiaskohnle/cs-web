@@ -7,7 +7,6 @@ class Controller {
         this.mouse_pos = new Vec;
         this.mouse_world_pos = new Vec;
         this.snapped_mouse_world_pos = new Vec;
-        this.abs_mouse_movement = new Vec;
         this.current_action = Enum.action.none;
         this.hovered_element = null;
         this.moving_elements = [];
@@ -95,8 +94,6 @@ class Controller {
 
     mouse_down(event) {
         canvas.setPointerCapture(event.pointerId);
-
-        this.abs_mouse_movement = new Vec;
 
         this.mouse_down_pos = new Vec(event.x-canvas.offsetLeft, event.y-canvas.offsetTop);
         this.mouse_down_world_pos = cs.camera.to_worldspace(this.mouse_down_pos);
@@ -212,8 +209,6 @@ class Controller {
     mouse_move(event) {
         const move_vec = new Vec(event.movementX, event.movementY);
 
-        this.abs_mouse_movement.add(Vec.abs(move_vec));
-
         if (event.buttons & -2) {
             cs.camera.move(move_vec);
         }
@@ -308,7 +303,7 @@ class Controller {
                 break;
 
             case Enum.action.start_wire:
-                if (this.mouse_moved()) {
+                if (Menu.mouse_moved) {
                     if (this.wire_start_node.is_empty()) {
                         this.current_action = Enum.action.create_wire;
 
@@ -501,7 +496,7 @@ class Controller {
 
     mouse_up(event) {
         if (event.button != 0) {
-            if (!this.mouse_moved()) {
+            if (!Menu.mouse_moved) {
                 if (this.hovered_element && !this.hovered_element.is_selected()) {
                     ActionUtil.deselect_all();
                     Action.select(this.hovered_element);
@@ -834,9 +829,5 @@ class Controller {
 
     reset_view() {
         cs.camera.reset();
-    }
-
-    mouse_moved() {
-        return this.abs_mouse_movement.length() > 5;
     }
 }

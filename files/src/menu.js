@@ -3,7 +3,11 @@
 const Menu = {
     open_menu_stack: [],
     sidebar_open: true,
+
     timeout_id: 0,
+
+    mouse_moved: false,
+    abs_mouse_movement: null,
 
     update() {
         for (const menu_element of document.querySelectorAll('.menu')) {

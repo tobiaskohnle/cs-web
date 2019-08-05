@@ -294,12 +294,22 @@ onkeydown = function(event) {
 }
 
 onpointerdown = function(event) {
+    Menu.mouse_moved = false;
+    Menu.abs_mouse_movement = new Vec;
+
     if (event.buttons & -2) {
         Menu.close();
     }
     else {
         Menu.click(event.path || event.composedPath());
         Settings.hide_tooltip();
+    }
+}
+
+onpointermove = function(event) {
+    if (Menu.abs_mouse_movement) {
+        Menu.abs_mouse_movement.add(new Vec(event.movementX,event.movementY).abs());
+        Menu.mouse_moved = Menu.abs_mouse_movement.length() > 5;
     }
 }
 
@@ -323,8 +333,16 @@ onwheel = function(event) {
 }
 
 oncontextmenu = function(event) {
-    if (!cs.controller.mouse_moved()) {
-        Menu.open('context-menu', event.x, event.y);
+    if (!Menu.mouse_moved) {
+        switch (event.target) {
+            case canvas:
+                Menu.open('context-menu', event.x, event.y);
+                break;
+
+            case sidebar_canvas:
+                Menu.open('sidebar-context-menu', event.x, event.y);
+                break;
+        }
     }
     return false;
 }
