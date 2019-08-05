@@ -30,7 +30,7 @@ const Menu = {
                         }
                     }
 
-                    menu_item.addEventListener('click', commands[command_name]);
+                    menu_item.addEventListener('click', event => commands[command_name]());
 
                     if (is_command_enabled(command_name)) {
                         menu_item.classList.remove('disabled');

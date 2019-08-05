@@ -351,11 +351,15 @@ const commands = {
     reset_sidebar() {
         cs.sidebar.load_categories();
     },
-    add_sidebar_elements() {
+    add_sidebar_elements_as_file() {
+        commands.add_sidebar_elements(true);
+    },
+    add_sidebar_elements(as_file=false) {
         cs.controller.read_files(function(result, file) {
             const file_path = file.webkitRelativePath.split('/');
 
             if (!file_path.at(-1).endsWith('.circ')) {
+                console.warn(`Failed to add file to sidebar: unknown file type '${file_path.at(-1)}'.`);
                 return;
             }
 
@@ -366,13 +370,30 @@ const commands = {
                 cs.sidebar.categories.push(category = {header, groups:[]});
             }
 
-            let element = Util.extended_parse(result);
+            let element
 
-            if (element instanceof CustomGate) {
-                Util.convert_to_custom_gate(element);
+            try {
+                element = Util.extended_parse(result);
+            }
+            catch {}
+
+            if (!element) {
+                console.warn(`Failed to add file to sidebar: error while parsing.`);
+                return;
             }
 
-            category.groups.push({elements: [element]});
+            if (element instanceof CustomGate == false) {
+                console.warn(`Failed to add file to sidebar: parsed file is not a CustomGate.`);
+                return;
+            }
+
+            if (as_file) {
+                category.groups.push({elements: element.inner_elements});
+            }
+            else {
+                Util.convert_to_custom_gate(element);
+                category.groups.push({elements: [element]});
+            }
 
             cs.sidebar.update();
         }, true);

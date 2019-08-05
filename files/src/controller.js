@@ -448,24 +448,40 @@ class Controller {
             case Enum.action.import_element:
                 this.save_state('import elements');
 
-                for (const element of this.imported_elements) {
+                ActionUtil.deselect_all();
+
+                for (const element of this.imported_group.elements) {
                     Action.add(element);
-
-                    ActionUtil.deselect_all();
-                    Action.select(element);
-
-                    const pos = Vec.sub(this.mouse_world_pos, Vec.div(element.size, 2));
-                    element.pos.set(pos).sub(new Vec(2,0)).round(element.snap_size_);
-                    ActionGet.elements([element]).forEach(element => element.update(true));
-                    element.pos.add(new Vec(2,0));
-
-                    this.moving_elements = [element];
-                    this.current_action = Enum.action.move_elements;
-
-                    Action.update_last_pos(element);
-                    this.mouse_down_world_pos.set(this.mouse_world_pos);
-                    canvas.setPointerCapture(event.pointerId);
                 }
+
+                const elements = ActionGet.elements(this.imported_group.elements);
+
+                this.moving_elements = [];
+                this.current_action = Enum.action.move_elements;
+
+                const center = Vec.sub(this.mouse_world_pos, Vec.div(this.imported_group.bounds.size, 2));
+
+                for (const element of elements) {
+                    element.update(true);
+
+                    if (element.pos) {
+                        element.pos.add(center).sub(this.imported_group.bounds.pos).round(element.snap_size_);
+                    }
+
+                    if (element instanceof ConnectionNode == false) {
+                        this.moving_elements.push(element);
+                    }
+
+                    Action.select(element);
+                    Action.update_last_pos(element);
+
+                    if (element.pos) {
+                        element.pos.add(new Vec(2));
+                    }
+                }
+
+                this.mouse_down_world_pos.set(this.mouse_world_pos);
+                canvas.setPointerCapture(event.pointerId);
                 break;
 
             case Enum.action.resize_elements:

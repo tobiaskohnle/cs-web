@@ -21,6 +21,13 @@ class Sidebar {
         const label = new Label;
         label.text = 'Text';
 
+        const clock_label = new Label;
+        clock_label.text = '1Hz 50%';
+        clock_label.size.x = 4;
+
+        const clock = new Clock;
+        clock.pos = new Vec(1,2);
+
         this.categories = [
             {
                 header: 'Default',
@@ -42,6 +49,7 @@ class Sidebar {
                     {elements: [new InputButton]},
                     {elements: [new InputPulse]},
                     {elements: [new Clock]},
+                    {elements: [clock, clock_label]},
                     {elements: [new OutputLight]},
                     {elements: [new SegmentDisplay]},
                 ],
@@ -86,14 +94,14 @@ class Sidebar {
             }
             else if (this.hovered_group) {
                 cs.controller.current_action = Enum.action.import_element;
-                cs.controller.imported_elements = Util.deep_copy(this.hovered_group.elements);
+                cs.controller.imported_group = Util.deep_copy(this.hovered_group);
                 this.imported_group = this.hovered_group;
                 sidebar_canvas.releasePointerCapture(event.pointerId);
             }
         }
     }
     mouse_move(event) {
-        if (event.buttons & -23) {
+        if (event.buttons & -2) {
             this.scroll_by(event.movementY);
         }
 
@@ -118,7 +126,7 @@ class Sidebar {
     }
     mouse_up(event) {
         cs.controller.current_action = Enum.action.none;
-        cs.controller.imported_elements = null;
+        cs.controller.imported_group = null;
         this.imported_group = null;
     }
 
@@ -149,8 +157,8 @@ class Sidebar {
 
             category.groups.forEach((group, index) => {
                 group.index = index;
-                group.size = Util.bounding_rect(group.elements).size;
-                group.height = (group.size.y+cs.config.sidebar_margin) * cs.config.sidebar_scale;
+                group.bounds = Util.bounding_rect(group.elements);
+                group.height = (group.bounds.size.y+cs.config.sidebar_margin) * cs.config.sidebar_scale;
 
                 group.screen_y = groups_y + category.y + this.scroll;
                 group.anim_screen_y = groups_y + category.y + this.anim_scroll;
@@ -189,8 +197,12 @@ class Sidebar {
                 context.save();
 
                 context.translate(
-                    sidebar_canvas.width/2 - group.size.x/2*cs.config.sidebar_scale,
+                    sidebar_canvas.width/2 - group.bounds.size.x/2*cs.config.sidebar_scale,
                     group.anim_screen_y + cs.config.sidebar_margin/2*cs.config.sidebar_scale,
+                );
+                context.translate(
+                    -group.bounds.pos.x * cs.config.sidebar_scale,
+                    -group.bounds.pos.y * cs.config.sidebar_scale,
                 );
                 context.scale(cs.config.sidebar_scale, cs.config.sidebar_scale);
 
@@ -200,7 +212,9 @@ class Sidebar {
 
                 context.restore();
             }
+        }
 
+        for (const category of this.categories) {
             context.fillStyle = cs.theme.sidebar_header_outline.to_string();
             context.fillRect(0, category.anim_screen_y, sidebar_canvas.width, cs.config.sidebar_header_height);
 
