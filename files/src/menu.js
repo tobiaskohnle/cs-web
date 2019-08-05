@@ -30,8 +30,6 @@ const Menu = {
                         }
                     }
 
-                    menu_item.addEventListener('click', event => commands[command_name]());
-
                     if (is_command_enabled(command_name)) {
                         menu_item.classList.remove('disabled');
                     }
@@ -79,7 +77,12 @@ const Menu = {
         }
 
         for (const menu_button of document.querySelectorAll('.menu-item:not([menu])')) {
-            menu_button.addEventListener('click', Menu.close);
+            const command = commands[menu_button.getAttribute('command')];
+
+            menu_button.addEventListener('click', () => {
+                command();
+                Menu.close();
+            });
         }
 
         for (const menu_button of document.querySelectorAll('.menubar-item')) {
