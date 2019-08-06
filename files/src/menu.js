@@ -121,36 +121,20 @@ const Menu = {
         }
     },
 
-    open_under(menu, element, toggle_menu=true) {
-        const rect = element.getBoundingClientRect();
-        Menu.open(menu, rect.left, rect.bottom, toggle_menu);
+    open_under(menu, menu_button, toggle_menu=true) {
+        const rect = menu_button.getBoundingClientRect();
+        Menu.open(menu, menu_button, rect.left, rect.bottom, toggle_menu);
     },
-    open_next_to(menu, element, toggle_menu=true) {
-        const rect = element.getBoundingClientRect();
-        Menu.open(menu, rect.right-3, rect.top-3, toggle_menu);
+    open_next_to(menu, menu_button, toggle_menu=true) {
+        const rect = menu_button.getBoundingClientRect();
+        Menu.open(menu, menu_button, rect.right-3, rect.top-3, toggle_menu);
     },
-    open(menu, x, y, toggle_menu=true) {
+    open(menu, menu_button, x, y, toggle_menu=true) {
+        Menu.close_from(menu_button);
+
         const menu_element = document.querySelector(`.menu[menu=${menu}]`);
 
-        const parent_button = document.querySelector(`.menu :not(.menu)[menu=${menu}]`);
-        const parent_element = parent_button ? parent_button.parentElement : null;
-
-        let menu_is_enabled = false;
-
-        while (Menu.open_menu_stack.length) {
-            if (Menu.open_menu_stack.last() == menu_element) {
-                menu_is_enabled = true;
-            }
-
-            if (Menu.open_menu_stack.last() == parent_element) {
-                break;
-            }
-
-            Menu.set_element_enabled(Menu.open_menu_stack.last(), false);
-            Menu.open_menu_stack.pop();
-        }
-
-        const is_enabled = !toggle_menu || !menu_is_enabled;
+        const is_enabled = !toggle_menu || !Menu.open_menu_stack.includes(menu_element);
 
         Menu.set_element_enabled(menu_element, is_enabled, x, y);
 

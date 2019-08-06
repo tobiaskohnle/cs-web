@@ -336,11 +336,11 @@ oncontextmenu = function(event) {
     if (!Menu.mouse_moved) {
         switch (event.target) {
             case canvas:
-                Menu.open('context-menu', event.x, event.y);
+                Menu.open('context-menu', null, event.x, event.y);
                 break;
 
             case sidebar_canvas:
-                Menu.open('sidebar-context-menu', event.x, event.y);
+                Menu.open('sidebar-context-menu', null, event.x, event.y);
                 break;
         }
     }
