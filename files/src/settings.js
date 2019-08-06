@@ -273,8 +273,24 @@ const Settings = {
         });
     },
 
-    match_fuzzy(pattern, text) {
-        return new RegExp(pattern.split('').join('.*'), 'i').test(text);
+    match_search_pattern(pattern, text) {
+        if (!pattern) {
+            return true;
+        }
+
+        const text_words = text.split(/\s+/);
+
+        for (const word of pattern.split(/\s+/)) {
+            const match_fuzzy_regex = new RegExp(word.split('').join('.*'), 'i');
+
+            if (text_words.find(text_word => match_fuzzy_regex.test(text_word))) {
+                continue;
+            }
+
+            return false;
+        }
+
+        return true;
     },
 
     filter_settings(pattern) {
@@ -283,7 +299,7 @@ const Settings = {
         }
 
         for (const element of document.querySelectorAll('.setting')) {
-            const visible = Settings.match_fuzzy(pattern, element.innerText);
+            const visible = Settings.match_search_pattern(pattern, element.innerText);
             element.style.display = visible ? '' : 'none';
         }
     },
