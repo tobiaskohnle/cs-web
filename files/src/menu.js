@@ -130,12 +130,11 @@ const Menu = {
         Menu.open(menu, menu_button, rect.right-3, rect.top-3, toggle_menu);
     },
     open(menu, menu_button, x, y, toggle_menu=true) {
-        Menu.close_from(menu_button);
-
         const menu_element = document.querySelector(`.menu[menu=${menu}]`);
 
         const is_enabled = !toggle_menu || !Menu.open_menu_stack.includes(menu_element);
 
+        Menu.close_from(menu_button);
         Menu.set_element_enabled(menu_element, is_enabled, x, y);
 
         if (is_enabled) {
@@ -223,6 +222,7 @@ const Menu = {
             }
 
             Menu.set_element_enabled(menu_element, false);
+            Menu.open_menu_stack.remove(menu_element);
         }
     },
 
