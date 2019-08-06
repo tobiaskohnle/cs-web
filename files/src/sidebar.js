@@ -30,7 +30,7 @@ class Sidebar {
 
         this.categories = [
             {
-                header: 'Default',
+                header: 'Gates',
                 groups: [
                     {elements: [new AndGate]},
                     {elements: [nand]},
@@ -55,7 +55,7 @@ class Sidebar {
                 ],
             },
             {
-                header: 'Other',
+                header: 'Label',
                 groups: [
                     {elements: [label]},
                 ],
