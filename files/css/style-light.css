@@ -16,4 +16,8 @@
     --menubar-item-background-hover: #49f3;
     --menubar-item-border-active: #39fe;
     --menubar-item-background-active: #49f6;
+
+    --debugger-box-shadow: #0002;
+    --debugger-odd-item-background: #0000000f;
+    --debugger-item-background-hover: #0002;
 }

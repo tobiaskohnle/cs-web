@@ -45,7 +45,13 @@ const Settings = {
         const setting_element = document.querySelector(`.settings-container [setting='${setting}']`);
         if (setting_element) {
             const input = setting_element.querySelector('input, select');
-            const value = Util.get_nested(cs.config, setting);
+            let value = Util.get_nested(cs.config, setting);
+
+            switch (setting_element.getAttribute('type')) {
+                case 'keybind':
+                    value = Keybind.parse(value).to_string();
+                    break;
+            }
 
             if (input.type == 'select-one' || input.type == 'text') {
                 input.value = value;
@@ -149,13 +155,7 @@ const Settings = {
 
     edit_keybind(event) {
         if (event.key != 'Escape' && event.key != 'Enter') {
-            let modifier_string = '';
-
-            if (event.ctrlKey)  modifier_string += 'Ctrl+';
-            if (event.shiftKey) modifier_string += 'Shift+';
-            if (event.altKey)   modifier_string += 'Alt+';
-
-            this.value = `${modifier_string}${event.key}`;
+            this.value = Keybind.from_event(event).to_string();
         }
 
         event.preventDefault();

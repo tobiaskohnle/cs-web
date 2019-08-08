@@ -22,6 +22,40 @@ body {
     margin: 0;
 }
 
+.debugger {
+    width: min-content;
+    height: min-content;
+
+    position: absolute;
+
+    top: 20px;
+    left: 0;
+    right: 0;
+
+    margin: auto;
+
+    background: var(--background);
+
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-rows: 48px;
+    grid-auto-columns: 48px;
+
+    box-shadow: 0 0 7px 4px var(--debugger-box-shadow);
+}
+.debugger div:nth-child(odd) {
+    background: var(--debugger-odd-item-background);
+}
+.debugger div:not(.disabled):hover {
+    background: var(--debugger-item-background-hover);
+}
+.debugger img {
+    transition: transform 40ms;
+}
+.debugger div:not(.disabled):not(:active):hover img {
+    transform: scale(1.125);
+}
+
 .window {
     width: 100vw;
     height: 100vh;

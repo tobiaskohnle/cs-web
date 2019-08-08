@@ -51,6 +51,24 @@
         <canvas class='canvas'></canvas>
     </div>
 
+    <div style='display:none;' class='debugger'>
+        <div command='debug_pause' title='Pause'>
+            <img draggable='false' src=''>
+        </div>
+        <div command='debug_resume' title='Resume'>
+            <img draggable='false' src=''>
+        </div>
+        <div command='debug_step' title='Tick'>
+            <img draggable='false' src=''>
+        </div>
+        <div command='debug_single_step' title='Tick'>
+            <img draggable='false' src=''>
+        </div>
+        <div command='debug_close' title='Close'>
+            <img draggable='false' src=''>
+        </div>
+    </div>
+
     <div class='menu' menu='context-menu'>
         <div class='menu-item' menu='context-menu-add-component'>
             <span>Add Component</span>
@@ -288,6 +306,9 @@
         <div class='menu-item' command='view_content'>
             <span>View Content</span>
         </div>
+        <div class='menu-item' command='debug_toggle'>
+            <span>Toggle Debugger</span>
+        </div>
     </div>
 
     <div class='menu' menu='edit_sidebar'>
@@ -327,7 +348,7 @@
     </div>
 
 
-    <div class='settings-container'>
+    <div style='display:none;' class='settings-container'>
         <div class='settings-menu'>
             <div class='searchbar-container'>
                 <input class='searchbar' placeholder='Search settings'>
@@ -972,11 +993,11 @@
                         <div class='setting-dropdown'></div>
                     </div>
                 </div>
-                <div class='setting' setting='keybinds.toggle_single_ticks' type='keybind'>
+                <div class='setting' setting='keybinds.debug_pause_resume' type='keybind'>
                     <div class='description'>
                         <span class='title'>Toggle Manual Ticks</span><br>
                         Enter and leave manual tick mode.<br>
-                        setting: <span class='code'>keybinds.toggle_single_ticks</span>
+                        setting: <span class='code'>keybinds.debug_pause_resume</span>
                     </div>
 
                     <div class='setting-input-container'>
@@ -986,11 +1007,25 @@
                         <div class='setting-dropdown'></div>
                     </div>
                 </div>
-                <div class='setting' setting='keybinds.tick_step' type='keybind'>
+                <div class='setting' setting='keybinds.debug_tick' type='keybind'>
                     <div class='description'>
                         <span class='title'>Next Tick</span><br>
                         Perform a logic calculation.<br>
-                        setting: <span class='code'>keybinds.tick_step</span>
+                        setting: <span class='code'>keybinds.debug_tick</span>
+                    </div>
+
+                    <div class='setting-input-container'>
+                        <label class='keybind'>
+                            <input class='setting-input'>
+                        </label>
+                        <div class='setting-dropdown'></div>
+                    </div>
+                </div>
+                <div class='setting' setting='keybinds.debug_single_tick' type='keybind'>
+                    <div class='description'>
+                        <span class='title'>Next Tick</span><br>
+                        Perform a logic calculation.<br>
+                        setting: <span class='code'>keybinds.debug_single_tick</span>
                     </div>
 
                     <div class='setting-input-container'>

@@ -11,11 +11,27 @@ class Keybind {
         };
 
         keybind.key = string.trim();
+        if (keybind.key == 'space') {
+            keybind.key = ' ';
+        }
 
         return keybind;
     }
     static parse_all(string) {
         return string.split(',').map(string => Keybind.parse(string));
+    }
+    static from_event(event) {
+        const keybind = new Keybind;
+
+        keybind.modifiers = {
+            ctrl  : event.ctrlKey,
+            shift : event.shiftKey,
+            alt   : event.altKey,
+        };
+
+        keybind.key = event.key;
+
+        return keybind;
     }
 
     matches_event(event) {
@@ -26,6 +42,9 @@ class Keybind {
         return this.key.toLowerCase() == event.key.toLowerCase();
     }
 
+    static format(string) {
+        return Keybind.parse_all(string).map(keybind => keybind.to_string()).join(', ');
+    }
     to_string() {
         let modifier_string = '';
 
@@ -33,7 +52,8 @@ class Keybind {
         if (this.modifiers.shift) modifier_string += 'Shift+';
         if (this.modifiers.alt)   modifier_string += 'Alt+';
 
-        return `${modifier_string}${this.key}`;
+        const key = this.key==' ' ? 'space' : this.key;
+        return `${modifier_string}${key.substr(0,1).toUpperCase()}${key.substr(1).toLowerCase()}`;
     }
 }
 
@@ -116,9 +136,14 @@ function is_command_enabled(command) {
             }
             return false;
 
-        case 'debug_toggle':
         case 'debug_step':
         case 'debug_single_step':
+        case 'debug_resume':
+            return !cs.controller.tick_nodes;
+        case 'debug_pause':
+            return cs.controller.tick_nodes;
+        case 'debug_toggle':
+        case 'debug_close':
             return true;
 
         case 'undo':
@@ -266,6 +291,7 @@ const commands = {
     },
     escape() {
         Menu.close();
+        commands.debug_close();
 
         switch (cs.controller.current_action) {
             case Enum.action.import_element:
@@ -485,26 +511,40 @@ const commands = {
         cs.controller.save_state('(command) split_segment');
         ActionUtil.split_selected_segments();
     },
-    theme_dark() {
-        Menu.select_theme('dark');
-    },
-    theme_light() {
-        Menu.select_theme('light');
-    },
     zoom_in() {
         cs.camera.scale_at(View.screen_center(), cs.config.scale_factor);
     },
     zoom_out() {
         cs.camera.scale_at(View.screen_center(), 1/cs.config.scale_factor);
     },
+
     debug_toggle() {
+        cs.controller.tick_nodes = true;
+        Menu.show_debugger(!Menu.debugger_visible);
+    },
+    debug_close() {
+        cs.controller.tick_nodes = true;
+        Menu.show_debugger(false);
+    },
+    debug_pause() {
+        cs.controller.tick_nodes = false;
+        Menu.show_debugger(true);
+    },
+    debug_resume() {
+        cs.controller.tick_nodes = true;
+        Menu.show_debugger(true);
+    },
+    debug_pause_resume() {
         cs.controller.tick_nodes = !cs.controller.tick_nodes;
+        Menu.show_debugger(true);
     },
-    debug_step() {
+    debug_tick() {
         Action.tick();
+        Menu.show_debugger(true);
     },
-    debug_single_step() {
+    debug_single_tick() {
         Action.tick();
+        Menu.show_debugger(true);
     },
 
     reset_setting() {

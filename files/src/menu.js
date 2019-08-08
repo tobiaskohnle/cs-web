@@ -9,6 +9,8 @@ const Menu = {
     mouse_moved: false,
     abs_mouse_movement: null,
 
+    debugger_visible: false,
+
     update() {
         for (const menu_element of document.querySelectorAll('.menu')) {
             const menu_items = menu_element.querySelectorAll('.menu-item');
@@ -27,7 +29,7 @@ const Menu = {
                             menu_item.appendChild(span);
                         }
 
-                        menu_item.children[1].innerText = display_keybind;
+                        menu_item.children[1].innerText = Keybind.format(display_keybind);
                     }
                     else {
                         while (menu_item.childElementCount >= 2) {
@@ -63,6 +65,29 @@ const Menu = {
         }
     },
 
+    show_debugger(is_visible) {
+        Menu.debugger_visible = is_visible;
+        document.querySelector('.debugger').style.display = is_visible ? '' : 'none';
+        Menu.update_debugger();
+    },
+    update_debugger() {
+        if (Menu.debugger_visible) {
+            for (const command of ['debug_pause','debug_resume','debug_step','debug_single_step','debug_close']) {
+                const image_container = document.querySelector(`[command=${command}]`);
+
+                if (is_command_enabled(command)) {
+                    image_container.classList.remove('disabled');
+                }
+                else {
+                    image_container.classList.add('disabled');
+                }
+
+                const image_name = `${command}${is_command_enabled(command) ? '' : '_disabled'}.png`;
+                image_container.querySelector('img').src = `files/icon/${cs.config.theme}/${image_name}`;
+            }
+        }
+    },
+
     add_event_listeners() {
         for (const menu_element of document.querySelectorAll('.menu')) {
             const menu = menu_element.getAttribute('menu');
@@ -83,7 +108,7 @@ const Menu = {
             });
         }
 
-        for (const menu_button of document.querySelectorAll('.menu-item:not([menu])')) {
+        for (const menu_button of document.querySelectorAll('[command]:not([menu])')) {
             const command = commands[menu_button.getAttribute('command')];
 
             menu_button.addEventListener('click', () => {
@@ -228,11 +253,16 @@ const Menu = {
 
     select_theme(theme_name) {
         cs.theme = theme[theme_name];
+        cs.config.theme = theme_name;
+
         document.querySelector('#theme-style').href = `files/css/style-${theme_name}.css`;
         document.querySelector('#theme-settings-style').href = `files/css/settings-${theme_name}.css`;
+
         if (cs.sidebar) {
             cs.sidebar.update();
         }
+
+        Menu.update_debugger();
     },
 
     show_sidebar(is_visible) {
