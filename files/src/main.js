@@ -134,6 +134,8 @@ const default_config = {
     sidebar_margin: 2,
     sidebar_scale: 20,
 
+    sidebar_scroll_factor: 100,
+
 
     default_color_anim_factor: .57,
     fade_color_anim_factor: .02,

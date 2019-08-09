@@ -665,7 +665,7 @@ class Controller {
     }
 
     sidebar_mouse_wheel(event) {
-        cs.sidebar.scroll_by(Math.sign(event.deltaY) * -100);
+        cs.sidebar.scroll_by(-Math.sign(event.deltaY) * cs.config.sidebar_scroll_factor);
     }
 
     sidebar_mouse_leave(event) {
