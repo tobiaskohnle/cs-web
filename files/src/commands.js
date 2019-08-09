@@ -294,8 +294,19 @@ const commands = {
         commands.debug_close();
 
         switch (cs.controller.current_action) {
-            case Enum.action.import_element:
-                Action.remove(cs.controller.imported_element);
+            case Enum.action.move_elements:
+                if (cs.controller.imported_group) {
+                    for (const element of cs.controller.imported_group.elements) {
+                        Action.remove(element);
+                    }
+                }
+                else {
+                    for (const element of cs.controller.moving_elements) {
+                        if (element.last_pos_) {
+                            element.pos = element.last_pos_.copy();
+                        }
+                    }
+                }
                 break;
 
             case Enum.action.rewire_input:

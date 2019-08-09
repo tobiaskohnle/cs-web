@@ -507,12 +507,6 @@ class Controller {
 
         this.is_mouse_down = false;
 
-        if (this.current_action != Enum.action.imported_element) {
-            for (const element of this.moving_elements) {
-                if (element.mouse_up) element.mouse_up();
-            }
-        }
-
         if (this.elements_moved == false) {
             if (this.hovered_element instanceof InputSwitch) {
                 if (!(event.ctrlKey || event.shiftKey)) {
