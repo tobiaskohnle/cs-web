@@ -207,12 +207,12 @@ class WireSegment extends Element {
             const neighbor_offset = neighbor_elements[i].anim_offset_;
 
             switch (cs.config.joints_style) {
-                case Enum.joints_style.square:
+                case 'square':
                     if (this.is_vertical) context.fillRect(this.anim_offset_ - .4/2, neighbor_offset - .4/2, .4, .4);
                     else                  context.fillRect(neighbor_offset - .4/2, this.anim_offset_ - .4/2, .4, .4);
                     break;
 
-                case Enum.joints_style.round:
+                case 'round':
                     context.beginPath();
                     if (this.is_vertical) context.arc(this.anim_offset_, neighbor_offset, .22, 0, Math.PI*2);
                     else                  context.arc(neighbor_offset, this.anim_offset_, .22, 0, Math.PI*2);

@@ -23,16 +23,6 @@ const Enum = {
         resize_elements:               Symbol('action_resize_elements'),
         import_element:                Symbol('action_import_element'),
     },
-    grid_style: {
-        none:  'none',
-        lines: 'lines',
-        dots:  'dots',
-    },
-    joints_style: {
-        none:   'none',
-        square: 'square',
-        round:  'round',
-    },
     side: {
         east:  0,
         south: 1,
@@ -119,8 +109,8 @@ const theme = {
 const default_config = {
     theme: 'light',
     default_grid_size: 32,
-    grid_style: Enum.grid_style.lines,
-    joints_style: Enum.joints_style.square,
+    grid_style: 'lines',
+    joints_style: 'square',
     hide_ui_in_fullscreen: true,
     input_arrows: true,
 

@@ -336,15 +336,6 @@ const commands = {
     toggle_sidebar() {
         Menu.show_sidebar(!Menu.sidebar_open);
     },
-    grid_dots() {
-        cs.config.grid_style = Enum.grid_style.dots;
-    },
-    grid_none() {
-        cs.config.grid_style = Enum.grid_style.none;
-    },
-    grid_lines() {
-        cs.config.grid_style = Enum.grid_style.lines;
-    },
     import() {
         cs.controller.save_state('(command) import');
         cs.controller.read_files(function(result) {

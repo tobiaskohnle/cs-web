@@ -28,10 +28,10 @@ const View = {
         View.clear_screen();
 
         switch (cs.config.grid_style) {
-            case Enum.grid_style.lines:
+            case 'lines':
                 View.draw_grid_lines();
                 break;
-            case Enum.grid_style.dots:
+            case 'dots':
                 View.draw_grid_dots();
                 break;
         }
