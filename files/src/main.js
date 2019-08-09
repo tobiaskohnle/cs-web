@@ -75,7 +75,7 @@ const theme = {
         sidebar_hovered_group:    Color.parse('#49e4'),
         sidebar_header_outline:   Color.parse('#222'),
         sidebar_header_hovered:   Color.parse('#9cf'),
-        sidebar_header:           Color.parse('#eee'),
+        sidebar_header:           Color.parse('#eaeaea'),
         sidebar_header_font:      Color.parse('#222'),
     },
     dark: {
