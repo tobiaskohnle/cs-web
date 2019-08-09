@@ -77,7 +77,7 @@ const theme = {
         wire_inactive:            new Color(.6,0,1),
         wire_active:              Color.parse('#f33'),
         segment_inactive:         Color.parse('#1473'),
-        segment_active:           Color.parse('#1af'),
+        segment_active:           Color.parse('#f34'),
 
         outline:                  new Color(.6,0,1),
         hovered:                  Color.parse('#2be'),
@@ -300,7 +300,7 @@ onmousedown = function(event) {
     }
 }
 
-onpointermove = function(event) {
+onmousemove = function(event) {
     if (Menu.abs_mouse_movement) {
         Menu.abs_mouse_movement.add(new Vec(event.movementX,event.movementY).abs());
         Menu.mouse_moved = Menu.abs_mouse_movement.length() > 5;
