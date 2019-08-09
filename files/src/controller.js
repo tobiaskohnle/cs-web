@@ -640,6 +640,23 @@ class Controller {
         this.hovered_element = null;
     }
 
+    context_menu(event) {
+        if (!Menu.mouse_moved) {
+            switch (this.current_action) {
+                case Enum.action.create_wire:
+                case Enum.action.create_wire_segment:
+                    Util.load_snapshot();
+                    this.new_wire_segments = [];
+                    this.current_action = Enum.action.none;
+                    break;
+
+                default:
+                    Menu.open('context-menu', null, event.x, event.y);
+                    break;
+            }
+        }
+    }
+
     sidebar_mouse_down(event) {
         sidebar_canvas.setPointerCapture(event.pointerId);
         cs.sidebar.mouse_down(event);
@@ -659,6 +676,12 @@ class Controller {
 
     sidebar_mouse_leave(event) {
         cs.sidebar.mouse_leave(event);
+    }
+
+    sidebar_context_menu(event) {
+        if (!Menu.mouse_moved) {
+            Menu.open('sidebar-context-menu', null, event.x, event.y);
+        }
     }
 
     save_state(message, state=Util.deep_copy(cs.context)) {

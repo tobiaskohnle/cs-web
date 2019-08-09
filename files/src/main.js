@@ -246,18 +246,20 @@ onload = function() {
 
     cs.sidebar = new Sidebar;
 
-    canvas.addEventListener('mousedown',    cs.controller.mouse_click.bind(cs.controller), {passive:true});
-    canvas.addEventListener('pointerdown',  cs.controller.mouse_down .bind(cs.controller), {passive:true});
-    canvas.addEventListener('pointermove',  cs.controller.mouse_move .bind(cs.controller), {passive:true});
-    canvas.addEventListener('pointerup',    cs.controller.mouse_up   .bind(cs.controller), {passive:true});
-    canvas.addEventListener('pointerleave', cs.controller.mouse_leave.bind(cs.controller), {passive:true});
-    canvas.addEventListener('wheel',        cs.controller.mouse_wheel.bind(cs.controller), {passive:true});
+    canvas.addEventListener('mousedown',    cs.controller.mouse_click .bind(cs.controller), {passive:true});
+    canvas.addEventListener('pointerdown',  cs.controller.mouse_down  .bind(cs.controller), {passive:true});
+    canvas.addEventListener('pointermove',  cs.controller.mouse_move  .bind(cs.controller), {passive:true});
+    canvas.addEventListener('pointerup',    cs.controller.mouse_up    .bind(cs.controller), {passive:true});
+    canvas.addEventListener('pointerleave', cs.controller.mouse_leave .bind(cs.controller), {passive:true});
+    canvas.addEventListener('contextmenu',  cs.controller.context_menu.bind(cs.controller), {passive:true});
+    canvas.addEventListener('wheel',        cs.controller.mouse_wheel .bind(cs.controller), {passive:true});
 
-    sidebar_canvas.addEventListener('pointerdown',  cs.controller.sidebar_mouse_down .bind(cs.controller), {passive:true});
-    sidebar_canvas.addEventListener('pointermove',  cs.controller.sidebar_mouse_move .bind(cs.controller), {passive:true});
-    sidebar_canvas.addEventListener('pointerup',    cs.controller.sidebar_mouse_up   .bind(cs.controller), {passive:true});
-    sidebar_canvas.addEventListener('pointerleave', cs.controller.sidebar_mouse_leave.bind(cs.controller), {passive:true});
-    sidebar_canvas.addEventListener('wheel',        cs.controller.sidebar_mouse_wheel.bind(cs.controller), {passive:true});
+    sidebar_canvas.addEventListener('pointerdown',  cs.controller.sidebar_mouse_down  .bind(cs.controller), {passive:true});
+    sidebar_canvas.addEventListener('pointermove',  cs.controller.sidebar_mouse_move  .bind(cs.controller), {passive:true});
+    sidebar_canvas.addEventListener('pointerup',    cs.controller.sidebar_mouse_up    .bind(cs.controller), {passive:true});
+    sidebar_canvas.addEventListener('pointerleave', cs.controller.sidebar_mouse_leave .bind(cs.controller), {passive:true});
+    sidebar_canvas.addEventListener('contextmenu' , cs.controller.sidebar_context_menu.bind(cs.controller), {passive:true});
+    sidebar_canvas.addEventListener('wheel',        cs.controller.sidebar_mouse_wheel .bind(cs.controller), {passive:true});
 
     Menu.add_event_listeners();
 
@@ -283,7 +285,7 @@ onkeydown = function(event) {
     return cs.controller.key_down(event);
 }
 
-onpointerdown = function(event) {
+onmousedown = function(event) {
     Menu.mouse_moved = false;
     Menu.abs_mouse_movement = new Vec;
 
@@ -323,17 +325,6 @@ onwheel = function(event) {
 }
 
 oncontextmenu = function(event) {
-    if (!Menu.mouse_moved) {
-        switch (event.target) {
-            case canvas:
-                Menu.open('context-menu', null, event.x, event.y);
-                break;
-
-            case sidebar_canvas:
-                Menu.open('sidebar-context-menu', null, event.x, event.y);
-                break;
-        }
-    }
     return false;
 }
 
