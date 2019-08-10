@@ -130,6 +130,8 @@ const default_config = {
     anim_factor: .52,
     camera_anim_factor: .42,
 
+    queued_nodes_animation: true,
+
 
     sidebar_header_height: 40,
 

@@ -256,7 +256,7 @@ class ConnectionNode extends Element {
 
             context.lineWidth = .8;
 
-            if (cs.config.animations) {
+            if (cs.config.animations && cs.config.queued_nodes_animation) {
                 context.setLineDash([.1, .05]);
                 context.lineDashOffset = (is_output?-1:1) * (Date.now()/4000 % (.15*7));
             }
