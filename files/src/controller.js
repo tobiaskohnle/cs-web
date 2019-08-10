@@ -54,11 +54,14 @@ class Controller {
             }
         }
 
+        const pressed_keybind = Keybind.from_event(event);
+
         for (const command in commands) {
             const keybind = cs.config.keybinds[command];
 
             if (keybind) {
-                if (Keybind.parse_all(keybind).some(keybind => keybind.matches_event(event))) {
+                if (Keybind.parse_all(keybind).some(keybind => keybind.equals(pressed_keybind))) {
+
                     commands[command]();
                     return false;
                 }

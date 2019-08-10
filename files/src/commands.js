@@ -11,7 +11,7 @@ class Keybind {
         };
 
         keybind.key = string.trim();
-        if (keybind.key == 'space') {
+        if (keybind.key.toLowerCase() == 'space') {
             keybind.key = ' ';
         }
 
@@ -34,12 +34,11 @@ class Keybind {
         return keybind;
     }
 
-    matches_event(event) {
-        if (event.ctrlKey  != this.modifiers.ctrl)  return false;
-        if (event.shiftKey != this.modifiers.shift) return false;
-        if (event.altKey   != this.modifiers.alt)   return false;
-
-        return this.key.toLowerCase() == event.key.toLowerCase();
+    equals(keybind) {
+        return this.key == keybind.key
+            && this.modifiers.ctrl  == keybind.modifiers.ctrl
+            && this.modifiers.shift == keybind.modifiers.shift
+            && this.modifiers.alt   == keybind.modifiers.alt;
     }
 
     static format(string) {
