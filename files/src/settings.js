@@ -8,6 +8,7 @@ const Settings = {
         cs.config = Util.deep_copy(default_config);
         Settings.import_all_settings();
         Settings.clear_filter();
+        commands.reset_sidebar();
     },
     reset_current_setting() {
         const setting = Settings.currently_edited_setting;
