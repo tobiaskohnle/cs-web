@@ -33,7 +33,7 @@ const Enum = {
 
 const theme = {
     light: {
-        grid_dots:                Color.parse('#aaa8'),
+        grid_dots:                Color.parse('#7777'),
         grid_lines:               Color.parse('#aaa7'),
 
         light_inactive:           Color.parse('#f330'),
@@ -72,7 +72,7 @@ const theme = {
     },
     dark: {
         grid_dots:                Color.parse('#acf6'),
-        grid_lines:               Color.parse('#cef1'),
+        grid_lines:               Color.parse('#cceeff1c'),
 
         light_inactive:           Color.parse('#f330'),
         light_active:             Color.parse('#f337'),
