@@ -11,7 +11,7 @@ class Element {
     }
 
     assign_id() {
-        this.id_ = cs.config.next_id++;
+        this.id_ = cs.next_id++;
     }
 
     is_selected() {

@@ -258,7 +258,7 @@ class ConnectionNode extends Element {
 
             if (cs.config.animations && cs.config.queued_nodes_animation) {
                 context.setLineDash([.1, .05]);
-                context.lineDashOffset = (is_output?-1:1) * (Date.now()/4000 % (.15*7));
+                context.lineDashOffset = (is_output?-1:1) * (cs.config.queued_nodes_anim_speed * Date.now()/1000 % (.15*7));
             }
 
             context.globalCompositeOperation = 'source-atop';

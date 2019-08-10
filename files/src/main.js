@@ -131,6 +131,7 @@ const default_config = {
     camera_anim_factor: .42,
 
     queued_nodes_animation: true,
+    queued_nodes_anim_speed: .25,
 
 
     sidebar_header_height: 40,
@@ -153,7 +154,6 @@ const default_config = {
     label_caret_blink_rate: 1000,
 
     default_rising_edge_pulse_length: 32,
-    next_id: 0,
 
 
     keybinds: {
@@ -238,6 +238,8 @@ onload = function() {
     onresize();
 
     cs = {};
+
+    cs.next_id = 0;
 
     load_config();
 
