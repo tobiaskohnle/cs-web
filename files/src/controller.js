@@ -61,7 +61,6 @@ class Controller {
 
             if (keybind) {
                 if (Keybind.parse_all(keybind).some(keybind => keybind.equals(pressed_keybind))) {
-
                     commands[command]();
                     return false;
                 }

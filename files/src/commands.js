@@ -35,7 +35,7 @@ class Keybind {
     }
 
     equals(keybind) {
-        return this.key == keybind.key
+        return this.key.toLowerCase() == keybind.key.toLowerCase()
             && this.modifiers.ctrl  == keybind.modifiers.ctrl
             && this.modifiers.shift == keybind.modifiers.shift
             && this.modifiers.alt   == keybind.modifiers.alt;
