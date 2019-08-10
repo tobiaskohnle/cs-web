@@ -281,7 +281,7 @@ const Settings = {
         const text_words = text.split(/\s+/);
 
         for (const word of pattern.split(/\s+/)) {
-            const match_fuzzy_regex = new RegExp(word.split('').join('.*'), 'i');
+            const match_fuzzy_regex = new RegExp(word.split('').map(char => `\\${char}`).join('.*'), 'i');
 
             if (text_words.find(text_word => match_fuzzy_regex.test(text_word))) {
                 continue;
