@@ -136,8 +136,8 @@ function is_command_enabled(command) {
             }
             return false;
 
-        case 'debug_step':
-        case 'debug_single_step':
+        case 'debug_tick':
+        case 'debug_single_tick':
         case 'debug_resume':
             return !cs.controller.tick_nodes;
         case 'debug_pause':

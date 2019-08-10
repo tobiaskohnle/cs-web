@@ -54,6 +54,8 @@ const theme = {
         gate_init:                Color.parse('#0ef0'),
         merge_segment_flash:      Color.parse('#0f1'),
 
+        node_tick_queued:         Color.parse('#e91'),
+
         label_text:               Color.parse('#222'),
         label_special_text:       Color.parse('#330'),
         label_description_text:   Color.parse('#1ad'),
@@ -89,6 +91,8 @@ const theme = {
         node_init:                Color.parse('#0ef0'),
         gate_init:                Color.parse('#0ef0'),
         merge_segment_flash:      Color.parse('#0f1'),
+
+        node_tick_queued:         Color.parse('#ee2'),
 
         label_text:               Color.parse('#ccc'),
         label_special_text:       Color.parse('#cc1'),

@@ -244,6 +244,29 @@ class ConnectionNode extends Element {
             context.strokeStyle = this.color_dot_.to_string();
             context.stroke();
         }
+
+        if (!cs.controller.tick_nodes && cs.ticked_nodes.has(this)) {
+            context.save();
+            context.beginPath();
+
+            const normal = new Vec(-this.dir.y, this.dir.x);
+
+            context.moveTo(...Vec.add(this.anim_pos_, Vec.mult(normal, -.2)).xy);
+            context.lineTo(...Vec.add(this.anchor_pos_, Vec.mult(normal, .2)).xy);
+
+            context.lineWidth = .8;
+
+            if (cs.config.animations) {
+                context.setLineDash([.1, .05]);
+                context.lineDashOffset = (is_output?-1:1) * (Date.now()/4000 % (.15*7));
+            }
+
+            context.globalCompositeOperation = 'source-atop';
+
+            context.strokeStyle = cs.theme.node_tick_queued.to_string();
+            context.stroke();
+            context.restore();
+        }
     }
 }
 

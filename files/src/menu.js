@@ -72,7 +72,7 @@ const Menu = {
     },
     update_debugger() {
         if (Menu.debugger_visible) {
-            for (const command of ['debug_pause','debug_resume','debug_step','debug_single_step','debug_close']) {
+            for (const command of ['debug_pause','debug_resume','debug_tick','debug_single_tick','debug_close']) {
                 const image_container = document.querySelector(`[command=${command}]`);
 
                 if (is_command_enabled(command)) {
