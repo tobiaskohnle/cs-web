@@ -327,6 +327,8 @@ const commands = {
 
         ActionUtil.deselect_all();
         cs.controller.current_action = Enum.action.none;
+
+        load_end();
     },
     enter() {
         ActionUtil.deselect_all();

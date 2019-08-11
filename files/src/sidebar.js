@@ -1,11 +1,28 @@
 'use strict';
 
+function load_sidebar() {
+    if (cs.config.sidebar) {
+        const categories = Util.extended_parse(cs.config.sidebar);
+        delete cs.config.sidebar;
+
+        if (categories instanceof Array) {
+            cs.sidebar.categories = categories;
+            cs.sidebar.update();
+            return;
+        }
+    }
+
+    console.warn('Failed to restore sidebar.');
+
+    cs.sidebar.load_categories();
+}
+
 class Sidebar {
     constructor() {
         this.scroll = 0;
         this.anim_scroll = 0;
 
-        this.load_categories();
+        this.categories = [];
     }
 
     load_categories() {

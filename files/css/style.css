@@ -22,6 +22,42 @@ body {
     margin: 0;
 }
 
+.loading-circle {
+    width: 82px;
+    height: 82px;
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+
+    margin: auto;
+}
+.loading-circle::after {
+    width: 82px;
+    height: 82px;
+
+    display: block;
+
+    border: 8px solid;
+    border-radius: 50%;
+    border-color: #777 #777 #777 transparent;
+
+    animation: rotate 1.4s linear infinite;
+
+    content: '';
+}
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
 .debugger {
     width: min-content;
     height: min-content;

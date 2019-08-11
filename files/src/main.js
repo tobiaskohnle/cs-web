@@ -193,25 +193,19 @@ const default_config = {
     },
 };
 
+function load_start() {
+    document.querySelector('.loading-circle').style.display = '';
+}
+function load_end() {
+    document.querySelector('.loading-circle').style.display = 'none';
+}
+
 function load_config() {
     try {
         const loaded_config = localStorage.getItem('cs_config');
 
         if (loaded_config) {
             cs.config = Object.assign(Object.assign({}, default_config), JSON.parse(loaded_config));
-
-            setTimeout(function() {
-                const categories = Util.extended_parse(cs.config.sidebar);
-
-                if (categories instanceof Array) {
-                    cs.sidebar.categories = categories;
-                    cs.sidebar.update();
-                }
-                else {
-                    console.error('Failed to load categories.');
-                    console.log({categories});
-                }
-            });
             return;
         }
     }
@@ -239,9 +233,11 @@ onload = function() {
 
     cs = {};
 
+    load_config();
+
     cs.next_id = 0;
 
-    load_config();
+    cs.sidebar = new Sidebar;
 
     Menu.select_theme(cs.config.theme);
 
@@ -253,8 +249,6 @@ onload = function() {
     cs.selected_elements = new Set;
 
     cs.controller = new Controller;
-
-    cs.sidebar = new Sidebar;
 
     canvas.addEventListener('mousedown',    cs.controller.mouse_click .bind(cs.controller), {passive:true});
     canvas.addEventListener('pointerdown',  cs.controller.mouse_down  .bind(cs.controller), {passive:true});
@@ -281,6 +275,10 @@ onload = function() {
     }
 
     View.update_title();
+
+    load_sidebar();
+
+    load_end();
 }
 
 onresize = function(event) {
