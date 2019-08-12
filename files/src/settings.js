@@ -4,11 +4,18 @@ const Settings = {
     is_open: true,
     currently_edited_setting: null,
 
+    reset_all() {
+        localStorage.clear();
+        cs.sidebar.load_categories();
+        Settings.reset();
+
+        location.reload(true);
+    },
     reset() {
         cs.config = Util.deep_copy(default_config);
+        Menu.select_theme(cs.config.theme);
         Settings.import_all_settings();
         Settings.clear_filter();
-        commands.reset_sidebar();
     },
     reset_current_setting() {
         const setting = Settings.currently_edited_setting;
@@ -252,26 +259,37 @@ const Settings = {
             });
         }
 
+        const reset_all_button = document.querySelector('.sidebar-item#reset_all');
+        reset_all_button.addEventListener('click', function(event) {
+            if (reset_all_button.hasAttribute('active')) {
+                Settings.reset_all();
+            }
+        });
+
         const reset_button = document.querySelector('.sidebar-item#reset');
         reset_button.addEventListener('click', function(event) {
             if (reset_button.hasAttribute('active')) {
                 Settings.reset();
-                Menu.select_theme(cs.config.theme);
+            }
+        });
 
-                reset_button.removeAttribute('active');
+        const reset_buttons = document.querySelectorAll('.sidebar-item.reset');
+        reset_buttons.forEach(button => button.addEventListener('click', function(event) {
+            if (button.hasAttribute('active')) {
+                button.removeAttribute('active');
             }
             else {
-                reset_button.setAttribute('active', '');
+                button.setAttribute('active', '');
             }
-        });
-        reset_button.addEventListener('blur', function(event) {
-            reset_button.removeAttribute('active');
-        });
-        reset_button.addEventListener('mouseleave', function(event) {
-            if (reset_button.hasAttribute('active')) {
-                Settings.show_tooltip(reset_button, 'Click again to confirm');
+        }));
+        reset_buttons.forEach(button => button.addEventListener('blur', function(event) {
+            button.removeAttribute('active');
+        }));
+        reset_buttons.forEach(button => button.addEventListener('mouseleave', function(event) {
+            if (button.hasAttribute('active')) {
+                Settings.show_tooltip(button, 'Click again to confirm');
             }
-        });
+        }));
     },
 
     match_search_pattern(pattern, text) {

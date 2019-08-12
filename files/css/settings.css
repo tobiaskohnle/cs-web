@@ -123,7 +123,7 @@
 .sidebar-item:focus {
     outline: none;
 }
-.sidebar-item#reset[active] {
+.sidebar-item.reset[active] {
     color: var(--sidebar-item-reset-active-color);
     font-weight: 600;
 }
