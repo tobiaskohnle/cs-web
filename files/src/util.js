@@ -226,6 +226,7 @@ const Util = {
                     input.tag = inner_element.name || null;
 
                     input.next_nodes = output.next_nodes;
+                    input.input_gate_node_ = output;
                     output.next_nodes = [];
 
                     if (inner_element instanceof InputPulse) {
@@ -241,6 +242,8 @@ const Util = {
                     output.is_inverted = input.is_inverted;
                     output.tag = inner_element.name || null;
 
+                    output.output_gate_node_ = input;
+
                     const prev_node = input.previous_node(inner_elements);
 
                     if (prev_node) {
@@ -248,6 +251,21 @@ const Util = {
                         prev_node.next_nodes.push(output);
                     }
                 }
+            }
+        }
+    },
+    convert_to_circuit(custom_gate) {
+        for (const input of custom_gate.inputs) {
+            input.input_gate_node_.next_nodes = input.next_nodes;
+            input.next_nodes = [];
+        }
+
+        for (const output of custom_gate.outputs) {
+            const prev_node = output.previous_node(custom_gate.inner_elements);
+
+            if (prev_node) {
+                prev_node.next_nodes.remove(output);
+                prev_node.next_nodes.push(output.output_gate_node_);
             }
         }
     },

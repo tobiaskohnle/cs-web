@@ -8,8 +8,6 @@ const Settings = {
         localStorage.clear();
         cs.sidebar.load_categories();
         Settings.reset();
-
-        location.reload(true);
     },
     reset() {
         cs.config = Util.deep_copy(default_config);

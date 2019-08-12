@@ -821,8 +821,12 @@ class Controller {
         if (custom_gate) {
             this.save_state('view content');
 
-            cs.context = new CustomGate;
-            cs.context.inner_elements = Util.deep_copy(custom_gate.inner_elements);
+            const context = Util.deep_copy(custom_gate);
+
+            Util.convert_to_circuit(context);
+            cs.context = context;
+
+            ActionUtil.queue_tick_all();
         }
     }
 
