@@ -144,6 +144,10 @@ const Menu = {
                 clearTimeout(Menu.timeout_id);
             });
         }
+
+        document.querySelector('.sidebar-button').addEventListener('click', function(event) {
+            commands.toggle_sidebar();
+        });
     },
 
     open_under(menu, menu_button, toggle_menu=true) {
@@ -269,6 +273,12 @@ const Menu = {
         Menu.sidebar_open = is_visible;
 
         document.querySelector('.window').style.gridTemplateColumns=`${is_visible ? '250px' : '0'} auto`;
+        if (is_visible) {
+            document.querySelector('.sidebar-button').removeAttribute('sidebar-hidden');
+        }
+        else {
+            document.querySelector('.sidebar-button').setAttribute('sidebar-hidden', '');
+        }
         onresize();
     },
 };
