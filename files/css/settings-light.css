@@ -11,6 +11,11 @@
     --sidebar-item-color-hover: #39f;
     --sidebar-item-reset-active-color: #d44;
 
+    --setting-slider-background-left: #48d;
+    --setting-slider-background-right: #ccc;
+    --setting-slider-thumb: #333;
+    --setting-slider-thumb-hover: #48d;
+
     --scrollbar-background: #ccc;
     --scrollbar-thumb-background: #aaa;
     --scrollbar-thumb-background-hover: #888c;
@@ -26,7 +31,7 @@
 
     --description-color: #111;
     --description-title-color: #000;
-    --description-header-color: #19f;
+    --description-header-color: #49e;
     --description-code-color: #f31;
     --description-link-color: #39f;
 

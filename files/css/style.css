@@ -1,10 +1,6 @@
 * {
     box-sizing: inherit;
 
-    user-select: none;
-    user-drag: none;
-    -moz-user-select: none;
-
     touch-action: none;
 }
 
@@ -16,6 +12,10 @@
 
     overflow: hidden;
     box-sizing: border-box;
+
+    user-select: none;
+    user-drag: none;
+    -moz-user-select: none;
 }
 
 body {

@@ -33,6 +33,8 @@ class Controller {
     }
 
     key_down(event) {
+        Menu.close();
+
         if (Settings.is_open) {
             return Settings.key_down(event);
         }

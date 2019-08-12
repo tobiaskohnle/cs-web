@@ -448,14 +448,16 @@
 
                     <div class='setting-input-container'>
                         <div class='setting-checkbox'>
-                            <label class='checkbox'>
-                                <input type='checkbox'>
-                                <span></span>
-                            </label>
+                            <label>
+                                <label class='checkbox'>
+                                    <input type='checkbox'>
+                                    <span></span>
+                                </label>
 
-                            <div class='description'>
-                                Show arrows on input nodes.
-                            </div>
+                                <div class='description'>
+                                    Show arrows on input nodes.
+                                </div>
+                            </label>
                         </div>
                         <div class='setting-dropdown'></div>
                     </div>
@@ -468,14 +470,16 @@
 
                     <div class='setting-input-container'>
                         <div class='setting-checkbox'>
-                            <label class='checkbox'>
-                                <input type='checkbox'>
-                                <span></span>
-                            </label>
+                            <label>
+                                <label class='checkbox'>
+                                    <input type='checkbox'>
+                                    <span></span>
+                                </label>
 
-                            <div class='description'>
-                                Hide menu and sidebar when in fullscreen mode.
-                            </div>
+                                <div class='description'>
+                                    Hide menu and sidebar when in fullscreen mode.
+                                </div>
+                            </label>
                         </div>
                         <div class='setting-dropdown'></div>
                     </div>
@@ -487,19 +491,20 @@
                     </div>
                 </div>
 
-                <div class='setting' setting='ticks_per_frame' type='float'>
+                <div class='setting' setting='ticks_per_frame' type='slider'>
                     <div class='description'>
-                        <span class='title'>Ticks per Frame</span><br>
-                        Amount of logic calculations before each redraw.<br>
+                        <span class='title'>Simulation Speed</span><br>
+                        Amount of logic calculations.<br>
                         setting: <span class='code'>ticks_per_frame</span>
                     </div>
 
                     <div class='setting-input-container'>
-                        <input class='setting-input'>
+                        <input class='setting-input' type='range'>
                         <div class='setting-dropdown'></div>
+                        <div class='slider-thumb-label'></div>
                     </div>
                 </div>
-                <div class='setting' setting='scale_factor' type='float'>
+                <div class='setting' setting='scale_factor' type='slider'>
                     <div class='description'>
                         <span class='title'>Zoom Factor</span><br>
                         Sensitivity when zooming.<br>
@@ -507,8 +512,9 @@
                     </div>
 
                     <div class='setting-input-container'>
-                        <input class='setting-input'>
+                        <input class='setting-input' type='range'>
                         <div class='setting-dropdown'></div>
+                        <div class='slider-thumb-label'></div>
                     </div>
                 </div>
                 <div class='setting' setting='use_system_clipboard' type='checkbox'>
@@ -519,14 +525,16 @@
 
                     <div class='setting-input-container'>
                         <div class='setting-checkbox'>
-                            <label class='checkbox'>
-                                <input type='checkbox'>
-                                <span></span>
-                            </label>
+                            <label>
+                                <label class='checkbox'>
+                                    <input type='checkbox'>
+                                    <span></span>
+                                </label>
 
-                            <div class='description'>
-                                Use the built-in clipboard of your operating system.
-                            </div>
+                                <div class='description'>
+                                    Use the built-in clipboard of your operating system.
+                                </div>
+                            </label>
                         </div>
                         <div class='setting-dropdown'></div>
                     </div>
@@ -540,14 +548,16 @@
 
                     <div class='setting-input-container'>
                         <div class='setting-checkbox'>
-                            <label class='checkbox'>
-                                <input type='checkbox'>
-                                <span></span>
-                            </label>
+                            <label>
+                                <label class='checkbox'>
+                                    <input type='checkbox'>
+                                    <span></span>
+                                </label>
 
-                            <div class='description'>
-                                Merge segments where possible.
-                            </div>
+                                <div class='description'>
+                                    Merge segments where possible.
+                                </div>
+                            </label>
                         </div>
                         <div class='setting-dropdown'></div>
                     </div>
@@ -560,14 +570,16 @@
 
                     <div class='setting-input-container'>
                         <div class='setting-checkbox'>
-                            <label class='checkbox'>
-                                <input type='checkbox'>
-                                <span></span>
-                            </label>
+                            <label>
+                                <label class='checkbox'>
+                                    <input type='checkbox'>
+                                    <span></span>
+                                </label>
 
-                            <div class='description'>
-                                Move labels when moving nearest gate.
-                            </div>
+                                <div class='description'>
+                                    Move labels when moving nearest gate.
+                                </div>
+                            </label>
                         </div>
                         <div class='setting-dropdown'></div>
                     </div>
@@ -580,14 +592,16 @@
 
                     <div class='setting-input-container'>
                         <div class='setting-checkbox'>
-                            <label class='checkbox'>
-                                <input type='checkbox'>
-                                <span></span>
-                            </label>
+                            <label>
+                                <label class='checkbox'>
+                                    <input type='checkbox'>
+                                    <span></span>
+                                </label>
 
-                            <div class='description'>
-                                Push wires when moving gate.
-                            </div>
+                                <div class='description'>
+                                    Push wires when moving gate.
+                                </div>
+                            </label>
                         </div>
                         <div class='setting-dropdown'></div>
                     </div>
@@ -607,19 +621,21 @@
 
                     <div class='setting-input-container'>
                         <div class='setting-checkbox'>
-                            <label class='checkbox'>
-                                <input type='checkbox'>
-                                <span></span>
-                            </label>
+                            <label>
+                                <label class='checkbox'>
+                                    <input type='checkbox'>
+                                    <span></span>
+                                </label>
 
-                            <div class='description'>
-                                Enable animations.
-                            </div>
+                                <div class='description'>
+                                    Enable animations.
+                                </div>
+                            </label>
                         </div>
                         <div class='setting-dropdown'></div>
                     </div>
                 </div>
-                <div class='setting' setting='anim_factor' type='float'>
+                <div class='setting' setting='anim_factor' type='slider'>
                     <div class='description'>
                         <span class='title'>Animation Speed</span><br>
                         The speed of animations.<br>
@@ -627,11 +643,12 @@
                     </div>
 
                     <div class='setting-input-container'>
-                        <input class='setting-input'>
+                        <input class='setting-input' type='range'>
                         <div class='setting-dropdown'></div>
+                        <div class='slider-thumb-label'></div>
                     </div>
                 </div>
-                <div class='setting' setting='camera_anim_factor' type='float'>
+                <div class='setting' setting='camera_anim_factor' type='slider'>
                     <div class='description'>
                         <span class='title'>Camera Animation Speed</span><br>
                         The speed at which the screen is moved.<br>
@@ -639,8 +656,9 @@
                     </div>
 
                     <div class='setting-input-container'>
-                        <input class='setting-input'>
+                        <input class='setting-input' type='range'>
                         <div class='setting-dropdown'></div>
+                        <div class='slider-thumb-label'></div>
                     </div>
                 </div>
                 <div class='setting' setting='queued_nodes_animation' type='checkbox'>
@@ -651,14 +669,16 @@
 
                     <div class='setting-input-container'>
                         <div class='setting-checkbox'>
-                            <label class='checkbox'>
-                                <input type='checkbox'>
-                                <span></span>
-                            </label>
+                            <label>
+                                <label class='checkbox'>
+                                    <input type='checkbox'>
+                                    <span></span>
+                                </label>
 
-                            <div class='description'>
-                                Enable animations for queued nodes.
-                            </div>
+                                <div class='description'>
+                                    Enable animations for queued nodes.
+                                </div>
+                            </label>
                         </div>
                         <div class='setting-dropdown'></div>
                     </div>

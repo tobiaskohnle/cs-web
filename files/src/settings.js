@@ -1,7 +1,7 @@
 'use strict';
 
 const Settings = {
-    is_open: true,
+    is_open: false,
     currently_edited_setting: null,
 
     reset_all() {
@@ -56,16 +56,36 @@ const Settings = {
             let value = Util.get_nested(cs.config, setting);
 
             switch (setting_element.getAttribute('type')) {
-                case 'keybind':
-                    value = Keybind.parse(value).to_string();
+                case 'theme':
+                case 'select':
+                    input.value = value;
                     break;
-            }
 
-            if (input.type == 'select-one' || input.type == 'text') {
-                input.value = value;
-            }
-            if (input.type == 'checkbox') {
-                input.checked = value;
+                case 'checkbox':
+                    input.checked = value;
+                    break;
+
+                case 'slider':
+                    switch (setting) {
+                        case 'ticks_per_frame':
+                            input.value = Util.map(value, 1, 201, 0, 1);
+                            break;
+
+                        case 'scale_factor':
+                            input.value = Util.map(value, 1, 1.4, 0, 1);
+                            break;
+
+                        default:
+                            input.value = value;
+                            break;
+                    }
+
+                    input.dispatchEvent(new Event('input'));
+                    break;
+
+                case 'keybind':
+                    input.value = Keybind.parse(value).to_string();
+                    break;
             }
         }
     },
@@ -74,24 +94,37 @@ const Settings = {
         const input = setting_element.querySelector('input, select');
 
         let value;
-        if (input.type == 'select-one' || input.type == 'text') {
-            value = input.value;
-        }
-        if (input.type == 'checkbox') {
-            value = input.checked;
-        }
 
         switch (setting_element.getAttribute('type')) {
             case 'theme':
+                value = input.value;
                 Menu.select_theme(value);
                 break;
 
-            case 'float':
-                value = parseFloat(value);
+            case 'select':
+                value = input.value;
+                break;
+
+            case 'checkbox':
+                value = input.checked;
+                break;
+
+            case 'slider':
+                value = input.valueAsNumber;
+
+                switch (setting) {
+                    case 'ticks_per_frame':
+                        value = Util.map(value, 0, 1, 1, 201)|0;
+                        break;
+
+                    case 'scale_factor':
+                        value = Util.map(value, 0, 1, 1, 1.4);
+                        break;
+                }
                 break;
 
             case 'keybind':
-                value = Keybind.parse(value).to_string();
+                value = Keybind.parse(input.value).to_string();
                 break;
         }
 
@@ -105,14 +138,14 @@ const Settings = {
 
     load() {
         Settings.add_event_listeners();
-        Settings.hide();
     },
 
     show() {
         Settings.is_open = true;
-        Settings.import_all_settings();
         const settings_container = document.querySelector('.settings-container');
         settings_container.style.display = '';
+
+        Settings.import_all_settings();
     },
     hide() {
         Settings.is_open = false;
@@ -244,6 +277,62 @@ const Settings = {
                 Settings.set_recording_element(null);
                 Settings.currently_edited_setting = null;
             });
+
+            if (input_element.type == 'range') {
+                input_element.setAttribute('min', '0');
+                input_element.setAttribute('max', '1');
+                input_element.setAttribute('step', '1e-4');
+
+                input_element.addEventListener('input', function(event) {
+                    input_element.style.background = `linear-gradient(
+                        to right,
+                        var(--setting-slider-background-left) 0%,
+                        var(--setting-slider-background-left) ${this.valueAsNumber*100}%,
+                        var(--setting-slider-background-right) ${this.valueAsNumber*100}%,
+                        var(--setting-slider-background-right) 100%
+                    )`;
+
+                    const slider_label = element.querySelector('.slider-thumb-label');
+
+                    slider_label.style.left = `${Util.map(this.valueAsNumber, 0, 1, 9/2, this.clientWidth-9/2)}px`;
+
+                    let labels;
+
+                    switch (setting) {
+                        case 'ticks_per_frame':
+                            labels = [
+                                {value: 0, text: 'slow'},
+                                {value: .5, text: 'fast'},
+                                {value: .999, text: 'very fast'},
+                                {value: 1, text: 'melting cpu'},
+                            ];
+                            break;
+
+                        case 'scale_factor':
+                            labels = [
+                                {value: 0, text: 'slow'},
+                                {value: .5, text: 'default'},
+                                {value: 1, text: 'fast'},
+                            ];
+                            break;
+
+                        case 'anim_factor':
+                        case 'camera_anim_factor':
+                            labels = [
+                                {value: 0, text: 'snail'},
+                                {value: .2, text: 'smooth'},
+                                {value: .3, text: 'slow'},
+                                {value: .5, text: 'default'},
+                                {value: .7, text: 'fast'},
+                                {value: 1,  text: 'instant'},
+                            ];
+                            break;
+                    }
+
+                    const compare_value = Util.compare_function(label => Math.abs(label.value-this.valueAsNumber));
+                    slider_label.innerText = labels.sorted(compare_value)[0].text;
+                });
+            }
         }
 
         for (const element of document.querySelectorAll('.setting-dropdown')) {

@@ -8,8 +8,13 @@
     --container-box-shadow: #0004;
     --recording-input-outline: #f22;
     --setting-input-background: #222;
-    --sidebar-item-color-hover: #7df;
+    --sidebar-item-color-hover: #5cf;
     --sidebar-item-reset-active-color: #f22;
+
+    --setting-slider-background-left: #29e;
+    --setting-slider-background-right: #222;
+    --setting-slider-thumb: #eee;
+    --setting-slider-thumb-hover: #29e;
 
     --scrollbar-background: #000;
     --scrollbar-thumb-background: #222;
@@ -26,7 +31,7 @@
 
     --description-color: #bbb;
     --description-title-color: #fff;
-    --description-header-color: #7df;
+    --description-header-color: #5be;
     --description-code-color: #db7;
     --description-link-color: #39f;
 
