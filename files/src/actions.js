@@ -114,6 +114,8 @@ const Action = {
     },
 
     tick() {
+        const result = {visible_node_changed:false, visible_node_queued:false};
+
         const next_ticked_nodes = new Set;
 
         for (const gate of cs.context.inner_elements) {
@@ -138,17 +140,29 @@ const Action = {
                 continue;
             }
 
+            if (!cs.controller.tick_nodes) {
+                result.visible_node_changed = result.visible_node_changed ||
+                    ActionGet.elements().includes(node.parent());
+            }
+
             node.state = eval_node_state;
 
             const parent = node.parent();
             if (node.next_nodes || parent) {
                 for (const next_node of node.next_nodes||parent.outputs) {
+                    if (!cs.controller.tick_nodes) {
+                        result.visible_node_queued = result.visible_node_queued ||
+                            ActionGet.elements().includes(next_node.parent());
+                    }
+
                     next_ticked_nodes.add(next_node);
                 }
             }
         }
 
         cs.ticked_nodes = next_ticked_nodes;
+
+        return result;
     },
     update(skip_animations=false) {
         for (const element of ActionGet.elements().sorted(Util.compare_function(x=>x.update_priority_)).reverse()) {
@@ -488,6 +502,24 @@ const ActionUtil = {
         }
     },
 
+    tick_until_change() {
+        let i = 0;
+        let result;
+
+        while (i++ < cs.config.max_ticks_without_change) {
+            result = Action.tick();
+            if (result.visible_node_changed) {
+                break;
+            }
+        }
+
+        while (i++ < cs.config.max_ticks_without_change) {
+            if (result.visible_node_queued) {
+                break;
+            }
+            result = Action.tick();
+        }
+    },
     queue_tick_for(elements) {
         for (const element of elements) {
             Action.queue_tick(element);

@@ -128,6 +128,8 @@ const default_config = {
     gates_push_wires: true,
     sticky_labels: true,
 
+    max_ticks_without_change: 6000,
+
     animations: true,
     anim_factor: .52,
     camera_anim_factor: .42,

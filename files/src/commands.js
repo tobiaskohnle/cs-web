@@ -542,7 +542,7 @@ const commands = {
         Menu.show_debugger(true);
     },
     debug_tick() {
-        Action.tick();
+        ActionUtil.tick_until_change();
         Menu.show_debugger(true);
     },
     debug_single_tick() {
