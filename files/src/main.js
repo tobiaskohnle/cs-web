@@ -117,6 +117,8 @@ const default_config = {
     joints_style: 'square',
     hide_ui_in_fullscreen: true,
     input_arrows: true,
+    tag_position: 'center',
+    tag_font: 'consolas, monospace',
 
     ticks_per_frame: 101,
     scale_factor: 1.14,

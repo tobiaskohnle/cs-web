@@ -189,11 +189,30 @@ class Gate extends Element {
 
     draw_tag() {
         if (this.tag) {
-            context.font = '2px consolas, monospace';
             context.fillStyle = cs.theme.wire_inactive.to_string();
-            context.textAlign = 'center';
-            context.textBaseline = 'middle';
-            context.fillText(this.tag, ...Vec.add(this.anim_pos_, Vec.div(this.anim_size_, 2)).xy);
+
+            switch (cs.config.tag_position) {
+                case 'center':
+                    context.textAlign = 'center';
+                    context.textBaseline = 'middle';
+                    context.font = `2px ${cs.config.tag_font}`;
+                    context.fillText(this.tag, ...Vec.add(this.anim_pos_, Vec.div(this.anim_size_, 2)).xy);
+                    break;
+
+                case 'top':
+                    context.textAlign = 'center';
+                    context.textBaseline = 'top';
+                    context.font = `1.75px ${cs.config.tag_font}`;
+                    context.fillText(this.tag, ...Vec.add(this.anim_pos_, new Vec(this.anim_size_.x/2,.2)).xy);
+                    break;
+
+                case 'top_left':
+                    context.textAlign = 'start';
+                    context.textBaseline = 'top';
+                    context.font = `1.5px ${cs.config.tag_font}`;
+                    context.fillText(this.tag, ...Vec.add(this.anim_pos_, new Vec(.2)).xy);
+                    break;
+            }
         }
     }
 
