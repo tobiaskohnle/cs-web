@@ -93,10 +93,8 @@ class Label extends Element {
     }
 
     nearest_gate(elements=cs.context.inner_elements) {
-        const radius = 2.2;
-
-        const rect_pos = Vec.sub(this.pos, new Vec(radius));
-        const rect_size = Vec.add(this.size, new Vec(radius*2));
+        const rect_pos = Vec.sub(this.pos, new Vec(cs.config.nearest_gate_radius));
+        const rect_size = Vec.add(this.size, new Vec(cs.config.nearest_gate_radius*2));
 
         const nearby_gates = ActionGet.elements_in_rect(rect_pos, rect_size, elements)
             .filter(element => element instanceof Gate)

@@ -146,7 +146,7 @@ const default_config = {
     sidebar_scale: 20,
 
     sidebar_scroll_factor: 100,
-
+    sidebar_header_font_scale: .526,
 
     default_color_anim_factor: .57,
     fade_color_anim_factor: .02,
@@ -158,6 +158,13 @@ const default_config = {
     label_caret_blink_rate: 1000,
 
     default_rising_edge_pulse_length: 32,
+
+    resize_border_width: .15,
+
+    zoom_to_selection_scale_factor: .9,
+    zoom_to_selection_min_scale: 42,
+
+    nearest_gate_radius: 2.2,
 
 
     keybinds: {

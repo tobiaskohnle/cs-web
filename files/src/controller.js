@@ -265,10 +265,10 @@ class Controller {
 
                 if (this.hovered_element instanceof Gate || this.hovered_element instanceof Label) {
                     this.resize = {
-                        north: Math.abs(this.mouse_world_pos.y - this.hovered_element.pos.y                              ) < .15,
-                        south: Math.abs(this.mouse_world_pos.y - this.hovered_element.pos.y - this.hovered_element.size.y) < .15,
-                        east:  Math.abs(this.mouse_world_pos.x - this.hovered_element.pos.x - this.hovered_element.size.x) < .15,
-                        west:  Math.abs(this.mouse_world_pos.x - this.hovered_element.pos.x                              ) < .15,
+                        north: Math.abs(this.mouse_world_pos.y - this.hovered_element.pos.y                              ) < cs.config.resize_border_width,
+                        south: Math.abs(this.mouse_world_pos.y - this.hovered_element.pos.y - this.hovered_element.size.y) < cs.config.resize_border_width,
+                        east:  Math.abs(this.mouse_world_pos.x - this.hovered_element.pos.x - this.hovered_element.size.x) < cs.config.resize_border_width,
+                        west:  Math.abs(this.mouse_world_pos.x - this.hovered_element.pos.x                              ) < cs.config.resize_border_width,
                     };
 
                     cursor =

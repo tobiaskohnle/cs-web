@@ -233,14 +233,14 @@ class Sidebar {
 
         for (const category of this.categories) {
             context.fillStyle = cs.theme.sidebar_header_outline.to_string();
-            context.fillRect(0, category.anim_screen_y, sidebar_canvas.width, cs.config.sidebar_header_height);
+            context.fillRect(0, category.anim_screen_y, sidebar_canvas.width, cs.config.sidebar_header_height+1);
 
             context.fillStyle = this.hovered_category == category
                 ? cs.theme.sidebar_header_hovered.to_string()
                 : cs.theme.sidebar_header.to_string();
-            context.fillRect(1, category.anim_screen_y+1, sidebar_canvas.width-2, cs.config.sidebar_header_height-2);
+            context.fillRect(1, category.anim_screen_y+1, sidebar_canvas.width-2, cs.config.sidebar_header_height-1);
 
-            context.font = `${cs.config.sidebar_header_height/1.9}px segoe ui, sans-serif`;
+            context.font = `${cs.config.sidebar_header_height*cs.config.sidebar_header_font_scale}px segoe ui, sans-serif`;
             context.textAlign = 'center';
             context.textBaseline = 'middle';
             context.fillStyle = cs.theme.sidebar_header_font.to_string();

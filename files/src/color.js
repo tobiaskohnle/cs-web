@@ -114,7 +114,7 @@ class Color {
             if (l == 1) {
                 s = 0;
             }
-            else if (l < 0.5) {
+            else if (l < .5) {
                 s = s*v / (l*2);
             }
             else {

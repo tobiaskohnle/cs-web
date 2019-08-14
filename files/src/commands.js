@@ -464,7 +464,7 @@ const commands = {
         const selection_center = Vec.div(bounding_rect.size, 2).add(bounding_rect.pos);
 
         const camera_scale = Math.min(canvas.width/bounding_rect.size.x, canvas.height/bounding_rect.size.y);
-        cs.camera.scale = Math.min(camera_scale*.9, 42);
+        cs.camera.scale = Math.min(camera_scale*cs.config.zoom_to_selection_scale_factor, cs.config.zoom_to_selection_min_scale);
 
         const camera_pos = Vec
             .sub(
