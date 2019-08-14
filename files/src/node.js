@@ -178,8 +178,8 @@ class ConnectionNode extends Element {
     draw(is_output) {
         const has_arrow = !!cs.config.input_arrows && (!cs.config.hide_ui_in_fullscreen||!document.fullscreen) && !is_output;
 
-        const base_offset = this.is_inverted * (1/2+.1/2);
-        const offset = base_offset + has_arrow * .1;
+        const base_offset = this.is_inverted * (cs.config.inverted_dot_radius*2 + cs.config.line_width/2);
+        const offset = base_offset + has_arrow * .24;
 
         context.beginPath();
         context.moveTo(...Vec.add(this.anim_pos_, Vec.mult(this.dir, offset)).xy);
@@ -187,7 +187,7 @@ class ConnectionNode extends Element {
 
         context.strokeStyle = this.color_line_.to_string();
 
-        context.lineWidth = .1;
+        context.lineWidth = cs.config.line_width;
         context.stroke();
 
         if (this.tag) {
@@ -210,7 +210,7 @@ class ConnectionNode extends Element {
                     break;
             }
 
-            const text_dist = .1 + (this.is_rising_edge ? .55 : 0);
+            const text_dist = cs.config.line_width + (this.is_rising_edge ? .55 : 0);
 
             context.font = '.5px segoe ui, sans-serif';
             context.fillStyle = cs.theme.wire_inactive.to_string();
@@ -239,7 +239,11 @@ class ConnectionNode extends Element {
 
         if (this.is_inverted) {
             context.beginPath();
-            context.arc(...Vec.add(this.anim_pos_, Vec.mult(this.dir, 1/4+.1/2)).xy, 1/4, 0, Math.PI*2);
+            context.arc(
+                ...Vec.add(this.anim_pos_, Vec.mult(this.dir, cs.config.inverted_dot_radius+cs.config.line_width/2)).xy,
+                cs.config.inverted_dot_radius,
+                0, Math.PI*2,
+            );
 
             context.strokeStyle = this.color_dot_.to_string();
             context.stroke();
@@ -286,14 +290,7 @@ class InputNode extends ConnectionNode {
     eval_state() {
         const previous_node = this.previous_node();
 
-        if (previous_node) {
-            this.state_before = previous_node.state;
-        }
-        else {
-            // TEMP
-            console.assert(this.is_empty());
-            this.state_before = false;
-        }
+        this.state_before = !!previous_node && previous_node.state;
 
         if (this.is_rising_edge) {
             if (this.state_before != this.is_inverted) {
@@ -337,7 +334,7 @@ class InputNode extends ConnectionNode {
             context.lineTo(this.anim_pos_.x - .3*this.dir.y, this.anim_pos_.y - .3*this.dir.x);
 
             context.strokeStyle = this.color_line_.to_string();
-            context.lineWidth = .1;
+            context.lineWidth = cs.config.line_width;
             context.stroke();
         }
     }
@@ -388,8 +385,7 @@ class OutputNode extends ConnectionNode {
     draw() {
         super.draw(true);
 
-        // TEMP
-        if (cs.config.DEBUG_DRAW_CONNECTIONS)
+        if (cs.config.DEBUG_DRAW_CONNECTIONS) {
             for (const node of this.next_nodes) {
                 context.beginPath();
 
@@ -402,6 +398,7 @@ class OutputNode extends ConnectionNode {
                 context.stroke();
                 context.setLineDash([]);
             }
+        }
 
         for (const segment of this.wire_segments) {
             segment.draw();

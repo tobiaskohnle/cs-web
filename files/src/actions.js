@@ -278,7 +278,6 @@ const Action = {
             return true;
         }
         else if (end_element instanceof WireSegment) {
-            // TEMP
             if (start_element instanceof OutputNode) return false;
             if (end_element.parent().next_nodes.includes(start_element)) return false;
 
@@ -489,9 +488,6 @@ const ActionUtil = {
         for (const element of ActionGet.elements()) {
             Action.deselect(element);
         }
-
-        // TEMP
-        cs.selected_elements = new Set;
     },
     set_selected(element, is_selected) {
         if (is_selected) {

@@ -174,13 +174,16 @@ class Gate extends Element {
 
     draw_outline() {
         context.strokeStyle = this.color_outline_.to_string();
-        context.lineWidth = .1;
+        context.lineWidth = cs.config.line_width;
 
         if (!this.last_size_) this.last_size_ = Vec.copy(this.size);
 
         if (this.is_pressed()) {
-            context.lineWidth = .12;
-            context.strokeRect(...Vec.add(this.anim_pos_, new Vec(.1/2)).xy, ...Vec.sub(this.anim_size_, new Vec(.2/2)).xy);
+            context.lineWidth = cs.config.line_width + .02;
+            context.strokeRect(
+                ...Vec.add(this.anim_pos_, new Vec(cs.config.line_width/2)).xy,
+                ...Vec.sub(this.anim_size_, new Vec(cs.config.line_width)).xy,
+            );
         }
         else {
             context.strokeRect(...this.anim_pos_.xy, ...this.anim_size_.xy);
@@ -408,14 +411,14 @@ class InputButton extends InputGate {
         super.draw_nodes();
 
         context.strokeStyle = this.color_outline_.to_string();
-        context.lineWidth = .1;
+        context.lineWidth = cs.config.line_width;
 
         const radius = .33;
 
         context.beginPath();
 
-        const pos = this.is_pressed() ? Vec.add(this.anim_pos_, new Vec(.1/2)) : this.anim_pos_;
-        const size = this.is_pressed() ? Vec.sub(this.anim_size_, new Vec(.2/2)) : this.anim_size_;
+        const pos = this.is_pressed() ? Vec.add(this.anim_pos_, new Vec(cs.config.line_width/2)) : this.anim_pos_;
+        const size = this.is_pressed() ? Vec.sub(this.anim_size_, new Vec(cs.config.line_width)) : this.anim_size_;
 
         context.moveTo(
             pos.x, pos.y + size.y/2,
@@ -483,7 +486,7 @@ class InputPulse extends InputGate {
         super.draw();
 
         context.beginPath();
-        context.lineWidth = .1;
+        context.lineWidth = cs.config.line_width;
 
         context.moveTo(this.anim_pos_.x, this.anim_pos_.y);
         context.lineTo(this.anim_pos_.x+1.2, this.anim_pos_.y+this.anim_size_.y/2);
@@ -512,7 +515,7 @@ class Clock extends InputGate {
         super.draw();
 
         context.beginPath();
-        context.lineWidth = .1;
+        context.lineWidth = cs.config.line_width;
 
         context.moveTo(this.anim_pos_.x,                       this.anim_pos_.y+this.anim_size_.y*.5);
         context.lineTo(this.anim_pos_.x+this.anim_size_.x*.15, this.anim_pos_.y+this.anim_size_.y*.5);

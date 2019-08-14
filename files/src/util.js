@@ -34,7 +34,6 @@ if (!String.prototype.matchAll) {
 }
 
 const Util = {
-    // TEMP
     create_snapshot() {
         cs.config.DEBUG_LOG && console.log(`%c>> CREATED SNAPSHOT`, 'color:#fb2; font-weight:bold');
 

@@ -272,7 +272,7 @@ const Menu = {
     show_sidebar(is_visible) {
         Menu.sidebar_open = is_visible;
 
-        document.querySelector('.window').style.gridTemplateColumns=`${is_visible ? '250px' : '0'} auto`;
+        document.querySelector('.window').style.gridTemplateColumns=`${is_visible ? `${cs.config.sidebar_width}px` : '0'} auto`;
         if (is_visible) {
             document.querySelector('.sidebar-button').removeAttribute('sidebar-hidden');
         }

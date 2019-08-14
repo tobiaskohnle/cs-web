@@ -219,7 +219,7 @@ const commands = {
     add_label() {
         cs.controller.save_state('(command) add_label');
         const label = new Label;
-        label.text = 'Text...';
+        label.text = 'Text';
         cs.controller.add_element(label);
     },
     change_type_and_gate() {
@@ -398,7 +398,7 @@ const commands = {
         cs.controller.read_files(function(result, file) {
             const file_path = file.webkitRelativePath.split('/');
 
-            if (!file_path.at(-1).endsWith('.circ')) {
+            if (!file_path.at(-1).endsWith(`.${cs.config.file_extension}`)) {
                 console.warn(`Failed to add file to sidebar: unknown file type '${file_path.at(-1)}'.`);
                 return;
             }
@@ -481,16 +481,16 @@ const commands = {
         }
 
         if (!cs.config.current_file.name || save_as) {
-            let file_name = prompt('Save file as...', cs.config.current_file.name||'file.circ');
+            let file_name = prompt('Save file as...', cs.config.current_file.name||`file.${cs.config.file_extension}`);
 
             if (file_name === undefined) {
                 return false;
             }
             if (!file_name) {
-                file_name = 'file.circ';
+                file_name = `file.${cs.config.file_extension}`;
             }
-            if (!file_name.endsWith('.circ')) {
-                file_name = `${file_name}.circ`;
+            if (!file_name.endsWith(`.${cs.config.file_extension}`)) {
+                file_name = `${file_name}.${cs.config.file_extension}`;
             }
 
             cs.config.current_file.name = file_name;

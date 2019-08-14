@@ -294,7 +294,7 @@ class Label extends Element {
     }
 
     draw() {
-        context.lineWidth = .1;
+        context.lineWidth = cs.config.line_width;
         context.strokeStyle = this.anim_color_.to_string();
         context.strokeRect(...this.anim_pos_.xy, ...this.anim_size_.xy);
 

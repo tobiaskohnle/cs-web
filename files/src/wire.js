@@ -146,7 +146,6 @@ class WireSegment extends Element {
             });
         }
         if (this.normal_pos) {
-            // TEMP
             if (!this.anim_normal_pos_) {
                 this.anim_normal_pos_ = Vec.copy(this.normal_pos);
             }
@@ -196,8 +195,18 @@ class WireSegment extends Element {
 
         context.fillStyle = this.anim_color_.to_string();
 
-        if (this.is_vertical) context.fillRect(this.anim_offset_ - .1/2, min - .1/2, .1, max - min + .2/2);
-        else                  context.fillRect(min - .1/2, this.anim_offset_ - .1/2, max - min + .2/2, .1);
+        if (this.is_vertical) {
+            context.fillRect(
+                this.anim_offset_ - cs.config.line_width/2, min - cs.config.line_width/2,
+                cs.config.line_width, max - min + cs.config.line_width,
+            );
+        }
+        else {
+            context.fillRect(
+                min - cs.config.line_width/2, this.anim_offset_ - cs.config.line_width/2,
+                max - min + cs.config.line_width, cs.config.line_width,
+            );
+        }
 
         context.fillStyle = this.base_color_.to_string();
 

@@ -142,6 +142,8 @@ const default_config = {
 
     sidebar_anim_factor: .37,
 
+    sidebar_width: 250,
+
     sidebar_margin: 2,
     sidebar_scale: 20,
 
@@ -165,6 +167,11 @@ const default_config = {
     zoom_to_selection_min_scale: 42,
 
     nearest_gate_radius: 2.2,
+
+    line_width: .1,
+    inverted_dot_radius: .25,
+
+    file_extension: 'circ',
 
 
     keybinds: {
