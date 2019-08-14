@@ -147,66 +147,111 @@ class Label extends Element {
         const clock = this.nearest_gate();
 
         if (clock instanceof Clock) {
-            const time_match = this.text.match(/^([\d\.]+)\s*([A-Za-zµ]*)(s|Hz|t)(?:\s*[@/,\s]\s*([\d\.]+\s*%?))?$/);
+            const time_match = this.text.match(/^([^\s]+)(?:\s+([^\s]+))?$/);
 
-            if (time_match) {
-                const prefix = {
-                    ['µ']: 1e-6,
-                    u:  1e-6,
-                    m:  1e-3,
-                    c:  1e-2,
-                    d:  1e-1,
-                    da: 1e+1,
-                    h:  1e+2,
-                    k:  1e+3,
-                    M:  1e+6,
-                };
+            if (!time_match) {
+                return null;
+            }
 
-                const frames_per_second = 60;
+            const [match, speed_string, width_string] = time_match;
 
-                const [match, value_string, prefix_string, unit_string, width_string] = time_match;
-                const factor = prefix_string ? prefix[prefix_string] : 1;
+            function match_unit(string, units) {
+                const unit_match = string.match(/^(\d\.\d+|\d\.|\.\d+|\d+)(.*)$/);
 
-                if (factor) {
-                    let ticks;
-                    let width;
+                if (!unit_match) {
+                    return null;
+                }
 
-                    const value = parseFloat(value_string) * factor;
+                const [match, value_string, unit_string] = unit_match;
 
-                    switch (unit_string) {
-                        case 't':
-                            ticks = value;
-                            break;
-                        case 's':
-                            ticks = frames_per_second*cs.config.ticks_per_frame * value;
-                            break;
-                        case 'Hz':
-                            ticks = frames_per_second*cs.config.ticks_per_frame / value
-                            break;
-                    }
+                const value = parseFloat(value_string);
 
-                    if (width_string) {
-                        if (width_string.endsWith('%')) {
-                            width = ticks * parseFloat(width_string)/100;
+                for (const unit of units) {
+                    if (unit_string.toLowerCase().endsWith(unit.toLowerCase())) {
+                        const unit_prefix = unit_string.substr(0, unit_string.length-unit.length);
+
+                        const prefix_factor = {
+                            ['µ']: 1e-6,
+                            u:  1e-6,
+                            m:  1e-3,
+                            c:  1e-2,
+                            d:  1e-1,
+                            ['']: 1,
+                            da: 1e+1,
+                            h:  1e+2,
+                            k:  1e+3,
+                            M:  1e+6,
+                        };
+
+                        const factor = prefix_factor[unit_prefix];
+
+                        if (!factor) {
+                            return null;
                         }
-                        else {
-                            width = parseFloat(width_string);
-                        }
-                    }
-                    else {
-                        width = ticks/2;
-                    }
 
-                    clock.pulse_length = ticks;
-                    clock.pulse_width = width;
-
-                    if (clock.pulse_ticks_ >= clock.pulse_length || !clock.pulse_ticks_) {
-                        clock.pulse_ticks_ = 0;
+                        return {value: value*factor, unit};
                     }
-
-                    return {ticks, width};
                 }
             }
+
+            const frames_per_second = 60;
+
+            const speed = match_unit(speed_string, ['hz', 's', 't']);
+
+            if (!speed) {
+                return null;
+            }
+
+            let ticks;
+            let width_ticks;
+
+            switch (speed.unit) {
+                case 't':
+                    ticks = speed.value;
+                    break;
+                case 's':
+                    ticks = frames_per_second*cs.config.ticks_per_frame * speed.value;
+                    break;
+                case 'hz':
+                    ticks = frames_per_second*cs.config.ticks_per_frame / speed.value
+                    break;
+                default:
+                    return null;
+            }
+
+            if (width_string) {
+                const width = match_unit(width_string, ['%', 's', 't']);
+
+                if (!width) {
+                    return null;
+                }
+
+                switch (width.unit) {
+                    case 't':
+                        width_ticks = width.value;
+                        break;
+                    case 's':
+                        width_ticks = frames_per_second*cs.config.ticks_per_frame * width.value;
+                        break;
+                    case '%':
+                        width_ticks = ticks * width.value/100;
+                        break;
+                    default:
+                        return null;
+                }
+            }
+            else {
+                width_ticks = ticks/2;
+            }
+
+            clock.pulse_length = ticks;
+            clock.pulse_width = width_ticks;
+
+            if (clock.pulse_ticks_ >= clock.pulse_length || !clock.pulse_ticks_) {
+                clock.pulse_ticks_ = 0;
+            }
+
+            return {ticks, width_ticks};
         }
 
         return null;
