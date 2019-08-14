@@ -285,6 +285,17 @@ const commands = {
     },
     delete() {
         cs.controller.save_state('(command) delete');
+
+        switch (cs.controller.current_action) {
+            case Enum.action.rewire_input:
+            case Enum.action.rewire_output:
+            case Enum.action.create_wire:
+            case Enum.action.create_wire_segment:
+                Util.load_snapshot();
+                cs.controller.new_wire_segments = [];
+                break;
+        }
+
         cs.controller.current_action = Enum.action.none;
         ActionUtil.remove_selected();
     },
