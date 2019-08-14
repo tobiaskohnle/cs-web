@@ -143,13 +143,13 @@ body {
 
     grid-area: canvas;
 
+    z-index: 1;
+
     color: var(--color);
     line-height: 22px;
     font-size: 22px;
 
     text-align: center;
-
-    z-index: 1;
 }
 .sidebar-button:hover {
     color: var(--menubar-item-border-active);

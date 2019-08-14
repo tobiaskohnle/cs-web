@@ -139,8 +139,10 @@ const Settings = {
     },
 
     show() {
+        Menu.close();
+
         Settings.is_open = true;
-        const settings_container = document.querySelector('.settings-container');
+        const settings_container = document.querySelector('.settings-backdrop');
         settings_container.style.display = '';
 
         Settings.import_all_settings();
@@ -148,7 +150,7 @@ const Settings = {
     hide() {
         Settings.is_open = false;
         Settings.hide_tooltip();
-        const settings_container = document.querySelector('.settings-container');
+        const settings_container = document.querySelector('.settings-backdrop');
         settings_container.style.display = 'none';
     },
 
@@ -235,7 +237,7 @@ const Settings = {
     },
 
     add_event_listeners() {
-        const settings_container = document.querySelector('.settings-container');
+        const settings_container = document.querySelector('.settings-backdrop');
 
         settings_container.addEventListener('click', function(event) {
             if (event.target == settings_container) {

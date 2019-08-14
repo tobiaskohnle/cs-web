@@ -351,749 +351,751 @@
     </div>
 
 
-    <div style='display:none;' class='settings-container'>
+    <div style='display:none;' class='settings-backdrop'>
         <div class='settings-menu'>
             <div class='searchbar-container'>
                 <input class='searchbar' placeholder='Search settings'>
             </div>
 
-            <div class='sidebar-container'>
-                <div class='top'>
-                    <span class='sidebar-item link' link='#appearance'>Appearance</span>
-                    <span class='sidebar-item link' link='#behavior'>Behavior</span>
-                    <span class='sidebar-item link' link='#animations'>Animations</span>
-                    <span class='sidebar-item link' link='#keybinds'>Keybinds</span>
-                </div>
-                <div class='bottom'>
-                    <span class='sidebar-item reset' tabindex='0' id='reset_all'>Clear cache</span>
-                    <span class='sidebar-item reset' tabindex='0' id='reset'>Reset settings</span>
-                </div>
-            </div>
-
             <div class='window-container'>
-                <div class='setting-header' id='appearance'>
-                    <div class='description'>
-                        <span class='header'>Appearance</span>
+                <div class='sidebar-container'>
+                    <div class='top'>
+                        <span class='sidebar-item link' link='#appearance'>Appearance</span>
+                        <span class='sidebar-item link' link='#behavior'>Behavior</span>
+                        <span class='sidebar-item link' link='#animations'>Animations</span>
+                        <span class='sidebar-item link' link='#keybinds'>Keybinds</span>
+                    </div>
+                    <div class='bottom'>
+                        <span class='sidebar-item reset' tabindex='0' id='reset_all'>Clear cache</span>
+                        <span class='sidebar-item reset' tabindex='0' id='reset'>Reset settings</span>
                     </div>
                 </div>
 
-                <div class='setting' setting='theme' type='theme'>
-                    <div class='description'>
-                        <span class='title'>Theme</span><br>
-                        Set the color palette of your environment.<br>
-                        setting: <span class='code'>theme</span>
-                    </div>
-
-                    <div class='setting-input-container'>
-                        <select class='setting-input'>
-                            <option value='light'>Light</option>
-                            <option value='dark'>Dark</option>
-                        </select>
-                        <div class='setting-dropdown'></div>
-                    </div>
-                </div>
-                <div class='setting' setting='grid_style' type='select'>
-                    <div class='description'>
-                        <span class='title'>Grid Style</span><br>
-                        setting: <span class='code'>grid_style</span>
-                    </div>
-
-                    <div class='setting-input-container'>
-                        <select class='setting-input'>
-                            <option value='dots'>Dots</option>
-                            <option value='lines'>Lines</option>
-                            <option value='none'>Hidden</option>
-                        </select>
-                        <div class='setting-dropdown'></div>
-                    </div>
-                </div>
-                <div class='setting' setting='joints_style' type='select'>
-                    <div class='description'>
-                        <span class='title'>Wire Joints Style</span><br>
-                        Style of wire intersections.<br>
-                        setting: <span class='code'>joints_style</span>
-                    </div>
-
-                    <div class='setting-input-container'>
-                        <select class='setting-input'>
-                            <option value='square'>Square</option>
-                            <option value='round'>Round</option>
-                            <option value='none'>Hidden</option>
-                        </select>
-                        <div class='setting-dropdown'></div>
-                    </div>
-                </div>
-                <div class='setting' setting='tag_position' type='select'>
-                    <div class='description'>
-                        <span class='title'>Tag Position</span><br>
-                        Set the position of gate tags.<br>
-                        setting: <span class='code'>tag_position</span>
-                    </div>
-
-                    <div class='setting-input-container'>
-                        <select class='setting-input'>
-                            <option value='center'>Center</option>
-                            <option value='top'>Upper Side</option>
-                            <option value='top_left'>Top Left Corner</option>
-                            <option value='hidden'>Hidden</option>
-                        </select>
-                        <div class='setting-dropdown'></div>
-                    </div>
-                </div>
-                <div class='setting' setting='input_arrows' type='checkbox'>
-                    <div class='description'>
-                        <span class='title'>Input Arrows</span><br>
-                        setting: <span class='code'>input_arrows</span>
-                    </div>
-
-                    <div class='setting-input-container'>
-                        <div class='setting-checkbox'>
-                            <label>
-                                <label class='checkbox'>
-                                    <input type='checkbox'>
-                                    <span></span>
-                                </label>
-
-                                <div class='description'>
-                                    Show arrows on input nodes.
-                                </div>
-                            </label>
+                <div class='settings-container'>
+                    <div class='setting-header' id='appearance'>
+                        <div class='description'>
+                            <span class='header'>Appearance</span>
                         </div>
-                        <div class='setting-dropdown'></div>
-                    </div>
-                </div>
-                <div class='setting' setting='hide_ui_in_fullscreen' type='checkbox'>
-                    <div class='description'>
-                        <span class='title'>Hide Menus in Fullscreen</span><br>
-                        setting: <span class='code'>hide_ui_in_fullscreen</span>
                     </div>
 
-                    <div class='setting-input-container'>
-                        <div class='setting-checkbox'>
-                            <label>
-                                <label class='checkbox'>
-                                    <input type='checkbox'>
-                                    <span></span>
-                                </label>
-
-                                <div class='description'>
-                                    Hide menu and sidebar when in fullscreen mode.
-                                </div>
-                            </label>
+                    <div class='setting' setting='theme' type='theme'>
+                        <div class='description'>
+                            <span class='title'>Theme</span><br>
+                            Set the color palette of your environment.<br>
+                            setting: <span class='code'>theme</span>
                         </div>
-                        <div class='setting-dropdown'></div>
-                    </div>
-                </div>
 
-                <div class='setting-header' id='behavior'>
-                    <div class='description'>
-                        <span class='header'>Behavior</span>
-                    </div>
-                </div>
-
-                <div class='setting' setting='ticks_per_frame' type='slider'>
-                    <div class='description'>
-                        <span class='title'>Simulation Speed</span><br>
-                        Amount of logic calculations.<br>
-                        setting: <span class='code'>ticks_per_frame</span>
-                    </div>
-
-                    <div class='setting-input-container'>
-                        <input class='setting-input' type='range'>
-                        <div class='setting-dropdown'></div>
-                        <div class='slider-thumb-label'></div>
-                    </div>
-                </div>
-                <div class='setting' setting='scale_factor' type='slider'>
-                    <div class='description'>
-                        <span class='title'>Zoom Factor</span><br>
-                        Sensitivity when zooming.<br>
-                        setting: <span class='code'>scale_factor</span>
-                    </div>
-
-                    <div class='setting-input-container'>
-                        <input class='setting-input' type='range'>
-                        <div class='setting-dropdown'></div>
-                        <div class='slider-thumb-label'></div>
-                    </div>
-                </div>
-                <div class='setting' setting='use_system_clipboard' type='checkbox'>
-                    <div class='description'>
-                        <span class='title'>Clipboard</span><br>
-                        setting: <span class='code'>use_system_clipboard</span>
-                    </div>
-
-                    <div class='setting-input-container'>
-                        <div class='setting-checkbox'>
-                            <label>
-                                <label class='checkbox'>
-                                    <input type='checkbox'>
-                                    <span></span>
-                                </label>
-
-                                <div class='description'>
-                                    Use the built-in clipboard of your operating system.
-                                </div>
-                            </label>
+                        <div class='setting-input-container'>
+                            <select class='setting-input'>
+                                <option value='light'>Light</option>
+                                <option value='dark'>Dark</option>
+                            </select>
+                            <div class='setting-dropdown'></div>
                         </div>
-                        <div class='setting-dropdown'></div>
                     </div>
-                </div>
-
-                <div class='setting' setting='use_wire_restructuring' type='checkbox'>
-                    <div class='description'>
-                        <span class='title'>Wire Restructuring</span><br>
-                        setting: <span class='code'>use_wire_restructuring</span>
-                    </div>
-
-                    <div class='setting-input-container'>
-                        <div class='setting-checkbox'>
-                            <label>
-                                <label class='checkbox'>
-                                    <input type='checkbox'>
-                                    <span></span>
-                                </label>
-
-                                <div class='description'>
-                                    Merge segments where possible.
-                                </div>
-                            </label>
+                    <div class='setting' setting='grid_style' type='select'>
+                        <div class='description'>
+                            <span class='title'>Grid Style</span><br>
+                            setting: <span class='code'>grid_style</span>
                         </div>
-                        <div class='setting-dropdown'></div>
-                    </div>
-                </div>
-                <div class='setting' setting='sticky_labels' type='checkbox'>
-                    <div class='description'>
-                        <span class='title'>Sticky Labels</span><br>
-                        setting: <span class='code'>sticky_labels</span>
-                    </div>
 
-                    <div class='setting-input-container'>
-                        <div class='setting-checkbox'>
-                            <label>
-                                <label class='checkbox'>
-                                    <input type='checkbox'>
-                                    <span></span>
-                                </label>
-
-                                <div class='description'>
-                                    Move labels when moving nearest gate.
-                                </div>
-                            </label>
+                        <div class='setting-input-container'>
+                            <select class='setting-input'>
+                                <option value='dots'>Dots</option>
+                                <option value='lines'>Lines</option>
+                                <option value='none'>Hidden</option>
+                            </select>
+                            <div class='setting-dropdown'></div>
                         </div>
-                        <div class='setting-dropdown'></div>
                     </div>
-                </div>
-                <div class='setting' setting='gates_push_wires' type='checkbox'>
-                    <div class='description'>
-                        <span class='title'>Push Wires</span><br>
-                        setting: <span class='code'>gates_push_wires</span>
-                    </div>
-
-                    <div class='setting-input-container'>
-                        <div class='setting-checkbox'>
-                            <label>
-                                <label class='checkbox'>
-                                    <input type='checkbox'>
-                                    <span></span>
-                                </label>
-
-                                <div class='description'>
-                                    Push wires when moving gate.
-                                </div>
-                            </label>
+                    <div class='setting' setting='joints_style' type='select'>
+                        <div class='description'>
+                            <span class='title'>Wire Joints Style</span><br>
+                            Style of wire intersections.<br>
+                            setting: <span class='code'>joints_style</span>
                         </div>
-                        <div class='setting-dropdown'></div>
-                    </div>
-                </div>
 
-                <div class='setting-header' id='animations'>
-                    <div class='description'>
-                        <span class='header'>Animations</span>
-                    </div>
-                </div>
-
-                <div class='setting' setting='animations' type='checkbox'>
-                    <div class='description'>
-                        <span class='title'>Use Animations</span><br>
-                        setting: <span class='code'>animations</span>
-                    </div>
-
-                    <div class='setting-input-container'>
-                        <div class='setting-checkbox'>
-                            <label>
-                                <label class='checkbox'>
-                                    <input type='checkbox'>
-                                    <span></span>
-                                </label>
-
-                                <div class='description'>
-                                    Enable animations.
-                                </div>
-                            </label>
+                        <div class='setting-input-container'>
+                            <select class='setting-input'>
+                                <option value='square'>Square</option>
+                                <option value='round'>Round</option>
+                                <option value='none'>Hidden</option>
+                            </select>
+                            <div class='setting-dropdown'></div>
                         </div>
-                        <div class='setting-dropdown'></div>
                     </div>
-                </div>
-                <div class='setting' setting='anim_factor' type='slider'>
-                    <div class='description'>
-                        <span class='title'>Animation Speed</span><br>
-                        The speed of animations.<br>
-                        setting: <span class='code'>anim_factor</span>
-                    </div>
-
-                    <div class='setting-input-container'>
-                        <input class='setting-input' type='range'>
-                        <div class='setting-dropdown'></div>
-                        <div class='slider-thumb-label'></div>
-                    </div>
-                </div>
-                <div class='setting' setting='camera_anim_factor' type='slider'>
-                    <div class='description'>
-                        <span class='title'>Camera Animation Speed</span><br>
-                        The speed at which the screen is moved.<br>
-                        setting: <span class='code'>camera_anim_factor</span>
-                    </div>
-
-                    <div class='setting-input-container'>
-                        <input class='setting-input' type='range'>
-                        <div class='setting-dropdown'></div>
-                        <div class='slider-thumb-label'></div>
-                    </div>
-                </div>
-                <div class='setting' setting='queued_nodes_animation' type='checkbox'>
-                    <div class='description'>
-                        <span class='title'>Node Animations</span><br>
-                        setting: <span class='code'>queued_nodes_animation</span>
-                    </div>
-
-                    <div class='setting-input-container'>
-                        <div class='setting-checkbox'>
-                            <label>
-                                <label class='checkbox'>
-                                    <input type='checkbox'>
-                                    <span></span>
-                                </label>
-
-                                <div class='description'>
-                                    Enable animations for queued nodes.
-                                </div>
-                            </label>
+                    <div class='setting' setting='tag_position' type='select'>
+                        <div class='description'>
+                            <span class='title'>Tag Position</span><br>
+                            Set the position of gate tags.<br>
+                            setting: <span class='code'>tag_position</span>
                         </div>
-                        <div class='setting-dropdown'></div>
-                    </div>
-                </div>
 
-                <div class='setting-header' id='keybinds'>
-                    <div class='description'>
-                        <span class='header'>Keybinds</span>
+                        <div class='setting-input-container'>
+                            <select class='setting-input'>
+                                <option value='center'>Center</option>
+                                <option value='top'>Upper Side</option>
+                                <option value='top_left'>Top Left Corner</option>
+                                <option value='hidden'>Hidden</option>
+                            </select>
+                            <div class='setting-dropdown'></div>
+                        </div>
                     </div>
-                </div>
+                    <div class='setting' setting='input_arrows' type='checkbox'>
+                        <div class='description'>
+                            <span class='title'>Input Arrows</span><br>
+                            setting: <span class='code'>input_arrows</span>
+                        </div>
 
-                <div class='setting' setting='keybinds.add_input_node' type='keybind'>
-                    <div class='description'>
-                        <span class='title'>Add Input Node</span><br>
-                        Add an empty input node to any selected gate.<br>
-                        setting: <span class='code'>keybinds.add_input_node</span>
-                    </div>
+                        <div class='setting-input-container'>
+                            <div class='setting-checkbox'>
+                                <label>
+                                    <label class='checkbox'>
+                                        <input type='checkbox'>
+                                        <span></span>
+                                    </label>
 
-                    <div class='setting-input-container'>
-                        <label class='keybind'>
-                            <input class='setting-input'>
-                        </label>
-                        <div class='setting-dropdown'></div>
+                                    <div class='description'>
+                                        Show arrows on input nodes.
+                                    </div>
+                                </label>
+                            </div>
+                            <div class='setting-dropdown'></div>
+                        </div>
                     </div>
-                </div>
-                <div class='setting' setting='keybinds.remove_input_node' type='keybind'>
-                    <div class='description'>
-                        <span class='title'>Remove Input Node</span><br>
-                        Remove the last empty input node from any selected gate.<br>
-                        setting: <span class='code'>keybinds.remove_input_node</span>
-                    </div>
+                    <div class='setting' setting='hide_ui_in_fullscreen' type='checkbox'>
+                        <div class='description'>
+                            <span class='title'>Hide Menus in Fullscreen</span><br>
+                            setting: <span class='code'>hide_ui_in_fullscreen</span>
+                        </div>
 
-                    <div class='setting-input-container'>
-                        <label class='keybind'>
-                            <input class='setting-input'>
-                        </label>
-                        <div class='setting-dropdown'></div>
-                    </div>
-                </div>
-                <div class='setting' setting='keybinds.view_content' type='keybind'>
-                    <div class='description'>
-                        <span class='title'>View Content</span><br>
-                        Show the inner circuit of a custom gate.<br>
-                        setting: <span class='code'>keybinds.view_content</span>
-                    </div>
+                        <div class='setting-input-container'>
+                            <div class='setting-checkbox'>
+                                <label>
+                                    <label class='checkbox'>
+                                        <input type='checkbox'>
+                                        <span></span>
+                                    </label>
 
-                    <div class='setting-input-container'>
-                        <label class='keybind'>
-                            <input class='setting-input'>
-                        </label>
-                        <div class='setting-dropdown'></div>
-                    </div>
-                </div>
-                <div class='setting' setting='keybinds.copy' type='keybind'>
-                    <div class='description'>
-                        <span class='title'>Copy</span><br>
-                        Copy an element to the clipboard.<br>
-                        setting: <span class='code'>keybinds.copy</span>
+                                    <div class='description'>
+                                        Hide menu and sidebar when in fullscreen mode.
+                                    </div>
+                                </label>
+                            </div>
+                            <div class='setting-dropdown'></div>
+                        </div>
                     </div>
 
-                    <div class='setting-input-container'>
-                        <label class='keybind'>
-                            <input class='setting-input'>
-                        </label>
-                        <div class='setting-dropdown'></div>
-                    </div>
-                </div>
-                <div class='setting' setting='keybinds.cut' type='keybind'>
-                    <div class='description'>
-                        <span class='title'>Cut</span><br>
-                        Copy an element to the clipboard and remove it.<br>
-                        setting: <span class='code'>keybinds.cut</span>
+                    <div class='setting-header' id='behavior'>
+                        <div class='description'>
+                            <span class='header'>Behavior</span>
+                        </div>
                     </div>
 
-                    <div class='setting-input-container'>
-                        <label class='keybind'>
-                            <input class='setting-input'>
-                        </label>
-                        <div class='setting-dropdown'></div>
+                    <div class='setting' setting='ticks_per_frame' type='slider'>
+                        <div class='description'>
+                            <span class='title'>Simulation Speed</span><br>
+                            Amount of logic calculations.<br>
+                            setting: <span class='code'>ticks_per_frame</span>
+                        </div>
+
+                        <div class='setting-input-container'>
+                            <input class='setting-input' type='range'>
+                            <div class='setting-dropdown'></div>
+                            <div class='slider-thumb-label'></div>
+                        </div>
                     </div>
-                </div>
-                <div class='setting' setting='keybinds.paste' type='keybind'>
-                    <div class='description'>
-                        <span class='title'>Paste</span><br>
-                        Paste an element from the clipboard.<br>
-                        setting: <span class='code'>keybinds.paste</span>
+                    <div class='setting' setting='scale_factor' type='slider'>
+                        <div class='description'>
+                            <span class='title'>Zoom Factor</span><br>
+                            Sensitivity when zooming.<br>
+                            setting: <span class='code'>scale_factor</span>
+                        </div>
+
+                        <div class='setting-input-container'>
+                            <input class='setting-input' type='range'>
+                            <div class='setting-dropdown'></div>
+                            <div class='slider-thumb-label'></div>
+                        </div>
+                    </div>
+                    <div class='setting' setting='use_system_clipboard' type='checkbox'>
+                        <div class='description'>
+                            <span class='title'>Clipboard</span><br>
+                            setting: <span class='code'>use_system_clipboard</span>
+                        </div>
+
+                        <div class='setting-input-container'>
+                            <div class='setting-checkbox'>
+                                <label>
+                                    <label class='checkbox'>
+                                        <input type='checkbox'>
+                                        <span></span>
+                                    </label>
+
+                                    <div class='description'>
+                                        Use the built-in clipboard of your operating system.
+                                    </div>
+                                </label>
+                            </div>
+                            <div class='setting-dropdown'></div>
+                        </div>
                     </div>
 
-                    <div class='setting-input-container'>
-                        <label class='keybind'>
-                            <input class='setting-input'>
-                        </label>
-                        <div class='setting-dropdown'></div>
+                    <div class='setting' setting='use_wire_restructuring' type='checkbox'>
+                        <div class='description'>
+                            <span class='title'>Wire Restructuring</span><br>
+                            setting: <span class='code'>use_wire_restructuring</span>
+                        </div>
+
+                        <div class='setting-input-container'>
+                            <div class='setting-checkbox'>
+                                <label>
+                                    <label class='checkbox'>
+                                        <input type='checkbox'>
+                                        <span></span>
+                                    </label>
+
+                                    <div class='description'>
+                                        Merge segments where possible.
+                                    </div>
+                                </label>
+                            </div>
+                            <div class='setting-dropdown'></div>
+                        </div>
                     </div>
-                </div>
-                <div class='setting' setting='keybinds.delete' type='keybind'>
-                    <div class='description'>
-                        <span class='title'>Delete</span><br>
-                        Remove an element.<br>
-                        setting: <span class='code'>keybinds.delete</span>
+                    <div class='setting' setting='sticky_labels' type='checkbox'>
+                        <div class='description'>
+                            <span class='title'>Sticky Labels</span><br>
+                            setting: <span class='code'>sticky_labels</span>
+                        </div>
+
+                        <div class='setting-input-container'>
+                            <div class='setting-checkbox'>
+                                <label>
+                                    <label class='checkbox'>
+                                        <input type='checkbox'>
+                                        <span></span>
+                                    </label>
+
+                                    <div class='description'>
+                                        Move labels when moving nearest gate.
+                                    </div>
+                                </label>
+                            </div>
+                            <div class='setting-dropdown'></div>
+                        </div>
+                    </div>
+                    <div class='setting' setting='gates_push_wires' type='checkbox'>
+                        <div class='description'>
+                            <span class='title'>Push Wires</span><br>
+                            setting: <span class='code'>gates_push_wires</span>
+                        </div>
+
+                        <div class='setting-input-container'>
+                            <div class='setting-checkbox'>
+                                <label>
+                                    <label class='checkbox'>
+                                        <input type='checkbox'>
+                                        <span></span>
+                                    </label>
+
+                                    <div class='description'>
+                                        Push wires when moving gate.
+                                    </div>
+                                </label>
+                            </div>
+                            <div class='setting-dropdown'></div>
+                        </div>
                     </div>
 
-                    <div class='setting-input-container'>
-                        <label class='keybind'>
-                            <input class='setting-input'>
-                        </label>
-                        <div class='setting-dropdown'></div>
-                    </div>
-                </div>
-                <div class='setting' setting='keybinds.import' type='keybind'>
-                    <div class='description'>
-                        <span class='title'>Import</span><br>
-                        Create a custom gate from a file.<br>
-                        setting: <span class='code'>keybinds.import</span>
+                    <div class='setting-header' id='animations'>
+                        <div class='description'>
+                            <span class='header'>Animations</span>
+                        </div>
                     </div>
 
-                    <div class='setting-input-container'>
-                        <label class='keybind'>
-                            <input class='setting-input'>
-                        </label>
-                        <div class='setting-dropdown'></div>
+                    <div class='setting' setting='animations' type='checkbox'>
+                        <div class='description'>
+                            <span class='title'>Use Animations</span><br>
+                            setting: <span class='code'>animations</span>
+                        </div>
+
+                        <div class='setting-input-container'>
+                            <div class='setting-checkbox'>
+                                <label>
+                                    <label class='checkbox'>
+                                        <input type='checkbox'>
+                                        <span></span>
+                                    </label>
+
+                                    <div class='description'>
+                                        Enable animations.
+                                    </div>
+                                </label>
+                            </div>
+                            <div class='setting-dropdown'></div>
+                        </div>
                     </div>
-                </div>
-                <div class='setting' setting='keybinds.open_settings' type='keybind'>
-                    <div class='description'>
-                        <span class='title'>Open Settings Menu</span><br>
-                        Open this settings menu.<br>
-                        setting: <span class='code'>keybinds.open_settings</span>
+                    <div class='setting' setting='anim_factor' type='slider'>
+                        <div class='description'>
+                            <span class='title'>Animation Speed</span><br>
+                            The speed of animations.<br>
+                            setting: <span class='code'>anim_factor</span>
+                        </div>
+
+                        <div class='setting-input-container'>
+                            <input class='setting-input' type='range'>
+                            <div class='setting-dropdown'></div>
+                            <div class='slider-thumb-label'></div>
+                        </div>
+                    </div>
+                    <div class='setting' setting='camera_anim_factor' type='slider'>
+                        <div class='description'>
+                            <span class='title'>Camera Animation Speed</span><br>
+                            The speed at which the screen is moved.<br>
+                            setting: <span class='code'>camera_anim_factor</span>
+                        </div>
+
+                        <div class='setting-input-container'>
+                            <input class='setting-input' type='range'>
+                            <div class='setting-dropdown'></div>
+                            <div class='slider-thumb-label'></div>
+                        </div>
+                    </div>
+                    <div class='setting' setting='queued_nodes_animation' type='checkbox'>
+                        <div class='description'>
+                            <span class='title'>Node Animations</span><br>
+                            setting: <span class='code'>queued_nodes_animation</span>
+                        </div>
+
+                        <div class='setting-input-container'>
+                            <div class='setting-checkbox'>
+                                <label>
+                                    <label class='checkbox'>
+                                        <input type='checkbox'>
+                                        <span></span>
+                                    </label>
+
+                                    <div class='description'>
+                                        Enable animations for queued nodes.
+                                    </div>
+                                </label>
+                            </div>
+                            <div class='setting-dropdown'></div>
+                        </div>
                     </div>
 
-                    <div class='setting-input-container'>
-                        <label class='keybind'>
-                            <input class='setting-input'>
-                        </label>
-                        <div class='setting-dropdown'></div>
-                    </div>
-                </div>
-                <div class='setting' setting='keybinds.invert' type='keybind'>
-                    <div class='description'>
-                        <span class='title'>Invert</span><br>
-                        Invert any selected connection node.<br>
-                        setting: <span class='code'>keybinds.invert</span>
+                    <div class='setting-header' id='keybinds'>
+                        <div class='description'>
+                            <span class='header'>Keybinds</span>
+                        </div>
                     </div>
 
-                    <div class='setting-input-container'>
-                        <label class='keybind'>
-                            <input class='setting-input'>
-                        </label>
-                        <div class='setting-dropdown'></div>
-                    </div>
-                </div>
-                <div class='setting' setting='keybinds.new' type='keybind'>
-                    <div class='description'>
-                        <span class='title'>New File</span><br>
-                        Create an empty file.<br>
-                        setting: <span class='code'>keybinds.new</span>
-                    </div>
+                    <div class='setting' setting='keybinds.add_input_node' type='keybind'>
+                        <div class='description'>
+                            <span class='title'>Add Input Node</span><br>
+                            Add an empty input node to any selected gate.<br>
+                            setting: <span class='code'>keybinds.add_input_node</span>
+                        </div>
 
-                    <div class='setting-input-container'>
-                        <label class='keybind'>
-                            <input class='setting-input'>
-                        </label>
-                        <div class='setting-dropdown'></div>
+                        <div class='setting-input-container'>
+                            <label class='keybind'>
+                                <input class='setting-input'>
+                            </label>
+                            <div class='setting-dropdown'></div>
+                        </div>
                     </div>
-                </div>
-                <div class='setting' setting='keybinds.open_file' type='keybind'>
-                    <div class='description'>
-                        <span class='title'>Open File</span><br>
-                        Load a circuit from a file.<br>
-                        setting: <span class='code'>keybinds.open_file</span>
-                    </div>
+                    <div class='setting' setting='keybinds.remove_input_node' type='keybind'>
+                        <div class='description'>
+                            <span class='title'>Remove Input Node</span><br>
+                            Remove the last empty input node from any selected gate.<br>
+                            setting: <span class='code'>keybinds.remove_input_node</span>
+                        </div>
 
-                    <div class='setting-input-container'>
-                        <label class='keybind'>
-                            <input class='setting-input'>
-                        </label>
-                        <div class='setting-dropdown'></div>
+                        <div class='setting-input-container'>
+                            <label class='keybind'>
+                                <input class='setting-input'>
+                            </label>
+                            <div class='setting-dropdown'></div>
+                        </div>
                     </div>
-                </div>
-                <div class='setting' setting='keybinds.undo' type='keybind'>
-                    <div class='description'>
-                        <span class='title'>Undo</span><br>
-                        Undo the last action.<br>
-                        setting: <span class='code'>keybinds.undo</span>
-                    </div>
+                    <div class='setting' setting='keybinds.view_content' type='keybind'>
+                        <div class='description'>
+                            <span class='title'>View Content</span><br>
+                            Show the inner circuit of a custom gate.<br>
+                            setting: <span class='code'>keybinds.view_content</span>
+                        </div>
 
-                    <div class='setting-input-container'>
-                        <label class='keybind'>
-                            <input class='setting-input'>
-                        </label>
-                        <div class='setting-dropdown'></div>
+                        <div class='setting-input-container'>
+                            <label class='keybind'>
+                                <input class='setting-input'>
+                            </label>
+                            <div class='setting-dropdown'></div>
+                        </div>
                     </div>
-                </div>
-                <div class='setting' setting='keybinds.redo' type='keybind'>
-                    <div class='description'>
-                        <span class='title'>Redo</span><br>
-                        Restore the last action.<br>
-                        setting: <span class='code'>keybinds.redo</span>
-                    </div>
+                    <div class='setting' setting='keybinds.copy' type='keybind'>
+                        <div class='description'>
+                            <span class='title'>Copy</span><br>
+                            Copy an element to the clipboard.<br>
+                            setting: <span class='code'>keybinds.copy</span>
+                        </div>
 
-                    <div class='setting-input-container'>
-                        <label class='keybind'>
-                            <input class='setting-input'>
-                        </label>
-                        <div class='setting-dropdown'></div>
+                        <div class='setting-input-container'>
+                            <label class='keybind'>
+                                <input class='setting-input'>
+                            </label>
+                            <div class='setting-dropdown'></div>
+                        </div>
                     </div>
-                </div>
-                <div class='setting' setting='keybinds.reopen_last_file' type='keybind'>
-                    <div class='description'>
-                        <span class='title'>Reopen Last File</span><br>
-                        Todo.<br>
-                        setting: <span class='code'>keybinds.reopen_last_file</span>
-                    </div>
+                    <div class='setting' setting='keybinds.cut' type='keybind'>
+                        <div class='description'>
+                            <span class='title'>Cut</span><br>
+                            Copy an element to the clipboard and remove it.<br>
+                            setting: <span class='code'>keybinds.cut</span>
+                        </div>
 
-                    <div class='setting-input-container'>
-                        <label class='keybind'>
-                            <input class='setting-input'>
-                        </label>
-                        <div class='setting-dropdown'></div>
+                        <div class='setting-input-container'>
+                            <label class='keybind'>
+                                <input class='setting-input'>
+                            </label>
+                            <div class='setting-dropdown'></div>
+                        </div>
                     </div>
-                </div>
-                <div class='setting' setting='keybinds.toggle_sidebar' type='keybind'>
-                    <div class='description'>
-                        <span class='title'>Toggle Sidebar</span><br>
-                        Open or close sidebar.<br>
-                        setting: <span class='code'>keybinds.toggle_sidebar</span>
-                    </div>
+                    <div class='setting' setting='keybinds.paste' type='keybind'>
+                        <div class='description'>
+                            <span class='title'>Paste</span><br>
+                            Paste an element from the clipboard.<br>
+                            setting: <span class='code'>keybinds.paste</span>
+                        </div>
 
-                    <div class='setting-input-container'>
-                        <label class='keybind'>
-                            <input class='setting-input'>
-                        </label>
-                        <div class='setting-dropdown'></div>
+                        <div class='setting-input-container'>
+                            <label class='keybind'>
+                                <input class='setting-input'>
+                            </label>
+                            <div class='setting-dropdown'></div>
+                        </div>
                     </div>
-                </div>
-                <div class='setting' setting='keybinds.save' type='keybind'>
-                    <div class='description'>
-                        <span class='title'>Save</span><br>
-                        Save the current file and download it.<br>
-                        setting: <span class='code'>keybinds.save</span>
-                    </div>
+                    <div class='setting' setting='keybinds.delete' type='keybind'>
+                        <div class='description'>
+                            <span class='title'>Delete</span><br>
+                            Remove an element.<br>
+                            setting: <span class='code'>keybinds.delete</span>
+                        </div>
 
-                    <div class='setting-input-container'>
-                        <label class='keybind'>
-                            <input class='setting-input'>
-                        </label>
-                        <div class='setting-dropdown'></div>
+                        <div class='setting-input-container'>
+                            <label class='keybind'>
+                                <input class='setting-input'>
+                            </label>
+                            <div class='setting-dropdown'></div>
+                        </div>
                     </div>
-                </div>
-                <div class='setting' setting='keybinds.save_as' type='keybind'>
-                    <div class='description'>
-                        <span class='title'>Save As...</span><br>
-                        Save the current file and download it.<br>
-                        setting: <span class='code'>keybinds.save_as</span>
-                    </div>
+                    <div class='setting' setting='keybinds.import' type='keybind'>
+                        <div class='description'>
+                            <span class='title'>Import</span><br>
+                            Create a custom gate from a file.<br>
+                            setting: <span class='code'>keybinds.import</span>
+                        </div>
 
-                    <div class='setting-input-container'>
-                        <label class='keybind'>
-                            <input class='setting-input'>
-                        </label>
-                        <div class='setting-dropdown'></div>
+                        <div class='setting-input-container'>
+                            <label class='keybind'>
+                                <input class='setting-input'>
+                            </label>
+                            <div class='setting-dropdown'></div>
+                        </div>
                     </div>
-                </div>
-                <div class='setting' setting='keybinds.select_all' type='keybind'>
-                    <div class='description'>
-                        <span class='title'>Select All</span><br>
-                        Select all elements.<br>
-                        setting: <span class='code'>keybinds.select_all</span>
-                    </div>
+                    <div class='setting' setting='keybinds.open_settings' type='keybind'>
+                        <div class='description'>
+                            <span class='title'>Open Settings Menu</span><br>
+                            Open this settings menu.<br>
+                            setting: <span class='code'>keybinds.open_settings</span>
+                        </div>
 
-                    <div class='setting-input-container'>
-                        <label class='keybind'>
-                            <input class='setting-input'>
-                        </label>
-                        <div class='setting-dropdown'></div>
+                        <div class='setting-input-container'>
+                            <label class='keybind'>
+                                <input class='setting-input'>
+                            </label>
+                            <div class='setting-dropdown'></div>
+                        </div>
                     </div>
-                </div>
-                <div class='setting' setting='keybinds.toggle_selection' type='keybind'>
-                    <div class='description'>
-                        <span class='title'>Toggle Selection</span><br>
-                        Select all elements. If all elements are selected, deselect all elements.<br>
-                        setting: <span class='code'>keybinds.toggle_selection</span>
-                    </div>
+                    <div class='setting' setting='keybinds.invert' type='keybind'>
+                        <div class='description'>
+                            <span class='title'>Invert</span><br>
+                            Invert any selected connection node.<br>
+                            setting: <span class='code'>keybinds.invert</span>
+                        </div>
 
-                    <div class='setting-input-container'>
-                        <label class='keybind'>
-                            <input class='setting-input'>
-                        </label>
-                        <div class='setting-dropdown'></div>
+                        <div class='setting-input-container'>
+                            <label class='keybind'>
+                                <input class='setting-input'>
+                            </label>
+                            <div class='setting-dropdown'></div>
+                        </div>
                     </div>
-                </div>
-                <div class='setting' setting='keybinds.deselect_all' type='keybind'>
-                    <div class='description'>
-                        <span class='title'>Deselect All</span><br>
-                        Deselect all elements.<br>
-                        setting: <span class='code'>keybinds.deselect_all</span>
-                    </div>
+                    <div class='setting' setting='keybinds.new' type='keybind'>
+                        <div class='description'>
+                            <span class='title'>New File</span><br>
+                            Create an empty file.<br>
+                            setting: <span class='code'>keybinds.new</span>
+                        </div>
 
-                    <div class='setting-input-container'>
-                        <label class='keybind'>
-                            <input class='setting-input'>
-                        </label>
-                        <div class='setting-dropdown'></div>
+                        <div class='setting-input-container'>
+                            <label class='keybind'>
+                                <input class='setting-input'>
+                            </label>
+                            <div class='setting-dropdown'></div>
+                        </div>
                     </div>
-                </div>
-                <div class='setting' setting='keybinds.split_segment' type='keybind'>
-                    <div class='description'>
-                        <span class='title'>Split Wire Segment</span><br>
-                        Replace all selected segments with three new segments.<br>
-                        setting: <span class='code'>keybinds.split_segment</span>
-                    </div>
+                    <div class='setting' setting='keybinds.open_file' type='keybind'>
+                        <div class='description'>
+                            <span class='title'>Open File</span><br>
+                            Load a circuit from a file.<br>
+                            setting: <span class='code'>keybinds.open_file</span>
+                        </div>
 
-                    <div class='setting-input-container'>
-                        <label class='keybind'>
-                            <input class='setting-input'>
-                        </label>
-                        <div class='setting-dropdown'></div>
+                        <div class='setting-input-container'>
+                            <label class='keybind'>
+                                <input class='setting-input'>
+                            </label>
+                            <div class='setting-dropdown'></div>
+                        </div>
                     </div>
-                </div>
-                <div class='setting' setting='keybinds.reset_view' type='keybind'>
-                    <div class='description'>
-                        <span class='title'>Reset View</span><br>
-                        Reset the visible area.<br>
-                        setting: <span class='code'>keybinds.reset_view</span>
-                    </div>
+                    <div class='setting' setting='keybinds.undo' type='keybind'>
+                        <div class='description'>
+                            <span class='title'>Undo</span><br>
+                            Undo the last action.<br>
+                            setting: <span class='code'>keybinds.undo</span>
+                        </div>
 
-                    <div class='setting-input-container'>
-                        <label class='keybind'>
-                            <input class='setting-input'>
-                        </label>
-                        <div class='setting-dropdown'></div>
+                        <div class='setting-input-container'>
+                            <label class='keybind'>
+                                <input class='setting-input'>
+                            </label>
+                            <div class='setting-dropdown'></div>
+                        </div>
                     </div>
-                </div>
-                <div class='setting' setting='keybinds.zoom_in' type='keybind'>
-                    <div class='description'>
-                        <span class='title'>Zoom In</span><br>
-                        Zoom to the center of the screen.<br>
-                        setting: <span class='code'>keybinds.zoom_in</span>
-                    </div>
+                    <div class='setting' setting='keybinds.redo' type='keybind'>
+                        <div class='description'>
+                            <span class='title'>Redo</span><br>
+                            Restore the last action.<br>
+                            setting: <span class='code'>keybinds.redo</span>
+                        </div>
 
-                    <div class='setting-input-container'>
-                        <label class='keybind'>
-                            <input class='setting-input'>
-                        </label>
-                        <div class='setting-dropdown'></div>
+                        <div class='setting-input-container'>
+                            <label class='keybind'>
+                                <input class='setting-input'>
+                            </label>
+                            <div class='setting-dropdown'></div>
+                        </div>
                     </div>
-                </div>
-                <div class='setting' setting='keybinds.zoom_out' type='keybind'>
-                    <div class='description'>
-                        <span class='title'>Zoom Out</span><br>
-                        Zoom out of the center of the screen.<br>
-                        setting: <span class='code'>keybinds.zoom_out</span>
-                    </div>
+                    <div class='setting' setting='keybinds.reopen_last_file' type='keybind'>
+                        <div class='description'>
+                            <span class='title'>Reopen Last File</span><br>
+                            Todo.<br>
+                            setting: <span class='code'>keybinds.reopen_last_file</span>
+                        </div>
 
-                    <div class='setting-input-container'>
-                        <label class='keybind'>
-                            <input class='setting-input'>
-                        </label>
-                        <div class='setting-dropdown'></div>
+                        <div class='setting-input-container'>
+                            <label class='keybind'>
+                                <input class='setting-input'>
+                            </label>
+                            <div class='setting-dropdown'></div>
+                        </div>
                     </div>
-                </div>
-                <div class='setting' setting='keybinds.zoom_to_selection' type='keybind'>
-                    <div class='description'>
-                        <span class='title'>Zoom to Selection</span><br>
-                        Move and scale the camera to fit all selected elements on the screen.<br>
-                        setting: <span class='code'>keybinds.zoom_to_selection</span>
-                    </div>
+                    <div class='setting' setting='keybinds.toggle_sidebar' type='keybind'>
+                        <div class='description'>
+                            <span class='title'>Toggle Sidebar</span><br>
+                            Open or close sidebar.<br>
+                            setting: <span class='code'>keybinds.toggle_sidebar</span>
+                        </div>
 
-                    <div class='setting-input-container'>
-                        <label class='keybind'>
-                            <input class='setting-input'>
-                        </label>
-                        <div class='setting-dropdown'></div>
+                        <div class='setting-input-container'>
+                            <label class='keybind'>
+                                <input class='setting-input'>
+                            </label>
+                            <div class='setting-dropdown'></div>
+                        </div>
                     </div>
-                </div>
-                <div class='setting' setting='keybinds.debug_pause_resume' type='keybind'>
-                    <div class='description'>
-                        <span class='title'>Toggle Manual Ticks</span><br>
-                        Enter and leave manual tick mode.<br>
-                        setting: <span class='code'>keybinds.debug_pause_resume</span>
-                    </div>
+                    <div class='setting' setting='keybinds.save' type='keybind'>
+                        <div class='description'>
+                            <span class='title'>Save</span><br>
+                            Save the current file and download it.<br>
+                            setting: <span class='code'>keybinds.save</span>
+                        </div>
 
-                    <div class='setting-input-container'>
-                        <label class='keybind'>
-                            <input class='setting-input'>
-                        </label>
-                        <div class='setting-dropdown'></div>
+                        <div class='setting-input-container'>
+                            <label class='keybind'>
+                                <input class='setting-input'>
+                            </label>
+                            <div class='setting-dropdown'></div>
+                        </div>
                     </div>
-                </div>
-                <div class='setting' setting='keybinds.debug_tick' type='keybind'>
-                    <div class='description'>
-                        <span class='title'>Next Tick</span><br>
-                        Perform a logic calculation.<br>
-                        setting: <span class='code'>keybinds.debug_tick</span>
-                    </div>
+                    <div class='setting' setting='keybinds.save_as' type='keybind'>
+                        <div class='description'>
+                            <span class='title'>Save As...</span><br>
+                            Save the current file and download it.<br>
+                            setting: <span class='code'>keybinds.save_as</span>
+                        </div>
 
-                    <div class='setting-input-container'>
-                        <label class='keybind'>
-                            <input class='setting-input'>
-                        </label>
-                        <div class='setting-dropdown'></div>
+                        <div class='setting-input-container'>
+                            <label class='keybind'>
+                                <input class='setting-input'>
+                            </label>
+                            <div class='setting-dropdown'></div>
+                        </div>
                     </div>
-                </div>
-                <div class='setting' setting='keybinds.debug_single_tick' type='keybind'>
-                    <div class='description'>
-                        <span class='title'>Next Tick</span><br>
-                        Perform a logic calculation.<br>
-                        setting: <span class='code'>keybinds.debug_single_tick</span>
-                    </div>
+                    <div class='setting' setting='keybinds.select_all' type='keybind'>
+                        <div class='description'>
+                            <span class='title'>Select All</span><br>
+                            Select all elements.<br>
+                            setting: <span class='code'>keybinds.select_all</span>
+                        </div>
 
-                    <div class='setting-input-container'>
-                        <label class='keybind'>
-                            <input class='setting-input'>
-                        </label>
-                        <div class='setting-dropdown'></div>
+                        <div class='setting-input-container'>
+                            <label class='keybind'>
+                                <input class='setting-input'>
+                            </label>
+                            <div class='setting-dropdown'></div>
+                        </div>
+                    </div>
+                    <div class='setting' setting='keybinds.toggle_selection' type='keybind'>
+                        <div class='description'>
+                            <span class='title'>Toggle Selection</span><br>
+                            Select all elements. If all elements are selected, deselect all elements.<br>
+                            setting: <span class='code'>keybinds.toggle_selection</span>
+                        </div>
+
+                        <div class='setting-input-container'>
+                            <label class='keybind'>
+                                <input class='setting-input'>
+                            </label>
+                            <div class='setting-dropdown'></div>
+                        </div>
+                    </div>
+                    <div class='setting' setting='keybinds.deselect_all' type='keybind'>
+                        <div class='description'>
+                            <span class='title'>Deselect All</span><br>
+                            Deselect all elements.<br>
+                            setting: <span class='code'>keybinds.deselect_all</span>
+                        </div>
+
+                        <div class='setting-input-container'>
+                            <label class='keybind'>
+                                <input class='setting-input'>
+                            </label>
+                            <div class='setting-dropdown'></div>
+                        </div>
+                    </div>
+                    <div class='setting' setting='keybinds.split_segment' type='keybind'>
+                        <div class='description'>
+                            <span class='title'>Split Wire Segment</span><br>
+                            Replace all selected segments with three new segments.<br>
+                            setting: <span class='code'>keybinds.split_segment</span>
+                        </div>
+
+                        <div class='setting-input-container'>
+                            <label class='keybind'>
+                                <input class='setting-input'>
+                            </label>
+                            <div class='setting-dropdown'></div>
+                        </div>
+                    </div>
+                    <div class='setting' setting='keybinds.reset_view' type='keybind'>
+                        <div class='description'>
+                            <span class='title'>Reset View</span><br>
+                            Reset the visible area.<br>
+                            setting: <span class='code'>keybinds.reset_view</span>
+                        </div>
+
+                        <div class='setting-input-container'>
+                            <label class='keybind'>
+                                <input class='setting-input'>
+                            </label>
+                            <div class='setting-dropdown'></div>
+                        </div>
+                    </div>
+                    <div class='setting' setting='keybinds.zoom_in' type='keybind'>
+                        <div class='description'>
+                            <span class='title'>Zoom In</span><br>
+                            Zoom to the center of the screen.<br>
+                            setting: <span class='code'>keybinds.zoom_in</span>
+                        </div>
+
+                        <div class='setting-input-container'>
+                            <label class='keybind'>
+                                <input class='setting-input'>
+                            </label>
+                            <div class='setting-dropdown'></div>
+                        </div>
+                    </div>
+                    <div class='setting' setting='keybinds.zoom_out' type='keybind'>
+                        <div class='description'>
+                            <span class='title'>Zoom Out</span><br>
+                            Zoom out of the center of the screen.<br>
+                            setting: <span class='code'>keybinds.zoom_out</span>
+                        </div>
+
+                        <div class='setting-input-container'>
+                            <label class='keybind'>
+                                <input class='setting-input'>
+                            </label>
+                            <div class='setting-dropdown'></div>
+                        </div>
+                    </div>
+                    <div class='setting' setting='keybinds.zoom_to_selection' type='keybind'>
+                        <div class='description'>
+                            <span class='title'>Zoom to Selection</span><br>
+                            Move and scale the camera to fit all selected elements on the screen.<br>
+                            setting: <span class='code'>keybinds.zoom_to_selection</span>
+                        </div>
+
+                        <div class='setting-input-container'>
+                            <label class='keybind'>
+                                <input class='setting-input'>
+                            </label>
+                            <div class='setting-dropdown'></div>
+                        </div>
+                    </div>
+                    <div class='setting' setting='keybinds.debug_pause_resume' type='keybind'>
+                        <div class='description'>
+                            <span class='title'>Toggle Manual Ticks</span><br>
+                            Enter and leave manual tick mode.<br>
+                            setting: <span class='code'>keybinds.debug_pause_resume</span>
+                        </div>
+
+                        <div class='setting-input-container'>
+                            <label class='keybind'>
+                                <input class='setting-input'>
+                            </label>
+                            <div class='setting-dropdown'></div>
+                        </div>
+                    </div>
+                    <div class='setting' setting='keybinds.debug_tick' type='keybind'>
+                        <div class='description'>
+                            <span class='title'>Next Tick</span><br>
+                            Perform a logic calculation.<br>
+                            setting: <span class='code'>keybinds.debug_tick</span>
+                        </div>
+
+                        <div class='setting-input-container'>
+                            <label class='keybind'>
+                                <input class='setting-input'>
+                            </label>
+                            <div class='setting-dropdown'></div>
+                        </div>
+                    </div>
+                    <div class='setting' setting='keybinds.debug_single_tick' type='keybind'>
+                        <div class='description'>
+                            <span class='title'>Next Tick</span><br>
+                            Perform a logic calculation.<br>
+                            setting: <span class='code'>keybinds.debug_single_tick</span>
+                        </div>
+
+                        <div class='setting-input-container'>
+                            <label class='keybind'>
+                                <input class='setting-input'>
+                            </label>
+                            <div class='setting-dropdown'></div>
+                        </div>
                     </div>
                 </div>
             </div>

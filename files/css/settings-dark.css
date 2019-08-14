@@ -1,11 +1,11 @@
 :root {
-    --settings-backdrop: #0009;
-    --settings-background: #070709;
+    --settings-backdrop: #000b;
+    --settings-background: #070708;
     --settings-font-color: #eee;
     --setting-dropdown-background-image: url('../icon/dark/setting_dropdown.png');
 
     --focus-outline: #5af;
-    --container-box-shadow: #0004;
+    --container-box-shadow: #0007;
     --recording-input-outline: #f22;
     --setting-input-background: #222;
     --sidebar-item-color-hover: #5cf;
@@ -16,7 +16,7 @@
     --setting-slider-thumb: #eee;
     --setting-slider-thumb-hover: #29e;
 
-    --scrollbar-background: #000;
+    --scrollbar-background: #040405;
     --scrollbar-thumb-background: #222;
     --scrollbar-thumb-background-hover: #333c;
 
