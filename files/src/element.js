@@ -82,39 +82,42 @@ class Element {
         throw 'implementation required @Element.move';
     }
 
-    static resize(element, total_vec, resize_vec) {
+    static resize(element, total_vec, resize_vec, keep_centered=false) {
         const previous_pos = Vec.copy(element.pos);
         const previous_size = Vec.copy(element.size);
 
         if (element.size) {
-            if (resize_vec.x > 0) {
-                const new_size_x = element.last_size_.x + Util.round(total_vec.x);
+            if (keep_centered) {
+                const new_size_x = element.last_size_.x + Math.sign(resize_vec.x)*Util.round(total_vec.x)*2;
 
                 if (new_size_x > 0) {
+                    element.pos.x = element.last_pos_.x - Math.sign(resize_vec.x)*Util.round(total_vec.x);
                     element.size.x = new_size_x;
                 }
-            }
-            if (resize_vec.y > 0) {
-                const new_size_y = element.last_size_.y + Util.round(total_vec.y);
+
+                const new_size_y = element.last_size_.y + Math.sign(resize_vec.y)*Util.round(total_vec.y)*2;
 
                 if (new_size_y > 0) {
+                    element.pos.y = element.last_pos_.y - Math.sign(resize_vec.y)*Util.round(total_vec.y);
                     element.size.y = new_size_y;
                 }
             }
-
-            if (resize_vec.x < 0) {
-                const new_size_x = element.last_size_.x - Util.round(total_vec.x);
+            else {
+                const new_size_x = element.last_size_.x + Math.sign(resize_vec.x)*Util.round(total_vec.x);
 
                 if (new_size_x > 0) {
-                    element.pos.x = element.last_pos_.x + Util.round(total_vec.x);
+                    if (resize_vec.x < 0) {
+                        element.pos.x = element.last_pos_.x + Util.round(total_vec.x);
+                    }
                     element.size.x = new_size_x;
                 }
-            }
-            if (resize_vec.y < 0) {
-                const new_size_y = element.last_size_.y - Util.round(total_vec.y);
+
+                const new_size_y = element.last_size_.y + Math.sign(resize_vec.y)*Util.round(total_vec.y);
 
                 if (new_size_y > 0) {
-                    element.pos.y = element.last_pos_.y + Util.round(total_vec.y);
+                    if (resize_vec.y < 0) {
+                        element.pos.y = element.last_pos_.y + Util.round(total_vec.y);
+                    }
                     element.size.y = new_size_y;
                 }
             }

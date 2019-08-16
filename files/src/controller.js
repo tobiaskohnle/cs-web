@@ -487,7 +487,7 @@ class Controller {
             case Enum.action.resize_elements:
                 for (const element of ActionGet.selected_elements()) {
                     if (element.resize && this.resize) {
-                        if (element.resize(Vec.sub(this.mouse_world_pos, this.mouse_down_world_pos), this.resize_vec)) {
+                        if (element.resize(Vec.sub(this.mouse_world_pos, this.mouse_down_world_pos), this.resize_vec, event.shiftKey||event.ctrlKey||event.altKey)) {
                             this.elements_resized = true;
                         }
                     }

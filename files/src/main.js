@@ -332,17 +332,40 @@ onmousemove = function(event) {
 }
 
 ondragenter = function(event) {
-    cs.config.DEBUG_LOG && console.log('ondragenter', event);
-
     event.preventDefault();
-    return false;
+}
+
+ondragover = function(event) {
+    event.preventDefault();
 }
 
 ondrop = function(event) {
-    cs.config.DEBUG_LOG && console.log('ondrop', event);
-
     event.preventDefault();
-    return false;
+
+    if (event.dataTransfer.items) {
+        for (const item of event.dataTransfer.items) {
+            if (item.kind == 'file') {
+                const file = item.getAsFile();
+                console.log(file);
+
+                const reader = new FileReader;
+
+                reader.addEventListener('load', function(event) {
+                    // onload(reader.result, file);
+                    // console.log('RESULT', reader.result);
+
+                    cs.context = Util.extended_parse(reader.result);
+                    ActionUtil.queue_tick_all();
+                });
+
+                reader.readAsText(file);
+            }
+        }
+    }
+
+    // console.log(event.dataTransfer.getData('file'));
+
+    // return false;
 }
 
 onwheel = function(event) {
