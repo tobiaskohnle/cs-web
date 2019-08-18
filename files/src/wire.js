@@ -65,6 +65,8 @@ class WireSegment extends Element {
         this.last_offset_ = this.offset;
     }
 
+    resize() {}
+
     move(total_vec, snap_size) {
         this.set_offset(Vec.round(total_vec, snap_size));
         this.offset += Util.round(this.last_offset_, this.snap_size_);

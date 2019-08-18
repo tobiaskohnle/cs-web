@@ -22,10 +22,6 @@ class Gate extends Element {
         this.color_outline_ = Color.from(cs.theme.outline);
     }
 
-    resize(total_vec, resize_vec, keep_centered) {
-        Element.resize(this, total_vec, resize_vec, keep_centered);
-    }
-
     allow_new_input_nodes() {
         return false;
     }
@@ -488,9 +484,9 @@ class InputPulse extends InputGate {
         context.beginPath();
         context.lineWidth = cs.config.line_width;
 
-        context.moveTo(this.anim_pos_.x, this.anim_pos_.y);
-        context.lineTo(this.anim_pos_.x+1.2, this.anim_pos_.y+this.anim_size_.y/2);
-        context.lineTo(this.anim_pos_.x, this.anim_pos_.y+this.anim_size_.y);
+        context.moveTo(this.anim_pos_.x+this.anim_size_.x*.02, this.anim_pos_.y+this.anim_size_.y*.02);
+        context.lineTo(this.anim_pos_.x+this.anim_size_.x*.6,  this.anim_pos_.y+this.anim_size_.y*.5 );
+        context.lineTo(this.anim_pos_.x+this.anim_size_.x*.02, this.anim_pos_.y+this.anim_size_.y*.98);
 
         context.stroke();
     }
@@ -517,14 +513,14 @@ class Clock extends InputGate {
         context.beginPath();
         context.lineWidth = cs.config.line_width;
 
-        context.moveTo(this.anim_pos_.x,                       this.anim_pos_.y+this.anim_size_.y*.5);
+        context.moveTo(this.anim_pos_.x+this.anim_size_.x*.02, this.anim_pos_.y+this.anim_size_.y*.5);
         context.lineTo(this.anim_pos_.x+this.anim_size_.x*.15, this.anim_pos_.y+this.anim_size_.y*.5);
         context.lineTo(this.anim_pos_.x+this.anim_size_.x*.15, this.anim_pos_.y+this.anim_size_.y*.8);
         context.lineTo(this.anim_pos_.x+this.anim_size_.x*.5,  this.anim_pos_.y+this.anim_size_.y*.8);
         context.lineTo(this.anim_pos_.x+this.anim_size_.x*.5,  this.anim_pos_.y+this.anim_size_.y*.2);
         context.lineTo(this.anim_pos_.x+this.anim_size_.x*.85, this.anim_pos_.y+this.anim_size_.y*.2);
         context.lineTo(this.anim_pos_.x+this.anim_size_.x*.85, this.anim_pos_.y+this.anim_size_.y*.5);
-        context.lineTo(this.anim_pos_.x+this.anim_size_.x,     this.anim_pos_.y+this.anim_size_.y*.5);
+        context.lineTo(this.anim_pos_.x+this.anim_size_.x*.98, this.anim_pos_.y+this.anim_size_.y*.5);
 
         context.stroke();
     }

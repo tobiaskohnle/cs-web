@@ -92,6 +92,8 @@ class ConnectionNode extends Element {
         this.last_pos_ = Vec.copy(this.pos);
     }
 
+    resize() {}
+
     move(total_vec, snap_size_) {
         (this.grab_pos_||this.pos).set(this.last_pos_).add(total_vec);
 
