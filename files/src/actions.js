@@ -537,12 +537,12 @@ const ActionUtil = {
     move_selected(vec) {
         ActionUtil.move_elements(ActionUtil.selected_elements());
     },
-    remove_soft(elements) {
+    remove_soft(elements=ActionUtil.selected_elements()) {
         return !elements.some(element => element instanceof Gate || element instanceof Label)
             && elements.some(element => element instanceof ConnectionNode && !element.is_empty());
     },
     remove_all(elements) {
-        if (ActionUtil.remove_soft()) {
+        if (ActionUtil.remove_soft(elements)) {
             for (const element of elements) {
                 Action.clear_node(element);
             }
