@@ -73,13 +73,15 @@ class Controller {
     mouse_click(event) {
         if (~event.detail & 1) {
             if (this.hovered_element instanceof ConnectionNode) {
-                this.hovered_element.invert();
+                commands.invert();
             }
 
             if (this.hovered_element instanceof WireSegment) {
-                this.save_state('split segment');
-                Action.split_segment(this.hovered_element);
-                this.hovered_element.update_last_pos();
+                commands.split_segment();
+            }
+
+            if (this.hovered_element instanceof CustomGate) {
+                commands.view_content();
             }
         }
 

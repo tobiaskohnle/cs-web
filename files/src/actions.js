@@ -250,6 +250,7 @@ const Action = {
         next_segment.offset = segment.offset + segment.snap_size_;
 
         segment.offset = segment.anim_offset_ = Util.round(prev_neighbor.offset/2 + next_neighbor.offset/2, segment.snap_size_);
+        segment.update_last_pos();
 
         for (const neighbor of neighbor_elements) {
             Util.attach_segments(neighbor.offset > segment.offset ? prev_segment : next_segment, neighbor.element);
