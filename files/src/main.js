@@ -176,6 +176,15 @@ const default_config = {
 
     file_extension: 'circ',
 
+    segment_display: {
+        scale: .0026,
+        skew: -30,
+        width: 450,
+        segment_width: 105,
+        segment_distance: 21,
+        segment_center_length: 70,
+    },
+
 
     keybinds: {
         add_input_node:        'shift+*',

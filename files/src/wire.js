@@ -211,11 +211,11 @@ class WireSegment extends Element {
         for (let i = 1; i < neighbor_elements.length-1; i++) {
             const intersection = Vec.from_offset(this.is_vertical, this.anim_offset_, neighbor_elements[i].anim_offset_);
 
-            switch (cs.config.joints_style) {
+            switch (cs.config.wire_joints_style) {
                 case 'square':
-                    const joint_size = new Vec(cs.config.wire_joints_square_radius*2);
-                    context.fillRect(...Vec.sub(intersection, Vec.div(joint_size, 2)).xy, ...joint_size.xy);
-                    break;
+                    const wire_joint_size = new Vec(cs.config.wire_joints_square_radius*2);
+                    context.fillRect(...Vec.sub(intersection, Vec.div(wire_joint_size, 2)).xy, ...wire_joint_size.xy);
+                        break;
 
                 case 'round':
                     context.beginPath();

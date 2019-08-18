@@ -573,15 +573,6 @@ class SegmentDisplay extends OutputGate {
             Color.from(cs.theme.segment_inactive),
             Color.from(cs.theme.segment_inactive),
         ];
-
-        this.options_ = {
-            scale:                 .0026,
-            skew:                  -30,
-            width:                 450,
-            segment_width:         105,
-            segment_distance:      21,
-            segment_center_length: 70,
-        };
     }
 
     update(skip_animations=false) {
@@ -605,39 +596,39 @@ class SegmentDisplay extends OutputGate {
         const X = 1;
         const Y = 2;
 
-        const scale                 = this.options_.scale * Math.min(this.anim_size_.x/5, this.anim_size_.y/7);
-        const skew                  = this.options_.skew;
-        const width                 = this.options_.width;
-        const segment_width         = this.options_.segment_width;
-        const segment_distance      = this.options_.segment_distance;
-        const segment_center_length = this.options_.segment_center_length;
+        const scale                 = cs.config.segment_display.scale * Math.min(this.anim_size_.x/5, this.anim_size_.y/7);
+        const skew                  = cs.config.segment_display.skew;
+        const width                 = cs.config.segment_display.width;
+        const segment_width         = cs.config.segment_display.segment_width;
+        const segment_distance      = cs.config.segment_display.segment_distance;
+        const segment_center_length = cs.config.segment_display.segment_center_length;
 
         const center = Vec.add(this.anim_pos_, Vec.div(this.anim_size_, 2));
 
         const inner_width = width - segment_width*2;
         const height = width*2 - segment_width;
 
-        const C0 = new Vec(inner_width/2 + segment_center_length, 0                            );
-        const M0 = new Vec(width/2,                               0                            );
-        const I0 = new Vec(inner_width/2,                         segment_width/2              );
-        const I1 = new Vec(inner_width/2,                         segment_width/2 + inner_width);
-        const A0 = new Vec(inner_width/2 + segment_center_length, height/2                     );
-        const A1 = new Vec(width/2,                               height/2 - segment_width/3.2 );
+        const a = new Vec(inner_width/2 + segment_center_length, 0                            );
+        const b = new Vec(width/2,                               0                            );
+        const c = new Vec(inner_width/2,                         segment_width/2              );
+        const d = new Vec(inner_width/2,                         segment_width/2 + inner_width);
+        const e = new Vec(inner_width/2 + segment_center_length, height/2                     );
+        const f = new Vec(width/2,                               height/2 - segment_width/3.2 );
 
         const points_corner = [
-            I0, C0, M0, A1, A0, I1,
+            c, a, b, f, e, d,
         ];
         const points_side = [
-            I1, A0,
-            Vec.mirror(A0, Y),
-            Vec.mirror(I1, Y),
+            d, e,
+            Vec.mirror(e, Y),
+            Vec.mirror(d, Y),
         ];
         const points_center = [
-            C0, I0,
-            Vec.mirror(I0, Y),
-            Vec.mirror(C0, Y),
-            Vec.mirror(I0, X|Y),
-            Vec.mirror(I0, X),
+            a, c,
+            Vec.mirror(c, Y),
+            Vec.mirror(a, Y),
+            Vec.mirror(c, X|Y),
+            Vec.mirror(c, X),
         ];
 
         const transform_point = vec => {
