@@ -364,12 +364,7 @@ const Settings = {
 
         const reset_buttons = document.querySelectorAll('.sidebar-item.reset');
         reset_buttons.forEach(button => button.addEventListener('click', function(event) {
-            if (button.hasAttribute('active')) {
-                button.removeAttribute('active');
-            }
-            else {
-                button.setAttribute('active', '');
-            }
+            button.toggleAttribute('active');
         }));
         reset_buttons.forEach(button => button.addEventListener('blur', function(event) {
             button.removeAttribute('active');

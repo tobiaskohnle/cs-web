@@ -202,11 +202,11 @@
         <div class='menu-item' command='reset_sidebar'>
             <span>Reset Sidebar</span>
         </div>
-        <div class='menu-item' menu='add_sidebar_elements'>
+        <div class='menu-item' menu='add-sidebar-elements'>
             <span>Add Elements</span>
         </div>
         <div class='menu-item' command='toggle_sidebar'>
-            <span>Toggle</span>
+            <span _text='Menu.sidebar_open ? `Hide` : `Show`'>Show</span>
         </div>
     </div>
 
@@ -285,7 +285,7 @@
             <span>Zoom to Selection</span>
         </div>
         <div class='menu-separator'></div>
-        <div class='menu-item' menu='edit_sidebar'>
+        <div class='menu-item' menu='edit-sidebar'>
             <span>Sidebar</span>
         </div>
         <div class='menu-item' command='toggle_fullscreen'>
@@ -310,27 +310,27 @@
             <span>View Content</span>
         </div>
         <div class='menu-item' command='debug_toggle'>
-            <span>Toggle Debugger</span>
+            <span _text='Menu.debugger_visible ? `Hide Debugger` : `Show Debugger`'>Show Debugger</span>
         </div>
     </div>
 
-    <div class='menu' menu='edit_sidebar'>
+    <div class='menu' menu='edit-sidebar'>
         <div class='menu-item' command='reset_sidebar'>
             <span>Reset</span>
         </div>
-        <div class='menu-item' menu='add_sidebar_elements'>
+        <div class='menu-item' menu='add-sidebar-elements'>
             <span>Add Elements</span>
         </div>
         <div class='menu-item' command='toggle_sidebar'>
-            <span>Toggle</span>
+            <span _text='Menu.sidebar_open ? `Hide` : `Show`'>Show</span>
         </div>
     </div>
-    <div class='menu' menu='add_sidebar_elements'>
+    <div class='menu' menu='add-sidebar-elements'>
         <div class='menu-item' command='add_sidebar_elements'>
-            <span>As Custom Gate</span>
+            <span>As Custom Gate...</span>
         </div>
         <div class='menu-item' command='add_sidebar_elements_as_file'>
-            <span>As File</span>
+            <span>As File...</span>
         </div>
     </div>
 

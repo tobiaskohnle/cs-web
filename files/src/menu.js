@@ -44,6 +44,14 @@ const Menu = {
                         menu_item.classList.add('disabled');
                     }
                 }
+
+                for (const child of menu_item.querySelectorAll('*')) {
+                    const display_text = child.getAttribute('_text');
+
+                    if (display_text) {
+                        child.innerText = eval(display_text);
+                    }
+                }
             }
 
             let text_column_width = 0;
@@ -273,11 +281,9 @@ const Menu = {
         Menu.sidebar_open = is_visible;
 
         document.querySelector('.window').style.gridTemplateColumns=`${is_visible ? `${cs.config.sidebar_width}px` : '0'} auto`;
-        if (is_visible) {
-            document.querySelector('.sidebar-button').removeAttribute('sidebar-hidden');
-        }
-        else {
-            document.querySelector('.sidebar-button').setAttribute('sidebar-hidden', '');
+        document.querySelector('.sidebar-button').removeAttribute('sidebar-hidden');
+        if (!is_visible) {
+            document.querySelector('.sidebar-button').toggleAttribute('sidebar-hidden');
         }
         onresize();
     },

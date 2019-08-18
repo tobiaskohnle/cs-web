@@ -725,8 +725,8 @@ class Controller {
         input.type = 'file';
 
         if (open_directory) {
-            input.setAttribute('directory', '');
-            input.setAttribute('webkitdirectory', '');
+            input.toggleAttribute('directory');
+            input.toggleAttribute('webkitdirectory');
         }
 
         input.click();
