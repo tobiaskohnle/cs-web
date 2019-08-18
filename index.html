@@ -309,8 +309,23 @@
         <div class='menu-item' command='view_content'>
             <span>View Content</span>
         </div>
+        <div class='menu-item' menu='debugger'>
+            <span>Debugger</span>
+        </div>
+    </div>
+
+    <div class='menu' menu='debugger'>
+        <div class='menu-item' command='debug_pause_resume'>
+            <span _text='cs.controller.tick_nodes ? `Pause` : `Resume`'>Resume</span>
+        </div>
+        <div class='menu-item' command='debug_tick'>
+            <span>Tick</span>
+        </div>
+        <div class='menu-item' command='debug_single_tick'>
+            <span>Single Tick</span>
+        </div>
         <div class='menu-item' command='debug_toggle'>
-            <span _text='Menu.debugger_visible ? `Hide Debugger` : `Show Debugger`'>Show Debugger</span>
+            <span _text='Menu.debugger_visible ? `Hide` : `Show`'>Show</span>
         </div>
     </div>
 
