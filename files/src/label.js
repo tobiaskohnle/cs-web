@@ -109,8 +109,10 @@ class Label extends Element {
     run_init_animation() {}
 
     unescape_text() {
-        return this.text = this.text.replace(/(?:u\+|%u|\\u|\\)([0-9a-f]{4})/gi, (match, digits) => {
-            return String.fromCharCode(parseInt(digits, 16));
+        return this.text = this.text.replace(/(?:u\+|%u|\\u|\\)([0-9a-f]{4})/gi, (match, digits, index) => {
+            const symbol = String.fromCharCode(parseInt(digits, 16));
+            this.set_caret(index + symbol.length);
+            return symbol;
         });
     }
 
@@ -429,22 +431,13 @@ class Label extends Element {
         }
     }
 
-    clamp_caret() {
-        this.caret = Util.clamp(this.caret, 0, this.text.length);
-        this.selection_start = Util.clamp(this.selection_start, 0, this.text.length);
-    }
-
     delete_selection() {
-        this.clamp_caret();
-
         this.anim_chars_offset_.splice(this.selection_lower(), this.selection_upper()-this.selection_lower());
 
         this.text = `${this.text.substr(0, this.selection_lower())}${this.text.substring(this.selection_upper(), this.text.length)}`;
         this.set_caret(this.selection_lower());
     }
     write_text(string) {
-        this.clamp_caret();
-
         let width = this.text_width(this.text.substr(0, this.selection_lower()));
         this.anim_chars_offset_.splice(this.caret, 0, ...Array.from(Array(string.length), (_,i) => {
             let prev_width = width;
@@ -455,19 +448,17 @@ class Label extends Element {
         this.delete_selection();
         this.text = `${this.text.substr(0, this.caret)}${string}${this.text.substring(this.caret, this.text.length)}`;
         this.set_caret(this.caret + string.length);
+
+        this.unescape_text();
     }
 
     delete_direction(dir, ctrlKey) {
-        this.clamp_caret();
-
         if (this.selection_width() == 0) {
             this.set_caret(ctrlKey ? this.next_word_stop(this.caret,dir) : this.caret+dir, true);
         }
         this.delete_selection();
     }
     move_direction(dir, shiftKey, ctrlKey) {
-        this.clamp_caret();
-
         if (!shiftKey && this.selection_width()) {
             this.set_caret(dir < 0 ? this.selection_lower() : this.selection_upper());
         }
@@ -549,7 +540,6 @@ class Label extends Element {
                 return true;
         }
 
-        this.unescape_text();
         return false;
     }
 }
