@@ -46,10 +46,10 @@ const Menu = {
                 }
 
                 for (const child of menu_item.querySelectorAll('*')) {
-                    const display_text = child.getAttribute('_text');
+                    const eval_text = child.getAttribute('eval_text');
 
-                    if (display_text) {
-                        child.innerText = eval(display_text);
+                    if (eval_text) {
+                        child.innerText = eval(eval_text);
                     }
                 }
             }

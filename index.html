@@ -90,7 +90,7 @@
             <span>Paste</span>
         </div>
         <div class='menu-item' command='delete'>
-            <span _text='ActionUtil.remove_soft() ? `Clear` : `Delete`'>Delete</span>
+            <span eval_text='ActionUtil.remove_soft() ? `Clear` : `Delete`'>Delete</span>
         </div>
         <div class='menu-separator'></div>
         <div class='menu-item' command='invert'>
@@ -206,7 +206,7 @@
             <span>Add Elements</span>
         </div>
         <div class='menu-item' command='toggle_sidebar'>
-            <span _text='Menu.sidebar_open ? `Hide` : `Show`'>Show</span>
+            <span eval_text='Menu.sidebar_open ? `Hide` : `Show`'>Show</span>
         </div>
     </div>
 
@@ -261,7 +261,7 @@
             <span>Cut</span>
         </div>
         <div class='menu-item' command='delete'>
-            <span _text='ActionUtil.remove_soft() ? `Clear` : `Delete`'>Delete</span>
+            <span eval_text='ActionUtil.remove_soft() ? `Clear` : `Delete`'>Delete</span>
         </div>
         <div class='menu-item' command='paste'>
             <span>Paste</span>
@@ -316,7 +316,7 @@
 
     <div class='menu' menu='debugger'>
         <div class='menu-item' command='debug_pause_resume'>
-            <span _text='cs.controller.tick_nodes ? `Pause` : `Resume`'>Resume</span>
+            <span eval_text='cs.controller.tick_nodes ? `Pause` : `Resume`'>Resume</span>
         </div>
         <div class='menu-item' command='debug_tick'>
             <span>Tick</span>
@@ -325,7 +325,7 @@
             <span>Single Tick</span>
         </div>
         <div class='menu-item' command='debug_toggle'>
-            <span _text='Menu.debugger_visible ? `Hide` : `Show`'>Show</span>
+            <span eval_text='Menu.debugger_visible ? `Hide` : `Show`'>Show</span>
         </div>
     </div>
 
@@ -337,7 +337,7 @@
             <span>Add Elements</span>
         </div>
         <div class='menu-item' command='toggle_sidebar'>
-            <span _text='Menu.sidebar_open ? `Hide` : `Show`'>Show</span>
+            <span eval_text='Menu.sidebar_open ? `Hide` : `Show`'>Show</span>
         </div>
     </div>
     <div class='menu' menu='add-sidebar-elements'>
