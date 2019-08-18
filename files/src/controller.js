@@ -732,6 +732,8 @@ class Controller {
         }
 
         input.click();
+        input.style.display = 'none';
+        document.body.appendChild(input);
 
         input.addEventListener('change', function(event) {
             const files = input.files;
