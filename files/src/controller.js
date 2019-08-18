@@ -97,6 +97,8 @@ class Controller {
     }
 
     mouse_down(event) {
+        this.is_mouse_down = true;
+
         canvas.setPointerCapture(event.pointerId);
 
         this.mouse_down_pos = new Vec(event.x-canvas.offsetLeft, event.y-canvas.offsetTop);
@@ -152,8 +154,6 @@ class Controller {
             }
             else {
                 this.saved_state_move_elements = Util.deep_copy(cs.context);
-
-                this.is_mouse_down = true;
 
                 this.current_action = Enum.action.move_elements;
 
@@ -490,6 +490,8 @@ class Controller {
     }
 
     mouse_up(event) {
+        this.is_mouse_down = !!event.buttons;
+
         if (event.button != 0) {
             if (!Menu.mouse_moved) {
                 if (this.hovered_element && !this.hovered_element.is_selected()) {
@@ -499,8 +501,6 @@ class Controller {
             }
             return;
         }
-
-        this.is_mouse_down = false;
 
         for (const element of this.moving_elements) {
             if (element.mouse_up) {

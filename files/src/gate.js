@@ -164,15 +164,8 @@ class Gate extends Element {
         }
     }
 
-    is_pressed() {
-        return this.is_hovered() && cs.controller.is_mouse_down;
-    }
-
     draw_outline() {
         context.strokeStyle = this.color_outline_.to_string();
-        context.lineWidth = cs.config.line_width;
-
-        if (!this.last_size_) this.last_size_ = Vec.copy(this.size);
 
         if (this.is_pressed()) {
             context.lineWidth = cs.config.line_width + .02;
@@ -182,6 +175,7 @@ class Gate extends Element {
             );
         }
         else {
+            context.lineWidth = cs.config.line_width;
             context.strokeRect(...this.anim_pos_.xy, ...this.anim_size_.xy);
         }
     }

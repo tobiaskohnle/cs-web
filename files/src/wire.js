@@ -195,38 +195,31 @@ class WireSegment extends Element {
     draw() {
         const {min, max} = this.anim_normal_offset();
 
-        context.fillStyle = this.anim_color_.to_string();
+        context.strokeStyle = this.anim_color_.to_string();
+        context.lineWidth = this.is_pressed() ? cs.config.line_width-.02 : cs.config.line_width;
+        context.lineCap = 'square';
 
-        if (this.is_vertical) {
-            context.fillRect(
-                this.anim_offset_ - cs.config.line_width/2, min - cs.config.line_width/2,
-                cs.config.line_width, max - min + cs.config.line_width,
-            );
-        }
-        else {
-            context.fillRect(
-                min - cs.config.line_width/2, this.anim_offset_ - cs.config.line_width/2,
-                max - min + cs.config.line_width, cs.config.line_width,
-            );
-        }
+        context.beginPath();
+        context.moveTo(...Vec.from_offset(this.is_vertical, this.anim_offset_, min).xy);
+        context.lineTo(...Vec.from_offset(this.is_vertical, this.anim_offset_, max).xy);
+        context.stroke();
 
         context.fillStyle = this.base_color_.to_string();
 
         const neighbor_elements = this.neighbor_elements().sorted(Util.compare_function(x=>x.anim_offset_));
 
         for (let i = 1; i < neighbor_elements.length-1; i++) {
-            const neighbor_offset = neighbor_elements[i].anim_offset_;
+            const intersection = Vec.from_offset(this.is_vertical, this.anim_offset_, neighbor_elements[i].anim_offset_);
 
             switch (cs.config.joints_style) {
                 case 'square':
-                    if (this.is_vertical) context.fillRect(this.anim_offset_ - .4/2, neighbor_offset - .4/2, .4, .4);
-                    else                  context.fillRect(neighbor_offset - .4/2, this.anim_offset_ - .4/2, .4, .4);
+                    const joint_size = new Vec(cs.config.wire_joints_square_radius*2);
+                    context.fillRect(...Vec.sub(intersection, Vec.div(joint_size, 2)).xy, ...joint_size.xy);
                     break;
 
                 case 'round':
                     context.beginPath();
-                    if (this.is_vertical) context.arc(this.anim_offset_, neighbor_offset, .22, 0, Math.PI*2);
-                    else                  context.arc(neighbor_offset, this.anim_offset_, .22, 0, Math.PI*2);
+                    context.arc(...intersection.xy, cs.config.wire_joints_round_radius, 0, Math.PI*2);
                     context.fill();
                     break;
             }

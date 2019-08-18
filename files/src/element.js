@@ -78,6 +78,10 @@ class Element {
         throw 'implementation required @Element.hitbox_rect';
     }
 
+    is_pressed() {
+        return this.is_hovered() && cs.controller.is_mouse_down;
+    }
+
     move(total_vec, snap_size_) {
         throw 'implementation required @Element.move';
     }

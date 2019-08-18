@@ -114,7 +114,7 @@ const default_config = {
     theme: 'light',
     default_grid_size: 32,
     grid_style: 'lines',
-    joints_style: 'square',
+    wire_joints_style: 'square',
     hide_ui_in_fullscreen: true,
     input_arrows: true,
     tag_position: 'center',
@@ -170,6 +170,9 @@ const default_config = {
 
     line_width: .1,
     inverted_dot_radius: .25,
+
+    wire_joints_square_radius: .2,
+    wire_joints_round_radius: .22,
 
     file_extension: 'circ',
 

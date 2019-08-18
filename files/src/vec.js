@@ -113,4 +113,8 @@ class Vec {
     static length(a) {
         return a.length();
     }
+
+    static from_offset(is_vertical, offset, normal) {
+        return is_vertical ? new Vec(offset, normal) : new Vec(normal, offset);
+    }
 }

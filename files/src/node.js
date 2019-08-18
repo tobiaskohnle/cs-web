@@ -189,7 +189,7 @@ class ConnectionNode extends Element {
 
         context.strokeStyle = this.color_line_.to_string();
 
-        context.lineWidth = cs.config.line_width;
+        context.lineWidth = this.is_pressed() ? cs.config.line_width-.02 : cs.config.line_width;
         context.stroke();
 
         if (this.tag) {
