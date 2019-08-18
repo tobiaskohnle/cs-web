@@ -135,16 +135,6 @@ class Controller {
                     }
                     return;
                 }
-                else if (this.hovered_element.is_selected() && !this.resizing) {
-                    this.current_action = Enum.action.edit_labels;
-
-                    this.any_label_changed = false;
-                    this.saved_state_edit_labels = Util.deep_copy(cs.context);
-
-                    this.hovered_element.event_mouse_move(event);
-                    this.hovered_element.event_mouse_down(event);
-                    return;
-                }
             }
 
             const was_selected = this.hovered_element.is_selected();
@@ -522,6 +512,15 @@ class Controller {
                 if (!(event.ctrlKey || event.shiftKey)) {
                     this.hovered_element.toggle();
                     ActionUtil.queue_tick_for(this.hovered_element.outputs);
+                }
+            }
+
+            if (this.hovered_element instanceof Label) {
+                if (this.hovered_element.is_selected() && !this.resizing) {
+                    this.current_action = Enum.action.edit_labels;
+
+                    this.any_label_changed = false;
+                    this.saved_state_edit_labels = Util.deep_copy(cs.context);
                 }
             }
         }
