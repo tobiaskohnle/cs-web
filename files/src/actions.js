@@ -489,6 +489,8 @@ const ActionUtil = {
         for (const element of ActionUtil.elements()) {
             Action.deselect(element);
         }
+
+        cs.selected_elements = new Set;
     },
     set_selected(element, is_selected) {
         if (is_selected) {
