@@ -71,7 +71,7 @@ class WireSegment extends Element {
     }
 
     parent() {
-        return ActionGet.all_elements().find(element => element instanceof OutputNode && element.wire_segments.includes(this));
+        return ActionUtil.all_elements().find(element => element instanceof OutputNode && element.wire_segments.includes(this));
     }
 
     attached_connection_node() {

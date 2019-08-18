@@ -142,7 +142,7 @@ const Action = {
 
             if (!cs.controller.tick_nodes) {
                 result.visible_node_changed = result.visible_node_changed ||
-                    ActionGet.elements().includes(node.parent());
+                    ActionUtil.elements().includes(node.parent());
             }
 
             node.state = eval_node_state;
@@ -152,7 +152,7 @@ const Action = {
                 for (const next_node of node.next_nodes||parent.outputs) {
                     if (!cs.controller.tick_nodes) {
                         result.visible_node_queued = result.visible_node_queued ||
-                            ActionGet.elements().includes(next_node.parent());
+                            ActionUtil.elements().includes(next_node.parent());
                     }
 
                     next_ticked_nodes.add(next_node);
@@ -165,7 +165,7 @@ const Action = {
         return result;
     },
     update(skip_animations=false) {
-        for (const element of ActionGet.elements().sorted(Util.compare_function(x=>x.update_priority_)).reverse()) {
+        for (const element of ActionUtil.elements().sorted(Util.compare_function(x=>x.update_priority_)).reverse()) {
             element.update(skip_animations);
         }
     },
@@ -186,7 +186,7 @@ const Action = {
     },
 
     connect_nodes(start_node, end_node) {
-        if (ActionGet.nodes_connectable(start_node, end_node) == false) return;
+        if (ActionUtil.nodes_connectable(start_node, end_node) == false) return;
 
         const input_node = start_node instanceof InputNode ? start_node : end_node;
         const output_node = start_node instanceof OutputNode ? start_node : end_node;
@@ -263,7 +263,7 @@ const Action = {
     },
 
     create_wire(new_wire_segments, start_element, end_element, dragging_wire=false) {
-        if (ActionGet.nodes_connectable(start_element, end_element)) {
+        if (ActionUtil.nodes_connectable(start_element, end_element)) {
             Action.connect_nodes(start_element, end_element);
 
             if (new_wire_segments.last().is_vertical != end_element.is_vertical() && new_wire_segments.length > 2) {
@@ -315,7 +315,7 @@ const Action = {
         let segments;
 
         do {
-            segments = ActionGet.elements().filter(element => element instanceof WireSegment);
+            segments = ActionUtil.elements().filter(element => element instanceof WireSegment);
         }
         while(
             Action.merge_segments             (segments) ||
@@ -480,12 +480,12 @@ const Action = {
 
 const ActionUtil = {
     select_all() {
-        for (const element of ActionGet.elements()) {
+        for (const element of ActionUtil.elements()) {
             Action.select(element);
         }
     },
     deselect_all() {
-        for (const element of ActionGet.elements()) {
+        for (const element of ActionUtil.elements()) {
             Action.deselect(element);
         }
     },
@@ -522,7 +522,7 @@ const ActionUtil = {
         }
     },
     queue_tick_all() {
-        ActionUtil.queue_tick_for(ActionGet.all_elements());
+        ActionUtil.queue_tick_for(ActionUtil.all_elements());
     },
 
     move_elements(elements, vec) {
@@ -535,7 +535,7 @@ const ActionUtil = {
         return snap_size;
     },
     move_selected(vec) {
-        ActionUtil.move_elements(ActionGet.selected_elements());
+        ActionUtil.move_elements(ActionUtil.selected_elements());
     },
     remove_soft(elements) {
         return !elements.some(element => element instanceof Gate || element instanceof Label)
@@ -554,55 +554,53 @@ const ActionUtil = {
         }
     },
     remove_selected() {
-        ActionUtil.remove_all(ActionGet.selected_elements());
+        ActionUtil.remove_all(ActionUtil.selected_elements());
     },
 
-    update_all_last_pos(elements=ActionGet.elements()) {
+    update_all_last_pos(elements=ActionUtil.elements()) {
         for (const element of elements) {
             Action.update_last_pos(element);
         }
     },
-    update_all_last_size(elements=ActionGet.elements()) {
+    update_all_last_size(elements=ActionUtil.elements()) {
         for (const element of elements) {
             Action.update_last_size(element);
         }
     },
 
     split_selected_segments() {
-        for (const element of ActionGet.selected_elements()) {
+        for (const element of ActionUtil.selected_elements()) {
             Action.split_segment(element);
         }
     },
     clear_selected_nodes() {
-        for (const element of ActionGet.selected_elements()) {
+        for (const element of ActionUtil.selected_elements()) {
             Action.clear_node(element);
         }
     },
     invert_selected_nodes() {
-        for (const element of ActionGet.selected_elements()) {
+        for (const element of ActionUtil.selected_elements()) {
             Action.invert_node(element);
         }
     },
 
     add_input_node_to_selected() {
-        for (const element of ActionGet.selected_elements()) {
+        for (const element of ActionUtil.selected_elements()) {
             Action.add_input_node(element);
         }
     },
 
     remove_input_node_from_selected() {
-        for (const element of ActionGet.selected_elements()) {
+        for (const element of ActionUtil.selected_elements()) {
             Action.remove_input_node(element);
         }
     },
-};
 
-const ActionGet = {
     element_at(pos, filter=null) {
         let nearest_element = null;
         let min_dist = Infinity;
 
-        for (const element of ActionGet.elements()) {
+        for (const element of ActionUtil.elements()) {
             if (!filter || filter(element)) {
                 const dist = element.distance(pos);
 
@@ -615,7 +613,7 @@ const ActionGet = {
 
         return nearest_element;
     },
-    elements_in_rect(pos, size, elements=ActionGet.elements()) {
+    elements_in_rect(pos, size, elements=ActionUtil.elements()) {
         const elements_in_rect = [];
 
         for (const element of elements) {
@@ -631,10 +629,10 @@ const ActionGet = {
 
     all_inner_elements(custom_gate) {
         return [
-            ...ActionGet.elements(custom_gate.inner_elements),
+            ...ActionUtil.elements(custom_gate.inner_elements),
             ...custom_gate.inner_elements
                 .filter(element => element instanceof CustomGate)
-                .flatMap(custom_gate => ActionGet.all_inner_elements(custom_gate)),
+                .flatMap(custom_gate => ActionUtil.all_inner_elements(custom_gate)),
         ];
     },
 
@@ -645,14 +643,14 @@ const ActionGet = {
     },
 
     elements_connectable(start_element, end_element) {
-        return ActionGet.nodes_connectable(start_element, end_element)
+        return ActionUtil.nodes_connectable(start_element, end_element)
             || start_element instanceof InputNode
             && end_element instanceof WireSegment
             && !cs.controller.new_wire_segments.includes(end_element);
     },
 
     all_elements() {
-        return ActionGet.all_inner_elements(cs.context);
+        return ActionUtil.all_inner_elements(cs.context);
     },
     elements(element_list=cs.context.inner_elements) {
         const elements = [];

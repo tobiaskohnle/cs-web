@@ -115,7 +115,7 @@ class ConnectionNode extends Element {
     }
 
     parent() {
-        return ActionGet.all_elements().find(element => element instanceof Gate && element.nodes().includes(this));
+        return ActionUtil.all_elements().find(element => element instanceof Gate && element.nodes().includes(this));
     }
 
     set_dir(pos) {
@@ -145,7 +145,7 @@ class ConnectionNode extends Element {
         return !this.dir.x;
     }
 
-    previous_node(elements=ActionGet.all_elements()) {
+    previous_node(elements=ActionUtil.all_elements()) {
         return elements
             .filter(element => element instanceof Gate)
             .flatMap(gate => [...gate.inputs, ...gate.outputs])

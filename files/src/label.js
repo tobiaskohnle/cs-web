@@ -96,7 +96,7 @@ class Label extends Element {
         const rect_pos = Vec.sub(this.pos, new Vec(cs.config.nearest_gate_radius));
         const rect_size = Vec.add(this.size, new Vec(cs.config.nearest_gate_radius*2));
 
-        const nearby_gates = ActionGet.elements_in_rect(rect_pos, rect_size, elements)
+        const nearby_gates = ActionUtil.elements_in_rect(rect_pos, rect_size, elements)
             .filter(element => element instanceof Gate)
             .sorted(Util.compare_function(gate => Vec.sub(
                 Vec.add(gate.pos, Vec.div(gate.size, 2)),

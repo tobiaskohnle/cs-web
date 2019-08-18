@@ -15,7 +15,7 @@ class Element {
     }
 
     is_selected() {
-        return ActionGet.selected_elements().includes(this);
+        return ActionUtil.selected_elements().includes(this);
     }
     is_hovered() {
         return this == cs.controller.hovered_element;

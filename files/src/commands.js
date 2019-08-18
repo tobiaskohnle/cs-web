@@ -97,7 +97,7 @@ function is_command_enabled(command) {
             return false;
 
         case 'split_segment':
-            for (const element of ActionGet.selected_elements()) {
+            for (const element of ActionUtil.selected_elements()) {
                 if (element instanceof WireSegment) {
                     return true;
                 }
@@ -105,7 +105,7 @@ function is_command_enabled(command) {
             return false;
 
         case 'view_content':
-            for (const element of ActionGet.selected_elements()) {
+            for (const element of ActionUtil.selected_elements()) {
                 if (element instanceof CustomGate) {
                     return true;
                 }
@@ -113,14 +113,14 @@ function is_command_enabled(command) {
             return false;
 
         case 'add_input_node':
-            for (const element of ActionGet.selected_elements()) {
+            for (const element of ActionUtil.selected_elements()) {
                 if (element instanceof Gate && element.allow_new_input_nodes()) {
                     return true;
                 }
             }
             return false;
         case 'remove_input_node':
-            for (const element of ActionGet.selected_elements()) {
+            for (const element of ActionUtil.selected_elements()) {
                 if (element instanceof Gate && element.allow_new_input_nodes() && element.inputs.some(input => input.is_empty())) {
                     return true;
                 }
@@ -128,7 +128,7 @@ function is_command_enabled(command) {
             return false;
 
         case 'invert':
-            for (const element of ActionGet.selected_elements()) {
+            for (const element of ActionUtil.selected_elements()) {
                 if (element instanceof ConnectionNode) {
                     return true;
                 }
@@ -153,7 +153,7 @@ function is_command_enabled(command) {
         case 'copy':
         case 'cut':
         case 'delete':
-            return !!ActionGet.selected_elements().length;
+            return !!ActionUtil.selected_elements().length;
         case 'paste':
             return !!cs.controller.clipboard;
     }
@@ -328,7 +328,7 @@ const commands = {
                 break;
 
             case Enum.action.resize_elements:
-                for (const element of ActionGet.selected_elements()) {
+                for (const element of ActionUtil.selected_elements()) {
                     if (element.last_size_) {
                         element.size = Vec.copy(element.last_size_);
                     }
@@ -454,7 +454,7 @@ const commands = {
         cs.controller.reset_view();
     },
     zoom_to_selection() {
-        const elements = ActionGet.selected_elements().length ? ActionGet.selected_elements() : ActionGet.elements();
+        const elements = ActionUtil.selected_elements().length ? ActionUtil.selected_elements() : ActionUtil.elements();
 
         if (!elements.length) {
             return;
@@ -511,7 +511,7 @@ const commands = {
         ActionUtil.select_all();
     },
     toggle_selection() {
-        if (ActionGet.elements().every(element => element.is_selected())) {
+        if (ActionUtil.elements().every(element => element.is_selected())) {
             ActionUtil.deselect_all();
         }
         else {

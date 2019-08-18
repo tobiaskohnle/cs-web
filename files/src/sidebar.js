@@ -155,7 +155,7 @@ class Sidebar {
 
     update_elements() {
         this.categories.forEach(category => {
-            ActionGet.elements(category.groups.flat()).forEach(element => {
+            ActionUtil.elements(category.groups.flat()).forEach(element => {
                 element.update(true);
             });
         });
@@ -183,7 +183,7 @@ class Sidebar {
                 height += group.height;
                 groups_y += group.height;
 
-                ActionGet.elements(group.elements).forEach(element => element.update(true));
+                ActionUtil.elements(group.elements).forEach(element => element.update(true));
             });
 
             category.height = height;
@@ -223,7 +223,7 @@ class Sidebar {
                 );
                 context.scale(cs.config.sidebar_scale, cs.config.sidebar_scale);
 
-                for (const element of ActionGet.elements(group.elements)) {
+                for (const element of ActionUtil.elements(group.elements)) {
                     element.draw();
                 }
 

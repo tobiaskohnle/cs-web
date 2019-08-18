@@ -40,7 +40,7 @@ class Controller {
         if (this.current_action == Enum.action.edit_labels) {
             let result = true;
 
-            for (const element of ActionGet.selected_elements()) {
+            for (const element of ActionUtil.selected_elements()) {
                 if (element instanceof Label) {
                     if (!element.key_down(event)) {
                         result = false;
@@ -85,7 +85,7 @@ class Controller {
 
         if (this.hovered_element instanceof Label) {
             if (this.current_action == Enum.action.edit_labels) {
-                for (const element of ActionGet.selected_elements()) {
+                for (const element of ActionUtil.selected_elements()) {
                     if (element instanceof Label) {
                         element.event_mouse_down(event);
                     }
@@ -126,7 +126,7 @@ class Controller {
         if (this.hovered_element) {
             if (this.hovered_element instanceof Label) {
                 if (this.current_action == Enum.action.edit_labels) {
-                    for (const element of ActionGet.selected_elements()) {
+                    for (const element of ActionUtil.selected_elements()) {
                         if (element instanceof Label) {
                             element.event_mouse_down(event);
                         }
@@ -165,7 +165,7 @@ class Controller {
 
                 this.current_action = Enum.action.move_elements;
 
-                const selected_elements = ActionGet.selected_elements();
+                const selected_elements = ActionUtil.selected_elements();
 
                 if (selected_elements.every(element => element instanceof ConnectionNode)) {
                     this.moving_elements = selected_elements;
@@ -196,7 +196,7 @@ class Controller {
         else {
             this.current_action = Enum.action.create_selection_box;
 
-            this.saved_selected_elements = ActionGet.selected_elements();
+            this.saved_selected_elements = ActionUtil.selected_elements();
         }
 
         if (this.resizing) {
@@ -232,12 +232,12 @@ class Controller {
 
             case Enum.action.create_wire:
             case Enum.action.create_wire_segment:
-                filter = element => ActionGet.nodes_connectable(this.wire_start_node, element)
-                    || ActionGet.elements_connectable(this.wire_start_node, element);
+                filter = element => ActionUtil.nodes_connectable(this.wire_start_node, element)
+                    || ActionUtil.elements_connectable(this.wire_start_node, element);
                 break;
         }
 
-        const hovered_element = ActionGet.element_at(this.mouse_world_pos, filter);
+        const hovered_element = ActionUtil.element_at(this.mouse_world_pos, filter);
         const other_hovered_element = this.hovered_element != hovered_element;
 
         switch (this.current_action) {
@@ -297,7 +297,7 @@ class Controller {
                 break;
 
             case Enum.action.edit_labels:
-                for (const element of ActionGet.selected_elements()) {
+                for (const element of ActionUtil.selected_elements()) {
                     if (element instanceof Label) {
                         element.event_mouse_move(event);
                     }
@@ -404,7 +404,7 @@ class Controller {
 
             case Enum.action.create_selection_box:
                 const selection_size = Vec.sub(this.mouse_down_world_pos, this.mouse_world_pos);
-                const elements_in_rect = new Set(ActionGet.elements_in_rect(this.mouse_world_pos, selection_size));
+                const elements_in_rect = new Set(ActionUtil.elements_in_rect(this.mouse_world_pos, selection_size));
 
                 const elements_entering_rect = new Set(elements_in_rect);
                 for (const element of this.saved_elements_in_rect) {
@@ -451,7 +451,7 @@ class Controller {
                     Action.add(element);
                 }
 
-                const elements = ActionGet.elements(this.imported_group.elements);
+                const elements = ActionUtil.elements(this.imported_group.elements);
 
                 this.moving_elements = [];
                 this.current_action = Enum.action.move_elements;
@@ -485,7 +485,7 @@ class Controller {
                 break;
 
             case Enum.action.resize_elements:
-                for (const element of ActionGet.selected_elements()) {
+                for (const element of ActionUtil.selected_elements()) {
                     if (element.resize && this.resize) {
                         if (element.resize(Vec.sub(this.mouse_world_pos, this.mouse_down_world_pos), this.resize_vec, event.shiftKey||event.ctrlKey||event.altKey)) {
                             this.elements_resized = true;
@@ -747,7 +747,7 @@ class Controller {
     }
 
     copy() {
-        this.clipboard = Util.extended_stringify(ActionGet.selected_elements());
+        this.clipboard = Util.extended_stringify(ActionUtil.selected_elements());
 
         if (cs.config.use_system_clipboard) {
             navigator.clipboard.writeText(this.clipboard);
@@ -766,7 +766,7 @@ class Controller {
             const main_elements = copied_elements.filter(element => element instanceof Gate || element instanceof Label);
             const offset = Vec.sub(Vec.round(this.mouse_world_pos), Util.bounding_rect(main_elements).pos);
 
-            const elements = ActionGet.elements(copied_elements);
+            const elements = ActionUtil.elements(copied_elements);
 
             ActionUtil.update_all_last_pos(elements);
             ActionUtil.queue_tick_for(elements);
@@ -814,7 +814,7 @@ class Controller {
     }
 
     view_content() {
-        const custom_gate = ActionGet.selected_elements().find(element => element instanceof CustomGate);
+        const custom_gate = ActionUtil.selected_elements().find(element => element instanceof CustomGate);
 
         if (custom_gate) {
             this.save_state('view content');
@@ -829,7 +829,7 @@ class Controller {
     }
 
     change_element(element) {
-        for (const prev_element of ActionGet.selected_elements()) {
+        for (const prev_element of ActionUtil.selected_elements()) {
             if (prev_element instanceof Gate || prev_element instanceof Label) {
                 const new_element = Object.assign(Util.deep_copy(element), prev_element);
                 new_element.tag = element.tag;
