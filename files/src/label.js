@@ -463,6 +463,19 @@ class Label extends Element {
         }
     }
 
+    copy() {
+        const clipboard = this.text.substring(this.selection_lower(), this.selection_upper()) || this.text;
+
+        cs.controller.get_clipboard(current_clipboard => {
+            if (current_clipboard) {
+                cs.controller.set_clipboard(`${current_clipboard}\n${clipboard}`);
+            }
+            else {
+                cs.controller.set_clipboard(clipboard);
+            }
+        });
+    }
+
     key_down(event) {
         switch (event.key) {
             default:
@@ -476,33 +489,17 @@ class Label extends Element {
                             this.select_all();
                             break;
                         case 'c':
-                            this.clipboard = this.text.substring(this.selection_lower(), this.selection_upper()) || this.text;
-                            if (cs.config.use_system_clipboard) {
-                                navigator.clipboard.writeText(this.clipboard);
-                            }
-
+                            this.copy();
                             break;
                         case 'x':
                             if (this.selection_width() == 0) {
                                 this.select_all();
                             }
-
-                            this.clipboard = this.text.substring(this.selection_lower(), this.selection_upper());
-                            if (cs.config.use_system_clipboard) {
-                                navigator.clipboard.writeText(this.clipboard);
-                            }
-
+                            this.copy();
                             this.delete_selection();
                             break;
                         case 'v':
-                            if (cs.config.use_system_clipboard) {
-                                navigator.clipboard.readText().then(string => {
-                                    this.write_text(string);
-                                });
-                            }
-                            else {
-                                this.write_text(this.clipboard);
-                            }
+                            cs.controller.get_clipboard(clipboard => this.write_text(clipboard));
                             break;
                     }
                 }

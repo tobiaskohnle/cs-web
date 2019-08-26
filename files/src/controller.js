@@ -12,6 +12,8 @@ class Controller {
         this.moving_elements = [];
         this.saved_elements_in_rect = new Set;
 
+        this.clicked_element_already_selected = false;
+
         this.wire_start_node = null;
         this.new_wire_segments = [];
 
@@ -37,6 +39,12 @@ class Controller {
             return Settings.key_down(event);
         }
 
+        const pressed_keybind = Keybind.from_event(event);
+
+        if (Keybind.parse_all(cs.config.keybinds.copy).some(keybind => keybind.equals(pressed_keybind))) {
+            this.set_clipboard('');
+        }
+
         if (this.current_action == Enum.action.edit_labels) {
             let result = true;
 
@@ -53,8 +61,6 @@ class Controller {
                 return result;
             }
         }
-
-        const pressed_keybind = Keybind.from_event(event);
 
         for (const command in commands) {
             const keybind = cs.config.keybinds[command];
@@ -117,13 +123,15 @@ class Controller {
 
         ActionUtil.update_all_last_pos();
 
-        if (!(event.shiftKey || event.ctrlKey) && (!this.hovered_element || !this.hovered_element.is_selected())) {
+        if (!(event.shiftKey || event.ctrlKey) && !(this.hovered_element && this.hovered_element.is_selected())) {
             ActionUtil.deselect_all();
-        }
 
-        if (this.current_action == Enum.action.edit_labels) {
-            if (this.any_label_changed) {
-                this.save_state('edit label', this.saved_state_edit_labels);
+            if (this.current_action == Enum.action.edit_labels) {
+                if (this.any_label_changed) {
+                    this.save_state('edit label', this.saved_state_edit_labels);
+                }
+
+                this.current_action = Enum.action.none;
             }
         }
 
@@ -139,14 +147,17 @@ class Controller {
                 }
             }
 
-            const was_selected = this.hovered_element.is_selected();
+            this.clicked_element_already_selected = this.hovered_element.is_selected();
 
             ActionUtil.set_selected(
                 this.hovered_element,
-                this.is_selected(was_selected, event.shiftKey, event.ctrlKey),
+                this.is_selected(this.clicked_element_already_selected, event.shiftKey, event.ctrlKey),
             );
 
-            if (this.hovered_element instanceof ConnectionNode && !was_selected && !(event.shiftKey || event.ctrlKey || event.altKey)) {
+            if (this.hovered_element instanceof ConnectionNode &&
+                !this.clicked_element_already_selected &&
+                !(event.shiftKey || event.ctrlKey || event.altKey)
+            ) {
                 this.saved_state_create_wire = Util.deep_copy(cs.context);
 
                 this.current_action = Enum.action.start_wire;
@@ -516,13 +527,15 @@ class Controller {
                 }
             }
 
-            if (this.hovered_element instanceof Label) {
-                if (this.hovered_element.is_selected() && !this.resizing) {
-                    this.current_action = Enum.action.edit_labels;
+            if (this.hovered_element instanceof Label &&
+                this.clicked_element_already_selected &&
+                !this.resizing &&
+                !(event.ctrlKey || event.shiftKey)
+            ) {
+                this.current_action = Enum.action.edit_labels;
 
-                    this.any_label_changed = false;
-                    this.saved_state_edit_labels = Util.deep_copy(cs.context);
-                }
+                this.any_label_changed = false;
+                this.saved_state_edit_labels = Util.deep_copy(cs.context);
             }
         }
 
@@ -750,22 +763,30 @@ class Controller {
         });
     }
 
-    copy() {
-        this.clipboard = Util.extended_stringify(ActionUtil.selected_elements());
-
+    get_clipboard(receiver) {
         if (cs.config.use_system_clipboard) {
-            navigator.clipboard.writeText(this.clipboard);
+            navigator.clipboard.readText().then(clipboard => receiver(clipboard));
+        }
+        else {
+            receiver(this.clipboard);
         }
     }
+    set_clipboard(clipboard) {
+        this.clipboard = clipboard;
+
+        if (cs.config.use_system_clipboard) {
+            navigator.clipboard.writeText(clipboard);
+        }
+    }
+
+    copy() {
+        this.set_clipboard(Util.extended_stringify(ActionUtil.selected_elements()));
+    }
     paste() {
-        const paste = clipboard => {
-            if (!clipboard) {
-                return;
-            }
+        this.get_clipboard(clipboard => {
+            const copied_elements = Util.extended_parse(clipboard);
 
             ActionUtil.deselect_all();
-
-            const copied_elements = Util.extended_parse(clipboard);
 
             const main_elements = copied_elements.filter(element => element instanceof Gate || element instanceof Label);
             const offset = Vec.sub(Vec.round(this.mouse_world_pos), Util.bounding_rect(main_elements).pos);
@@ -796,14 +817,7 @@ class Controller {
                     }
                 }
             }
-        }
-
-        if (cs.config.use_system_clipboard) {
-            navigator.clipboard.readText().then(string => paste(string));
-        }
-        else {
-            paste(this.clipboard);
-        }
+        });
     }
 
     file_string() {
